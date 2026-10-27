@@ -66,6 +66,11 @@ func Wrap(h Handler) http.HandlerFunc {
 	}
 }
 
+// WriteError answers with an *Error outside a Wrap handler, for middleware.
+func WriteError(w http.ResponseWriter, e *Error) {
+	writeErrorEnvelope(w, e.Status, e.Message, e.Code, e.Details)
+}
+
 func WriteNotFound(w http.ResponseWriter, path string) {
 	writeErrorEnvelope(w, http.StatusNotFound, "not found: "+path, "not_found", nil)
 }

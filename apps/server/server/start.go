@@ -118,6 +118,7 @@ func Start(opts StartOptions) (*Running, error) {
 		UIDir:        opts.UIDir,
 		URL:          url,
 		AllowOrigins: opts.AllowOrigins,
+		Host:         host,
 		Watch:        true,
 	})
 	httpServer := &http.Server{Handler: app.Handler()}
@@ -162,5 +163,5 @@ func displayHost(host string) string {
 }
 
 func IsLoopback(host string) bool {
-	return host == "127.0.0.1" || host == "localhost"
+	return host == "127.0.0.1" || host == "localhost" || host == "::1"
 }

@@ -24,6 +24,8 @@ type Options struct {
 	Watch bool
 	// AllowOrigins lets a UI dev server on another origin call /api/*. Production is same-origin.
 	AllowOrigins []string
+	// Host is the address the listener is bound to. A loopback bind turns on the Host check.
+	Host string
 }
 
 type Server struct {
@@ -32,6 +34,8 @@ type Server struct {
 	url          string
 	startedAt    string
 	allowOrigins []string
+	// loopbackOnly rejects any Host header that is not a loopback name (DNS rebinding).
+	loopbackOnly bool
 
 	bus       *Bus
 	pool      *Pool
@@ -55,6 +59,7 @@ func New(opts Options) *Server {
 		url:          opts.URL,
 		startedAt:    startedAt,
 		allowOrigins: opts.AllowOrigins,
+		loopbackOnly: IsLoopback(opts.Host),
 		bus:          NewBus(),
 		pool:         NewPool(),
 		runLog:       NewRunLog(),
@@ -102,7 +107,7 @@ func (s *Server) handle(pattern string, h httpx.Handler) {
 }
 
 func (s *Server) Handler() http.Handler {
-	return s.cors(s.mux)
+	return s.guard(s.cors(s.mux))
 }
 
 // Plain CORS, no credentials: only what a UI dev server on its own port needs.
