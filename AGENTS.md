@@ -1,7 +1,20 @@
-# Conventions for agents
+# AGENTS.md
 
-Conventions for any AI agent or coding tool working in this repo. This is the canonical file -
-`CLAUDE.md` points here rather than repeating it, so edit this one.
+The single source of truth for anyone changing this repository: humans and coding agents (Claude
+Code, Codex, Cursor, Copilot, Gemini, ...). Tool-specific files such as `CLAUDE.md` only point
+here. If you learn something every contributor should know, add it to this file.
+
+## Code style
+
+- **Clean and modular.** One responsibility per module, small functions, descriptive names. If a
+  function needs a comment to say what it does, rename it or split it.
+- **Comments explain why**, never what: a constraint, a trade-off, a surprising upstream
+  behaviour. No commented-out code, no changelog-in-comments, no TODOs without an issue.
+- **No dead code.** Delete it; git remembers. No unused exports, flags, files or dependencies.
+- **Plain punctuation.** No em dashes or en dashes in code, comments, docs or commit messages.
+  Use commas, colons, parentheses or a plain hyphen.
+- **Commits.** Small, one concern each, imperative subject under 72 characters. Do not add
+  `Co-Authored-By` trailers or tool attribution lines.
 
 Read [docs/architecture/monorepo.md](docs/architecture/monorepo.md) before moving anything
 between workspaces. [CONTRIBUTING.md](CONTRIBUTING.md) has the repo map and the script table.
@@ -96,20 +109,19 @@ Read this before adding to or writing a new component in `apps/web` or `packages
 
 ## Verifying a change
 
-**The repo carries no test suite, and none gets committed.** The gate is
-typecheck + lint + build + a CLI smoke on the OS matrix, plus `apps/server/scripts/smoke.sh`
-against a real Postgres, which is the only end-to-end exercise of the HTTP API. Do not remove it.
-It drives the compiled binary, so `bun run --filter dipper build` has to run first. See
+**Logic that can be pure is tested.** Go packages with no I/O (`sqlscript`, `analyze`, the
+introspection parsers) carry `_test.go` files run by `go test ./...`; TypeScript logic in
+`packages/sql` and `packages/ui` lib folders carries `bun test` files named `*.test.ts`. The
+end-to-end gate is typecheck + lint + build + a CLI smoke on the OS matrix, plus
+`apps/server/scripts/smoke.sh` against a real Postgres, the only exercise of the HTTP API. It
+drives the compiled binary, so `bun run --filter dipper build` has to run first. See
 `docs/architecture/monorepo.md`.
 
 Before handing work back, run:
 
 ```sh
-bun run typecheck && bun run lint && bun run build
+bun run typecheck && bun run lint && bun run build && bun run test
 ```
-
-Writing a throwaway test to verify your own work is fine - run it, then delete it. What must not
-land is a committed `*.test.ts`.
 
 ## Project facts that trip people up
 

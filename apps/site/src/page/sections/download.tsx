@@ -34,7 +34,7 @@ export function DownloadSection({ roostRef, onCopy }: DownloadProps) {
         />
         {/* Under sm the line keeps clear of the lane the key's Copied slip comes out into. */}
         <p className={cn(small, "mt-3 max-sm:pr-20")}>
-          Already installed? Run <code className={code}>roost update</code>.
+          Already installed? Run <code className={code}>dipper update</code>.
         </p>
       </SectionScene>
       <Reveal delay={0.12} className="mt-12 max-w-xl lg:mt-8">
