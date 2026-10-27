@@ -3,7 +3,8 @@
 
 export const PALETTE = { key: "k", mod: true } as const;
 export const SETTINGS = { key: ",", mod: true } as const;
-export const NEW_FILE = { key: "n", mod: true } as const;
+// Alt as well: browsers keep Ctrl+N (new window) for themselves, so a web app cannot have it.
+export const NEW_FILE = { key: "n", mod: true, alt: true } as const;
 export const SAVE = { key: "s", mod: true } as const;
 export const RUN = { key: "Enter", mod: true } as const;
 export const TOGGLE_RESULTS = { key: "j", mod: true } as const;

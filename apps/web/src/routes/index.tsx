@@ -31,6 +31,10 @@ import {
   ActivityDialog,
   AdviceDialog,
   ExplainDialog,
+  NEW_FILE,
+  SAVE,
+  TOGGLE_RESULTS,
+  TOGGLE_SIDEBAR,
   ObjectsDialog,
   SchemaDiagramDialog,
   SchemaDiffDialog,
@@ -83,12 +87,13 @@ function Shell(): React.ReactElement {
 }
 
 function Workspace(): React.ReactElement {
-  const { panels, setPanel, togglePanel } = useWorkspace();
+  const { newScratch, panels, setPanel, togglePanel } = useWorkspace();
 
-  useHotkey({ key: "b", mod: true }, () => togglePanel("sidebarOpen"));
-  useHotkey({ key: "j", mod: true }, () => togglePanel("outputOpen"));
+  useHotkey(TOGGLE_SIDEBAR, () => togglePanel("sidebarOpen"));
+  useHotkey(TOGGLE_RESULTS, () => togglePanel("outputOpen"));
+  useHotkey(NEW_FILE, () => newScratch());
   // Asks where to put it when the buffer has never been saved; an ordinary save otherwise.
-  useHotkey({ key: "s", mod: true }, requestSaveQuery);
+  useHotkey(SAVE, requestSaveQuery);
 
   return (
     <div className="flex h-svh flex-col overflow-hidden">

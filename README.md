@@ -390,6 +390,7 @@ Dipper never installs or bundles a database server.
 | <kbd>⌘</kbd><kbd>↵</kbd>             | Run selection / statement |
 | <kbd>⌘</kbd><kbd>⇧</kbd><kbd>↵</kbd> | Run entire file           |
 | <kbd>⌘</kbd><kbd>K</kbd>             | Command palette           |
+| <kbd>⌘</kbd><kbd>⌥</kbd><kbd>N</kbd> | New query                 |
 | <kbd>⌘</kbd><kbd>B</kbd>             | Toggle sidebar            |
 | <kbd>⌘</kbd><kbd>J</kbd>             | Toggle results            |
 | <kbd>⌘</kbd><kbd>S</kbd>             | Save                      |
