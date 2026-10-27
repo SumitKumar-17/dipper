@@ -70,6 +70,7 @@ The section matching a release's version becomes that release's notes on GitHub 
   next, across runs, form one transaction. Commit or Rollback ends it. The badge shows when a
   statement has failed the transaction, and then only Rollback is offered. A forgotten transaction is
   rolled back after 15 idle minutes. Postgres and MySQL.
+- **Running time** - A query in progress shows how long it has been running beside Cancel.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

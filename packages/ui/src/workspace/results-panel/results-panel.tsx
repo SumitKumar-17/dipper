@@ -22,6 +22,8 @@ import { type ResultsView, type Run, runStatements } from "../types";
 import { summaryOf } from "./format";
 import { QueryLine } from "./query-line";
 import { RunningRows } from "./skeletons";
+import { useElapsed } from "./use-elapsed";
+import { formatAge } from "../activity/session-metrics";
 import { ResultBody, StatementStrip } from "./statement-view";
 import { RUN } from "../shortcuts";
 import { hotkeyLabel } from "../use-hotkey";
@@ -79,6 +81,7 @@ export function ResultsPanel({
   }, [current, setView, spoke, showed]);
 
   const running = current?.status === "running";
+  const elapsed = useElapsed(current?.startedAt, running);
 
   return (
     <section
@@ -95,6 +98,11 @@ export function ResultsPanel({
         )}
 
         <div className="ml-auto flex shrink-0 items-center gap-2">
+          {running && elapsed !== null && (
+            <span aria-live="off" className="text-muted-foreground text-xs tabular-nums">
+              Running {formatAge(elapsed)}
+            </span>
+          )}
           {running && current && (
             <Button onClick={() => void cancelRun(current.id)} size="xs" variant="outline">
               Cancel

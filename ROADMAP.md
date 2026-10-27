@@ -89,7 +89,7 @@ change reviewed as plain SQL before it runs.
 
 - [x] Result find and click-to-sort over the loaded rows (column filters next) (S/M)
 - [x] Cell inspector with JSON pretty-printing and copy (copy-as formats next) (S)
-- [ ] Streaming runs with an elapsed timer and partial rows (M)
+- [x] Elapsed timer while a query runs (partial rows from the streaming endpoint are still open) (M)
 - [ ] Keyboard shortcut editor (M)
 - [ ] Typed command registry for the palette, with prefixes for tables and history (M)
 - [ ] Snippets and tagged saved queries (M)
