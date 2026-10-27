@@ -69,6 +69,7 @@ not drop it. Detection is push-based (OS file watching); the ping is pure keep-a
 | GET    | `/api/connections/:id/databases`  | -                                              | `string[]`                                     | Databases visible to the connection.                                                                                                                         |
 | GET    | `/api/connections/:id/schema`     | -                                              | `DatabaseSchema`                               | Schema → table → column tree. `?database=` picks a non-default database; `?refresh=1` bypasses the cache.                                                    |
 | GET    | `/api/connections/:id/tables/:schema/:table` | -                                  | `TableDetail`                                  | Indexes, constraints, triggers, sizes, vacuum state and rebuilt DDL for one table. `?database=` as for schema. 404 when the table does not exist; 400 on a dialect without support. |
+| POST   | `/api/connections/:id/explain` | `ExplainRequest` `{ sql, database?, analyze? }` | `Plan` | One statement only (400 otherwise). `analyze` runs it inside a transaction that is always rolled back. Postgres returns a structured tree with per-node warnings; MySQL returns a tree for plain EXPLAIN and the text tree under ANALYZE. |
 
 `:id` accepts either the connection id or its name.
 

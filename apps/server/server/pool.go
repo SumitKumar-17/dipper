@@ -271,6 +271,27 @@ func (p *Pool) TableDetail(ctx context.Context, idOrName, database, schema, tabl
 	return detail, err
 }
 
+// Explain asks the driver for the plan of one statement.
+func (p *Pool) Explain(ctx context.Context, idOrName string, request protocol.ExplainRequest) (protocol.Plan, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.Plan{}, err
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.Plan{}, err
+	}
+	explainer, ok := driver.(db.Explainer)
+	if !ok {
+		return protocol.Plan{}, httpx.BadRequest(string(config.Dialect) + " connections cannot explain yet")
+	}
+	plan, err := explainer.Explain(ctx, request)
+	if errors.Is(err, db.ErrExplainEmpty) || errors.Is(err, db.ErrExplainMultiple) {
+		return protocol.Plan{}, httpx.BadRequest(err.Error())
+	}
+	return plan, err
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

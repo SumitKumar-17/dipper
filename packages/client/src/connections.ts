@@ -2,6 +2,8 @@ import type {
   ConnectionConfig,
   ConnectionSummary,
   DatabaseSchema,
+  ExplainRequest,
+  Plan,
   TableDetail,
 } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
@@ -45,6 +47,8 @@ export type ConnectionsApi = {
     table: string,
     opts?: TableDetailOptions,
   ): Promise<TableDetail>;
+  /** The query plan for one statement; with `analyze` it runs, then rolls back. */
+  explain(id: string, request: ExplainRequest, opts?: CallOptions): Promise<Plan>;
 };
 
 export function connectionsApi(http: Transport): ConnectionsApi {
@@ -89,5 +93,8 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         at(id, `/tables/${encodeURIComponent(schema)}/${encodeURIComponent(table)}`),
         { query: { database: opts?.database }, signal: opts?.signal },
       ),
+
+    explain: (id, request, opts) =>
+      http.json<Plan>(at(id, "/explain"), { method: "POST", body: request, signal: opts?.signal }),
   };
 }

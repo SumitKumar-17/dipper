@@ -94,6 +94,7 @@ func (s *Server) routes() {
 	s.registerDiscover()
 	s.registerSchema()
 	s.registerTableDetail()
+	s.registerExplain()
 	s.registerQuery()
 	s.registerRuns()
 	s.registerHistory()

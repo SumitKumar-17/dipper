@@ -54,6 +54,13 @@ expect "schema marks the orders primary key" "$(curl -s "$B/connections/$CID/sch
 expect "table detail names the orders primary key constraint" "$(curl -s "$B/connections/$CID/tables/public/orders" | json 'j.constraints.find(c=>c.kind==="primary_key").columns.join()')" "id"
 expect_has "table detail rebuilds the DDL" "create table \"public\".\"orders\"" "$(curl -s "$B/connections/$CID/tables/public/orders" | json 'j.ddl')"
 expect "table detail of a missing table is 404" "404" "$(curl -s -o /dev/null -w '%{http_code}' "$B/connections/$CID/tables/public/no_such_table")"
+expect "explain returns a plan root" "$(curl -s -XPOST "$B/connections/$CID/explain" -H 'content-type: application/json' -d '{"sql":"select * from orders"}' | json 'j.root.nodeType')" "Seq Scan"
+expect "explain analyze fills actual rows" "$(curl -s -XPOST "$B/connections/$CID/explain" -H 'content-type: application/json' -d '{"sql":"select * from orders","analyze":true}' | json 'j.root.actualRows!==null')" "true"
+expect "explain refuses several statements" "400" "$(curl -s -o /dev/null -w '%{http_code}' -XPOST "$B/connections/$CID/explain" -H 'content-type: application/json' -d '{"sql":"select 1; select 2"}')"
+orders_count() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select count(*) from orders\"}" "$B/query/sync" | json 'JSON.stringify(j.results[0].rows)'; }
+ORDERS_BEFORE="$(orders_count)"
+curl -s -o /dev/null -XPOST "$B/connections/$CID/explain" -H 'content-type: application/json' -d '{"sql":"delete from orders","analyze":true}'
+expect "explain analyze of a DELETE rolls back" "$ORDERS_BEFORE" "$(orders_count)"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

@@ -47,11 +47,11 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 
 ## 2. Database depth (server)
 
-- [ ] EXPLAIN and EXPLAIN ANALYZE endpoint with a parsed plan tree (L)
-- [ ] Indexes and constraints in the schema model (M)
-- [ ] Lazy table detail: sizes, vacuum state, comments, partitions (M)
+- [x] EXPLAIN and EXPLAIN ANALYZE endpoint with a parsed plan tree and warnings (L)
+- [x] Indexes and constraints per table, Postgres and MySQL (M)
+- [x] Lazy table detail: sizes, vacuum state, comments, partitions (M)
 - [ ] Triggers, functions, sequences, enums and extensions (M)
-- [ ] DDL generation per table (M)
+- [x] DDL generation per table (M)
 - [ ] Activity and locks view with cancel and terminate (M)
 - [ ] Slow query statistics from `pg_stat_statements` and the MySQL digest tables (M)
 - [ ] Index and health advice: unused, duplicate and missing indexes, dead tuples (M)
@@ -67,6 +67,23 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] CSV import (M)
 
 ## 3. Workspace UI
+
+### Headline: Table Editor
+
+Open any table as a spreadsheet and change it, data and structure, without writing SQL, with every
+change reviewed as plain SQL before it runs.
+
+- [ ] Table view: paged grid with server-side sort and filter, driven by keyset pagination (M)
+- [ ] Row editing: edit cells, add and delete rows; primary key required, typed inputs per column
+      type, NULL and DEFAULT as first-class values (M/L)
+- [ ] Pending changes panel: every edit listed as the exact INSERT, UPDATE or DELETE it will run,
+      with an optimistic check on the old values; apply all in one transaction or discard (M)
+- [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage
+      indexes and constraints; each change produces reviewable DDL (L)
+- [ ] Foreign key aware cells: click through to the referenced row, pick from a lookup list (M)
+- [ ] Safe by default: read-only connections stay read-only, production-tagged connections ask
+      twice, DDL runs in a transaction where the dialect allows it (S)
+- [ ] Undo of the last applied change set where it is reversible (M)
 
 - [ ] Result find, sort and column filter (S/M)
 - [ ] Cell inspector and copy as CSV, JSON or INSERT (S)
