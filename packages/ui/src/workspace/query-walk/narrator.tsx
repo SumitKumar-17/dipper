@@ -15,6 +15,7 @@ import { cn } from "../../lib/utils";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "../../ui/tabs";
 import type { Phase } from "./narration";
 import { NarratorShell } from "./narrator-shell";
+import { OrderStrip } from "./order-strip";
 import { countNotes, NotesPanel, StationNote } from "./notes-panel";
 import type { Section } from "./program";
 import { QueryPane, stationRange } from "./query-pane";
@@ -47,6 +48,7 @@ export function Narrator({
   section,
   comments,
   station,
+  stations,
   state,
   result,
   sentence,
@@ -66,6 +68,8 @@ export function Narrator({
   /** Everything stripped out of the statement before the walk read it. */
   comments: readonly SqlComment[];
   station: Station;
+  /** Every station of the walk, for the strip that compares the written order with the running one. */
+  stations: readonly Station[];
   state: StationState;
   result: StationResult | undefined;
   sentence: string;
@@ -162,6 +166,7 @@ export function Narrator({
         </TabsList>
         <TabsPanel className="min-h-0 overflow-auto" value="query">
           <QueryPane fallback={sql} root={root} section={section} station={station} />
+          <OrderStrip current={station} stations={stations} />
         </TabsPanel>
         <TabsPanel className="min-h-0 overflow-auto" value="ran">
           <div className="flex flex-col gap-2">

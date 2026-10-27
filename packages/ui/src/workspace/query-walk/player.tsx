@@ -341,6 +341,7 @@ export function WalkPlayer({
                 sql={walk.text}
                 state={state}
                 station={station}
+                stations={walk.stations}
               />
             </div>
           ) : run && boundView ? (
