@@ -82,6 +82,7 @@ workspace that does not define the script is skipped rather than failing the run
 | `start`           | runs the built app: `dipper serve` on :4600, serving the built UI and the API      |
 | `typecheck`       | `tsc --noEmit` across the TypeScript workspaces; `go build ./...` for the server  |
 | `lint`            | one ESLint run over apps/web, apps/site and packages/ui, then `go vet`            |
+| `test`            | `bun test` over the packages, then `go test ./...` for the server                  |
 | `smoke`           | end-to-end smoke against a local Postgres; drives the built binary, so build first |
 | `dipper -- <args>` | runs the `dipper` binary from the server workspace (needs a build)                 |
 | `clean`           | removes node_modules and all build output                                         |
@@ -128,9 +129,10 @@ run; the server is linted by `go vet` instead.
 
 ## What a change has to clear
 
-**There is no test suite - the repo deliberately carries none.** The gate is:
+**Logic that can be pure is tested.** Go packages carry `_test.go` files (`go test ./...`) and
+TypeScript logic carries `bun test` files named `*.test.ts`; both run in CI. The gate is:
 
-1. for the server: `gofmt`, `go vet`, `go build`, a CLI smoke on Linux/macOS/Windows, and a
+1. for the server: `gofmt`, `go vet`, `go test`, `go build`, a CLI smoke on Linux/macOS/Windows, and a
    cross-compile of all five release targets (`.github/workflows/server.yml`). That last job
    exists to fail the moment a dependency stops being pure Go, because `CGO_ENABLED=0` is what
    lets one machine build every platform.
@@ -142,7 +144,7 @@ run; the server is linted by `go vet` instead.
 Run the first three locally before opening a PR:
 
 ```sh
-bun run typecheck && bun run lint && bun run build
+bun run typecheck && bun run lint && bun run build && bun run test
 ```
 
 `lint` and `typecheck` already reach the Go module (`go vet ./...` and `go build ./...`), but

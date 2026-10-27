@@ -26,4 +26,5 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run lint
       - run: bun run --filter @dipper/web typecheck
+      - run: bun test packages
       - run: bun run --filter @dipper/web build

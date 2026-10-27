@@ -113,6 +113,36 @@ The visualization is based on your actual SQL and database. Query Walk uses read
 
 ---
 
+### Table Editor
+
+**Browse and edit a table without writing SQL, then see exactly what will run.**
+
+Double-click a table in the schema tree. Rows load a page at a time, sorted and filtered by the
+database. Double-click a cell to edit it, add a row, or mark one for deletion. Nothing is written
+yet: **Review and apply** lists every change as the SQL it will run, checks it against the
+database with a dry run, and then applies all of it in one transaction, or none of it.
+
+- Each edit carries the values you last saw, so a row changed by someone else is refused instead of overwritten
+- NULL and DEFAULT are real choices, not typed words
+- Generated columns are locked; tables without a primary key, and views, open read-only
+- The **Structure** tab shows sizes, vacuum state, columns, indexes with scan counts, constraints and triggers
+- The **DDL** tab shows the statements that would recreate the table
+
+---
+
+### Query plans
+
+Right-click a statement and choose **Explain plan**.
+
+The plan is drawn as a tree, each step weighted by its cost, with the planner's row estimates next
+to the rows it really produced. Switch on **Analyze** to run the query for real timings; it always
+runs inside a transaction that is rolled back, so an `UPDATE` leaves nothing behind.
+
+Dipper points out what is worth a look: stale statistics, large sequential scans, filters that
+throw away most of what they read, and sorts that spilled to disk.
+
+---
+
 ### SQL notebooks
 
 Turn any `.sql` file into a notebook.

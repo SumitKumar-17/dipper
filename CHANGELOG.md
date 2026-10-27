@@ -6,8 +6,44 @@ and versions follow [semantic versioning](https://semver.org/).
 The section matching a release's version becomes that release's notes on GitHub - see
 [CONTRIBUTING.md](CONTRIBUTING.md#cutting-a-release).
 
+[Unreleased]: https://github.com/SumitKumar-17/dipper/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/SumitKumar-17/dipper/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/SumitKumar-17/dipper/releases/tag/v0.1.0
+
+## [Unreleased]
+
+### Added
+
+- **Table Editor** - Double-click a table in the schema tree, or use its Open table button, to
+  browse and edit it. Rows load a page at a time with server-side sorting and filtering. Edit a
+  cell, add a row or delete one, and nothing is written until you review the exact SQL it will run.
+  Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
+  or none. Edits carry the values you last saw, so a row someone else changed is refused rather
+  than overwritten. Tables without a primary key, and views, open read-only.
+- **Table structure and DDL** - The same dialog shows a table's sizes, vacuum and analyze state,
+  columns (identity, generated, collation, comments), indexes (with scan counts, so unused ones
+  stand out), every constraint, triggers, and the `CREATE` statements that would recreate it.
+  Works for PostgreSQL and MySQL.
+- **Query plans** - Right-click a statement and choose Explain plan. The plan is drawn as a tree
+  weighted by cost, with row estimates against actual rows. Switch on Analyze to run the query for
+  real timings; it always runs inside a transaction that is rolled back. Dipper flags stale
+  statistics, large sequential scans, filters that discard most rows, and sorts that spilled to
+  disk.
+- `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
+  `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
+- Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.
+
+### Security
+
+- The API now refuses requests whose `Host` or `Origin` header is not the app's own, which closes
+  DNS rebinding and cross-site requests from other tabs in your browser.
+- Connection URL parameters other than `sslmode` and `application_name` are no longer stored, so a
+  `?password=` in a pasted URL cannot appear in the connection list.
+
+### Fixed
+
+- A `NaN` or infinite value in a result no longer fails the whole batch of rows around it.
+- Trimming history no longer skips entries after a delete.
 
 ## [0.2.0] - 2026-09-27
 
