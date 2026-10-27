@@ -35,6 +35,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Health and index advice** - Command palette, Health and index advice. Finds unused, duplicate
   and invalid indexes, foreign keys with no supporting index, and tables with many dead rows, each
   with the statement that would fix it. It never runs them for you. Postgres.
+- **Charts** - A result with a number column can be shown as a bar or line chart: pick which
+  column gives the height and which gives the labels. Bars always start at zero.
 - **Results** - Find in the loaded rows, click a column header to sort (numbers sort as numbers,
   NULL stays last), and select a cell to read it in full, with JSON indented and a Copy button.
 - **Diagram export** - Relationship View has an Export menu that writes the whole schema as Mermaid

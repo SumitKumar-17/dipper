@@ -95,7 +95,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Snippets and tagged saved queries (M)
 - [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)
 - [ ] Pinned results and cell-level diff between runs (M)
-- [ ] Charts from result columns (M)
+- [x] Charts from result columns: bars and lines, any number column for the height, in the results explorer (M)
 - [ ] Transactions toolbar and safe mode for UPDATE or DELETE without WHERE (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
 - [x] Column profiling in the Structure tab: row count, NULL rate, distinct count, range and most common values (M)

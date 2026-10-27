@@ -5,6 +5,8 @@ import { plural } from "../../lib/format";
 import { Button } from "../../ui/button";
 import { type CellRef, type GridSort, nextSort, ResultsGrid, viewRows } from "../results-grid";
 import { CellInspector } from "./cell-inspector";
+import { numericColumns } from "./chart-model";
+import { ResultChart } from "./result-chart";
 
 /**
  * A row result you can look through: find in it, sort it by a column, and read a cell in full. All
@@ -20,6 +22,9 @@ export function ResultExplorer({
   const [query, setQuery] = React.useState("");
   const [sort, setSort] = React.useState<GridSort | null>(null);
   const [cell, setCell] = React.useState<CellRef | null>(null);
+  const [mode, setMode] = React.useState<"table" | "chart">("table");
+  // A chart needs a number to put on its height axis.
+  const plottable = React.useMemo(() => numericColumns(result.columns, result.rows).length > 0, [result.columns, result.rows]);
 
   const rows = React.useMemo(() => viewRows(result.rows, query, sort), [result.rows, query, sort]);
   const shown = React.useMemo(() => ({ ...result, rows }), [result, rows]);
@@ -42,6 +47,15 @@ export function ResultExplorer({
           placeholder="Find in these rows"
           value={query}
         />
+        {plottable && (
+          <span className="flex gap-1">
+            {(["table", "chart"] as const).map((m) => (
+              <Button aria-pressed={mode === m} key={m} onClick={() => setMode(m)} size="xs" variant={mode === m ? "secondary" : "ghost"}>
+                {m === "table" ? "Table" : "Chart"}
+              </Button>
+            ))}
+          </span>
+        )}
         {narrowed && (
           <>
             <span className="text-muted-foreground text-xs tabular-nums">
@@ -54,7 +68,9 @@ export function ResultExplorer({
         )}
       </div>
       <div className="min-h-0 flex-1">
-        {rows.length === 0 && narrowed ? (
+        {mode === "chart" && plottable ? (
+          <ResultChart result={shown} />
+        ) : rows.length === 0 && narrowed ? (
           <p className="p-4 text-muted-foreground text-sm">No row contains &ldquo;{query.trim()}&rdquo;.</p>
         ) : (
           <ResultsGrid
