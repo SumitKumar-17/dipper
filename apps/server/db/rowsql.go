@@ -19,6 +19,11 @@ type flavor struct {
 	// escapeText prepares text for a single-quoted literal.
 	escapeText  func(string) string
 	emptyInsert string
+	// likeEscape names the escape character of a LIKE pattern where the dialect has no default.
+	likeEscape string
+	// noDefaultKeyword is set where DEFAULT is not a value: SQLite has no such keyword, so an
+	// insert leaves the column out instead and an update to it cannot be written.
+	noDefaultKeyword bool
 }
 
 var postgresFlavor = flavor{
@@ -40,9 +45,24 @@ var mysqlFlavor = flavor{
 	emptyInsert: "() values ()",
 }
 
+var sqliteFlavor = flavor{
+	quote:       quoteIdent,
+	placeholder: func(int) string { return "?" },
+	// In SQLite, IS compares like = but treats two NULLs as equal.
+	sameAs:      func(c, p string) string { return c + " is " + p },
+	escapeText:  func(s string) string { return strings.ReplaceAll(s, "'", "''") },
+	emptyInsert: "default values",
+	// Unlike Postgres and MySQL, SQLite's LIKE has no escape character until one is named.
+	likeEscape:       ` escape '\'`,
+	noDefaultKeyword: true,
+}
+
 func flavorFor(dialect protocol.Dialect) flavor {
-	if dialect == protocol.DialectMySQL {
+	switch dialect {
+	case protocol.DialectMySQL:
 		return mysqlFlavor
+	case protocol.DialectSQLite:
+		return sqliteFlavor
 	}
 	return postgresFlavor
 }
@@ -163,9 +183,9 @@ func (f flavor) filterClause(filter protocol.RowFilter) (string, error) {
 	case "not_null":
 		return column + " is not null", nil
 	case "contains":
-		return column + " like " + f.literal("%"+escapeLike(filter.Value)+"%"), nil
+		return column + " like " + f.literal("%"+escapeLike(filter.Value)+"%") + f.likeEscape, nil
 	case "starts_with":
-		return column + " like " + f.literal(escapeLike(filter.Value)+"%"), nil
+		return column + " like " + f.literal(escapeLike(filter.Value)+"%") + f.likeEscape, nil
 	}
 	if op, ok := ops[filter.Op]; ok {
 		return column + " " + op + " " + f.literal(filter.Value), nil
@@ -297,7 +317,7 @@ func (a *args) add(v any) (placeholder, preview string) {
 
 func buildInsert(f flavor, name string, change protocol.RowChange) RowStatement {
 	a := &args{f: f}
-	keys := sortedKeys(change.Set)
+	keys := insertedColumns(f, change.Set)
 	if len(keys) == 0 {
 		sql := "insert into " + name + " " + f.emptyInsert
 		return RowStatement{SQL: sql, Preview: sql, Op: change.Op}
@@ -312,6 +332,22 @@ func buildInsert(f flavor, name string, change protocol.RowChange) RowStatement 
 		SQL: head + strings.Join(marks, ", ") + ")", Args: a.values, Op: change.Op,
 		Preview: head + strings.Join(shown, ", ") + ")",
 	}
+}
+
+// insertedColumns is the columns an insert names. Where DEFAULT is no keyword, a column the user
+// left on its default is simply not named, which has the same effect.
+func insertedColumns(f flavor, set map[string]any) []string {
+	keys := sortedKeys(set)
+	if !f.noDefaultKeyword {
+		return keys
+	}
+	kept := keys[:0]
+	for _, k := range keys {
+		if !isDefault(set[k]) {
+			kept = append(kept, k)
+		}
+	}
+	return kept
 }
 
 func buildKeyed(f flavor, target RowTarget, name string, change protocol.RowChange) (RowStatement, error) {
@@ -333,6 +369,9 @@ func buildKeyed(f flavor, target RowTarget, name string, change protocol.RowChan
 	if change.Op == protocol.RowUpdate {
 		sets, setShown := make([]string, 0, len(change.Set)), make([]string, 0, len(change.Set))
 		for _, k := range sortedKeys(change.Set) {
+			if f.noDefaultKeyword && isDefault(change.Set[k]) {
+				return RowStatement{}, fmt.Errorf("this database cannot reset %q to its default in an update; set a value instead", k)
+			}
 			mark, lit := a.add(change.Set[k])
 			sets = append(sets, f.quote(k)+" = "+mark)
 			setShown = append(setShown, f.quote(k)+" = "+lit)

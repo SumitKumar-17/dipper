@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"dipper/protocol"
 )
@@ -11,6 +12,20 @@ func (d *mysqlDriver) ApplyRowChanges(ctx context.Context, database string, stat
 	if err != nil {
 		return protocol.ApplyResult{}, err
 	}
+	return applyInTransaction(ctx, handle, statements, dryRun)
+}
+
+func (d *sqliteDriver) ApplyRowChanges(ctx context.Context, _ string, statements []RowStatement, dryRun bool) (protocol.ApplyResult, error) {
+	handle, err := d.require(ctx)
+	if err != nil {
+		return protocol.ApplyResult{}, err
+	}
+	return applyInTransaction(ctx, handle, statements, dryRun)
+}
+
+// applyInTransaction is the database/sql half of the Table Editor's writes, shared by the
+// dialects that go through it: one transaction, kept only if every statement matched its row.
+func applyInTransaction(ctx context.Context, handle *sql.DB, statements []RowStatement, dryRun bool) (protocol.ApplyResult, error) {
 	ctx, cancel := context.WithTimeout(ctx, applyTimeout)
 	defer cancel()
 

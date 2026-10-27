@@ -20,8 +20,10 @@ import { PasswordInput } from "../../ui/password-input";
 import { Switch } from "../../ui/switch";
 import { useWorkspace } from "../../workspace/context";
 import type { ConnectionInput, ConnectionTest } from "../../workspace/types";
+import { isFileDatabase } from "../connection-address";
 import { AddressFields } from "./address-fields";
 import { DialectPicker } from "./dialect-picker";
+import { FileField } from "./file-field";
 import { TestError, TestOk, type Phase } from "./form-status";
 import { useConnectionFields, type Mode } from "./use-connection-fields";
 
@@ -70,6 +72,7 @@ export function ConnectionForm({
 }: ConnectionFormProps): React.ReactElement {
   const { addConnection, updateConnection, testConnection } = useWorkspace();
   const fields = useConnectionFields(initial, defaultDialect, onDialectChange, defaultMode);
+  const file = isFileDatabase(fields);
 
   const [phase, setPhase] = React.useState<Phase>({ kind: "idle" });
   // The id of the row this form has already created, so a second attempt edits it instead of
@@ -123,14 +126,14 @@ export function ConnectionForm({
         />
       </Field>
 
-      <AddressFields fields={fields} />
+      {file ? <FileField fields={fields} /> : <AddressFields fields={fields} />}
 
       {/* One line, and on the same grid as the Address header above it: label left, control right.
           Only in fields mode - a URL carries its own sslmode, and a switch beside it would be a
           second answer to a question already answered. It follows the host until touched, because
           hosted Postgres requires TLS and a server on this machine does not offer it, and the
           alternative is a first run that fails on a setting nobody knew to look for. */}
-      {fields.mode === "fields" && (
+      {!file && fields.mode === "fields" && (
         <Field>
           <div className="flex items-center justify-between gap-2">
             <FieldLabel htmlFor="connection-ssl">
@@ -144,18 +147,20 @@ export function ConnectionForm({
         </Field>
       )}
 
-      <Field>
-        <FieldLabel>Password</FieldLabel>
-        <PasswordInput
-          autoComplete="off"
-          onValueChange={fields.setPassword}
-          placeholder={connectionId === undefined ? "" : "Unchanged"}
-          value={fields.password}
-        />
-        <FieldDescription>
-          Stored in the server&apos;s config file, readable only by you.
-        </FieldDescription>
-      </Field>
+      {!file && (
+        <Field>
+          <FieldLabel>Password</FieldLabel>
+          <PasswordInput
+            autoComplete="off"
+            onValueChange={fields.setPassword}
+            placeholder={connectionId === undefined ? "" : "Unchanged"}
+            value={fields.password}
+          />
+          <FieldDescription>
+            Stored in the server&apos;s config file, readable only by you.
+          </FieldDescription>
+        </Field>
+      )}
 
       <div className="flex min-h-8 items-center gap-2">
         <Button

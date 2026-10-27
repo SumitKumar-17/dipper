@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strings"
 
 	"dipper/db"
 	"dipper/httpx"
@@ -56,7 +57,11 @@ func connectionFromBody(body connectionBody, existing *protocol.ConnectionConfig
 	if merged.Dialect == "" {
 		merged.Dialect = protocol.DialectPostgres
 	}
-	if merged.Dialect != protocol.DialectPostgres && merged.Dialect != protocol.DialectMySQL {
+	switch merged.Dialect {
+	case protocol.DialectPostgres, protocol.DialectMySQL:
+	case protocol.DialectSQLite:
+		return finishFileConnection(body, merged)
+	default:
 		return merged, httpx.BadRequest("unsupported dialect: " + string(merged.Dialect))
 	}
 
@@ -96,16 +101,36 @@ func connectionFromBody(body connectionBody, existing *protocol.ConnectionConfig
 		// it, so the host is the answer. An explicit sslmode in a pasted URL outranks this.
 		merged.SSL = db.RemoteDefaultSSL(merged.Host)
 	}
+	err := applyFlags(body, &merged)
+	return merged, err
+}
+
+// finishFileConnection completes a SQLite connection, which is just a file: there is no host,
+// port, login or TLS to default, and any left over from a previous dialect would only mislead.
+func finishFileConnection(body connectionBody, merged protocol.ConnectionConfig) (protocol.ConnectionConfig, error) {
+	if body.Database != nil {
+		merged.Database = *body.Database
+	}
+	if strings.TrimSpace(merged.Database) == "" {
+		return merged, httpx.BadRequest("a SQLite connection needs the path of its database file")
+	}
+	merged.Host, merged.Port, merged.User, merged.Password, merged.SSL = "", 0, "", "", false
+	err := applyFlags(body, &merged)
+	return merged, err
+}
+
+// applyFlags sets the two fields every dialect shares, the colour tag and the read-only guard.
+func applyFlags(body connectionBody, merged *protocol.ConnectionConfig) error {
 	if body.Color != nil {
 		if !protocol.ConnectionColors[*body.Color] {
-			return merged, httpx.BadRequest("color must be green, blue, amber, red or empty")
+			return httpx.BadRequest("color must be green, blue, amber, red or empty")
 		}
 		merged.Color = *body.Color
 	}
 	if body.ReadOnly != nil {
 		merged.ReadOnly = *body.ReadOnly
 	}
-	return merged, nil
+	return nil
 }
 
 func hasSSLMode(options map[string]any) bool {

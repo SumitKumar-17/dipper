@@ -14,6 +14,7 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
 import { CONNECT_MS, CONNECT_STAGES } from "../onboarding/connecting-screen";
+import { connectionHostLabel, fileName, isFileDatabase } from "../onboarding/connection-address";
 import { requestConnectSetup } from "../onboarding/use-onboarding";
 import { useConnecting } from "./connecting-overlay";
 import { ConnectionTag } from "./connection-tag";
@@ -35,7 +36,10 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
   // Both picks invalidate every pane behind this menu, so both go behind the handover screen.
   const { cover } = useConnecting();
 
-  const currentDatabase = database ?? connection?.database ?? null;
+  // The server lists a SQLite file by its name, so the path is shortened to match the entry.
+  const configuredDatabase =
+    connection && isFileDatabase(connection) ? fileName(connection.database) : connection?.database;
+  const currentDatabase = database ?? configuredDatabase ?? null;
   const pending = connections.status === "loading" || connections.status === "idle";
 
   return (
@@ -101,7 +105,7 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
                 >
                   <StatusDot status={dotStatusOf(item.status)} />
                   <span className="truncate">{item.name}</span>
-                  <span className="ml-auto truncate text-muted-foreground">{item.host}</span>
+                  <span className="ml-auto truncate text-muted-foreground">{connectionHostLabel(item)}</span>
                 </DropdownMenuItem>
               ))
             ))}

@@ -51,6 +51,10 @@ func Classify(config protocol.ConnectionConfig, err error) ConnectFailure {
 	if err == nil {
 		return ConnectFailure{}
 	}
+	if config.Dialect == protocol.DialectSQLite {
+		// No network, login or TLS to tell apart: the driver's message names the file problem.
+		return ConnectFailure{Code: protocol.ConnectFailed, Message: sentence(err.Error())}
+	}
 	address := fmt.Sprintf("%s:%d", config.Host, config.Port)
 
 	if failure, ok := classifyNetwork(err, address); ok {

@@ -43,3 +43,29 @@ func TestAnEmptyColourClearsTheTag(t *testing.T) {
 		t.Errorf("colour = %q, want cleared", config.Color)
 	}
 }
+
+func TestASqliteConnectionNeedsOnlyAFile(t *testing.T) {
+	config, err := connectionFromBody(connectionBody{Name: str("local"), Dialect: str("sqlite"), Database: str("/data/app.db")}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if config.Dialect != protocol.DialectSQLite || config.Database != "/data/app.db" {
+		t.Errorf("config: %+v", config)
+	}
+	if config.Host != "" || config.Port != 0 || config.SSL {
+		t.Errorf("no host, port or TLS belong on a file: %+v", config)
+	}
+	if _, err := connectionFromBody(connectionBody{Name: str("x"), Dialect: str("sqlite")}, nil); err == nil {
+		t.Error("a SQLite connection without a path must be refused")
+	}
+}
+
+func TestASqliteURLFillsTheConnection(t *testing.T) {
+	config, err := connectionFromBody(connectionBody{Name: str("local"), URL: str("sqlite:///data/app.db?mode=ro")}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if config.Dialect != protocol.DialectSQLite || config.Database != "/data/app.db" || !config.ReadOnly {
+		t.Errorf("config: %+v", config)
+	}
+}
