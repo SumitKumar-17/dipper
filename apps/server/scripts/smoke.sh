@@ -140,5 +140,28 @@ expect "history has the runs" "$(curl -s "$B/history?limit=2" | json 'j.length')
 expect "history records the sql that ran" "$(curl -s "$B/history?limit=2" | json 'String(j.every(r => typeof r.sql === "string" && r.sql.length > 0))')" "true"
 expect_has "status sees the server" "running" "$($CLI status)"
 
+echo "== sqlite"
+if command -v sqlite3 >/dev/null 2>&1; then
+  LITE_DB="$DIPPER_HOME/smoke.db"
+  sqlite3 "$LITE_DB" "create table people (id integer primary key, name text not null, age integer); create table pets (id integer primary key, owner_id integer references people(id)); create index pets_owner on pets (owner_id); insert into people (name, age) values ('ada', 36), ('bob', null);"
+  LITE=$(curl -s -X POST -H "$J" -d "{\"name\":\"lite\",\"url\":\"sqlite://$LITE_DB\"}" "$B/connections")
+  LID=$(echo "$LITE" | json 'j.id')
+  expect "a sqlite url becomes a file connection" "$(echo "$LITE" | json 'j.dialect + ":" + j.database')" "sqlite:$LITE_DB"
+  expect_has "sqlite connection tests with a version" "SQLite 3." "$(curl -s -X POST "$B/connections/$LID/test" | json 'j.serverVersion')"
+  expect "sqlite lists its one file as the database" "$(curl -s "$B/connections/$LID/databases" | json 'j.join()')" "smoke.db"
+  LITE_SCHEMA=$(curl -s "$B/connections/$LID/schema")
+  expect "sqlite schema names its tables" "$(echo "$LITE_SCHEMA" | json 'j.schemas[0].tables.map(t=>t.name).join()')" "people,pets"
+  expect "sqlite schema reports the foreign key" "$(echo "$LITE_SCHEMA" | json 'j.schemas[0].tables.find(t=>t.name==="pets").foreignKeys[0].refTable')" "people"
+  expect "sqlite table detail lists the index" "$(curl -s "$B/connections/$LID/tables/main/pets" | json 'j.indexes.map(i=>i.name).join()')" "pets_owner"
+  expect "sqlite explain returns an index lookup" "$(curl -s -XPOST -H "$J" -d '{"sql":"select * from pets where owner_id = 1"}' "$B/connections/$LID/explain" | json 'j.root.nodeType')" "Index Lookup"
+  expect "sqlite runs a multi-statement script" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$LID\",\"sql\":\"insert into pets (owner_id) values (1); select count(*) from pets\",\"record\":false}" "$B/query/sync" | json 'j.results[1].rows[0][0]')" "1"
+  expect "sqlite readOnly:true refuses a write" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$LID\",\"sql\":\"delete from people\",\"readOnly\":true,\"record\":false}" "$B/query/sync" | json 'j.status')" "error"
+  expect "sqlite row page returns rows" "$(curl -s -X POST -H "$J" -d '{"limit":10}' "$B/connections/$LID/tables/main/people/rows/page" | json 'j.results[0].rowCount')" "2"
+  expect "sqlite has no activity monitor, so it is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/connections/$LID/activity")"
+  expect "a missing sqlite file refuses to connect" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d "{\"dialect\":\"sqlite\",\"database\":\"$DIPPER_HOME/typo.db\"}" "$B/connections/test")"
+else
+  echo "  skip sqlite section: the sqlite3 CLI is not installed"
+fi
+
 echo "== $FAILED failure(s)"
 [ "$FAILED" -eq 0 ]
