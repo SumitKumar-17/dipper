@@ -57,8 +57,8 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] Index and health advice: unused, duplicate and missing indexes, dead tuples (M)
 - [ ] Schema diff with migration SQL (M/L)
 - [ ] Parameterised queries (S)
-- [ ] Row browser with keyset pagination (S/M)
-- [ ] Data editing with a reviewed, transactional change set (M/L)
+- [x] Row browser endpoint (offset paging; keyset pagination still to do) (S/M)
+- [x] Data editing with a reviewed, transactional change set (M/L)
 - [ ] Richer connection options: CA and client certificates, search_path, unix sockets (S/M)
 - [ ] Test an unsaved connection (S)
 - [ ] SQLite support, pure Go so cross-compiling keeps working (M)
@@ -73,9 +73,11 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 Open any table as a spreadsheet and change it, data and structure, without writing SQL, with every
 change reviewed as plain SQL before it runs.
 
-- [ ] Table view: paged grid with server-side sort and filter, driven by keyset pagination (M)
-- [ ] Row editing: edit cells, add and delete rows; primary key required, typed inputs per column
-      type, NULL and DEFAULT as first-class values (M/L)
+- [x] Server: paged rows with sort and filter (`rows/page`); offset paging for now, keyset later (M)
+- [ ] Table view UI: paged grid over `rows/page` with sort and filter controls (M)
+- [x] Server: transactional `rows/apply` with optimistic checks, dry run and rollback (M/L)
+- [ ] Row editing UI: edit cells, add and delete rows; typed inputs per column type, NULL and
+      DEFAULT as first-class values (M/L)
 - [ ] Pending changes panel: every edit listed as the exact INSERT, UPDATE or DELETE it will run,
       with an optimistic check on the old values; apply all in one transaction or discard (M)
 - [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage

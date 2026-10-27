@@ -1,9 +1,13 @@
 import type {
   ConnectionConfig,
+  ApplyRequest,
+  ApplyResult,
   ConnectionSummary,
   DatabaseSchema,
   ExplainRequest,
   Plan,
+  RowPageRequest,
+  RunRecord,
   TableDetail,
 } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
@@ -49,7 +53,26 @@ export type ConnectionsApi = {
   ): Promise<TableDetail>;
   /** The query plan for one statement; with `analyze` it runs, then rolls back. */
   explain(id: string, request: ExplainRequest, opts?: CallOptions): Promise<Plan>;
+  /** One server-sorted, server-filtered page of a table, as an ordinary run record. */
+  rowPage(
+    id: string,
+    schema: string,
+    table: string,
+    request: RowPageRequest,
+    opts?: CallOptions,
+  ): Promise<RunRecord>;
+  /** Commits a reviewed change set in one transaction, or reports why none of it was applied. */
+  applyRows(
+    id: string,
+    schema: string,
+    table: string,
+    request: ApplyRequest,
+    opts?: CallOptions,
+  ): Promise<ApplyResult>;
 };
+
+const tablePath = (schema: string, table: string): string =>
+  `/tables/${encodeURIComponent(schema)}/${encodeURIComponent(table)}`;
 
 export function connectionsApi(http: Transport): ConnectionsApi {
   const at = (id: string, suffix = ""): string =>
@@ -90,11 +113,25 @@ export function connectionsApi(http: Transport): ConnectionsApi {
 
     tableDetail: (id, schema, table, opts) =>
       http.json<TableDetail>(
-        at(id, `/tables/${encodeURIComponent(schema)}/${encodeURIComponent(table)}`),
+        at(id, tablePath(schema, table)),
         { query: { database: opts?.database }, signal: opts?.signal },
       ),
 
     explain: (id, request, opts) =>
       http.json<Plan>(at(id, "/explain"), { method: "POST", body: request, signal: opts?.signal }),
+
+    rowPage: (id, schema, table, request, opts) =>
+      http.json<RunRecord>(at(id, `${tablePath(schema, table)}/rows/page`), {
+        method: "POST",
+        body: request,
+        signal: opts?.signal,
+      }),
+
+    applyRows: (id, schema, table, request, opts) =>
+      http.json<ApplyResult>(at(id, `${tablePath(schema, table)}/rows/apply`), {
+        method: "POST",
+        body: request,
+        signal: opts?.signal,
+      }),
   };
 }

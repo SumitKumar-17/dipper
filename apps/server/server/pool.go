@@ -292,6 +292,37 @@ func (p *Pool) Explain(ctx context.Context, idOrName string, request protocol.Ex
 	return plan, err
 }
 
+// ApplyRows builds and runs a reviewed change set against one table. The table's own columns and
+// primary key decide what may be addressed, so a request cannot name anything the table lacks.
+func (p *Pool) ApplyRows(ctx context.Context, idOrName, schema, table string, request protocol.ApplyRequest) (protocol.ApplyResult, error) {
+	detail, err := p.TableDetail(ctx, idOrName, request.Database, schema, table)
+	if err != nil {
+		return protocol.ApplyResult{}, err
+	}
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.ApplyResult{}, err
+	}
+	if detail.Kind != protocol.KindTable {
+		return protocol.ApplyResult{}, httpx.BadRequest(table + " is a " + string(detail.Kind) + " and cannot be edited")
+	}
+	statements, err := db.BuildRowStatements(db.RowTarget{
+		Dialect: config.Dialect, Schema: schema, Table: table, Columns: detail.Columns,
+	}, request.Changes)
+	if err != nil {
+		return protocol.ApplyResult{}, httpx.BadRequest(err.Error())
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.ApplyResult{}, err
+	}
+	editor, ok := driver.(db.RowEditor)
+	if !ok {
+		return protocol.ApplyResult{}, httpx.BadRequest(string(config.Dialect) + " connections cannot edit rows yet")
+	}
+	return editor.ApplyRowChanges(ctx, request.Database, statements, request.DryRun)
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

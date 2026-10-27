@@ -61,6 +61,12 @@ orders_count() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":
 ORDERS_BEFORE="$(orders_count)"
 curl -s -o /dev/null -XPOST "$B/connections/$CID/explain" -H 'content-type: application/json' -d '{"sql":"delete from orders","analyze":true}'
 expect "explain analyze of a DELETE rolls back" "$ORDERS_BEFORE" "$(orders_count)"
+ROWS="$B/connections/$CID/tables/public/orders/rows"
+expect "row page returns rows" "$(curl -s -X POST -H "$J" -d '{"limit":2}' "$ROWS/page" | json 'j.results[0].rowCount')" "2"
+BEFORE="$(curl -s -X POST -H "$J" -d '{"limit":1000}' "$ROWS/page" | json 'j.results[0].rowCount')"
+expect "dry-run insert keeps nothing" "$BEFORE" "$(curl -s -X POST -H "$J" -d '{"dryRun":true,"changes":[{"op":"insert","set":{"status":"dry run"}}]}' "$ROWS/apply" >/dev/null; curl -s -X POST -H "$J" -d '{"limit":1000}' "$ROWS/page" | json 'j.results[0].rowCount')"
+expect "an update with a stale expectation is refused" "false" "$(curl -s -X POST -H "$J" -d '{"changes":[{"op":"update","key":{"id":1},"set":{"status":"X"},"expect":{"status":"definitely not the status"}}]}' "$ROWS/apply" | json 'String(j.applied)')"
+expect "editing an unknown column is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d '{"changes":[{"op":"update","key":{"id":1},"set":{"nope":1}}]}' "$ROWS/apply")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

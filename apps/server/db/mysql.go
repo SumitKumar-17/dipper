@@ -52,6 +52,9 @@ func (d *mysqlDriver) dsn(database string) string {
 	cfg.MultiStatements = false
 	// Timestamps arrive as time.Time and leave as ISO strings, matching mysql2's dateStrings:false.
 	cfg.ParseTime = true
+	// Report rows matched rather than rows changed, as Postgres does: the Table Editor treats a
+	// match count other than one as a stale edit, and an unchanged value must not look like one.
+	cfg.ClientFoundRows = true
 	cfg.TLSConfig = mysqlTLSFor(d.config)
 	cfg.Timeout = connectTimeout
 	return cfg.FormatDSN()
