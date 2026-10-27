@@ -1,0 +1,50 @@
+package server
+
+import (
+	"errors"
+	"net/http"
+	"strconv"
+
+	"dipper/db"
+	"dipper/httpx"
+)
+
+func (s *Server) registerActivity() {
+	s.handle("GET /api/connections/{id}/activity", func(w http.ResponseWriter, r *http.Request) error {
+		monitor, err := s.pool.monitor(r.Context(), r.PathValue("id"))
+		if err != nil {
+			return err
+		}
+		snapshot, err := monitor.Activity(r.Context())
+		if err != nil {
+			return err
+		}
+		return httpx.JSON(w, snapshot)
+	})
+
+	s.handle("POST /api/connections/{id}/activity/{pid}/{action}", func(w http.ResponseWriter, r *http.Request) error {
+		pid, err := strconv.ParseInt(r.PathValue("pid"), 10, 64)
+		if err != nil || pid <= 0 {
+			return httpx.BadRequest("pid must be a positive number")
+		}
+		monitor, err := s.pool.monitor(r.Context(), r.PathValue("id"))
+		if err != nil {
+			return err
+		}
+		switch r.PathValue("action") {
+		case "cancel":
+			err = monitor.CancelSession(r.Context(), pid)
+		case "terminate":
+			err = monitor.TerminateSession(r.Context(), pid)
+		default:
+			return httpx.BadRequest("action must be cancel or terminate")
+		}
+		if errors.Is(err, db.ErrSessionGone) {
+			return httpx.NotFound(err.Error())
+		}
+		if err != nil {
+			return err
+		}
+		return httpx.JSON(w, map[string]any{"ok": true})
+	})
+}

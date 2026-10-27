@@ -1,7 +1,8 @@
 import type {
-  ConnectionConfig,
+  ActivitySnapshot,
   ApplyRequest,
   ApplyResult,
+  ConnectionConfig,
   ConnectionSummary,
   DatabaseSchema,
   ExplainRequest,
@@ -63,6 +64,10 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** Every session on the database right now, with who is blocking whom. */
+  activity(id: string, opts?: CallOptions): Promise<ActivitySnapshot>;
+  /** Stops a session's running query (`cancel`) or closes its connection (`terminate`). */
+  signalSession(id: string, pid: number, action: "cancel" | "terminate", opts?: CallOptions): Promise<boolean>;
   /** Commits a reviewed change set in one transaction, or reports why none of it was applied. */
   applyRows(
     id: string,
@@ -135,6 +140,11 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         body: request,
         signal: opts?.signal,
       }),
+
+    activity: (id, opts) => http.json<ActivitySnapshot>(at(id, "/activity"), { signal: opts?.signal }),
+
+    signalSession: async (id, pid, action, opts) =>
+      (await http.json<{ ok: boolean }>(at(id, `/activity/${pid}/${action}`), { method: "POST", signal: opts?.signal })).ok,
 
     applyRows: (id, schema, table, request, opts) =>
       http.json<ApplyResult>(at(id, `${tablePath(schema, table)}/rows/apply`), {

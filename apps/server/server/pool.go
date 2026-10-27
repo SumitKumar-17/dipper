@@ -339,6 +339,23 @@ func (p *Pool) ApplyRows(ctx context.Context, idOrName, schema, table string, re
 	return editor.ApplyRowChanges(ctx, request.Database, statements, request.DryRun)
 }
 
+// monitor finds the driver of a connection and checks it can report on sessions.
+func (p *Pool) monitor(ctx context.Context, idOrName string) (db.ActivityMonitor, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return nil, err
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return nil, err
+	}
+	monitor, ok := driver.(db.ActivityMonitor)
+	if !ok {
+		return nil, httpx.BadRequest(string(config.Dialect) + " connections cannot report activity yet")
+	}
+	return monitor, nil
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

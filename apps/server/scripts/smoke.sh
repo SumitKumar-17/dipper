@@ -75,6 +75,9 @@ expect "unknown export format is a 400" "400" "$(curl -s -o /dev/null -w '%{http
 expect_has "an unsaved connection can be tested" "serverVersion" "$(curl -s -X POST -H "$J" -d "{\"url\":\"$PG_URL\"}" "$B/connections/test")"
 expect "testing a dead unsaved connection is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d '{"url":"postgres://nobody@127.0.0.1:1/none"}' "$B/connections/test")"
 expect "testing an unsaved connection stores nothing" "0" "$(curl -s "$B/connections" | json 'j.filter(c=>c.name==="unsaved").length')"
+expect "activity includes the asking session" "true" "$(curl -s "$B/connections/$CID/activity" | json 'String(j.sessions.some(s=>s.self))')"
+expect "terminating a session that does not exist is a 404" "404" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/connections/$CID/activity/2147483000/terminate")"
+expect "an unknown activity action is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/connections/$CID/activity/1/explode")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")
