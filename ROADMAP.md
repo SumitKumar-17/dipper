@@ -78,7 +78,7 @@ change reviewed as plain SQL before it runs.
 - [x] Table view UI: paged grid over `rows/page` with sort and filter controls (M)
 - [x] Server: transactional `rows/apply` with optimistic checks, dry run and rollback (M/L)
 - [x] Row editing UI: edit cells, add and delete rows, NULL and DEFAULT as first-class values (M/L)
-- [ ] Typed inputs per column type (date pickers, booleans, JSON editor) (M)
+- [x] Typed inputs: booleans toggle through true, false and NULL, JSON is validated as you type (date pickers still open) (M)
 - [x] Pending changes panel: every edit listed as the exact INSERT, UPDATE or DELETE it will run,
       dry-run checked first; apply all in one transaction or discard (M)
 - [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage

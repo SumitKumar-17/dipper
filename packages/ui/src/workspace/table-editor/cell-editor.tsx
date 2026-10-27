@@ -3,6 +3,7 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { cellText, coerceCell } from "./cell-text";
+import { inputKind, jsonProblem, nextBoolean } from "./input-kind";
 
 /** How a cell reads when it is not being edited. NULL is shown, not left blank. */
 export function CellValue({ value }: { value: Cell }): React.ReactElement {
@@ -18,24 +19,36 @@ export function CellValue({ value }: { value: Cell }): React.ReactElement {
 export function EditableCell({
   disabled,
   edited,
+  nullable = true,
   onCommit,
   original,
   startEditing = false,
+  type = "",
   value,
 }: {
   disabled: boolean;
   edited: boolean;
+  /** Whether the column accepts NULL, which decides whether a boolean toggle can reach it. */
+  nullable?: boolean;
   onCommit: (value: Cell) => void;
   original: Cell;
   /** Opens already in edit mode: set when the cell was just activated by a click on its placeholder. */
   startEditing?: boolean;
+  /** The column's type as the database reports it, which picks the control. */
+  type?: string;
   value: Cell;
 }): React.ReactElement {
+  const kind = inputKind(type);
   const [editing, setEditing] = React.useState(startEditing);
   const [draft, setDraft] = React.useState(startEditing ? cellText(value) : "");
 
   const start = (): void => {
     if (disabled) return;
+    // A boolean has three states and no text worth typing: toggling is the whole edit.
+    if (kind === "boolean") {
+      onCommit(nextBoolean(value, nullable));
+      return;
+    }
     setDraft(cellText(value));
     setEditing(true);
   };
@@ -43,6 +56,8 @@ export function EditableCell({
     setEditing(false);
     if (draft !== cellText(value) || value === null) onCommit(coerceCell(draft, original));
   };
+
+  const problem = editing && kind === "json" ? jsonProblem(draft) : null;
 
   if (!editing) {
     return (
@@ -63,12 +78,15 @@ export function EditableCell({
   return (
     <span className="flex items-center gap-1 px-1">
       <input
+        aria-invalid={problem !== null}
         autoFocus
-        className="h-7 w-full min-w-24 rounded-sm border border-ring bg-background px-1.5 text-sm outline-none"
+        className={`h-7 w-full min-w-24 rounded-sm border bg-background px-1.5 text-sm outline-none ${problem ? "border-destructive" : "border-ring"}`}
+        title={problem ?? undefined}
         onBlur={commit}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === "Enter") commit();
+          // Invalid JSON is not committed: the database would refuse it, so say so here instead.
+          if (event.key === "Enter" && !problem) commit();
           if (event.key === "Escape") setEditing(false);
         }}
         value={draft}

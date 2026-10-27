@@ -5,6 +5,7 @@ import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { EditableCell } from "./cell-editor";
 import { followTarget } from "./foreign-keys";
+import { inputKind } from "./input-kind";
 import { requestTableEditor } from "./table-editor-event";
 import { type PendingEdits, removeInsert, setCell, setInsertCell, toggleDelete } from "./edit-model";
 import type { Sort } from "./use-table-rows";
@@ -108,8 +109,10 @@ export function DataGrid({
                     <EditableCell
                       disabled={deleted || !writable(name)}
                       edited={changed?.has(name) ?? false}
+                      nullable={detailOf(name)?.nullable ?? true}
                       onCommit={(next) => onEdits(setCell(edits, rowIndex, name, next, original))}
                       original={original}
+                      type={detailOf(name)?.type}
                       value={value}
                     />
                   </td>
@@ -133,7 +136,8 @@ export function DataGrid({
                     edited={false}
                     onCommit={(next) => onEdits(setInsertCell(edits, index, name, next))}
                     original={null}
-                    startEditing={values.get(name) === ""}
+                    startEditing={values.get(name) === "" && inputKind(detailOf(name)?.type ?? "") !== "boolean"}
+                    type={detailOf(name)?.type}
                     value={values.get(name) ?? null}
                   />
                 ) : (
