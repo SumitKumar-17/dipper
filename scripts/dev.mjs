@@ -99,6 +99,8 @@ const env = {
 // line is also how the UI says it is up: polling :5173 could reach some other server on that port.
 const VITE_BANNER = /VITE v\d|➜\s+(Local|Network):/;
 const VITE_LISTENING = /➜\s+Local:/;
+// The escape character is the point: this strips terminal colour codes from Vite's output.
+// eslint-disable-next-line no-control-regex
 const ANSI = /\x1b\[[0-9;]*m/g;
 let uiListening;
 const uiUp = new Promise((resolve) => (uiListening = resolve));

@@ -33,7 +33,8 @@ Run everything from the repo root. There is one `bun.lock` and one `node_modules
 - `build` is ordered, not fanned out: `@dipper/web` first, then `dipper`, because the binary embeds
   the web bundle. `typecheck` fans out (`--filter '*'`, which skips a workspace that lacks the
   script); for the Go server it is `go build ./...`. `lint` is one root ESLint run over
-  `apps/web/src` and `packages/ui/src`, then `go vet ./...` in `apps/server`.
+  the web app, the landing page, every TypeScript package and the Node scripts, then `go vet ./...`
+  in `apps/server`.
 - Target one workspace with `--filter`: `bun run --filter dipper typecheck`,
   `bun run --filter @dipper/web build`, `bun run --filter @dipper/protocol check`.
   `bun run dipper -- <args>` drives the CLI (the workspace bin, so it needs a `build` first).

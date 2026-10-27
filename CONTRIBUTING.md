@@ -81,7 +81,7 @@ workspace that does not define the script is skipped rather than failing the run
 | `build`           | `@dipper/web` then `dipper`, in that order - the binary embeds the web bundle       |
 | `start`           | runs the built app: `dipper serve` on :4600, serving the built UI and the API      |
 | `typecheck`       | `tsc --noEmit` across the TypeScript workspaces; `go build ./...` for the server  |
-| `lint`            | one ESLint run over apps/web, apps/site and packages/ui, then `go vet`            |
+| `lint`            | one ESLint run over every TypeScript workspace and the Node scripts, then `go vet`            |
 | `test`            | `bun test` over the packages, then `go test ./...` for the server                  |
 | `smoke`           | end-to-end smoke against a local Postgres; drives the built binary, so build first |
 | `dipper -- <args>` | runs the `dipper` binary from the server workspace (needs a build)                 |

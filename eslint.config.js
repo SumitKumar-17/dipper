@@ -90,6 +90,21 @@ const designSystem = [
   },
 ];
 
+/**
+ * Plain Node scripts (dev runner, build helpers) run outside a bundler, so they use Node's globals.
+ * Declared here rather than adding a dependency for a list this short.
+ */
+const nodeScripts = {
+  files: ["scripts/**/*.mjs", "apps/*/scripts/**/*.mjs", "packages/*/scripts/**/*.mjs"],
+  languageOptions: {
+    globals: Object.fromEntries(
+      ["process", "console", "fetch", "AbortSignal", "setTimeout", "clearTimeout", "setInterval", "clearInterval", "URL", "Buffer"].map(
+        (name) => [name, "readonly"],
+      ),
+    ),
+  },
+};
+
 export default [
   {
     ignores: [
@@ -105,5 +120,6 @@ export default [
     ],
   },
   ...base,
+  nodeScripts,
   ...designSystem,
 ];
