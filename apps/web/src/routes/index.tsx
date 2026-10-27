@@ -29,6 +29,7 @@ import {
   QueryWalkDialog,
   SaveQueryDialog,
   SchemaDiagramDialog,
+  TableEditorDialog,
   useWorkspace,
 } from "@dipper/ui";
 import { createFileRoute } from "@tanstack/react-router";
@@ -89,6 +90,7 @@ function Workspace(): React.ReactElement {
       <SaveQueryDialog />
       {/* Likewise: the sidebar button and the palette both open it by event. */}
       <SchemaDiagramDialog />
+      <TableEditorDialog />
       {/* And the editor's context menu and the palette open this one. */}
       <QueryWalkDialog />
       <AppTopbar

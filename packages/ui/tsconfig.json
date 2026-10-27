@@ -1,5 +1,8 @@
 {
   "extends": "@dipper/tsconfig/react.json",
+  "compilerOptions": {
+    // Only for the `bun:test` import in *.test.ts; no source file reads Bun globals.
+    "types": ["bun"]
+  },
   "include": ["src"]
 }
- 

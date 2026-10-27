@@ -74,12 +74,12 @@ Open any table as a spreadsheet and change it, data and structure, without writi
 change reviewed as plain SQL before it runs.
 
 - [x] Server: paged rows with sort and filter (`rows/page`); offset paging for now, keyset later (M)
-- [ ] Table view UI: paged grid over `rows/page` with sort and filter controls (M)
+- [x] Table view UI: paged grid over `rows/page` with sort and filter controls (M)
 - [x] Server: transactional `rows/apply` with optimistic checks, dry run and rollback (M/L)
-- [ ] Row editing UI: edit cells, add and delete rows; typed inputs per column type, NULL and
-      DEFAULT as first-class values (M/L)
-- [ ] Pending changes panel: every edit listed as the exact INSERT, UPDATE or DELETE it will run,
-      with an optimistic check on the old values; apply all in one transaction or discard (M)
+- [x] Row editing UI: edit cells, add and delete rows, NULL and DEFAULT as first-class values (M/L)
+- [ ] Typed inputs per column type (date pickers, booleans, JSON editor) (M)
+- [x] Pending changes panel: every edit listed as the exact INSERT, UPDATE or DELETE it will run,
+      dry-run checked first; apply all in one transaction or discard (M)
 - [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage
       indexes and constraints; each change produces reviewable DDL (L)
 - [ ] Foreign key aware cells: click through to the referenced row, pick from a lookup list (M)
