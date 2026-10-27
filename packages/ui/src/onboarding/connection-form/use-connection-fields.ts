@@ -1,6 +1,7 @@
 import type { Dialect } from "@dipper/protocol";
 import * as React from "react";
 import type { ConnectionInput } from "../../workspace/types";
+import { fileName } from "../connection-address";
 import { DIALECT_DEFAULTS } from "../dialect-mark";
 
 /** Whether the address is given as a URL or as the individual fields. The server parses either. */
@@ -128,13 +129,21 @@ export function useConnectionFields(
 
   // A pasted URL names the server itself, so the name is not a second thing to think of before
   // the button turns on: an empty one is filled in from the host.
-  const valid =
-    mode === "url"
+  const file = dialect === "sqlite";
+  const valid = file
+    ? database.trim().length > 0
+    : mode === "url"
       ? url.trim().length > 0
       : name.trim().length > 0 && host.trim().length > 0 && database.trim().length > 0;
 
   const buildInput = React.useCallback((): ConnectionInput => {
     const base = { name: name.trim(), password: password.length > 0 ? password : undefined };
+    // A file has no host, login or TLS, so none of those are sent. The file's own name stands in
+    // for an empty one, as a URL's host does.
+    if (file) {
+      const path = database.trim();
+      return { name: base.name === "" ? fileName(path) : base.name, dialect, database: path };
+    }
     // A URL says what it wants in its own query string, and the server reads it there. Sending the
     // switch's value alongside would overwrite a `sslmode=verify-full` with a bare "on".
     if (mode === "url") {
@@ -149,7 +158,7 @@ export function useConnectionFields(
       database: database.trim(),
       ssl,
     };
-  }, [database, dialect, host, mode, name, password, port, ssl, url, user]);
+  }, [database, dialect, file, host, mode, name, password, port, ssl, url, user]);
 
   return {
     dialect,

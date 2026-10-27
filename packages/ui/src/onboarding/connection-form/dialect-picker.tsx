@@ -3,9 +3,9 @@ import type * as React from "react";
 import { cn } from "../../lib/utils";
 import { DIALECT_LABEL, DialectMark } from "../dialect-mark";
 
-const DIALECTS: readonly Dialect[] = ["postgres", "mysql"];
+const DIALECTS: readonly Dialect[] = ["postgres", "mysql", "sqlite"];
 
-/** The two marks, as a pair of pressable cards. The first-run screen draws the same two. */
+/** The marks, as pressable cards. The first-run screen draws the same ones. */
 export function DialectPicker({
   value,
   onChange,
@@ -15,8 +15,8 @@ export function DialectPicker({
 }): React.ReactElement {
   return (
     <fieldset className="flex flex-col gap-2">
-      <legend className="mb-2 font-medium text-sm">Server</legend>
-      <div className="grid grid-cols-2 gap-2">
+      <legend className="mb-2 font-medium text-sm">Database</legend>
+      <div className="grid grid-cols-3 gap-2">
         {DIALECTS.map((option) => (
           <button
             aria-pressed={value === option}

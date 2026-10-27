@@ -3,6 +3,7 @@ import type * as React from "react";
 import { cn } from "../lib/utils";
 import { Button } from "../ui/button";
 import { ROW_COLUMN } from "./column";
+import { fileName, isFileDatabase } from "./connection-address";
 import { DialectMark } from "./dialect-mark";
 import { PasswordPrompt, type PasswordChallenge } from "./password-prompt";
 
@@ -43,14 +44,24 @@ export function SavedConnections({
                   tells two rows on one server apart. */}
               <span
                 className="flex min-w-0 max-w-48 shrink-0 font-mono text-muted-foreground text-xs"
-                title={`${item.user === "" ? "" : `${item.user}@`}${item.host}:${item.port}`}
+                title={
+                  isFileDatabase(item)
+                    ? item.database
+                    : `${item.user === "" ? "" : `${item.user}@`}${item.host}:${item.port}`
+                }
               >
                 {/* The login is here for the same reason it is on a discovered row: it is what
                     the password will be checked against, and a wrong one refuses every password
                     there is. It truncates before the host does - the host identifies the row. */}
-                {item.user !== "" && <span className="min-w-0 truncate">{item.user}@</span>}
-                <span className="min-w-0 truncate">{item.host}</span>
-                <span className="shrink-0">:{item.port}</span>
+                {isFileDatabase(item) ? (
+                  <span className="min-w-0 truncate">{fileName(item.database)}</span>
+                ) : (
+                  <>
+                    {item.user !== "" && <span className="min-w-0 truncate">{item.user}@</span>}
+                    <span className="min-w-0 truncate">{item.host}</span>
+                    <span className="shrink-0">:{item.port}</span>
+                  </>
+                )}
               </span>
               <Button
                 className="shrink-0"

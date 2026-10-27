@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import type * as React from "react";
 import { useFade } from "../../lib/motion";
 import { cn } from "../../lib/utils";
+import { connectionAddress } from "../../onboarding/connection-address";
 import { DialectMark } from "../../onboarding/dialect-mark";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
@@ -48,7 +49,7 @@ export function ConnectionRow({
       <span className="min-w-0 truncate text-sm">{connection.name}</span>
       <ConnectionTag connection={connection} />
       <span className="min-w-0 truncate text-muted-foreground text-xs">
-        {connection.dialect} · {connection.host}:{connection.port}/{connection.database}
+        {connection.dialect} · {connectionAddress(connection)}
       </span>
 
       <span className="ml-auto flex shrink-0 items-center gap-1">
