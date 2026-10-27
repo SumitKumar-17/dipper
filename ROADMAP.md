@@ -98,7 +98,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Charts from result columns (M)
 - [ ] Transactions toolbar and safe mode for UPDATE or DELETE without WHERE (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
-- [ ] Column profiling: distinct count, null rate, top values (M)
+- [x] Column profiling in the Structure tab: row count, NULL rate, distinct count, range and most common values (M)
 - [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)
 - [ ] File rename, delete and workspace search (S/M)
 - [ ] Accessible tree and tab semantics, `inert` for the collapsed sidebar (S/M)

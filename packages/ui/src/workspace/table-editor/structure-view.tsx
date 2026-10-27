@@ -3,17 +3,24 @@ import { KeyIcon } from "lucide-react";
 import * as React from "react";
 import { plural } from "../../lib/format";
 import { Badge } from "../../ui/badge";
+import { useWorkspace } from "../context";
+import { ColumnProfile } from "./column-profile";
 import { formatBytes, formatWhen } from "./format";
 
 /** Everything the schema tree leaves out: sizes, columns, indexes, constraints and triggers. */
 export function StructureView({ detail }: { detail: TableDetail }): React.ReactElement {
+  const { connection } = useWorkspace();
+  // The column being profiled, if any: one at a time, since each is a scan of the table.
+  const [profiled, setProfiled] = React.useState<string | null>(null);
+  const dialect = connection?.dialect ?? "postgres";
   return (
     <div className="flex flex-col gap-6 p-4">
       <StatsStrip detail={detail} />
       <Section title="Columns">
-        <Grid head={["Name", "Type", "Null", "Default", "Notes"]}>
+        <Grid head={["Name", "Type", "Null", "Default", "Notes", ""]}>
           {detail.columns.map((c) => (
-            <tr key={c.name}>
+            <React.Fragment key={c.name}>
+            <tr>
               <Td>
                 <span className="flex items-center gap-1.5">
                   {c.pk && <KeyIcon className="size-3 text-warning-foreground" />}
@@ -28,7 +35,25 @@ export function StructureView({ detail }: { detail: TableDetail }): React.ReactE
                   .filter(Boolean)
                   .join(" · ")}
               </Td>
+              <Td>
+                <button
+                  aria-expanded={profiled === c.name}
+                  className="cursor-pointer text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                  onClick={() => setProfiled(profiled === c.name ? null : c.name)}
+                  type="button"
+                >
+                  {profiled === c.name ? "Hide profile" : "Profile"}
+                </button>
+              </Td>
             </tr>
+            {profiled === c.name && (
+              <tr>
+                <td className="bg-muted/20 px-3 py-3" colSpan={6}>
+                  <ColumnProfile column={c.name} dialect={dialect} schema={detail.schema} table={detail.name} type={c.type} />
+                </td>
+              </tr>
+            )}
+            </React.Fragment>
           ))}
         </Grid>
       </Section>

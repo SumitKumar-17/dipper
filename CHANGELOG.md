@@ -59,6 +59,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **CSV import** - Table Editor, Import CSV. Pick a file, check how its columns map to the table's
   (matched by name, and changeable), see a preview, and load it. A dry run proves the database accepts
   every row first, then all of them go in as one transaction, or none do. Up to 5,000 rows per load.
+- **Column profiles** - Table Editor, Structure, Profile. For one column: how many rows, how many
+  are NULL, how many distinct values, the smallest and largest, and the most common values. It reads
+  the table through a read-only query.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script
