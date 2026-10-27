@@ -62,7 +62,8 @@ The section matching a release's version becomes that release's notes on GitHub 
   JSON, with an option that defuses spreadsheet formula injection. Duplicate column names no longer
   overwrite each other in JSON.
 - **Test before saving** - `POST /api/connections/test` tries connection details without storing them.
-- **Query Walk** - A NULL test result is shown as unknown (not failed) with an explanation. Constructs the
+- **Query Walk** - A join that returns more rows than it received now says so: how many matches each
+  row found on average, and what that does to a later count. A NULL test result is shown as unknown (not failed) with an explanation. Constructs the
   walk does not understand are named instead of silently dropped. Fixed `GROUP BY ROLLUP`, `CUBE` and
   `GROUPING SETS`, `DISTINCT ON` row choice, aggregate row counts and MySQL `LIMIT offset, count`.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and

@@ -1,7 +1,8 @@
 // One sentence per station, naming the real tables, keys and columns from the user's query.
 
 import type { JoinClause, KeyPair } from "../clauses";
-import { joinKeys, previousIndex, sampleId } from "../scenes";
+import { countAt, inputCount, joinKeys, previousIndex, sampleId } from "../scenes";
+import { fanOutSentence } from "./fan-out";
 import {
   caseExpressions,
   sourceTitle,
@@ -142,15 +143,16 @@ export function sentenceFor(
         return `A natural join matches on the column names both sides share, and ${left} and ${right} share none. With no condition left to apply it pairs every row with every row, exactly as a cross join would.`;
       }
       const pair = `Pair each row of ${left} with its match in ${right} where ${joinCondition(join, keys)}.${join.natural ? naturalSource(keys, left, right) : ""}`;
+      const fanOut = fanOutSentence(join.kind, inputCount(walk, index), countAt(walk, index));
       switch (join.kind) {
         case "left":
-          return `${pair} With a left join a row with no match is kept, and its ${right} columns are null.`;
+          return `${pair} With a left join a row with no match is kept, and its ${right} columns are null.${fanOut ? ` ${fanOut}` : ""}`;
         case "right":
           return `${pair} With a right join a row of ${right} with no match is kept, and the other columns are null.`;
         case "full":
           return `${pair} With a full join rows with no match on either side are kept, padded with nulls.`;
         default:
-          return `${pair} A row with no match is dropped, because this is an inner join.`;
+          return `${pair} A row with no match is dropped, because this is an inner join.${fanOut ? ` ${fanOut}` : ""}`;
       }
     }
     case "where":

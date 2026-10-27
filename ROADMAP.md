@@ -38,7 +38,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] CTE graph with "used by" counts (M)
 - [ ] Recursive CTE stepped one iteration at a time, with a pass cap (M/L)
 - [ ] Window frames drawn as a band, every window function per query, not the first (M)
-- [ ] Join match and non-match view with fan-out cardinality (M)
+- [x] Join fan-out explained when a join multiplies rows (a pair-by-pair match view is still open) (M)
 - [ ] LATERAL joins (M)
 - [ ] Logical order versus written order strip (S)
 - [ ] EXPLAIN plan beside the walk, nodes mapped to stations (M)
