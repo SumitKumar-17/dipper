@@ -19,7 +19,7 @@ checked off as they land; each one is its own commit.
 - [x] Resolve Postgres type names through pgx's type table (bytea, inet, arrays and more); only user-defined types stay `oid:NNN` (S)
 - [ ] Serialise file saves and prompt before discarding a dirty tab or overwriting on save-as (S)
 - [ ] Detect a dead or restarted server in the UI and resync (S)
-- [ ] Refresh `docs/api/http.md` where it is stale (history store, MySQL `source`, UI fallback) (S)
+- [x] Refresh `docs/api/http.md` where it was stale (history store, MySQL `source`, UI fallback) (S)
 
 ## 1. Query Walk, as deep as it can go
 

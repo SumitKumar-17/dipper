@@ -107,7 +107,7 @@ for; otherwise TLS to a remote host is `verify-full` and to loopback is `require
 | GET    | `/api/runs`            | -                                                                                                         | `RunRecord[]`                                   | Recent runs from memory, newest first, **without result rows** - fetch one run to get its rows.                                                     |
 | GET    | `/api/runs/:id`        | -                                                                                                         | `RunRecord`                                     | One run in full, rows included. 404 once it has aged out of memory.                                                                                 |
 | GET    | `/api/runs/:id/export` | -                                                                                                         | an attachment in the chosen format              | Download one statement's rows. `?format=` is `csv` (default), `tsv`, `json`, `ndjson`, `markdown` or `sql`; `?statement=<n>` picks the statement, default 0; `?table=` names the target of `sql`'s INSERTs; `?safe=1` prefixes text a spreadsheet would run as a formula. Duplicate column names stay separate in JSON (`id`, `id_2`).                                  |
-| GET    | `/api/history`         | -                                                                                                         | `RunRecord[]`                                   | Runs from `history.jsonl` on disk, so they survive a restart. `?limit=` (1-1000, default 50) and `?connectionId=`. No result rows are kept on disk. |
+| GET    | `/api/history`         | -                                                                                                         | `RunRecord[]`                                   | Runs from the history store (`~/.dipper/history.db`), so they survive a restart. `?limit=` (1-1000, default 50) and `?connectionId=`. Result rows are kept only when Settings > History is set to save results. |
 
 An unknown `connectionId` is rejected with 404 **before** the streaming response starts, so a
 client never has to parse a stream to discover the connection was wrong. If the client
@@ -115,7 +115,7 @@ disconnects mid-stream the server chases the cancel until it lands or the run fi
 own. Errors inside a started run arrive as an `error` `RunEvent` followed by `done`, not as an
 HTTP status.
 
-`record: false` keeps the run out of `history.jsonl` and off the SSE stream (no `run` event),
+`record: false` keeps the run out of history and off the SSE stream (no `run` event),
 while the in-memory run log still holds it, so cancel and export keep working; the query walk's
 probe runs pass it so they never show up in History. `readOnly: true` runs every statement in a
 read-only session (Postgres `set default_transaction_read_only = on`, MySQL
@@ -125,7 +125,7 @@ write is refused by the server and arrives as an ordinary `error` event.
 Each `ResultColumn` in a `columns` event or a `StatementResult` carries `source` - the base
 `{ table, column }` a value comes from - when the driver can tell: Postgres resolves the field's
 relation oid and attnum against `pg_class`/`pg_attribute` (one lookup per statement, cached for
-the connection's lifetime), MySQL reports them directly. Expressions and aggregates have none.
+the connection's lifetime), MySQL does not report them: its driver does not expose the source table and column, so MySQL columns have no `source`. Expressions and aggregates have none on either dialect.
 
 ## Settings
 
@@ -157,4 +157,4 @@ client as an external file change.
 | Method | Path               | Response                                    | Purpose                                                                                                                      |
 | ------ | ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | GET    | `/*` (non-`/api/`) | static assets, SPA fallback to `index.html` | The built UI, when the server was given one (`dipper serve --ui <dir>`, or the `ui/` directory inside the installed package). |
-| GET    | `/`                | HTML                                        | When no UI bundle is installed: a placeholder page listing the API.                                                          |
+| GET    | `/`                | HTML                                        | When no UI bundle is built: a plain-text notice with status 503 telling you to build `@dipper/web`.                                                          |
