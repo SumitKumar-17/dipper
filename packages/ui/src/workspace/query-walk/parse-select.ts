@@ -401,6 +401,15 @@ export function parseTokens(
 
   /* The trailing clauses */
   const tail = readTail(cur);
+  // Anything left is a construct the walk does not model (TABLESAMPLE, WITH ORDINALITY, QUALIFY,
+  // a MySQL index hint). Dropping it would walk a different query from the one that was written
+  // and show the result as if it were the same, so refuse and say which word stopped it.
+  if (!cur.done) {
+    return {
+      kind: "unsupported",
+      reason: `Query Walk does not understand "${cur.token().text}" yet, so it will not guess at the rest of the query.`,
+    };
+  }
 
   const groupKeys = splitItems(tail.groupTokens).map((item) => {
     const only = item.length === 1 ? item[0]! : null;

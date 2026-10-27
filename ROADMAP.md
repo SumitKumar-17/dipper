@@ -25,7 +25,7 @@ checked off as they land; each one is its own commit.
 
 Correctness first, because a visualiser that is silently wrong is worse than none.
 
-- [ ] Refuse, never truncate: report any construct the parser does not understand (S)
+- [x] Refuse, never truncate: a construct the parser does not understand is named, not dropped (S)
 - [ ] Fix GROUP BY probes for ROLLUP, CUBE, GROUPING SETS and MySQL `WITH ROLLUP` (M)
 - [ ] DISTINCT ON picks the rows the ORDER BY says it should (S)
 - [ ] USING and NATURAL joins: correct left and right column split (S)
