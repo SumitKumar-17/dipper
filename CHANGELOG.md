@@ -62,6 +62,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Column profiles** - Table Editor, Structure, Profile. For one column: how many rows, how many
   are NULL, how many distinct values, the smallest and largest, and the most common values. It reads
   the table through a read-only query.
+- **Follow foreign keys** - In the Table Editor, a cell that references another table has a link that
+  opens the referenced row.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

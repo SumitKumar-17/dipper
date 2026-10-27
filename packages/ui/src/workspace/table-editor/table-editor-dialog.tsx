@@ -27,7 +27,7 @@ export function TableEditorDialog(): React.ReactElement {
           )}
           data-slot="dialog-popup"
         >
-          {target && <TableEditor schema={target.schema} table={target.table} />}
+          {target && <TableEditor focus={target.focus} key={`${target.schema}.${target.table}.${target.focus?.value ?? ""}`} schema={target.schema} table={target.table} />}
         </DialogPrimitive.Popup>
       </DialogPortal>
     </DialogPrimitive.Root>

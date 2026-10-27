@@ -30,11 +30,14 @@ function pageOf(record: RunRecord): Page {
  * One table's rows, a page at a time. The server sorts and filters, so the browser never holds
  * more than a page; changing the query starts over from the first page.
  */
-export function useTableRows(schema: string, table: string) {
+export function useTableRows(schema: string, table: string, focus?: { column: string; value: string }) {
   const { rowPage } = useWorkspace();
   const [offset, setOffset] = React.useState(0);
   const [sort, setSort] = React.useState<Sort | null>(null);
-  const [filters, setFilters] = React.useState<Filter[]>([]);
+  // Opened from a foreign key, the table starts narrowed to the row that was followed.
+  const [filters, setFilters] = React.useState<Filter[]>(() =>
+    focus ? [{ id: 0, column: focus.column, op: "eq", value: focus.value }] : [],
+  );
   const [page, setPage] = React.useState<Page>({ status: "loading" });
   const [nonce, setNonce] = React.useState(0);
 

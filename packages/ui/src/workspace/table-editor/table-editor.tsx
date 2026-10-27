@@ -9,12 +9,13 @@ import { Spinner } from "../../ui/spinner";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "../../ui/tabs";
 import { useWorkspace } from "../context";
 import { DataTab } from "./data-tab";
+import type { TableFocus } from "./table-editor-event";
 import { StructureView } from "./structure-view";
 
 type Load = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; detail: TableDetail };
 
 /** One table, three ways: its rows, its structure, and the DDL that would recreate it. */
-export function TableEditor({ schema, table }: { schema: string; table: string }): React.ReactElement {
+export function TableEditor({ focus, schema, table }: { focus?: TableFocus; schema: string; table: string }): React.ReactElement {
   const { tableDetail } = useWorkspace();
   const [load, setLoad] = React.useState<Load>({ status: "loading" });
 
@@ -58,7 +59,7 @@ export function TableEditor({ schema, table }: { schema: string; table: string }
             <TabsTab value="ddl">DDL</TabsTab>
           </TabsList>
           <TabsPanel className="flex min-h-0 flex-1 flex-col" value="data">
-            <DataTab detail={load.detail} />
+            <DataTab detail={load.detail} focus={focus} />
           </TabsPanel>
           <TabsPanel className="min-h-0 flex-1 overflow-auto" value="structure">
             <StructureView detail={load.detail} />

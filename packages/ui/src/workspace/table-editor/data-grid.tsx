@@ -1,9 +1,11 @@
-import type { Cell, ColumnDetail } from "@dipper/protocol";
-import { ArrowDownIcon, ArrowUpIcon, KeyIcon, Trash2Icon, Undo2Icon, XIcon } from "lucide-react";
+import type { Cell, ColumnDetail, ForeignKey } from "@dipper/protocol";
+import { ArrowDownIcon, ArrowUpIcon, ArrowUpRightIcon, KeyIcon, Trash2Icon, Undo2Icon, XIcon } from "lucide-react";
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { EditableCell } from "./cell-editor";
+import { followTarget } from "./foreign-keys";
+import { requestTableEditor } from "./table-editor-event";
 import { type PendingEdits, removeInsert, setCell, setInsertCell, toggleDelete } from "./edit-model";
 import type { Sort } from "./use-table-rows";
 
@@ -17,6 +19,7 @@ export function DataGrid({
   columns,
   details,
   edits,
+  foreignKeys,
   onEdits,
   onSort,
   readOnly,
@@ -26,6 +29,8 @@ export function DataGrid({
   columns: readonly string[];
   details: readonly ColumnDetail[];
   edits: PendingEdits;
+  /** This table's foreign keys, so a cell that references another table can be followed. */
+  foreignKeys: readonly ForeignKey[];
   onEdits: (next: PendingEdits) => void;
   onSort: (next: Sort | null) => void;
   readOnly: boolean;
@@ -86,8 +91,20 @@ export function DataGrid({
               {columns.map((name, col) => {
                 const original = row[col] ?? null;
                 const value = changed?.has(name) ? (changed.get(name) ?? null) : original;
+                const target = followTarget(foreignKeys, name, value);
                 return (
-                  <td className="h-8 max-w-80 border-b border-border/50 p-0" key={name}>
+                  <td className="group/cell relative h-8 max-w-80 border-b border-border/50 p-0" key={name}>
+                    {target && !deleted && (
+                      <button
+                        aria-label={`Open the ${target.table} row`}
+                        className="absolute end-1 top-1/2 z-10 hidden size-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded-sm bg-card text-muted-foreground hover:text-foreground group-hover/cell:flex focus-visible:flex"
+                        onClick={() => requestTableEditor(target.schema, target.table, target.focus)}
+                        title={`Open ${target.table} where ${target.focus.column} = ${target.focus.value}`}
+                        type="button"
+                      >
+                        <ArrowUpRightIcon className="size-3.5" />
+                      </button>
+                    )}
                     <EditableCell
                       disabled={deleted || !writable(name)}
                       edited={changed?.has(name) ?? false}

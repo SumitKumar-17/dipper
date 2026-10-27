@@ -83,7 +83,7 @@ change reviewed as plain SQL before it runs.
       dry-run checked first; apply all in one transaction or discard (M)
 - [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage
       indexes and constraints; each change produces reviewable DDL (L)
-- [ ] Foreign key aware cells: click through to the referenced row, pick from a lookup list (M)
+- [x] Foreign key aware cells: click through to the referenced row (a lookup picker for editing is still open) (M)
 - [x] Read-only connections stay read-only (enforced in the server for queries and row edits); asking twice on red-tagged connections is still open (S)
 - [ ] Undo of the last applied change set where it is reversible (M)
 

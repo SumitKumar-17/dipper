@@ -2,6 +2,8 @@ import type { TableDetail } from "@dipper/protocol";
 import * as React from "react";
 import { plural } from "../../lib/format";
 import { Alert, AlertDescription } from "../../ui/alert";
+import { useWorkspace } from "../context";
+import { asyncData } from "../types";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { DataGrid } from "./data-grid";
@@ -9,6 +11,7 @@ import { DataToolbar } from "./data-toolbar";
 import { NO_EDITS, addInsert, buildChanges, countChanges } from "./edit-model";
 import { ImportPanel } from "./import-panel";
 import { ReviewPanel } from "./review-panel";
+import type { TableFocus } from "./table-editor-event";
 import { useTableRows } from "./use-table-rows";
 
 /** Why a table cannot be edited, or null when it can. */
@@ -21,8 +24,17 @@ function lockReason(detail: TableDetail): string | null {
 }
 
 /** The rows of one table, browsable always and editable when the table has a primary key. */
-export function DataTab({ detail }: { detail: TableDetail }): React.ReactElement {
-  const rows = useTableRows(detail.schema, detail.name);
+export function DataTab({ detail, focus }: { detail: TableDetail; focus?: TableFocus }): React.ReactElement {
+  const rows = useTableRows(detail.schema, detail.name, focus);
+  // Foreign keys come from the schema tree, which already has them for every table.
+  const { schema } = useWorkspace();
+  const foreignKeys = React.useMemo(
+    () =>
+      asyncData(schema)?.schemas
+        .flatMap((s) => s.tables)
+        .find((t) => t.schema === detail.schema && t.name === detail.name)?.foreignKeys ?? [],
+    [schema, detail.schema, detail.name],
+  );
   const [edits, setEdits] = React.useState(NO_EDITS);
   const [reviewing, setReviewing] = React.useState(false);
   const [importing, setImporting] = React.useState(false);
@@ -107,6 +119,7 @@ export function DataTab({ detail }: { detail: TableDetail }): React.ReactElement
             columns={page.columns}
             details={detail.columns}
             edits={edits}
+            foreignKeys={foreignKeys}
             onEdits={setEdits}
             onSort={rows.setSort}
             readOnly={reason !== null}
