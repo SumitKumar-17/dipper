@@ -245,6 +245,29 @@ Old runs are dropped once you pass the limits you set, and **Clear history** emp
 
 ---
 
+### Database tools
+
+Everything below is in the command palette (<kbd>⌘</kbd><kbd>K</kbd>) and runs against your own server. Nothing changes until you have read it.
+
+- **Activity** shows every session, what it is waiting for, how long its query and transaction have run, and who is blocking whom. Cancel a query or end a connection after a confirmation.
+- **Health and index advice** finds unused, duplicate and invalid indexes, foreign keys with no supporting index, and tables with many dead rows. Each finding comes with the statement that would fix it, which Dipper never runs for you. PostgreSQL.
+- **Slow queries** ranks the statements that have cost the most total time, the slowest on average, or the most called. It reads `pg_stat_statements` on PostgreSQL and the performance schema on MySQL, and tells you what to turn on when neither is.
+- **Compare schemas** shows what would make the current database match another on the same connection (tables, columns, types, nullability, defaults and foreign keys) and writes the migration script, with anything that deletes data last and marked.
+- **Database objects** lists functions and procedures with their full definitions, sequences, enum types, extensions and triggers.
+- **SQL lint** in the plan view flags `= NULL`, `NOT IN` with a subquery, `UPDATE` or `DELETE` with no `WHERE`, accidental cross joins, leading-wildcard `LIKE` and a function wrapped around a column in `WHERE`.
+
+<p align="center">
+  <em>Mark a connection read-only in Settings and the server refuses every write through it, whatever the client asks. Give it a colour so production never looks like a test database.</em>
+</p>
+
+---
+
+### Results
+
+Find in the loaded rows, click a column header to sort (numbers sort as numbers, NULL stays last), and select a cell to read it in full with JSON indented and a Copy button. Export a result as CSV, TSV, JSON, NDJSON, Markdown, or SQL `INSERT` statements.
+
+---
+
 ### Command palette
 
 Press <kbd>⌘</kbd><kbd>K</kbd> to search Dipper without leaving the keyboard.
