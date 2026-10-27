@@ -1,3 +1,5 @@
+import { CompareSection } from "./sections/compare";
+import { FaqSection } from "./sections/faq";
 import { FeaturesSection } from "./sections/features";
 import { MotionConfig } from "motion/react";
 import { useCallback, useRef, useState } from "react";
@@ -73,13 +75,19 @@ function Page() {
 
   return (
     <>
+      <a
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-foreground"
+        href="#main"
+      >
+        Skip to content
+      </a>
       <Sky />
       <Nav />
       <BirdRoute steps={route} />
       <WhyDipper settled={settled} />
       {/* The landing's slips flutter out past the page's edges; nothing may scroll sideways for them. */}
       <div className="overflow-x-clip">
-        <main>
+        <main id="main">
           <Landing onSettled={settle} />
           <TrySection settled={settled} />
           <CompletionSection roostRef={completion} onSceneDone={hopCompletion} />
@@ -89,6 +97,8 @@ function Page() {
           <FeaturesSection />
           <BoxSection roostRef={box} />
           <BinarySection roostRef={binary} onSceneDone={hopBinary} />
+          <CompareSection />
+          <FaqSection />
           <DownloadSection roostRef={download} onCopy={flutter} />
         </main>
         <Footer roostRef={footer} />
