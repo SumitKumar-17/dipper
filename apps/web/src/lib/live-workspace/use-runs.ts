@@ -1,5 +1,5 @@
 import type { DipperClient } from "@dipper/client";
-import type { HistoryScope, HistoryStats, RunRecord, Settings } from "@dipper/protocol";
+import type { ExportFormat, HistoryScope, HistoryStats, RunRecord, Settings } from "@dipper/protocol";
 import type { Run } from "@dipper/ui";
 import * as React from "react";
 import { messageOf } from "./helpers";
@@ -34,7 +34,7 @@ export type RunsState = {
   run: (sql?: string) => Promise<string | undefined>;
   exportUrl: (
     runId: string,
-    options?: { statement?: number; format?: "csv" | "json" },
+    options?: { statement?: number; format?: ExportFormat },
   ) => string | null;
   cancelRun: (runId: string) => Promise<void>;
   selectRun: (runId: string) => void;
@@ -221,7 +221,7 @@ export function useRuns(
   const exportUrl = React.useCallback(
     (
       runId: string,
-      exportOptions?: { statement?: number; format?: "csv" | "json" },
+      exportOptions?: { statement?: number; format?: ExportFormat },
     ): string | null => {
       const held = runs.find((r) => r.id === runId);
       if (!held || held.status !== "done") return null;

@@ -67,6 +67,11 @@ BEFORE="$(curl -s -X POST -H "$J" -d '{"limit":1000}' "$ROWS/page" | json 'j.res
 expect "dry-run insert keeps nothing" "$BEFORE" "$(curl -s -X POST -H "$J" -d '{"dryRun":true,"changes":[{"op":"insert","set":{"status":"dry run"}}]}' "$ROWS/apply" >/dev/null; curl -s -X POST -H "$J" -d '{"limit":1000}' "$ROWS/page" | json 'j.results[0].rowCount')"
 expect "an update with a stale expectation is refused" "false" "$(curl -s -X POST -H "$J" -d '{"changes":[{"op":"update","key":{"id":1},"set":{"status":"X"},"expect":{"status":"definitely not the status"}}]}' "$ROWS/apply" | json 'String(j.applied)')"
 expect "editing an unknown column is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d '{"changes":[{"op":"update","key":{"id":1},"set":{"nope":1}}]}' "$ROWS/apply")"
+RUNID="$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select id, status from orders order by id limit 3\"}" "$B/query/sync" | json 'j.id')"
+expect "markdown export has a header rule" "| --- | --- |" "$(curl -s "$B/runs/$RUNID/export?format=markdown" | sed -n 2p)"
+expect "ndjson export is one object per line" "3" "$(curl -s "$B/runs/$RUNID/export?format=ndjson" | wc -l | tr -d ' ')"
+expect_has "sql export is runnable inserts" "insert into \"orders\"" "$(curl -s "$B/runs/$RUNID/export?format=sql&table=orders")"
+expect "unknown export format is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/runs/$RUNID/export?format=xlsx")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

@@ -1,9 +1,13 @@
-import type { RunRecord } from "@dipper/protocol";
+import type { ExportFormat, RunRecord } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type ExportOptions = {
   /** Default "csv". */
-  format?: "csv" | "json";
+  format?: ExportFormat;
+  /** The table the `sql` format inserts into. */
+  table?: string;
+  /** Prefix text a spreadsheet would run as a formula, for files headed for Excel. */
+  safe?: boolean;
   /** Which statement of a multi-statement run to export. Default 0. */
   statement?: number;
 };
@@ -39,6 +43,8 @@ export function runsApi(http: Transport): RunsApi {
       http.url(`/api/runs/${encodeURIComponent(id)}/export`, {
         format: options?.format ?? "csv",
         statement: options?.statement,
+        table: options?.table,
+        safe: options?.safe ? "1" : undefined,
       }),
   };
 }

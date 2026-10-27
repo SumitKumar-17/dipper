@@ -12,6 +12,9 @@ export type ResultColumn = {
   source?: { table: string; column: string };
 };
 
+/** Formats a result can be exported in. */
+export type ExportFormat = "csv" | "tsv" | "json" | "ndjson" | "markdown" | "sql";
+
 export type Cell = string | number | boolean | null;
 export type Row = Cell[];
 

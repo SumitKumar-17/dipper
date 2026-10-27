@@ -6,6 +6,7 @@
 import type {
   ConnectionSummary,
   DatabaseSchema,
+  ExportFormat,
   FileEntry,
   HistoryScope,
   RunRecord,
@@ -438,7 +439,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
       });
     },
     selectRun: (runId: string): void => set({ selected: { id: runId, fromHistory: true } }),
-    exportUrl: (runId: string, options?: { statement?: number; format?: "csv" | "json" }) => {
+    exportUrl: (runId: string, options?: { statement?: number; format?: ExportFormat }) => {
       const run = state.runs.find((r) => r.id === runId);
       if (!run || run.status !== "done" || (options?.format ?? "csv") !== "csv") return null;
       const statement = run.results?.[options?.statement ?? 0];

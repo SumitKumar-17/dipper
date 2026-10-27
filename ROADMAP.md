@@ -64,7 +64,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] Test an unsaved connection (S)
 - [ ] SQLite support, pure Go so cross-compiling keeps working (M)
 - [ ] SSH tunnels (L)
-- [ ] More export formats: TSV, NDJSON, SQL INSERT, Markdown (S)
+- [x] More export formats: TSV, NDJSON, SQL INSERT, Markdown, with a formula-safe option (S)
 - [ ] CSV import (M)
 
 ## 3. Workspace UI

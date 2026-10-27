@@ -373,3 +373,23 @@ func withoutKeys(m, drop map[string]any) map[string]any {
 	}
 	return out
 }
+
+// InsertScript renders rows as one INSERT per row, with values inlined, for exporting a result as
+// something that can be run elsewhere. The table name is quoted; every value is an escaped literal.
+func InsertScript(dialect protocol.Dialect, table string, columns []string, rows [][]any) string {
+	f := flavorFor(dialect)
+	quoted := make([]string, len(columns))
+	for i, c := range columns {
+		quoted[i] = f.quote(c)
+	}
+	head := "insert into " + f.quote(table) + " (" + strings.Join(quoted, ", ") + ") values ("
+	var b strings.Builder
+	for _, row := range rows {
+		values := make([]string, len(row))
+		for i, cell := range row {
+			values[i] = f.literal(cell)
+		}
+		b.WriteString(head + strings.Join(values, ", ") + ");\n")
+	}
+	return b.String()
+}

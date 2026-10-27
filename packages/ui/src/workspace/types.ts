@@ -12,6 +12,7 @@ import type {
   Dialect,
   DiscoveryResult,
   ExplainRequest,
+  ExportFormat,
   FileEntry,
   HistoryScope,
   HistoryStats,
@@ -275,7 +276,7 @@ export type WorkspaceApi = {
    */
   exportUrl(
     runId: string,
-    options?: { statement?: number; format?: "csv" | "json" },
+    options?: { statement?: number; format?: ExportFormat },
   ): string | null;
   /**
    * Runs `sql` against the current connection and database with `record: false` and
