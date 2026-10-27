@@ -23,6 +23,7 @@ import { useFileSession } from "./use-file-session";
 import { useConnections } from "./use-connections";
 import { workspaceOf } from "./run-scope";
 import { useRuns } from "./use-runs";
+import { useTableTools } from "./use-table-tools";
 import { useSchema } from "./use-schema";
 import { useServerEvents } from "./use-server-events";
 import { useServerGate } from "./use-server-gate";
@@ -100,6 +101,11 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     () => workspaceOf(buffers.activeBuffer?.path, roots, server.queriesDir),
     [buffers.activeBuffer?.path, roots, server.queriesDir],
   );
+
+  const tableTools = useTableTools(getClient, {
+    connectionId: connections.connectionId,
+    database: connections.database,
+  });
 
   const runs = useRuns(getClient, enabled, {
     connectionId: connections.connectionId,
@@ -186,6 +192,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     cancelRun: runs.cancelRun,
     selectRun: runs.selectRun,
     probe: runs.probe,
+    ...tableTools,
     historyStats: runs.historyStats,
     clearHistory: runs.clearHistory,
     historyScope: runs.historyScope,

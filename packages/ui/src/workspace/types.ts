@@ -4,17 +4,23 @@
 
 import type { EditorLayout } from "./pane-layout";
 import type {
+  ApplyRequest,
+  ApplyResult,
   BrowseResult,
   ConnectionSummary,
   DatabaseSchema,
   Dialect,
   DiscoveryResult,
+  ExplainRequest,
   FileEntry,
   HistoryScope,
   HistoryStats,
+  Plan,
+  RowPageRequest,
   RunRecord,
   Settings,
   StatementResult,
+  TableDetail,
 } from "@dipper/protocol";
 
 
@@ -278,6 +284,17 @@ export type WorkspaceApi = {
    * and statement results.
    */
   probe(sql: string, options?: { maxRows?: number }): Promise<RunRecord>;
+  /** Indexes, constraints, triggers, sizes and DDL for one table of the current database. */
+  tableDetail(schema: string, table: string): Promise<TableDetail>;
+  /** One server-sorted, server-filtered page of a table, read-only and unrecorded. */
+  rowPage(schema: string, table: string, request: RowPageRequest): Promise<RunRecord>;
+  /**
+   * Commits a reviewed change set in one transaction, or reports why none of it was applied. With
+   * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
+   */
+  applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /** The query plan of one statement. `analyze` executes it, inside a transaction rolled back. */
+  explain(request: ExplainRequest): Promise<Plan>;
   /** What the run history is costing on disk, for the pane that offers to clear it. */
   historyStats(): Promise<HistoryStats>;
   /** Drops every recorded run and its rows. Not undoable; the caller confirms. */

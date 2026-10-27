@@ -33,6 +33,9 @@ import { exportCsvUrl } from "./export-csv";
 import { normaliseSql } from "./normalise";
 import type { Recording, ReplayInput, ReplayWorkspace } from "./types";
 
+/** What the table tools answer in the preview: none of them was recorded. */
+const NOT_RECORDED = "This preview replays recorded queries - install Dipper to inspect and edit tables.";
+
 /** What an unrecorded query gets instead of rows. */
 export const REPLAY_NOTICE =
   "This preview replays recorded queries - install Dipper to run your own.";
@@ -441,6 +444,11 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
       const statement = run.results?.[options?.statement ?? 0];
       return statement && statement.columns.length > 0 ? exportCsvUrl(statement) : null;
     },
+    // The preview replays recordings, and none of these were recorded.
+    tableDetail: () => Promise.reject(new Error(NOT_RECORDED)),
+    rowPage: () => Promise.reject(new Error(NOT_RECORDED)),
+    applyRows: () => Promise.reject(new Error(NOT_RECORDED)),
+    explain: () => Promise.reject(new Error(NOT_RECORDED)),
     probe: async (sql: string, options?: { maxRows?: number }): Promise<RunRecord> => {
       const text = sql.trim();
       if (!text) throw new Error("Nothing to run.");
