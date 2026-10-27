@@ -31,6 +31,7 @@ import {
   ActivityDialog,
   AdviceDialog,
   ExplainDialog,
+  ObjectsDialog,
   SchemaDiagramDialog,
   SchemaDiffDialog,
   SlowQueriesDialog,
@@ -101,6 +102,7 @@ function Workspace(): React.ReactElement {
       <AdviceDialog />
       <SchemaDiffDialog />
       <SlowQueriesDialog />
+      <ObjectsDialog />
       {/* And the editor's context menu and the palette open this one. */}
       <QueryWalkDialog />
       <AppTopbar

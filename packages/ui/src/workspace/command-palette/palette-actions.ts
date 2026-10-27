@@ -6,6 +6,7 @@
 
 import {
   ActivityIcon,
+  BoxesIcon,
   DiffIcon,
   TimerIcon,
   GaugeIcon,
@@ -24,6 +25,7 @@ import * as React from "react";
 import { requestActivity } from "../activity";
 import { requestAdvice } from "../advice";
 import { requestExplain } from "../explain";
+import { requestObjects } from "../objects";
 import { requestQueryWalk } from "../query-walk";
 import { requestSchemaCompare } from "../schema-diff-view";
 import { requestSlowQueries } from "../slow-queries";
@@ -163,6 +165,15 @@ export function useBuiltinActions(
             const sql = statementAtCursor(activeBuffer.content, at)?.sql;
             if (sql) requestExplain(sql);
           }
+          close();
+        },
+      },
+      {
+        label: "Database objects",
+        hint: "Functions, sequences, enums, extensions and triggers",
+        icon: BoxesIcon,
+        onSelect: () => {
+          requestObjects();
           close();
         },
       },

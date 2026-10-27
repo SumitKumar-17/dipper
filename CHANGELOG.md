@@ -45,6 +45,8 @@ The section matching a release's version becomes that release's notes on GitHub 
   the slowest on average, or the most called, with each one's share of the total. Postgres reads
   `pg_stat_statements` and MySQL its performance schema; when neither is on, the view says what to
   enable.
+- **Database objects** - Command palette, Database objects. Functions and procedures with their
+  full definitions, sequences, enum types, extensions and triggers. MySQL lists routines and triggers.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

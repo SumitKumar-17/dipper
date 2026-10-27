@@ -390,6 +390,23 @@ func (p *Pool) StatementStats(ctx context.Context, idOrName string, order db.Sta
 	return reader.StatementStats(ctx, order, limit)
 }
 
+// Objects lists the functions, sequences, enums, extensions and triggers of one database.
+func (p *Pool) Objects(ctx context.Context, idOrName, database string) (protocol.DatabaseObjects, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.DatabaseObjects{}, err
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.DatabaseObjects{}, err
+	}
+	lister, ok := driver.(db.ObjectLister)
+	if !ok {
+		return protocol.DatabaseObjects{}, httpx.BadRequest(string(config.Dialect) + " connections cannot list database objects yet")
+	}
+	return lister.Objects(ctx, database)
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

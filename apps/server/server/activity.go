@@ -28,6 +28,16 @@ func (s *Server) registerStatementStats() {
 	})
 }
 
+func (s *Server) registerObjects() {
+	s.handle("GET /api/connections/{id}/objects", func(w http.ResponseWriter, r *http.Request) error {
+		objects, err := s.pool.Objects(r.Context(), r.PathValue("id"), r.URL.Query().Get("database"))
+		if err != nil {
+			return err
+		}
+		return httpx.JSON(w, objects)
+	})
+}
+
 func (s *Server) registerAdvice() {
 	s.handle("GET /api/connections/{id}/advice", func(w http.ResponseWriter, r *http.Request) error {
 		advice, err := s.pool.Advise(r.Context(), r.PathValue("id"), r.URL.Query().Get("database"))

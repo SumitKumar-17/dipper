@@ -10,6 +10,7 @@ import type {
   ApplyResult,
   BrowseResult,
   ConnectionSummary,
+  DatabaseObjects,
   DatabaseSchema,
   Dialect,
   DiscoveryResult,
@@ -299,6 +300,8 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /** Functions, sequences, enums, extensions and triggers of the current database. */
+  objects(): Promise<DatabaseObjects>;
   /** The heaviest statements the server has seen on this connection, or how to start collecting them. */
   statementStats(sort: StatementOrder): Promise<StatementStats>;
   /** What must change in the current database for it to match `other` on the same connection. */

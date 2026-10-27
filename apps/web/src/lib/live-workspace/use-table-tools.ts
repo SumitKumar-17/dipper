@@ -3,6 +3,7 @@ import type {
   Advice,
   ApplyRequest,
   ApplyResult,
+  DatabaseObjects,
   ExplainRequest,
   Plan,
   RowPageRequest,
@@ -22,6 +23,7 @@ export type TableTools = {
   rowPage: (schema: string, table: string, request: RowPageRequest) => Promise<RunRecord>;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
+  objects: () => Promise<DatabaseObjects>;
   statementStats: (sort: StatementOrder) => Promise<StatementStats>;
   schemaDiff: (other: string) => Promise<SchemaDiffResult>;
   advice: () => Promise<Advice>;
@@ -60,6 +62,10 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       explain: async (request) => {
         const { id, scoped } = aimed();
         return getClient().connections.explain(id, { ...request, ...scoped });
+      },
+      objects: async () => {
+        const { id } = aimed();
+        return getClient().connections.objects(id, database ? { database } : {});
       },
       statementStats: async (sort) => {
         const { id } = aimed();

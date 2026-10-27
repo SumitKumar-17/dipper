@@ -5,6 +5,7 @@ import type {
   ApplyResult,
   ConnectionConfig,
   ConnectionSummary,
+  DatabaseObjects,
   DatabaseSchema,
   ExplainRequest,
   Plan,
@@ -69,6 +70,8 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** Functions, sequences, enums, extensions and triggers of one database. */
+  objects(id: string, opts?: TableDetailOptions): Promise<DatabaseObjects>;
   /** The heaviest statements the server has seen, ranked by total time, mean time or calls. */
   statementStats(id: string, options?: { sort?: StatementOrder; limit?: number } & CallOptions): Promise<StatementStats>;
   /** What must change in one database for it to match another, with a migration script. */
@@ -151,6 +154,9 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         body: request,
         signal: opts?.signal,
       }),
+
+    objects: (id, opts) =>
+      http.json<DatabaseObjects>(at(id, "/objects"), { query: { database: opts?.database }, signal: opts?.signal }),
 
     statementStats: (id, options) =>
       http.json<StatementStats>(at(id, "/statements"), {

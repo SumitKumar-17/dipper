@@ -51,7 +51,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] EXPLAIN and EXPLAIN ANALYZE endpoint with a parsed plan tree and warnings (L)
 - [x] Indexes and constraints per table, Postgres and MySQL (M)
 - [x] Lazy table detail: sizes, vacuum state, comments, partitions (M)
-- [ ] Triggers, functions, sequences, enums and extensions (M)
+- [x] Functions, procedures, sequences, enums, extensions and triggers, with a Database objects view (M)
 - [x] DDL generation per table (M)
 - [x] Activity and locks: sessions, waits and blockers, with cancel and terminate (M)
 - [x] Slow query statistics from `pg_stat_statements` and the MySQL digest tables, with a Slow queries view (M)

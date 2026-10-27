@@ -9,6 +9,7 @@ export type * from "./activity.js";
 export type * from "./advice.js";
 export type * from "./schema-diff.js";
 export type * from "./statements.js";
+export type * from "./objects.js";
 export type * from "./query.js";
 export type * from "./files.js";
 export type * from "./settings.js";

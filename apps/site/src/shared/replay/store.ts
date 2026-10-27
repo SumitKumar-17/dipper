@@ -450,6 +450,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     rowPage: () => Promise.reject(new Error(NOT_RECORDED)),
     applyRows: () => Promise.reject(new Error(NOT_RECORDED)),
     explain: () => Promise.reject(new Error(NOT_RECORDED)),
+    objects: () => Promise.reject(new Error(NOT_RECORDED)),
     statementStats: () => Promise.reject(new Error(NOT_RECORDED)),
     schemaDiff: () => Promise.reject(new Error(NOT_RECORDED)),
     advice: () => Promise.reject(new Error(NOT_RECORDED)),
