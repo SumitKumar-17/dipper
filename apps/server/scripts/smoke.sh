@@ -72,6 +72,9 @@ expect "markdown export has a header rule" "| --- | --- |" "$(curl -s "$B/runs/$
 expect "ndjson export is one object per line" "3" "$(curl -s "$B/runs/$RUNID/export?format=ndjson" | wc -l | tr -d ' ')"
 expect_has "sql export is runnable inserts" "insert into \"orders\"" "$(curl -s "$B/runs/$RUNID/export?format=sql&table=orders")"
 expect "unknown export format is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/runs/$RUNID/export?format=xlsx")"
+expect_has "an unsaved connection can be tested" "serverVersion" "$(curl -s -X POST -H "$J" -d "{\"url\":\"$PG_URL\"}" "$B/connections/test")"
+expect "testing a dead unsaved connection is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d '{"url":"postgres://nobody@127.0.0.1:1/none"}' "$B/connections/test")"
+expect "testing an unsaved connection stores nothing" "0" "$(curl -s "$B/connections" | json 'j.filter(c=>c.name==="unsaved").length')"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

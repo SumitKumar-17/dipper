@@ -40,6 +40,8 @@ export type ConnectionsApi = {
   update(id: string, input: ConnectionInput, opts?: CallOptions): Promise<ConnectionSummary>;
   remove(id: string, opts?: CallOptions): Promise<boolean>;
   test(id: string, opts?: CallOptions): Promise<ConnectionTest>;
+  /** Tries connection details that are not saved yet. Nothing is stored or left connected. */
+  testUnsaved(input: ConnectionInput, opts?: CallOptions): Promise<ConnectionTest>;
   connect(id: string, opts?: CallOptions): Promise<ConnectionSummary>;
   disconnect(id: string, opts?: CallOptions): Promise<ConnectionSummary>;
   databases(id: string, opts?: CallOptions): Promise<string[]>;
@@ -96,6 +98,13 @@ export function connectionsApi(http: Transport): ConnectionsApi {
 
     test: (id, opts) =>
       http.json<ConnectionTest>(at(id, "/test"), { method: "POST", signal: opts?.signal }),
+
+    testUnsaved: (input, opts) =>
+      http.json<ConnectionTest>("/api/connections/test", {
+        method: "POST",
+        body: input,
+        signal: opts?.signal,
+      }),
 
     connect: (id, opts) =>
       http.json<ConnectionSummary>(at(id, "/connect"), { method: "POST", signal: opts?.signal }),

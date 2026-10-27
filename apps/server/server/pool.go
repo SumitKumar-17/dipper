@@ -201,6 +201,22 @@ func (p *Pool) Test(ctx context.Context, idOrName string) (string, int64, error)
 	return version, latency, nil
 }
 
+// TestConfig tries a connection that has not been saved: a throwaway driver that is always closed
+// again, so a failed attempt leaves nothing stored and a successful one nothing connected.
+func (p *Pool) TestConfig(ctx context.Context, config protocol.ConnectionConfig) (string, int64, error) {
+	driver, err := db.NewDriver(config)
+	if err != nil {
+		return "", 0, httpx.BadRequest(err.Error())
+	}
+	defer func() { _ = driver.Disconnect() }()
+	version, latency, err := driver.Test(ctx)
+	if err != nil {
+		failure := db.Classify(config, err)
+		return "", 0, httpx.BadRequest(failure.Message, string(failure.Code))
+	}
+	return version, latency, nil
+}
+
 func (p *Pool) Databases(ctx context.Context, idOrName string) ([]string, error) {
 	config, err := p.Config(idOrName)
 	if err != nil {

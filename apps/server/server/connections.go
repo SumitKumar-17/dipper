@@ -171,6 +171,28 @@ func (s *Server) registerConnections() {
 		return httpx.JSON(w, map[string]any{"ok": removed})
 	})
 
+	// Tries a connection before it is saved, so the form can say whether it works. The name is
+	// irrelevant here and need not be given.
+	s.handle("POST /api/connections/test", func(w http.ResponseWriter, r *http.Request) error {
+		var body connectionBody
+		if err := httpx.DecodeJSON(r, &body); err != nil {
+			return err
+		}
+		if body.Name == nil || *body.Name == "" {
+			unnamed := "unsaved"
+			body.Name = &unnamed
+		}
+		config, err := connectionFromBody(body, nil)
+		if err != nil {
+			return err
+		}
+		version, latency, err := s.pool.TestConfig(r.Context(), config)
+		if err != nil {
+			return err
+		}
+		return httpx.JSON(w, map[string]any{"serverVersion": version, "latencyMs": latency})
+	})
+
 	s.handle("POST /api/connections/{id}/test", func(w http.ResponseWriter, r *http.Request) error {
 		version, latency, err := s.pool.Test(r.Context(), r.PathValue("id"))
 		if err != nil {
