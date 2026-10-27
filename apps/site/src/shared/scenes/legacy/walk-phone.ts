@@ -52,7 +52,7 @@ function script({ duration, stages }: Walk): [number, number][] {
 }
 
 /**
- * Below md, on <perch-walk variant="phone">: the window shows VIEW of the recording's height and
+ * Below md, on <pipit-walk variant="phone">: the window shows VIEW of the recording's height and
  * moves between the rows and the explanation on the video's own clock, so a seek or the loop lands
  * on the right framing at once. Reduced motion holds on the explanation. Returns the undo.
  */

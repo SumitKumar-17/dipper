@@ -1,11 +1,11 @@
 // The player: where the walk is (section, station, phase), whether it is moving, and how fast.
 // Paused, the scene holds at its position and any in-flight motion simply finishes; play resumes
 // from there. Stepping crosses station boundaries, skipping stations the query does not use or that
-// failed — and it crosses SECTION boundaries the same way, so the last station of one chapter runs
+// failed - and it crosses SECTION boundaries the same way, so the last station of one chapter runs
 // straight into the first station of the next. There is nothing to navigate back out of.
 
 import { PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "lucide-react";
-import type { SqlComment } from "@perch/sql";
+import type { SqlComment } from "@pipit/sql";
 import * as React from "react";
 import { Button } from "../../ui/button";
 import { Kbd } from "../../ui/kbd";
@@ -35,7 +35,7 @@ import { RowsMoveContext, SpeedContext } from "./walk-motion";
  * worth animating from where they were: what survives a filter slides up into the gap the rejected
  * rows left, a sort re-orders the card, a cut drops the tail.
  *
- * Everywhere else a row's CELLS change — a projection, a window function, a grouping — which changes
+ * Everywhere else a row's CELLS change - a projection, a window function, a grouping - which changes
  * the key it is drawn under, so the old row leaves and a new one arrives however the layout system
  * is configured. Tracking those rows anyway bought nothing and had every row on stage measured on
  * every frame of every transition. See `Row` in `stage.tsx`.
@@ -54,7 +54,7 @@ export function WalkPlayer({
 }: {
   data: ProgramData;
   /** Stripped out of the statement before the program was built, and carried through to the
-   *  narrator's Notes tab — the one place in the walk that still shows them. */
+   *  narrator's Notes tab - the one place in the walk that still shows them. */
   comments: readonly SqlComment[];
 }): React.ReactElement {
   const { program } = useWalk();
@@ -168,7 +168,7 @@ export function WalkPlayer({
 
 
   // `next` through a ref, so the callback a per-row section holds for the whole time it is on screen
-  // never has to be rebuilt — a new identity would restart its row timer on every render. This is
+  // never has to be rebuilt - a new identity would restart its row timer on every render. This is
   // the textbook case for `useEffectEvent`: a stable function that always sees the latest value.
   // Written by hand until that is out of experimental, and the ref IS what the hook compiles to.
   const nextRef = React.useRef(next);
@@ -183,7 +183,7 @@ export function WalkPlayer({
 
   const settled = holding || state === "ready";
   const dwell = holding ? HOLD_PHASE[0].ms : (stationPhases[phase]?.ms ?? 800);
-  // Leaving a station — or a whole chapter — rests on its settled state before moving on.
+  // Leaving a station - or a whole chapter - rests on its settled state before moving on.
   const rest = phase === lastPhase ? HOLD_MS : 0;
 
   const startPlaying = React.useCallback(() => setPlaying(true), []);
@@ -228,8 +228,8 @@ export function WalkPlayer({
       tables: built.tables.map((view, at) => (at === 0 ? { ...view, empty: terminus.why } : view)),
     };
   }, [built, terminus]);
-  // A column whose value comes from a subquery is not computed at the SELECT station — it has a
-  // chapter of its own — and the station's sentence is the only place that can say so.
+  // A column whose value comes from a subquery is not computed at the SELECT station - it has a
+  // chapter of its own - and the station's sentence is the only place that can say so.
   const projections = React.useMemo(
     () =>
       run

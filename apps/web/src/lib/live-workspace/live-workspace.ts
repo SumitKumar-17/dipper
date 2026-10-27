@@ -1,4 +1,4 @@
-// The implementation of WorkspaceApi, backed by `perch serve` through @perch/client. There is no
+// The implementation of WorkspaceApi, backed by `pipit serve` through @pipit/client. There is no
 // fixture provider and no offline mode, so everything any surface renders came off the wire.
 // Derived-not-stored is the rule throughout: schema staleness is computed from what loaded versus
 // what is wanted, never written into state by an effect.
@@ -7,14 +7,14 @@
 // return value *is* the answer and so have no state channel to fail into: `testConnection`,
 // `addConnection`/`updateConnection`, and `discoverServers`.
 //
-// Each concern below is its own hook; this file is where they are wired to each other — the server
+// Each concern below is its own hook; this file is where they are wired to each other - the server
 // gate that enables them all, and the four seams between them: a run's DDL re-introspects the
 // schema, a save-as relists the workspace, a file event reaches whichever buffer holds it, and the
 // files a previous session left open are reopened once the server can answer for them.
 
-import type { PerchClient } from "@perch/client";
-import type { BrowseResult, ServerEvent } from "@perch/protocol";
-import { asyncData, type PanelState, type WorkspaceApi } from "@perch/ui";
+import type { PipitClient } from "@pipit/client";
+import type { BrowseResult, ServerEvent } from "@pipit/protocol";
+import { asyncData, type PanelState, type WorkspaceApi } from "@pipit/ui";
 import * as React from "react";
 import { serverClient } from "../server-client";
 import { usePanels } from "../use-panels";
@@ -31,13 +31,13 @@ import { useWorkspaceFiles } from "./use-workspace-files";
 
 export type LiveWorkspaceOptions = {
   /** Injected by tests; the shared singleton otherwise. */
-  client?: PerchClient;
+  client?: PipitClient;
 };
 
 export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceApi {
   const { client: injected } = options;
   // Built on first use: it reads `window.location.origin`, absent when the export is prerendered.
-  const getClient = React.useCallback((): PerchClient => injected ?? serverClient(), [injected]);
+  const getClient = React.useCallback((): PipitClient => injected ?? serverClient(), [injected]);
 
   /** Every load and effect below is gated on this, so a gated app makes exactly one request. */
   const { server, enabled } = useServerGate(getClient, injected);
@@ -76,7 +76,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
 
   /**
    * The grid reconciles its tree against the buffers that exist and writes the result back, so
-   * until the restore has opened them that write is a pruned layout — it would erase the very
+   * until the restore has opened them that write is a pruned layout - it would erase the very
    * arrangement the restored files are about to re-materialise, pane ids being path-derived.
    * Holding back that one write for those few hundred milliseconds is what brings the splits back
    * with the files. Every other panel write, and every layout write afterwards, goes through.

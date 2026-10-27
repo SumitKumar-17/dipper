@@ -1,8 +1,8 @@
-// Settings → Files. Autosave, its delay, and the workspace roots list — the only folders Perch
+// Settings → Files. Autosave, its delay, and the workspace roots list - the only folders Pipit
 // may read or write, which is why that fact is said once, plainly, rather than repeated by every
 // control underneath it.
 
-import type { Settings } from "@perch/protocol";
+import type { Settings } from "@pipit/protocol";
 import { FolderOpenIcon, TrashIcon } from "lucide-react";
 import * as React from "react";
 import { Button } from "../ui/button";
@@ -65,10 +65,10 @@ export function FilesSection({
           {/* One line, and it is the one fact that is not on screen already: this list is the
               server's read/write boundary. That these are folders, that they hold .sql files and
               that the input wants an absolute path are all said by the list, the Open folder
-              button and the placeholder underneath — saying them again is the reader's time spent
+              button and the placeholder underneath - saying them again is the reader's time spent
               on what they can see. */}
           <span className="text-muted-foreground text-xs">
-            The only folders Perch may read or write.
+            The only folders Pipit may read or write.
           </span>
         </div>
 

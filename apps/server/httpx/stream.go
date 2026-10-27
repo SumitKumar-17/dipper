@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"time"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // Proxies and browsers drop a stream that says nothing.
 const SSEPingInterval = 25 * time.Second
 
-// SSE frames server events. One goroutine owns it — the route's own loop — so nothing here
+// SSE frames server events. One goroutine owns it - the route's own loop - so nothing here
 // needs a lock.
 type SSE struct {
 	w  http.ResponseWriter

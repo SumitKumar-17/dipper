@@ -1,6 +1,6 @@
-import type { PerchClient } from "@perch/client";
-import type { HistoryScope, HistoryStats, RunRecord, Settings } from "@perch/protocol";
-import type { Run } from "@perch/ui";
+import type { PipitClient } from "@pipit/client";
+import type { HistoryScope, HistoryStats, RunRecord, Settings } from "@pipit/protocol";
+import type { Run } from "@pipit/ui";
 import * as React from "react";
 import { messageOf } from "./helpers";
 import { inScope } from "./run-scope";
@@ -46,7 +46,7 @@ export type RunsState = {
 };
 
 export function useRuns(
-  getClient: () => PerchClient,
+  getClient: () => PipitClient,
   enabled: boolean,
   options: RunsOptions,
 ): RunsState {
@@ -54,7 +54,7 @@ export function useRuns(
     options;
 
   const [runs, setRuns] = React.useState<readonly Run[]>([]);
-  /** Read by `clearHistory`, which decides what to keep after an await — by then `runs` is stale. */
+  /** Read by `clearHistory`, which decides what to keep after an await - by then `runs` is stale. */
   const runsRef = React.useRef(runs);
   runsRef.current = runs;
   /**
@@ -68,7 +68,7 @@ export function useRuns(
   } | null>(null);
   /**
    * Runs the server has already been asked about: `rows` means its result rows were fetched and
-   * merged in, `none` means they are gone — it aged out of memory and history was not recording
+   * merged in, `none` means they are gone - it aged out of memory and history was not recording
    * results. Without this a run that legitimately returned no rows would be re-fetched on every
    * click, and a run whose rows are gone would keep a dead export link.
    */
@@ -192,7 +192,7 @@ export function useRuns(
    * Points at a run and, if its rows are not already here, asks the server for them.
    *
    * The history list is headers, and the last fifty runs are the only ones the server holds in
-   * memory — so before this, clicking anything older showed a results pane that claimed a row count
+   * memory - so before this, clicking anything older showed a results pane that claimed a row count
    * and had nothing in it. The server now answers from the history store too, when the settings
    * were recording results, and a 404 is the honest "those rows were not kept".
    */
@@ -241,7 +241,7 @@ export function useRuns(
   /**
    * Clears the store and the list it feeds, so the History tab empties with it. A run still in
    * flight stays: it is not in the store to be cleared, and `run` finishes by mapping over this
-   * list — dropped from it, the result it is about to return would have nowhere to land.
+   * list - dropped from it, the result it is about to return would have nowhere to land.
    */
   const clearHistory = React.useCallback(async (): Promise<void> => {
     await getClient().history.clear();
@@ -256,7 +256,7 @@ export function useRuns(
       try {
         await getClient().runs.cancel(runId);
       } catch {
-        /* already finished, or aged out — the local state below is still the right answer */
+        /* already finished, or aged out - the local state below is still the right answer */
       }
       setRuns((prev) =>
         prev.map((r) =>

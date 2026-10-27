@@ -8,7 +8,7 @@ export type TestState =
   { kind: "running" } | { kind: "ok"; test: ConnectionTest } | { kind: "error"; message: string };
 
 /**
- * One at a time, so the state is a single value rather than a map: removing is modal — it takes a
+ * One at a time, so the state is a single value rather than a map: removing is modal - it takes a
  * confirming click on the row before it runs at all.
  */
 export type RemoveState =

@@ -9,8 +9,8 @@ import { useT } from "./walk-motion";
  * A card of the stage: it fades in, fades out, and animates its POSITION and nothing else.
  *
  * A bare `layout` animates a card's width and height by SCALING it and then un-scaling every
- * projection node inside, which is both the most expensive thing on this stage — a correction
- * written to every child, every frame — and a second animation of a height that is already moving,
+ * projection node inside, which is both the most expensive thing on this stage - a correction
+ * written to every child, every frame - and a second animation of a height that is already moving,
  * because the rows inside are collapsing out on their own clock. Two springs on one height is
  * exactly the stutter that looked like. A card follows its content the way any other element does,
  * and only its position, when a neighbour resizes, is animated. Nothing inside it is scaled, so

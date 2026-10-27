@@ -5,7 +5,7 @@
 // running the same scan over that one's own clauses, which is also how a predicate two levels down
 // gets its correlation worked out.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   bareName,
   children,
@@ -39,7 +39,7 @@ import { parseTokens, scopeCtesOf } from "./parse-select";
  *
  * Depth zero for the same reason `subqueryPredicates` scans it: a list nested inside parentheses is
  * part of a bigger expression whose truth this cannot describe on its own. A list holding a SELECT
- * is skipped here and picked up there — the two functions partition the `IN`s between them.
+ * is skipped here and picked up there - the two functions partition the `IN`s between them.
  */
 export function inLists(text: string, body: Range, dialect: Dialect): InList[] {
   const toks = tokensInRange(text, body, dialect, true);
@@ -56,7 +56,7 @@ export function inLists(text: string, body: Range, dialect: Dialect): InList[] {
     const left = expressionBefore(toks, negated ? i - 1 : i);
     if (left === null) continue;
 
-    // Split on depth-zero commas. A comma INSIDE a value — `in (point(1, 2))` — is a child of that
+    // Split on depth-zero commas. A comma INSIDE a value - `in (point(1, 2))` - is a child of that
     // value's own node and never a direct child here, so the split cannot cut a value in half.
     const values = splitOn(parensTokens(parens.node, text), isComma)
       .map(spanOf)
@@ -182,8 +182,8 @@ export function subqueryPredicates(
 /**
  * The depth-zero subqueries in a select list, at most one per item, in source order.
  *
- * A select item is an expression, so the subquery can sit anywhere inside it — bare, inside a
- * `CASE`, inside a `coalesce(…)` — and the search descends through parentheses that hold values
+ * A select item is an expression, so the subquery can sit anywhere inside it - bare, inside a
+ * `CASE`, inside a `coalesce(…)` - and the search descends through parentheses that hold values
  * until it reaches one that holds a query. It stops there and at one per item, because the item IS
  * the column: giving each half of `(select …) + (select …)` a finding of its own would claim the
  * reader wrote two columns where they wrote one.
@@ -228,7 +228,7 @@ function selectParensIn(item: readonly Token[], text: string): Token | null {
 /**
  * The name a select item was given, or null.
  *
- * `expr as name` is settled by the keyword. The implicit form — `(select …) total` — is read only
+ * `expr as name` is settled by the keyword. The implicit form - `(select …) total` - is read only
  * when the token in front of the name cannot be continued by one, so the `y` of `x + y` is never
  * mistaken for an alias. This name is what the chapter strip shows, and a name taken off the middle
  * of an expression would send the reader looking for a column that does not exist.
@@ -250,7 +250,7 @@ function itemAlias(item: readonly Token[]): string | null {
  * `a and b and c` is three separate tests a row has to pass, and both callers here care about them
  * one at a time: the program asks whether ONE of them is the subquery that emptied the result, and
  * the walk asks how many of them a row failed. An `or` anywhere at depth zero collapses the answer
- * to a single conjunct — the body as a whole — because `a and (b or c)` is three tests but
+ * to a single conjunct - the body as a whole - because `a and (b or c)` is three tests but
  * `a or b and c` is not, and splitting the second one would invent a structure the SQL does not
  * have. A conjunct wrapped in its own parentheses keeps them: the range is the user's text.
  */

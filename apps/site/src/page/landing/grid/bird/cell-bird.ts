@@ -27,7 +27,7 @@ export type BirdPose = {
   ab: number;
   glide: number;
   flare: number;
-  perch: number;
+  roost: number;
   intensity: number;
   /** How much of what it leaves scatters; 0 for none. */
   wake: number;
@@ -44,12 +44,12 @@ export const birdPose = (frames: Frames, landing: boolean): BirdPose => ({
   scale: 1,
   flip: 1,
   angle: 0,
-  a: frames.perch,
-  b: frames.perch,
+  a: frames.roost,
+  b: frames.roost,
   ab: 0,
   glide: 0,
   flare: 0,
-  perch: 0,
+  roost: 0,
   intensity: 0,
   wake: 0,
   dir: 1,
@@ -81,7 +81,7 @@ export function castBird(
   const c1 = clamp(Math.ceil((bx + r) / layout.charWidth), 0, layout.cols - 1);
   const k0 = Math.max(first, Math.floor((by - r - layout.body + drift) / layout.rowHeight));
   const k1 = Math.min(first + layout.rows, Math.ceil((by + r - layout.body + drift) / layout.rowHeight));
-  const flapWeight = 1 - pose.glide - pose.flare - pose.perch;
+  const flapWeight = 1 - pose.glide - pose.flare - pose.roost;
   const quarter = layout.rowHeight / 4;
   const flipInv = 1 / pose.flip;
   for (let k = k0; k <= k1; k++) {
@@ -118,10 +118,10 @@ export function castBird(
           a += out.a * pose.flare;
           sh += out.s * out.a * pose.flare;
         }
-        if (pose.perch > 0.001) {
-          sample(frames.perch, u, v, out);
-          a += out.a * pose.perch;
-          sh += out.s * out.a * pose.perch;
+        if (pose.roost > 0.001) {
+          sample(frames.roost, u, v, out);
+          a += out.a * pose.roost;
+          sh += out.s * out.a * pose.roost;
         }
         if (a > FILLED) quarters |= 1 << j;
         cover += a;

@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"perch/db"
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
+	"pipit/db"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
 )
 
 const schemaTTL = 60 * time.Second
@@ -57,7 +57,7 @@ func (p *Pool) entry(config protocol.ConnectionConfig) (*poolEntry, error) {
 		existing.config = config
 		return existing, nil
 	}
-	// db/ returns plain errors by design — it may not import the HTTP layer. This is the seam
+	// db/ returns plain errors by design - it may not import the HTTP layer. This is the seam
 	// where they become an answerable failure rather than an unexplained 500.
 	driver, err := db.NewDriver(config)
 	if err != nil {
@@ -171,7 +171,7 @@ func (p *Pool) Disconnect(idOrName string) (protocol.ConnectionSummary, error) {
 	return p.Summary(config), nil
 }
 
-// Forget drops any live driver for a connection — call after its config changes or it is deleted.
+// Forget drops any live driver for a connection - call after its config changes or it is deleted.
 func (p *Pool) Forget(connectionID string) {
 	p.mu.Lock()
 	entry, ok := p.entries[connectionID]

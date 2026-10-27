@@ -85,7 +85,7 @@ export type ParsedSelect = {
    * The names this SELECT's output columns have, when the text settles all of them.
    *
    * Null the moment a `*` appears anywhere in the list: what a star expands to is a fact about the
-   * catalogue and not about the query, so a partial list would be worse than none — a caller
+   * catalogue and not about the query, so a partial list would be worse than none - a caller
    * asking "is this one of the output columns" would get a confident no for a column the star
    * really does produce. An item that is neither an alias nor a plain column reference contributes
    * nothing: `count(*)` is named by the database, not by the text, and guessing `count` would be
@@ -129,7 +129,7 @@ export type SetBranch = {
  * How the branches actually combine, once precedence is applied.
  *
  * SQL binds INTERSECT tighter than UNION and EXCEPT, and UNION and EXCEPT bind equally and to the
- * left — so `a union b intersect c` is `a union (b intersect c)` and `a union b except c` is
+ * left - so `a union b intersect c` is `a union (b intersect c)` and `a union b except c` is
  * `(a union b) except c`. A consumer that draws the chain left to right off `branches` alone gets
  * the first of those wrong, and gets it wrong in the direction a reader believes.
  *
@@ -151,8 +151,8 @@ export type SetTree =
  *
  * The branch list is FLAT and in source order: it is what the chapter strip walks, and every branch
  * runs on its own whatever the grouping is. Precedence lives in `tree` beside it rather than in the
- * list's shape, because the two questions have different answers — "which pieces did the user
- * write, in what order" and "which two results actually meet at each step" — and collapsing them
+ * list's shape, because the two questions have different answers - "which pieces did the user
+ * write, in what order" and "which two results actually meet at each step" - and collapsing them
  * into one nested list would cost the strip its reading order.
  */
 export type ParsedSetOp = {
@@ -178,15 +178,15 @@ export type ParsedSetOp = {
 };
 
 /**
- * `dept_name in ('Comp. Sci.', 'Physics')` — the other IN, the one whose parentheses hold values.
+ * `dept_name in ('Comp. Sci.', 'Physics')` - the other IN, the one whose parentheses hold values.
  *
  * `subqueryPredicates` steps straight over these, correctly: there is no subquery to run and so no
  * section to build. But the WHERE station then shows the whole thing as one opaque pass/fail, and
  * "which of these values did this row actually match" is the only question the predicate asks.
  *
  * The values are kept as RANGES, never as parsed literals. Deciding in JavaScript whether a row's
- * value equals one of them would be re-implementing SQL comparison — collation, numeric coercion,
- * `CHAR` padding — and getting it wrong in exactly the cases a reader would never think to check.
+ * value equals one of them would be re-implementing SQL comparison - collation, numeric coercion,
+ * `CHAR` padding - and getting it wrong in exactly the cases a reader would never think to check.
  * The station splices these ranges into the probe instead and lets the database say.
  */
 export type InList = {
@@ -203,7 +203,7 @@ export type InList = {
    * It earns its own flag because it silently decides the predicate: `x not in (1, null)` is never
    * true for any x, since the comparison to `null` is unknown and an unknown conjunct sinks the
    * whole `not in`. A reader staring at an empty result deserves to be told that, and the word is
-   * right there in the query — no probe required.
+   * right there in the query - no probe required.
    */
   readonly hasNull: boolean;
 };
@@ -224,7 +224,7 @@ export type SubqueryPredicate = {
   readonly parsed: ParsedSelect | Unsupported;
   /**
    * Column references inside the subquery that are qualified by something the subquery itself does
-   * not define — i.e. references to the OUTER query's rows. Empty means the subquery is
+   * not define - i.e. references to the OUTER query's rows. Empty means the subquery is
    * uncorrelated and can be run once.
    */
   readonly correlated: readonly string[];
@@ -236,7 +236,7 @@ export type SubqueryPredicate = {
  * The two shapes are the same two a predicate has, and so is what separates them: one that names
  * nothing outside itself is computed once and the same value lands on every row, while a correlated
  * one is re-run for each row and lands a different value on each. What it does NOT have is a
- * verdict — there is no boolean here for a probe to splice `true` over — which is why it carries no
+ * verdict - there is no boolean here for a probe to splice `true` over - which is why it carries no
  * `kind` and why `bound.ts` cannot treat it as a predicate.
  */
 export type SelectSubquery = {
@@ -246,13 +246,13 @@ export type SelectSubquery = {
   readonly range: Range;
   /** Inside those parentheses. */
   readonly body: Range;
-  /** The name the item was given — `total_students` — or null when it was given none. */
+  /** The name the item was given - `total_students` - or null when it was given none. */
   readonly alias: string | null;
   /** The subquery parsed on its own; the enclosing statement's CTEs are seeded into its scope. */
   readonly parsed: ParsedSelect | Unsupported;
   /**
    * References inside it that name something it does not define: the outer query's rows. Only
-   * QUALIFIED ones count, exactly as for a predicate — an empty list means "no PROVABLE
+   * QUALIFIED ones count, exactly as for a predicate - an empty list means "no PROVABLE
    * correlation" and never "uncorrelated". See `correlatedIn`.
    */
   readonly correlated: readonly string[];

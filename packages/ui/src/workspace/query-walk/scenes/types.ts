@@ -1,7 +1,7 @@
 // The shapes a scene is made of: what one card, one row and one bucket look like once the stage
 // has them. Types only, so every other file here can import them without pulling in a builder.
 
-import type { Cell } from "@perch/protocol";
+import type { Cell } from "@pipit/protocol";
 import type { SourceRef } from "../clauses";
 import type { CellTone } from "../grid";
 
@@ -38,7 +38,7 @@ export type GridCellView = {
   readonly key: string;
   /** The inner predicate's answer, or null when the probe's cap did not reach this pair. */
   readonly returned: boolean | null;
-  /** What it does to the OUTER row's verdict — never the raw boolean. See `cellTone`. */
+  /** What it does to the OUTER row's verdict - never the raw boolean. See `cellTone`. */
   readonly tone: CellTone;
   /** The inner subquery found rows, which is what the filled dot means. */
   readonly found: boolean;
@@ -109,15 +109,15 @@ export type TableView = {
    * One line under the card saying what it is NOT showing, and why.
    *
    * For a downgrade the reader would otherwise read as a bug: a cap that took a column away, a
-   * measurement the station declined to make. It is not an error and not an emptiness — `error`
-   * and `empty` cover those — so it sits quietly under the rows rather than replacing them.
+   * measurement the station declined to make. It is not an error and not an emptiness - `error`
+   * and `empty` cover those - so it sits quietly under the rows rather than replacing them.
    */
   readonly note?: string;
   /**
    * The card arrived settled: its rows were already tested when it came on screen.
    *
    * Entering a chapter is not a test. The outer probe ran once, before the reader got here, so
-   * staggering the verdict marks in would animate something that did not just happen — which is the
+   * staggering the verdict marks in would animate something that did not just happen - which is the
    * definition of a lie in this walk. Stagger belongs to playback's first pass through the rows.
    */
   readonly settled?: boolean;
@@ -153,7 +153,7 @@ export type ValueChip = {
  *
  * EXISTS is absent from this union on purpose: presence is a question about ROWS, and the rows are
  * an ordinary card. IN is a question about membership, so its card is a value list rather than a
- * table — a table invites the eye to read columns that are not the point. A scalar is a question
+ * table - a table invites the eye to read columns that are not the point. A scalar is a question
  * about one comparison, so its card is that comparison, three cells wide.
  */
 export type AnswerView =

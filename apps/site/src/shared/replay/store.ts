@@ -1,6 +1,6 @@
-// The WorkspaceApi over recordings. Every surface in @perch/ui reads this contract and nothing
+// The WorkspaceApi over recordings. Every surface in @pipit/ui reads this contract and nothing
 // else, so the components are the shipped ones and only the transport differs: where the live
-// provider asks `perch serve`, this answers from what `perch serve` said while recording. Edits,
+// provider asks `pipit serve`, this answers from what `pipit serve` said while recording. Edits,
 // tabs, settings and panels live in memory; runs replay; nothing that was not recorded is invented.
 
 import type {
@@ -11,7 +11,7 @@ import type {
   RunRecord,
   Settings,
   StatementResult,
-} from "@perch/protocol";
+} from "@pipit/protocol";
 import {
   ConnectFailed,
   RESULTS_PANE,
@@ -28,17 +28,17 @@ import {
   type Run,
   type SaveState,
   type WorkspaceApi,
-} from "@perch/ui";
+} from "@pipit/ui";
 import { exportCsvUrl } from "./export-csv";
 import { normaliseSql } from "./normalise";
 import type { Recording, ReplayInput, ReplayWorkspace } from "./types";
 
 /** What an unrecorded query gets instead of rows. */
 export const REPLAY_NOTICE =
-  "This preview replays recorded queries — install Perch to run your own.";
+  "This preview replays recorded queries - install Pipit to run your own.";
 
 const NEEDS_MACHINE =
-  "This preview has no machine behind it — install Perch to connect your own databases.";
+  "This preview has no machine behind it - install Pipit to connect your own databases.";
 
 /** The app's first-run grid (apps/web use-panels): queries above, results below. */
 const DEFAULT_LAYOUT: EditorLayout = {
@@ -508,7 +508,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
         ? stale
           ? asyncRefreshing(asyncReady(recorded))
           : asyncReady(recorded)
-        : asyncError(`This preview recorded one database — install Perch to browse ${database}.`);
+        : asyncError(`This preview recorded one database - install Pipit to browse ${database}.`);
       schemaCache.set(key, value);
     }
     return value;

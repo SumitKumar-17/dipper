@@ -39,7 +39,7 @@ export function SendPill() {
 
   return (
     // On the window's bottom edge: at a phone's size the top edge is the titlebar's address, and
-    // the bird's perch.
+    // the bird's roost.
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex translate-y-1/2 justify-center">
       <button
         type="button"

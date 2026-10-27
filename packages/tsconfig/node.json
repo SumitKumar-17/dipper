@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@perch/node",
+  "display": "@pipit/node",
   "extends": "./base.json",
   "compilerOptions": {
     "module": "NodeNext",

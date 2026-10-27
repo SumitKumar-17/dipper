@@ -3,7 +3,7 @@ import { type FeatureSectionProps, Section, SectionText } from "../layout/sectio
 import { Stage, StagePiece } from "../layout/stage";
 import { CompletionPiece } from "./completion/piece";
 
-export function CompletionSection({ perchRef, onSceneDone }: FeatureSectionProps) {
+export function CompletionSection({ roostRef, onSceneDone }: FeatureSectionProps) {
   return (
     <Section id="features" labelledBy="completion-title" stage>
       <Stage
@@ -16,7 +16,7 @@ export function CompletionSection({ perchRef, onSceneDone }: FeatureSectionProps
         }
         below={
           <StagePiece>
-            <CompletionPiece perchRef={perchRef} />
+            <CompletionPiece roostRef={roostRef} />
           </StagePiece>
         }
         scene={(held) => <CompletionScene paused={held} onDone={onSceneDone} />}

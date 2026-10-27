@@ -3,7 +3,7 @@ import type { Bird, BirdFacing, GuideStep } from "./bird";
 import { useBird } from "./bird-provider";
 
 export type BirdGuideStep = {
-  /** The perch: a ref, or a function for an element that arrives later (a scene's titlebar). */
+  /** The roost: a ref, or a function for an element that arrives later (a scene's titlebar). */
   ref: RefObject<HTMLElement | null> | (() => HTMLElement | null);
   /** 0..1 along the element's top edge. Default 0.8. */
   at?: number;

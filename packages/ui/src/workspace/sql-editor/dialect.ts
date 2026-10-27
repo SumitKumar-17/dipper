@@ -5,11 +5,11 @@
 
 import { MySQL, PostgreSQL, SQLDialect } from "@codemirror/lang-sql";
 import { type Input, type NestedParse, type SyntaxNodeRef, parseMixed } from "@lezer/common";
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 
 /**
- * The body's own dialect. Postgres' keyword list already carries PL/pgSQL's vocabulary — `raise`,
- * `notice`, `loop`, `elsif`, `perform` and `exception` are all in it — so the only additions are
+ * The body's own dialect. Postgres' keyword list already carries PL/pgSQL's vocabulary - `raise`,
+ * `notice`, `loop`, `elsif`, `perform` and `exception` are all in it - so the only additions are
  * the two types a block can declare that a table column cannot.
  */
 const PLpgSQL = SQLDialect.define({
@@ -17,7 +17,7 @@ const PLpgSQL = SQLDialect.define({
   types: `${PostgreSQL.spec.types ?? ""} record refcursor`,
 });
 
-/** `$$`, or `$tag$` — the same shape `@perch/sql`'s splitter skips. */
+/** `$$`, or `$tag$` - the same shape `@pipit/sql`'s splitter skips. */
 const OPENING_TAG = /^\$(?:[A-Za-z_-￿][A-Za-z0-9_-￿]*)?\$/;
 
 function dollarQuotedBody(node: SyntaxNodeRef, input: Input): NestedParse | null {

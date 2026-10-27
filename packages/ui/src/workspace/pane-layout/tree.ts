@@ -17,7 +17,7 @@ export function paneGroup(panes: readonly PaneId[], id = newId("group")): PaneGr
   return { kind: "group", id, panes, activePane: panes[panes.length - 1] ?? null };
 }
 
-/** One group holding everything — what a layout with no split looks like. */
+/** One group holding everything - what a layout with no split looks like. */
 export function singleGroup(panes: readonly PaneId[] = []): EditorLayout {
   const root = paneGroup(panes, ROOT_GROUP);
   return { root, focusedGroup: root.id };
@@ -28,7 +28,7 @@ export function isGroup(node: PaneNode): node is PaneGroup {
   return node.kind === "group";
 }
 
-/** Every group, left to right and top to bottom — the order the tabs appear on screen. */
+/** Every group, left to right and top to bottom - the order the tabs appear on screen. */
 export function groups(node: PaneNode): readonly PaneGroup[] {
   return isGroup(node) ? [node] : node.children.flatMap(groups);
 }
@@ -47,7 +47,7 @@ export function findBranch(node: PaneNode, id: string): PaneBranch | undefined {
   return undefined;
 }
 
-/** The one group holding `pane` — "one answer" is the invariant the whole model rests on. */
+/** The one group holding `pane` - "one answer" is the invariant the whole model rests on. */
 export function groupOf(node: PaneNode, pane: PaneId): PaneGroup | undefined {
   return groups(node).find((group) => group.panes.includes(pane));
 }
@@ -66,7 +66,7 @@ export function normalizeSizes(sizes: readonly number[]): readonly number[] {
 
 /**
  * Runs `transform` over a branch's children and puts the branch back together, healing it: a branch
- * left with one child collapses into it, and one left with none disappears in turn — otherwise
+ * left with one child collapses into it, and one left with none disappears in turn - otherwise
  * closing tabs builds a tower of single-child splits that each still eat a resize handle. The
  * branch itself comes back by reference when no child moved.
  */

@@ -9,7 +9,7 @@
 // This file owns the submit; the fields are in `use-connection-fields.ts` and the three groups of
 // markup are their own components.
 
-import type { ConnectionSummary, Dialect } from "@perch/protocol";
+import type { ConnectionSummary, Dialect } from "@pipit/protocol";
 import * as React from "react";
 import { messageOf } from "../../lib/errors";
 import { cn } from "../../lib/utils";
@@ -31,7 +31,7 @@ const UNREACHABLE = "The connection could not be reached.";
 export type ConnectionFormProps = {
   /** Set to edit an existing connection: writes through `updateConnection`. */
   connectionId?: string;
-  /** Starting values — a discovered server, or the connection being edited. */
+  /** Starting values - a discovered server, or the connection being edited. */
   initial?: ConnectionInput;
   /** Fires once the connection is saved. `test` is null when the round trip failed. */
   onSaved?: (connection: ConnectionSummary, test: ConnectionTest | null) => void;
@@ -126,7 +126,7 @@ export function ConnectionForm({
       <AddressFields fields={fields} />
 
       {/* One line, and on the same grid as the Address header above it: label left, control right.
-          Only in fields mode — a URL carries its own sslmode, and a switch beside it would be a
+          Only in fields mode - a URL carries its own sslmode, and a switch beside it would be a
           second answer to a question already answered. It follows the host until touched, because
           hosted Postgres requires TLS and a server on this machine does not offer it, and the
           alternative is a first run that fails on a setting nobody knew to look for. */}
@@ -136,7 +136,7 @@ export function ConnectionForm({
             <FieldLabel htmlFor="connection-ssl">
               Connect over TLS
               <span className="font-normal text-muted-foreground">
-                — required by hosted databases
+                - required by hosted databases
               </span>
             </FieldLabel>
             <Switch checked={fields.ssl} id="connection-ssl" onCheckedChange={fields.setSSL} />

@@ -3,10 +3,10 @@ package server
 import (
 	"net/http"
 
-	"perch/db"
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
+	"pipit/db"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
 )
 
 type connectionBody struct {
@@ -90,7 +90,7 @@ func connectionFromBody(body connectionBody, existing *protocol.ConnectionConfig
 		merged.SSL = *body.SSL
 	} else if existing == nil && !merged.SSL && !hasSSLMode(merged.Options) {
 		// Nobody said either way, and this is a new connection. A database reached over the
-		// network wants TLS — every hosted provider requires it — and a local one does not offer
+		// network wants TLS - every hosted provider requires it - and a local one does not offer
 		// it, so the host is the answer. An explicit sslmode in a pasted URL outranks this.
 		merged.SSL = db.RemoteDefaultSSL(merged.Host)
 	}

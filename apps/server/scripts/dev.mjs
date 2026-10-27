@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-const port = process.env.PERCH_DEV_PORT || "4600";
+const port = process.env.PIPIT_DEV_PORT || "4600";
 const args = [
   "run",
   ".",

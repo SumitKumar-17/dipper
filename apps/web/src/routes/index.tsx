@@ -1,7 +1,7 @@
 // The workspace shell: three panes, with the results sheet docked below the editor.
 //
-// Everything below is live, always: `useAppWorkspace` is @perch/client against `perch serve` and
-// there is no other provider. No fixture fallback — when the server is not answering the app says
+// Everything below is live, always: `useAppWorkspace` is @pipit/client against `pipit serve` and
+// there is no other provider. No fixture fallback - when the server is not answering the app says
 // so and stops, rather than filling the panes with data nobody asked for.
 
 import {
@@ -11,7 +11,7 @@ import {
   EditorGrid,
   FilesList,
   Onboarding,
-  PerchMark,
+  PipitMark,
   ResizableSidebar,
   RunButton,
   SaveIndicator,
@@ -30,7 +30,7 @@ import {
   SaveQueryDialog,
   SchemaDiagramDialog,
   useWorkspace,
-} from "@perch/ui";
+} from "@pipit/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
@@ -39,7 +39,7 @@ import { DEFAULT_PANELS } from "@/lib/use-panels";
 import { RunHistory } from "@/run-history";
 
 // The only route there is. The server answers every other path with the same shell, so the router
-// is what decides they are not this one — see the root route's `notFoundComponent`.
+// is what decides they are not this one - see the root route's `notFoundComponent`.
 export const Route = createFileRoute("/")({ component: Page });
 
 function Page(): React.ReactElement {
@@ -85,7 +85,7 @@ function Workspace(): React.ReactElement {
 
   return (
     <div className="flex h-svh flex-col overflow-hidden">
-      {/* Mounted once, for ⌘S and the save menu alike — see save-query-dialog. */}
+      {/* Mounted once, for ⌘S and the save menu alike - see save-query-dialog. */}
       <SaveQueryDialog />
       {/* Likewise: the sidebar button and the palette both open it by event. */}
       <SchemaDiagramDialog />
@@ -104,8 +104,8 @@ function Workspace(): React.ReactElement {
             {/* The mark, not the wordmark: the topbar is the app you are already inside, so the
                 identity only has to be present, and the name would cost the connection picker the
                 width it needs for a long database name. */}
-            <span aria-label="Perch" className="flex items-center pr-1 pl-0.5" role="img">
-              <PerchMark className="size-5" />
+            <span aria-label="Pipit" className="flex items-center pr-1 pl-0.5" role="img">
+              <PipitMark className="size-5" />
             </span>
             <div aria-hidden className="mr-0.5 h-4 w-px bg-border" />
             <button

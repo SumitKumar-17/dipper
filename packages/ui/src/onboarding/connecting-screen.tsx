@@ -1,6 +1,6 @@
 // The moment between pressing Connect and seeing the workspace. Everything else unmounts, leaving
-// the app's one picture at full size: opening a database is the only ceremony perch has — no
-// account, no import, no sync — so it is worth showing rather than hiding behind a spinner.
+// the app's one picture at full size: opening a database is the only ceremony pipit has - no
+// account, no import, no sync - so it is worth showing rather than hiding behind a spinner.
 //
 // The stages are real work in the order it happens: socket, handshake, introspection, then the
 // workspace mounting. A progress list that invents steps is a lie the first slow connection exposes.
@@ -8,7 +8,7 @@
 // Motion is all SVG: the wire draws itself with `pathLength` and the packets ride it with
 // `offsetPath`, so they follow the curve rather than being tweened across a straight line.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import * as React from "react";
@@ -51,7 +51,7 @@ export function ConnectingScreen({
   dialect: Dialect;
   /** The connection's own name, so the screen says which database it is opening. */
   name?: string;
-  /** Overrides the heading — "Switching to demov2" rather than "Connecting to …". */
+  /** Overrides the heading - "Switching to demov2" rather than "Connecting to …". */
   title?: string;
   stages?: readonly string[];
   durationMs?: number;

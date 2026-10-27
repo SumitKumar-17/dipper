@@ -30,7 +30,7 @@ export type PaneBranch = {
   readonly id: string;
   readonly direction: "row" | "column";
   readonly children: readonly PaneNode[];
-  /** Percent per child — always `children.length` long, always summing to 100. */
+  /** Percent per child - always `children.length` long, always summing to 100. */
   readonly sizes: readonly number[];
 };
 

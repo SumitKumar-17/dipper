@@ -47,7 +47,7 @@ export type Station = {
    *
    * Null for every station named after a clause: FROM, WHERE and the rest are explained from the
    * parse, which is richer than anything a builder could write down in advance. It is set where
-   * there is no clause to explain — a recursive CTE's three stations are about the shape of the
+   * there is no clause to explain - a recursive CTE's three stations are about the shape of the
    * whole CTE, and `sentenceFor` has nothing to read that would tell it so.
    */
   readonly sentence: string | null;
@@ -83,7 +83,7 @@ export const ABSENT: Station["batches"] = [];
  * hundred characters wide, and what a reader had to do to tell two stations apart was find the two
  * fields that differed. They are defaults rather than omissions: `joinIndex: -1` means "not a join"
  * and `inLists: []` means "measured nothing", and either is still answerable by a caller that has
- * something else to say — which is what WHERE does, since a WHERE that was not in the query
+ * something else to say - which is what WHERE does, since a WHERE that was not in the query
  * measured no lists whatever it found.
  */
 export function station(
@@ -103,7 +103,7 @@ export function absentStation(key: string, id: StationId, label: string): Statio
  *
  * The prefix is rendered ONCE at the head of the statement and the body goes inside, which is why
  * the count wrapper keeps it OUTSIDE its subquery: a WITH inside a derived table is not legal
- * there. `buildResultStation` writes its own count wrapper and deliberately does not use this —
+ * there. `buildResultStation` writes its own count wrapper and deliberately does not use this -
  * its prefix is already part of the text it is given, so there is nothing left to put in front.
  */
 export function wrap(prefix: string): {
@@ -130,7 +130,7 @@ export function sourceTitle(source: SourceRef): string {
  * find `over` and `case` inside an item, which the pieces below do the same way the parser does
  * one level up: a string literal, a comment and a parenthesised group are each swallowed whole, so
  * a `case` written inside one is never mistaken for the keyword. Everything these return is a
- * slice of the item, never a re-spelling of it — the station queries splice those slices straight
+ * slice of the item, never a re-spelling of it - the station queries splice those slices straight
  * back in.
  */
 

@@ -1,9 +1,9 @@
 {
-  "name": "@perch/protocol",
+  "name": "@pipit/protocol",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The wire contract between the perch server and every client. TYPES ONLY \u2014 no runtime code, ever.",
+  "description": "The wire contract between the pipit server and every client. TYPES ONLY \u2014 no runtime code, ever.",
   "types": "./src/index.ts",
   "exports": {
     ".": {
@@ -19,7 +19,7 @@
     "check": "node scripts/assert-types-only.mjs"
   },
   "devDependencies": {
-    "@perch/tsconfig": "*",
+    "@pipit/tsconfig": "*",
     "typescript": "^6.0.3"
   }
 }

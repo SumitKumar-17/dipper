@@ -1,20 +1,20 @@
 /**
- * What the editor offers as you type. `basic` is the plain dictionary — every keyword and every
+ * What the editor offers as you type. `basic` is the plain dictionary - every keyword and every
  * object in the schema, everywhere. `smart` reads the statement around the cursor and narrows
  * columns to the tables it actually joins, which is what makes the list worth reading.
  */
 export type CompletionMode = "off" | "basic" | "smart";
 
 /**
- * How much of a run survives it. `queries` is what perch has always kept — the shape of a run and
- * its counts, never a row — and stays the default: turning on row storage without being asked
+ * How much of a run survives it. `queries` is what pipit has always kept - the shape of a run and
+ * its counts, never a row - and stays the default: turning on row storage without being asked
  * would put a database's contents in a second place on disk that nobody chose.
  */
 export type HistoryMode = "off" | "queries" | "results";
 
 /**
- * What the history store holds. `bytes` is what perch has stored; `fileBytes` is what the file
- * takes up, which is larger and does not shrink when runs are dropped — the store reuses the pages
+ * What the history store holds. `bytes` is what pipit has stored; `fileBytes` is what the file
+ * takes up, which is larger and does not shrink when runs are dropped - the store reuses the pages
  * it frees rather than returning them, so the file plateaus instead of growing.
  */
 export type HistoryStats = {
@@ -41,7 +41,7 @@ export type Settings = {
    */
   onboarded: boolean;
   /**
-   * Folders that have been workspace roots, newest first — what an editor calls "Recent". Kept
+   * Folders that have been workspace roots, newest first - what an editor calls "Recent". Kept
    * when a root is removed, which is the point: closing a folder should not mean losing the path.
    */
   recentWorkspaces: string[];

@@ -1,22 +1,22 @@
 import type { RefObject } from "react";
-import type { Bird, PerchOptions } from "../../../../shared/bird";
+import type { Bird, RoostOptions } from "../../../../shared/bird";
 import { birdLength } from "../../../bird/size";
-import type { HeadlinePerch } from "../copy/headline";
+import type { HeadlineRoost } from "../copy/headline";
 
 /**
  * The page's porcelain bird while the landing has it. It is placed on the headline once the cell
- * bird has handed over, then guided between two perches as the page scrolls: the headline, and the
+ * bird has handed over, then guided between two roosts as the page scrolls: the headline, and the
  * top edge of the window below. It is only ever moved while the landing holds it; the page's route
  * takes it from there (`setBird(null)`), and gives it back when the visitor scrolls up.
  */
 export class PorcelainBird {
   private bird: Bird | null = null;
-  private perch: HeadlinePerch | null = null;
+  private roost: HeadlineRoost | null = null;
   private released = false;
   private placed = false;
   private stopGuide: (() => void) | null = null;
 
-  constructor(private readonly windowPerch: RefObject<HTMLElement | null>) {}
+  constructor(private readonly windowRoost: RefObject<HTMLElement | null>) {}
 
   /** True once the bird can take over from the cells. */
   get ready(): boolean {
@@ -36,11 +36,11 @@ export class PorcelainBird {
   }
 
   /** The headline reflowed: the bird moves to the new first line's last word. */
-  setPerch(perch: HeadlinePerch | null) {
-    const previous = this.perch;
-    this.perch = perch;
+  setRoost(roost: HeadlineRoost | null) {
+    const previous = this.roost;
+    this.roost = roost;
     const moved =
-      !previous || !perch || previous.el !== perch.el || previous.at !== perch.at || previous.offsetY !== perch.offsetY;
+      !previous || !roost || previous.el !== roost.el || previous.at !== roost.at || previous.offsetY !== roost.offsetY;
     if (moved && this.placed && this.bird) this.guide(this.bird);
   }
 
@@ -61,16 +61,16 @@ export class PorcelainBird {
 
   private place() {
     const bird = this.bird;
-    const perch = this.perch;
-    if (!bird || !perch || !this.released || this.placed) return;
+    const roost = this.roost;
+    if (!bird || !roost || !this.released || this.placed) return;
     this.placed = true;
     // Kept still, the guide's first pick places it: appearing first would have the guide fade it
-    // out and back in on the same perch.
+    // out and back in on the same roost.
     if (bird.reducedMotion) {
       this.guide(bird);
       return;
     }
-    void bird.appear(perch.el, this.options(perch)).then(() => {
+    void bird.appear(roost.el, this.options(roost)).then(() => {
       if (this.bird !== bird) return;
       // It shakes the grid off its feathers.
       bird.flutter();
@@ -80,11 +80,11 @@ export class PorcelainBird {
 
   private guide(bird: Bird) {
     this.unguide();
-    const perch = this.perch;
-    if (!perch) return;
-    const below = this.windowPerch.current;
+    const roost = this.roost;
+    if (!roost) return;
+    const below = this.windowRoost.current;
     this.stopGuide = bird.guide([
-      { el: perch.el, ...this.options(perch), band: 0.5 },
+      { el: roost.el, ...this.options(roost), band: 0.5 },
       ...(below && below.getClientRects().length ? [{ el: below, at: 0.84, band: 0.3 }] : []),
     ]);
   }
@@ -94,7 +94,7 @@ export class PorcelainBird {
     this.stopGuide = null;
   }
 
-  private options(perch: HeadlinePerch): PerchOptions {
-    return { at: perch.at, facing: "left", offsetY: perch.offsetY };
+  private options(roost: HeadlineRoost): RoostOptions {
+    return { at: roost.at, facing: "left", offsetY: roost.offsetY };
   }
 }

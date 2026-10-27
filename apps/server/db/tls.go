@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // A wrong hostname is the commonest mistake against a hosted database, and without this the
@@ -30,7 +30,7 @@ var pgSSLModes = map[string]bool{
 //   - SSL off is off. The toggle is the user's last word, and an `sslmode` that the URL they
 //     pasted earlier left in Options is not a reason to keep encrypting behind their back.
 //   - A URL that named a mode pgx knows keeps it. A pasted hosted-Postgres string is the
-//     connection's own documentation; perch is not better informed than the provider that
+//     connection's own documentation; pipit is not better informed than the provider that
 //     issued it.
 //   - Over loopback, TLS is a local server's self-signed certificate, so `require` (encrypted,
 //     unverified) is the only mode that works there.

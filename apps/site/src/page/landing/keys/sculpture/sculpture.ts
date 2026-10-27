@@ -8,7 +8,7 @@ import { redrawLegend } from "./textures";
 import { type Box, fitView, SPAN } from "./view";
 
 // The bird's shadow on the key it stands on, as a share of the bird's length.
-const PERCH_SHADOW = { length: 0.5, depth: 0.26 };
+const ROOST_SHADOW = { length: 0.5, depth: 0.26 };
 // Frames longer than this (a stall, a hidden tab) are taken as this long.
 const MAX_FRAME = 0.05;
 
@@ -26,7 +26,7 @@ export class Sculpture {
   private scene: Scene;
   private keys: Map<KeyId, Key>;
   private all: Key[];
-  private perchShadow: Mesh;
+  private roostShadow: Mesh;
   private birdLength: number;
   private scratch = new Vector3();
   private width = 1;
@@ -60,7 +60,7 @@ export class Sculpture {
     this.scene = this.parts.scene;
     this.keys = this.parts.keys;
     this.all = [...this.keys.values()];
-    this.perchShadow = this.parts.perchShadow;
+    this.roostShadow = this.parts.roostShadow;
 
     // Legends are drawn in Geist Mono; if it was still loading, draw them again once it is here.
     void document.fonts?.ready.then(() => {
@@ -77,9 +77,9 @@ export class Sculpture {
     this.renderer.setSize(this.width, this.height, false);
     const bounds = fitView(this.camera, frame, this.width, this.height);
     const unit = bounds.w / SPAN;
-    this.perchShadow.scale.set(
-      (this.birdLength * PERCH_SHADOW.length) / unit,
-      (this.birdLength * PERCH_SHADOW.depth) / unit,
+    this.roostShadow.scale.set(
+      (this.birdLength * ROOST_SHADOW.length) / unit,
+      (this.birdLength * ROOST_SHADOW.depth) / unit,
       1,
     );
     this.invalidate();
@@ -120,11 +120,11 @@ export class Sculpture {
     for (const key of this.all) key.occupied = key.spec.id === id;
     const key = id ? this.keys.get(id) : undefined;
     if (key) {
-      key.body.add(this.perchShadow);
+      key.body.add(this.roostShadow);
       // a hair above the dish, and off to the side away from the light
-      this.perchShadow.position.set(0.04, key.spec.h - 0.012, -0.06);
+      this.roostShadow.position.set(0.04, key.spec.h - 0.012, -0.06);
     }
-    this.perchShadow.visible = key !== undefined;
+    this.roostShadow.visible = key !== undefined;
     this.invalidate();
   }
 

@@ -1,4 +1,4 @@
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { clockOf, plural } from "../../lib/format";
 import type { Run } from "../types";
 
@@ -36,7 +36,7 @@ export function summaryOf(
 }
 
 /**
- * A bar's share of its cell — ragged, but derived from the coordinates rather than `Math.random`, so
+ * A bar's share of its cell - ragged, but derived from the coordinates rather than `Math.random`, so
  * a re-render cannot reshuffle every width mid-shimmer and the server render agrees with the client.
  */
 export function barWidth(row: number, column: number, base: number, spread: number): string {

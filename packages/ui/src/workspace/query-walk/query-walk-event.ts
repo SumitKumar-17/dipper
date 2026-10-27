@@ -1,4 +1,4 @@
-export const QUERY_WALK_EVENT = "perch:visualise-query";
+export const QUERY_WALK_EVENT = "pipit:visualise-query";
 
 export type QueryWalkEventDetail = {
   /** The statement to walk, as the user wrote it. */
@@ -6,7 +6,7 @@ export type QueryWalkEventDetail = {
 };
 
 /**
- * Opens the query walk from anywhere — the editor's context menu, the palette — without the caller
+ * Opens the query walk from anywhere - the editor's context menu, the palette - without the caller
  * owning the dialog. `<QueryWalkDialog>` is mounted once in the shell and listens.
  */
 export function requestQueryWalk(sql: string): void {
@@ -18,7 +18,7 @@ export function requestQueryWalk(sql: string): void {
 /**
  * The last statement anyone asked to walk, as a store rather than as an event.
  *
- * The dialog needs two things from this — whether to be open, and what to show — and reading them
+ * The dialog needs two things from this - whether to be open, and what to show - and reading them
  * off an event listener meant two `useState`s written from inside an effect, which is two renders
  * for one request and two names for one fact. A store answers both at once: a request is a new
  * snapshot, and "no request yet" is null.

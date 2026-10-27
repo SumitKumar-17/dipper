@@ -25,7 +25,7 @@ export function Rail({
   const n = stations.length;
   return (
     // The padding is load-bearing: `overflow-x-auto` also clips vertically, so without it the
-    // scroll box cuts the top off every dot — the ring sits outside the 24px circle.
+    // scroll box cuts the top off every dot - the ring sits outside the 24px circle.
     <nav aria-label="Stations" className="min-w-0 overflow-x-auto px-1 py-1.5">
       <ol className="relative flex min-w-max">
         <div aria-hidden className="absolute top-3 right-12 left-12 h-px bg-border" />
@@ -125,7 +125,7 @@ export function Rail({
                       key="n"
                       transition={t.fade}
                     >
-                      {present ? i + 1 : "–"}
+                      {present ? i + 1 : "-"}
                     </motion.span>
                   )}
                 </AnimatePresence>

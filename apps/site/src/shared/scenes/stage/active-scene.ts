@@ -41,7 +41,7 @@ let installed = false;
 /**
  * Registered once, before any workspace mounts, so it runs ahead of every `useHotkey` listener on
  * `window`. It runs last in the event's path, after the page's own handlers, and prevents no
- * default — it only keeps a workspace's shortcut from firing when the visitor is not inside it.
+ * default - it only keeps a workspace's shortcut from firing when the visitor is not inside it.
  */
 function install(): void {
   if (installed) return;

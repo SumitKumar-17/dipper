@@ -1,5 +1,5 @@
-// Line-oriented reading of a response body. A chunk boundary can land anywhere — mid-line, or
-// mid multi-byte character — so the decoder runs in streaming mode and whatever follows the last
+// Line-oriented reading of a response body. A chunk boundary can land anywhere - mid-line, or
+// mid multi-byte character - so the decoder runs in streaming mode and whatever follows the last
 // newline stays in `buffer` until the chunk that completes it arrives.
 
 /** Yields one line at a time, without its terminator. A final line without a "\n" still counts. */

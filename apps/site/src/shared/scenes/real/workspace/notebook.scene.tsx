@@ -68,7 +68,7 @@ function wholeCell(camera: Camera, card: HTMLElement): Focus {
 
 /**
  * A phone's close-up of the notebook, laid out a phone's width wide: the whole file for a moment,
- * then cell by cell — the cell whole, its own run button pressed, and the result printing under it.
+ * then cell by cell - the cell whole, its own run button pressed, and the result printing under it.
  * The loop ends on the last cell's result and opens wide again on the next pass.
  */
 async function closeUpTour(context: SceneContext, camera: Camera, all: HTMLElement[]): Promise<void> {

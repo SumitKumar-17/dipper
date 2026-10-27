@@ -13,10 +13,10 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@perch/ui",
-    "utils": "@perch/ui",
-    "ui": "@perch/ui",
-    "lib": "@perch/ui"
+    "components": "@pipit/ui",
+    "utils": "@pipit/ui",
+    "ui": "@pipit/ui",
+    "lib": "@pipit/ui"
   },
   "menuColor": "default",
   "menuAccent": "subtle"

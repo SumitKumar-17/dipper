@@ -20,7 +20,7 @@ const ENDS_RESULT = new Set(["when", "else", "end", "case"]);
  *
  * Only the searched form is read. The simple form (`case salary when 90000 then …`) compares each
  * WHEN against an operand, and the walk would have to write that comparison itself to test a
- * branch on its own — which is the one thing this module does not do. A CASE nested inside another
+ * branch on its own - which is the one thing this module does not do. A CASE nested inside another
  * at the same depth is given up on for the same reason: half a reading is worse than none.
  */
 export function caseExpressions(parsed: ParsedSelect): CaseExpr[] {

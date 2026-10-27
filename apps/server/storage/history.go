@@ -1,7 +1,7 @@
 // Run history, on bbolt.
 //
 // It was a JSONL file that grew forever and was read whole to serve a page of fifty, and it threw
-// every row away before writing — so a run from before a restart was a header with nothing behind
+// every row away before writing - so a run from before a restart was a header with nothing behind
 // it and a dead export link. Rows are the thing people come back to history for.
 //
 // bbolt gives the three properties that file could not: a write is a transaction, so a crash
@@ -14,7 +14,7 @@
 //	full  <runID>              ->  deflate(JSON of the whole record, rows and all)
 //
 // The header is in both, which is a few hundred bytes of duplication that buys a fetch by run id
-// — what "click a run from last week" needs — without a second index to keep in step.
+// - what "click a run from last week" needs - without a second index to keep in step.
 //
 // `startedAt` is protocol.ISOTime, which is fixed-width UTC, so it sorts lexicographically the way
 // it sorts chronologically. The runID is appended to keep two runs in the same millisecond apart.
@@ -39,7 +39,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 	bolterr "go.etcd.io/bbolt/errors"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 var (
@@ -73,8 +73,8 @@ func openHistory() (*bolt.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	// A lock that never clears would make perch unstartable, and the second instance already
-	// refuses to serve — so it waits briefly and then gives up rather than hanging.
+	// A lock that never clears would make pipit unstartable, and the second instance already
+	// refuses to serve - so it waits briefly and then gives up rather than hanging.
 	db, err := bolt.Open(filepath.Join(dir, HistoryFile), 0o600, &bolt.Options{Timeout: 2 * time.Second})
 	if err != nil {
 		return nil, err
@@ -115,7 +115,7 @@ func runKey(record protocol.RunRecord) []byte {
 }
 
 // AppendRun records a finished run. `keepRows` writes the result rows alongside the header; without
-// it only the header is stored, which is what perch has always done.
+// it only the header is stored, which is what pipit has always done.
 func AppendRun(record protocol.RunRecord, keepRows bool) error {
 	db, err := openHistory()
 	if err != nil {
@@ -174,7 +174,7 @@ func (q HistoryQuery) keep(record protocol.RunRecord) bool {
 //
 // The cursor walks backwards from the end and stops as soon as it has enough, so the cost is the
 // page asked for rather than everything ever run. A filter still only reads until the limit is
-// met — it just may walk further to get there.
+// met - it just may walk further to get there.
 func ListRuns(query HistoryQuery) ([]protocol.RunRecord, error) {
 	db, err := openHistory()
 	if err != nil {
@@ -202,7 +202,7 @@ func ListRuns(query HistoryQuery) ([]protocol.RunRecord, error) {
 }
 
 // FullRun reads back one run with its rows. The second return is false when the run is not in
-// history, or was recorded without its rows — the caller still has the header from the list, so
+// history, or was recorded without its rows - the caller still has the header from the list, so
 // neither is an error.
 func FullRun(runID string) (protocol.RunRecord, bool, error) {
 	db, err := openHistory()
@@ -417,7 +417,7 @@ func importLegacyHistory(db *bolt.DB, dir string) error {
 			if err != nil {
 				continue
 			}
-			// A key already present is replaced, not appended, so only the difference is new —
+			// A key already present is replaced, not appended, so only the difference is new -
 			// a re-run import would otherwise inflate the counter the trim budget reads.
 			key := runKey(record)
 			replaced := int64(len(runs.Get(key)))

@@ -2,11 +2,11 @@
 // driving rows across the top, one cell per pair.
 //
 // The row-sum is NOT counted from the cells. It comes from the count the per-row probe already asks
-// for, which is the number the ledger has always shown — the grid's job is to show what that number
+// for, which is the number the ledger has always shown - the grid's job is to show what that number
 // was counting, and a second way of arriving at it could only ever disagree with the first. The one
 // exception is a subquery no honest count could be asked for, where the cells are all there is.
 
-import type { Cell, StatementResult } from "@perch/protocol";
+import type { Cell, StatementResult } from "@pipit/protocol";
 import { formatCell } from "../../results-grid";
 import { bindKeyOf, type BoundPlan, type BoundRow } from "../bound";
 import { cellFound, cellTone, MAX_DRIVE_COLS, type GridBuild } from "../grid";
@@ -39,7 +39,7 @@ export function gridScene(args: {
   // Past the fold the columns are not narrowed, they are DROPPED: a grid with thirteen courses
   // across the top is a wall of dots nobody can read a row of, and the count beside it already says
   // what they add up to. What is left is the ledger this view specialises, plus a `+n` that says how
-  // many driving rows went into each number — the same bargain `capCols` strikes on a wide card.
+  // many driving rows went into each number - the same bargain `capCols` strikes on a wide card.
   const folded = columns.length > MAX_DRIVE_COLS;
   const shown = folded ? [] : columns;
 
@@ -125,8 +125,8 @@ function sumOf(
  *
  * Both axes are stated because they are independent and the pair is what is easy to get backwards: a
  * filled dot says the inner subquery FOUND rows, and the tint says what that does to the outer row's
- * verdict. Under `not exists` of `not exists` the two run opposite ways — the cell with nothing in it
- * is the one that sinks the row — which is exactly why neither is left to be inferred.
+ * verdict. Under `not exists` of `not exists` the two run opposite ways - the cell with nothing in it
+ * is the one that sinks the row - which is exactly why neither is left to be inferred.
  */
 function legendFor(grid: GridBuild, folded: boolean): string[] {
   const { driveNoun, rowNoun, innerSource, middleKind } = grid;
@@ -141,13 +141,13 @@ function legendFor(grid: GridBuild, folded: boolean): string[] {
   ];
   if (!folded) {
     lines.push(
-      `● \`${innerSource}\` has a matching row — ${says(foundIsReturned)}. ○ no matching row — ${says(!foundIsReturned)}. Click a cell to bind the SQL beside this to it.`,
+      `● \`${innerSource}\` has a matching row - ${says(foundIsReturned)}. ○ no matching row - ${says(!foundIsReturned)}. Click a cell to bind the SQL beside this to it.`,
     );
   }
   lines.push(
     `Every returned ${driveNoun} is one row of this subquery, and \`${middleKind}\` passes the ${rowNoun} ${
       negativeMiddle ? "only when there are none at all" : "as soon as there is one"
-    } — so those are the cells that decide the verdict.`,
+    } - so those are the cells that decide the verdict.`,
   );
   return lines;
 }

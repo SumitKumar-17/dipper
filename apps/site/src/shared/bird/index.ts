@@ -7,9 +7,9 @@ export type {
   BirdFacing,
   BirdLook,
   BirdPalette,
-  BirdPerch,
+  BirdRoost,
   LinePalette,
-  PerchOptions,
+  RoostOptions,
   PorcelainPalette,
   ViaPoint,
 } from "./bird";

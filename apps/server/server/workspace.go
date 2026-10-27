@@ -7,8 +7,8 @@ import (
 	"strings"
 	"syscall"
 
-	"perch/httpx"
-	"perch/storage"
+	"pipit/httpx"
+	"pipit/storage"
 )
 
 const SQLExt = ".sql"
@@ -65,7 +65,7 @@ func contains(root, candidate string) bool {
 	return strings.HasPrefix(candidate, prefix)
 }
 
-// ResolveRoots realpaths the roots, dropping the ones that no longer exist — a deleted workspace
+// ResolveRoots realpaths the roots, dropping the ones that no longer exist - a deleted workspace
 // simply grants nothing.
 func ResolveRoots(roots []string) []string {
 	out := make([]string, 0, len(roots))

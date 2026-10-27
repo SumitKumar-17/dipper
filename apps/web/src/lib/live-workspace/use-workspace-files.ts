@@ -1,6 +1,6 @@
-import type { PerchClient } from "@perch/client";
-import type { FileEntry, Settings } from "@perch/protocol";
-import { asyncError, type Async } from "@perch/ui";
+import type { PipitClient } from "@pipit/client";
+import type { FileEntry, Settings } from "@pipit/protocol";
+import { asyncError, type Async } from "@pipit/ui";
 import * as React from "react";
 import { walkWorkspace } from "./walk-workspace";
 import { useAsyncResource } from "./use-async-resource";
@@ -15,7 +15,7 @@ export type WorkspaceFilesState = {
 };
 
 export function useWorkspaceFiles(
-  getClient: () => PerchClient,
+  getClient: () => PipitClient,
   enabled: boolean,
   settings: Settings | undefined,
 ): WorkspaceFilesState {
@@ -25,7 +25,7 @@ export function useWorkspaceFiles(
     async (signal: AbortSignal): Promise<readonly FileEntry[]> => {
       const files = getClient().files;
       // With no `dir` the server hands back the roots themselves, which is the authority:
-      // `perch serve --dir` adds roots that Settings.workspaces never sees.
+      // `pipit serve --dir` adds roots that Settings.workspaces never sees.
       const reported = await files.list(undefined, { signal });
       const walked = await walkWorkspace(
         files,
@@ -49,7 +49,7 @@ export function useWorkspaceFiles(
 
   return {
     workspace,
-    // The roots the server actually serves — `--dir` adds roots Settings.workspaces never sees.
+    // The roots the server actually serves - `--dir` adds roots Settings.workspaces never sees.
     roots: serverRoots.length > 0 ? serverRoots : (settings?.workspaces ?? []),
     refresh,
     refreshWorkspace: reload,

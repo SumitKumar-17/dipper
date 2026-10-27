@@ -1,7 +1,7 @@
 import { cn } from "../../shared/cn";
 
-// PerchMark's drawing (packages/ui/src/brand/logo.tsx), drawn here rather than imported so the
-// nav doesn't pull the @perch/ui barrel into the first paint.
+// PipitMark's drawing (packages/ui/src/brand/logo.tsx), drawn here rather than imported so the
+// nav doesn't pull the @pipit/ui barrel into the first paint.
 export function Mark({ className }: { className?: string }) {
   return (
     <svg
@@ -33,7 +33,7 @@ export function Brand({ className }: { className?: string }) {
       )}
     >
       <Mark />
-      <span className="text-base/none font-medium tracking-tight">Perch</span>
+      <span className="text-base/none font-medium tracking-tight">Pipit</span>
     </a>
   );
 }

@@ -5,7 +5,7 @@ import { BoxPane } from "./box/pane";
 import { BoxStage } from "./box/stage";
 import { useShowcase } from "./box/use-showcase";
 
-export type BoxProps = { perchRef: Ref<HTMLDivElement> };
+export type BoxProps = { roostRef: Ref<HTMLDivElement> };
 
 const isMouse = (event: PointerEvent) => event.pointerType === "mouse";
 
@@ -15,7 +15,7 @@ const isMouse = (event: PointerEvent) => event.pointerType === "mouse";
  * through the items. With reduced motion there is no pin: the window, in the left seven columns,
  * stays in view while the list scrolls past it in the other five. Narrower, it sits above the list.
  */
-export function BoxSection({ perchRef }: BoxProps) {
+export function BoxSection({ roostRef }: BoxProps) {
   const pane = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ export function BoxSection({ perchRef }: BoxProps) {
   if (pinned) {
     return (
       <BoxStage
-        perchRef={perchRef}
+        roostRef={roostRef}
         track={track}
         stage={stage}
         pane={pane}
@@ -37,7 +37,7 @@ export function BoxSection({ perchRef }: BoxProps) {
     );
   }
   return (
-    <Section id="in-the-box" labelledBy="box-title" perchRef={perchRef}>
+    <Section id="in-the-box" labelledBy="box-title" roostRef={roostRef}>
       <SectionHeading id="box-title" title="Also in the box." />
       <SectionScene wide>
         <div

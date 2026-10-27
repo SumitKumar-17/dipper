@@ -1,9 +1,9 @@
 // Vendored primitive. Changed from upstream only by the import paths, the dropped Textarea half
-// (perch has no primitive for it) and a `mono` variant on `InputGroupText` — the lint rule forbids
+// (pipit has no primitive for it) and a `mono` variant on `InputGroupText` - the lint rule forbids
 // restyling that from a call site. Otherwise diffable against the source.
 //
-// It works with perch's own `Input` unmodified because that already carries `data-slot`
-// ("input-control" on the wrapper, "input" on the field) — which is exactly what the `has-*` and
+// It works with pipit's own `Input` unmodified because that already carries `data-slot`
+// ("input-control" on the wrapper, "input" on the field) - which is exactly what the `has-*` and
 // `in-[…]` selectors below hook onto.
 
 import { cva, type VariantProps } from "class-variance-authority";
@@ -85,7 +85,7 @@ export function InputGroupText({
   variant = "default",
   ...props
 }: React.ComponentProps<"span"> & {
-  /** For an addon that is part of the value rather than a label — a file extension, a unit. */
+  /** For an addon that is part of the value rather than a label - a file extension, a unit. */
   variant?: "default" | "mono";
 }): React.ReactElement {
   return (

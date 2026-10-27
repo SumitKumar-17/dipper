@@ -31,7 +31,7 @@ const STIFFNESS = 900;
 // Under-damped a little, so a key comes back up with the faintest overshoot.
 const DAMPING = 2 * 0.5 * Math.sqrt(STIFFNESS);
 // A bird's weight holds its key a little down.
-const PERCHED = 0.035;
+const ROOSTED = 0.035;
 // The springs take steps no longer than this, however long the frame.
 const STEP = 1 / 120;
 // The hand-over folds the front row first; each row back starts this much later, and takes this long.
@@ -50,7 +50,7 @@ export function stepKeys(keys: readonly Key[], clock: number, dt: number): boole
         key.kicks.splice(k, 1);
       }
     }
-    const rest = key.occupied ? -PERCHED : 0;
+    const rest = key.occupied ? -ROOSTED : 0;
     for (let s = 0; s < steps; s++) {
       key.v += (-STIFFNESS * (key.y - rest) - DAMPING * key.v) * h;
       key.y += key.v * h;

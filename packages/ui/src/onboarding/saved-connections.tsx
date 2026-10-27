@@ -1,4 +1,4 @@
-import type { ConnectionSummary } from "@perch/protocol";
+import type { ConnectionSummary } from "@pipit/protocol";
 import type * as React from "react";
 import { cn } from "../lib/utils";
 import { Button } from "../ui/button";
@@ -15,7 +15,7 @@ export function SavedConnections({
   onOpen,
 }: {
   connections: readonly ConnectionSummary[];
-  /** The id currently being dialled, if any — it shows the spinner. */
+  /** The id currently being dialled, if any - it shows the spinner. */
   pending: string | null;
   /**
    * The connection whose server asked for a password. A saved connection reaches this as often as
@@ -47,7 +47,7 @@ export function SavedConnections({
               >
                 {/* The login is here for the same reason it is on a discovered row: it is what
                     the password will be checked against, and a wrong one refuses every password
-                    there is. It truncates before the host does — the host identifies the row. */}
+                    there is. It truncates before the host does - the host identifies the row. */}
                 {item.user !== "" && <span className="min-w-0 truncate">{item.user}@</span>}
                 <span className="min-w-0 truncate">{item.host}</span>
                 <span className="shrink-0">:{item.port}</span>

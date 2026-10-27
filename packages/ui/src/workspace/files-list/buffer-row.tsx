@@ -39,7 +39,7 @@ export function BufferRow({
           "-outline-offset-2 cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-ring",
         )}
         onClick={onFocus}
-        title={buffer.path ?? `${buffer.name} — scratch buffer, not saved to disk`}
+        title={buffer.path ?? `${buffer.name} - scratch buffer, not saved to disk`}
         type="button"
       >
         <Icon className="size-3.5 shrink-0 text-muted-foreground" />

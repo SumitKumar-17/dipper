@@ -10,13 +10,13 @@ import (
 	"strings"
 	"syscall"
 
-	"perch/httpx"
-	"perch/protocol"
+	"pipit/httpx"
+	"pipit/protocol"
 )
 
 // Listing folders for the workspace picker. Deliberately not scoped to the configured
 // workspaces: its whole job is to find a folder that is not one yet. Read-only, and it returns
-// names, never contents — the file API's scoping is untouched by it.
+// names, never contents - the file API's scoping is untouched by it.
 func (s *Server) registerBrowse() {
 	s.handle("GET /api/browse", func(w http.ResponseWriter, r *http.Request) error {
 		result, err := browseDirectory(r.URL.Query().Get("path"))

@@ -3,7 +3,7 @@
 // Every test below is a REFUSAL and the bar is proof: a recursive CTE the walk mis-splits does not
 // fail visibly, it hangs, or returns rows until something runs out. See the doc on `readRecursion`.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   bareName,
   isSetOp,
@@ -21,7 +21,7 @@ import { placeSpan } from "./root-map";
  *
  * EVERY test below is a refusal, and each one protects the same thing. The probes built from this
  * run on the reader's database: a "step" that is not really a step, or an "anchor" that turns out
- * to need the CTE, is not a mislabelled card — it is a statement that recurses without a base case
+ * to need the CTE, is not a mislabelled card - it is a statement that recurses without a base case
  * or joins a table to itself with nothing to stop it, and a query like that does not fail politely.
  * It hangs, or it returns rows until something runs out. So the bar is proof, not likelihood:
  *
@@ -30,14 +30,14 @@ import { placeSpan } from "./root-map";
  *    branches we would then have to decide between.
  *  - Both branches plain SELECTs. A nested set operation inside a branch has its own two halves,
  *    and which of them carries the self-reference is a question this function does not ask.
- *  - Branch 0 silent about the CTE and branch 1 loud about it. Written the other way round — which
- *    some dialects accept — the two roles are swapped, and a "START" that names the CTE would be a
+ *  - Branch 0 silent about the CTE and branch 1 loud about it. Written the other way round - which
+ *    some dialects accept - the two roles are swapped, and a "START" that names the CTE would be a
  *    query that cannot run at all.
  *  - Every BARE mention of the name in branch 1 in a SOURCE position. This is the one that matters
  *    most: a self-reference in a WHERE subquery, or in a scalar in the select list, is not something
  *    a derived table can be spliced in place of, and splicing the anchor into the FROM while LEAVING
  *    that mention behind would build a statement that still names an undefined table. The test is
- *    the splice itself — blank every source we found and ask what of the name survives — because
+ *    the splice itself - blank every source we found and ask what of the name survives - because
  *    that asks about the text we are about to rewrite rather than about our model of it. What may
  *    survive is a QUALIFIER, and why that is safe is the subtle part: see `survivesSplice`.
  */
@@ -133,16 +133,16 @@ function blankOut(text: string, ranges: readonly Range[]): string {
 }
 
 /**
- * Whether the CTE's name still says something the splice has not accounted for — the last and
+ * Whether the CTE's name still says something the splice has not accounted for - the last and
  * strictest test in `readRecursion`, run over the step with every spliced source already blanked.
  *
  * A BARE mention is fatal and a QUALIFIED one is not, and the difference is what the splice leaves
  * behind. `from chain` becomes `from (…) chain`: the derived table keeps the name as its alias,
- * because that is what the rest of the term is already calling it. So `where chain.depth < 5` —
- * the usual way to write a depth guard — still resolves afterwards, against the derived table
+ * because that is what the rest of the term is already calling it. So `where chain.depth < 5` -
+ * the usual way to write a depth guard - still resolves afterwards, against the derived table
  * instead of against the CTE, and nothing about the statement has changed but where those rows come
  * from. A bare `chain` has no such alias to land on: it is a second, un-spliced reference to the
- * recursive CTE, and leaving it in is how the REPEAT probe would name a table that isn't there —
+ * recursive CTE, and leaving it in is how the REPEAT probe would name a table that isn't there -
  * or, worse, name the real recursive CTE and run the recursion this walk exists not to run.
  *
  * Three ways that could be got wrong, and how each is closed:
@@ -150,11 +150,11 @@ function blankOut(text: string, ranges: readonly Range[]): string {
  *  - The qualifier must match the alias the splice will ACTUALLY keep, not the CTE's name. When the
  *    reader wrote `from chain c` the derived table is called `c`, so a surviving `chain.x` resolves
  *    to nothing and this falls back. That is why the aliases are passed in rather than assumed.
- *  - Quoting and case are compared the way SQL compares them — through `bareName`, lower-cased — so
+ *  - Quoting and case are compared the way SQL compares them - through `bareName`, lower-cased - so
  *    `CHAIN.depth` and a quoted alias answer to each other and a raw string match never decides it.
  *  - A near miss is not a mention. The pattern is the one `mentionsWord` uses, so `chained.x` does
  *    not count as `chain.x`, `e.chain` is a column and not a source, and the scan resumes at the end
- *    of the NAME rather than past the character after it — otherwise `chain chain` would hide its
+ *    of the NAME rather than past the character after it - otherwise `chain chain` would hide its
  *    second half inside the first's trailing character.
  *
  * A schema qualifier reads as a match here and is harmless: a CTE lives in no schema, so `chain.foo`

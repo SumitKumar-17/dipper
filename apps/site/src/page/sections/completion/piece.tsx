@@ -16,7 +16,7 @@ const NARROW = "max-sm:h-8 max-sm:min-w-8 max-sm:px-2";
  * the condition; under sm they spread to the slot's edges. Under lg the keys sit low enough to keep
  * the bird clear of the body text above the slot.
  */
-export function CompletionPiece({ perchRef }: { perchRef: Ref<HTMLElement> }) {
+export function CompletionPiece({ roostRef }: { roostRef: Ref<HTMLElement> }) {
   const ref = useRef<HTMLDivElement>(null);
   useLoop(ref, completionLoop);
   return (
@@ -33,7 +33,7 @@ export function CompletionPiece({ perchRef }: { perchRef: Ref<HTMLElement> }) {
         </div>
         <TablesSlip className="col-start-1 row-start-2" />
         <span data-key="return" className="relative z-10 col-start-2 row-start-1 flex">
-          <Keycap topRef={perchRef} faceClassName={`${NARROW} px-3.5 lg:px-4.5`}>
+          <Keycap topRef={roostRef} faceClassName={`${NARROW} px-3.5 lg:px-4.5`}>
             <ReturnGlyph className="h-2.5 w-4 lg:h-3 lg:w-5" />
           </Keycap>
         </span>

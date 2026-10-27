@@ -1,8 +1,8 @@
 // Turning a StatementResult into the columns and rows a card shows. Rows keep stable keys across
-// phases — the hash of their visible cells — so layout animations can carry a row from one
+// phases - the hash of their visible cells - so layout animations can carry a row from one
 // arrangement to the next, and a row that is gone from the next sample animates out.
 
-import type { Cell, ResultColumn, StatementResult } from "@perch/protocol";
+import type { Cell, ResultColumn, StatementResult } from "@pipit/protocol";
 import { formatCell } from "../../results-grid";
 import { splitRef } from "../clauses";
 import { WALK_PREFIX } from "../steps";

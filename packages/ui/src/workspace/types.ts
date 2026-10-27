@@ -1,5 +1,5 @@
-// The workspace contract. Every UI surface reads this and nothing else — no component imports
-// @perch/client — so components stay independent of the transport. Protocol types are reused
+// The workspace contract. Every UI surface reads this and nothing else - no component imports
+// @pipit/client - so components stay independent of the transport. Protocol types are reused
 // verbatim; the types here are the ones with no wire equivalent.
 
 import type { EditorLayout } from "./pane-layout";
@@ -15,7 +15,7 @@ import type {
   RunRecord,
   Settings,
   StatementResult,
-} from "@perch/protocol";
+} from "@pipit/protocol";
 
 
 /**
@@ -24,7 +24,7 @@ import type {
  */
 export type Async<T> =
   | { readonly status: "idle" }
-  /** Nothing to show yet — this is the skeleton case. */
+  /** Nothing to show yet - this is the skeleton case. */
   | { readonly status: "loading" }
   /** `stale` means a refetch is in flight; keep rendering `data` and show a quiet indicator. */
   | { readonly status: "ready"; readonly data: T; readonly stale: boolean }
@@ -51,7 +51,7 @@ export const asyncRefreshing = <T>(previous: Async<T>): Async<T> => {
   return data === undefined ? asyncLoading : { status: "ready", data, stale: true };
 };
 
-/** The most recent data, whatever the status — ready, refetching, or failed after a good load. */
+/** The most recent data, whatever the status - ready, refetching, or failed after a good load. */
 export function asyncData<T>(value: Async<T> | undefined): T | undefined {
   if (!value) return undefined;
   if (value.status === "ready") return value.data;
@@ -91,8 +91,8 @@ export function isScratch(buffer: Buffer): boolean {
 export type SaveState = "saved" | "saving" | "unsaved" | "error";
 
 /**
- * What each save state is called, next to the type so the two places a user reads it — the status
- * bar and the save indicator — cannot drift apart.
+ * What each save state is called, next to the type so the two places a user reads it - the status
+ * bar and the save indicator - cannot drift apart.
  */
 export const SAVE_LABEL: Record<SaveState, string> = {
   saved: "Saved",
@@ -166,7 +166,7 @@ export type ServerState = {
   readonly url: string;
   /** Probes again now. Safe to call in any state; a no-op while a probe is already in flight. */
   retry(): void;
-  /** The folder perch keeps for itself, offered when an untitled query has nowhere else to go. */
+  /** The folder pipit keeps for itself, offered when an untitled query has nowhere else to go. */
   readonly queriesDir: string | null;
 };
 
@@ -188,7 +188,7 @@ export type WorkspaceApi = {
   readonly databases: Async<readonly string[]>;
   /**
    * Opens a connection and points the workspace at it. Rejects with a {@link ConnectFailed}
-   * carrying the reason — a caller that is about to cover the screen with a handover animation has
+   * carrying the reason - a caller that is about to cover the screen with a handover animation has
    * to know the dial did not land.
    */
   connect(connectionId: string, database?: string): Promise<void>;
@@ -202,7 +202,7 @@ export type WorkspaceApi = {
   removeConnection(connectionId: string): Promise<void>;
   /** A round trip to the server behind a saved connection; rejects with a readable message. */
   testConnection(connectionId: string): Promise<ConnectionTest>;
-  /** Database servers already on this machine — on default ports, a service, Docker, or PATH. */
+  /** Database servers already on this machine - on default ports, a service, Docker, or PATH. */
   discoverServers(): Promise<DiscoveryResult>;
 
   /* schema */
@@ -210,7 +210,7 @@ export type WorkspaceApi = {
   /** Re-introspects, bypassing the server's TTL cache. */
   refreshSchema(): Promise<void>;
 
-  /* buffers — the tabs open in the editor */
+  /* buffers - the tabs open in the editor */
   readonly buffers: readonly Buffer[];
   readonly activeBufferId: string | null;
   readonly activeBuffer: Buffer | undefined;
@@ -219,7 +219,7 @@ export type WorkspaceApi = {
   newScratch(): string;
   /**
    * Opens a path from the workspace, or focuses it when already open. Returns the buffer id, or
-   * null when the file could not be read — the failure is reported into the Files tab, not thrown.
+   * null when the file could not be read - the failure is reported into the Files tab, not thrown.
    */
   openFile(path: string): Promise<string | null>;
   closeBuffer(id: string): void;
@@ -228,10 +228,10 @@ export type WorkspaceApi = {
   setBufferView(id: string, view: Buffer["view"]): void;
   /** Flushes the active buffer to disk. A no-op for a scratch, which has nowhere to go. */
   save(): Promise<void>;
-  /** Gives a buffer a path — the one way a scratch becomes a file. */
+  /** Gives a buffer a path - the one way a scratch becomes a file. */
   saveAs(id: string, path: string): Promise<void>;
 
-  /* workspace — what is browsable on disk, so `openFile` has something to be called with */
+  /* workspace - what is browsable on disk, so `openFile` has something to be called with */
   readonly workspace: Async<readonly FileEntry[]>;
   /**
    * The directories the server will read and write. Derived from `settings`, so check

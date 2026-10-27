@@ -11,13 +11,13 @@ import { station, wrap, type Station } from "../station-types";
  * The three stations a recursive CTE gets once `program.ts` has proved its shape: START, REPEAT,
  * SETTLE.
  *
- * All three are `id: "result"` — a rows card and a count, the same one `buildResultStation` gets —
+ * All three are `id: "result"` - a rows card and a count, the same one `buildResultStation` gets -
  * because what they teach is the DIFFERENCE between three tables, not anything happening inside one
  * of them. A scene of their own would have to animate a loop the walk deliberately does not run.
  *
  * REPEAT is the only one that rewrites anything, and what it does is the rewrite the database does
  * on its first pass: `chain c` becomes `(<the anchor>) c`. It is spliced BY RANGE, right to left,
- * off the ranges `readRecursion` recorded — a string replace of the name would also hit the `chain`
+ * off the ranges `readRecursion` recorded - a string replace of the name would also hit the `chain`
  * in a column called `chain_id`, in a quoted identifier, or in a literal, and the statement it built
  * would run and be wrong rather than fail.
  *
@@ -35,7 +35,7 @@ export function buildRecursionStations(
   wholeText: string,
 ): Station[] {
   // Nothing is appended to any of these, so the newline rule at the top of the file applies only
-  // where the wrapper puts a body on its own line — which it does, for exactly that reason.
+  // where the wrapper puts a body on its own line - which it does, for exactly that reason.
   const { counted } = wrap(prefix);
   /** One of the three: a rows card and a count, with the sentence the program wrote for it. */
   const pane = (
@@ -104,7 +104,7 @@ export function buildRecursionStations(
  * The recursive term with the anchor standing in for the CTE: what the database computes on its
  * first pass, and the only pass the walk can show without iterating.
  *
- * The alias is kept as the reader wrote it — `chain c` becomes `(…) c` — because the rest of the
+ * The alias is kept as the reader wrote it - `chain c` becomes `(…) c` - because the rest of the
  * term is full of `c.id` and a derived table under any other name would not resolve them. Where
  * they wrote no alias the CTE's own name takes its place, which is what they were already using.
  */

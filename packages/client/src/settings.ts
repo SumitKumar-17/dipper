@@ -1,4 +1,4 @@
-import type { Settings } from "@perch/protocol";
+import type { Settings } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type SettingsApi = {

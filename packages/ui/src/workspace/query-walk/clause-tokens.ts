@@ -1,13 +1,13 @@
 // The parser toolkit the clause slicer is built on: the tree, its depth-zero tokens, and the small
 // predicates that read them.
 //
-// The slicing rides on the editor's own grammar — keywords are `Keyword` nodes, a parenthesised
+// The slicing rides on the editor's own grammar - keywords are `Keyword` nodes, a parenthesised
 // group is one `Parens` node, and a string or comment is its own node, so a `where` inside a string
 // literal never matches. Everything here is about TOKENS; what a run of them MEANS is
 // `parse-select.ts`'s business.
 
 import { MySQL, PostgreSQL } from "@codemirror/lang-sql";
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import type { Range } from "./clause-types";
 
 export type SyntaxNode = ReturnType<typeof PostgreSQL.language.parser.parse>["topNode"];
@@ -359,7 +359,7 @@ export const isAnd = (token: Token): boolean => token.kw === "and";
  * A place in a token run, and the only thing that moves through one.
  *
  * Every reader below this used to carry its own `let i` and advance it from inside nested closures
- * — `parseTokens` mutated one from four of them — so "where are we" was a fact spread across a
+ * - `parseTokens` mutated one from four of them - so "where are we" was a fact spread across a
  * function rather than a value. It is one object now, and a reader that hands the run on hands this
  * on with it: `parseTokens` opens the cursor, `readWith` moves it past the WITH prefix, and
  * `readTail` picks it up wherever the FROM list left it.

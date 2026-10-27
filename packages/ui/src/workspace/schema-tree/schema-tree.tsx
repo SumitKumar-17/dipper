@@ -1,11 +1,11 @@
 // The schema sidebar: two levels, table → column. Deeper nesting would add rows the user has to
-// open before seeing anything — the database is already named in the topbar, and a table's kind is
+// open before seeing anything - the database is already named in the topbar, and a table's kind is
 // an icon's worth of information, not a folder. The schema level is conditional, because it is the
 // only one that sometimes carries information; see `needsSchemaLevel`.
 //
 // Async rendering follows the rule in types.ts: a populated tree is never replaced by a skeleton.
 
-import type { Table } from "@perch/protocol";
+import type { Table } from "@pipit/protocol";
 import { LayersIcon, RefreshCwIcon, TriangleAlertIcon, WaypointsIcon } from "lucide-react";
 import * as React from "react";
 import { cn } from "../../lib/utils";

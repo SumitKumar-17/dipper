@@ -4,7 +4,7 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { ArrowDownIcon, ArrowUpIcon, CornerUpRightIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
-import type { Cell as CellValue } from "@perch/protocol";
+import type { Cell as CellValue } from "@pipit/protocol";
 import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { ScrollArea } from "../../ui/scroll-area";
@@ -48,7 +48,7 @@ export function Stage({
    *
    * Rows are keyed by their contents so a row can be carried from one station to the next, which is
    * the whole point within a chapter. Across chapters it is a lie: two chapters are different
-   * queries, and a row leaving one has not been rejected by the other — it was never a candidate.
+   * queries, and a row leaving one has not been rejected by the other - it was never a candidate.
    * Letting the exit animation run there strikes rows out in front of a reader who only clicked a
    * different chapter.
    */
@@ -64,8 +64,8 @@ export function Stage({
           way to say "there is more this way" without stealing a row of height for a legend.
 
           `ScrollArea` is where that lives, the same as every other scroll box in the app. It was
-          hand-rolled here once — a hook measuring `scrollWidth` on a frame, a mask toggled by React
-          state, and a memo to stop that state re-rendering the scene — three moving parts to
+          hand-rolled here once - a hook measuring `scrollWidth` on a frame, a mask toggled by React
+          state, and a memo to stop that state re-rendering the scene - three moving parts to
           reproduce what `scrollFade` does declaratively off Base UI's own overflow variables. It
           also fades IN PROPORTION to what is left over the edge rather than snapping on at the ends,
           which is what the hand-rolled one could never do.
@@ -148,7 +148,7 @@ export function Stage({
 }
 
 /**
- * The cards of a scene in a row, with the grid — when there is one — first and widest.
+ * The cards of a scene in a row, with the grid - when there is one - first and widest.
  *
  * The terminus is the one card that is NOT in that row: it belongs under the result it explains,
  * because it is a second thought about the same rows rather than a step beside them, so the whole
@@ -206,12 +206,12 @@ function Table({
   const total = view.total ?? null;
   const hidden = view.hidden ?? [];
   // A source that became its own section is a REFERENCE, not a detour: the rows on this card were
-  // computed there and the chapter is still on the strip. A source that did not become one — a
-  // plain table, or a subquery the slicer refused — offers nothing here; there is nowhere to go,
+  // computed there and the chapter is still on the strip. A source that did not become one - a
+  // plain table, or a subquery the slicer refused - offers nothing here; there is nowhere to go,
   // and an unsliced subquery is already accounted for in the skipped note under the strip.
   const link = view.source ? sourceLink(view.source) : null;
-  // The gutter down the left edge belongs to the verdict marks. A card that never stamps one — a
-  // result, a plain source — would otherwise carry 22px of dead space that reads as the first
+  // The gutter down the left edge belongs to the verdict marks. A card that never stamps one - a
+  // result, a plain source - would otherwise carry 22px of dead space that reads as the first
   // column being indented, against the `px-2` its last column gets on the other edge.
   const marks = view.rows.some((row) => row.verdict !== undefined);
   return (
@@ -221,7 +221,7 @@ function Table({
       // about a spacer is drawn out of line with the rest. `AnimatePresence` renders a LEAVING row
       // from the element it last returned, props and all, so a row on its way out of a card that has
       // just stopped stamping verdicts would hold a 22px gutter the header and its neighbours had
-      // already dropped — and be centred 11px to their right for as long as it took to collapse.
+      // already dropped - and be centred 11px to their right for as long as it took to collapse.
       // Read off the card instead, a leaving row follows the card it is leaving.
       style={
         {
@@ -264,7 +264,7 @@ function TableHeaderBar({
   const named = link !== null && link.label === title;
   return (
     <WalkCardHeader>
-      {/* A source read under its section's own name says that name twice — a title reading
+      {/* A source read under its section's own name says that name twice - a title reading
           `advisor_teaches` beside a button reading `advisor_teaches`. The repetition is not just
           noise: a card is as wide as its header and its columns are laid out at fixed pixel
           widths, so the doubled name stretches the card well past its own table and leaves a
@@ -368,7 +368,7 @@ function TableRows({
 /**
  * A column header. The width is a plain custom property, not an animated one: see `Cell`.
  *
- * The label still crossfades and the sort arrow still arrives — that is one node per column, at most
+ * The label still crossfades and the sort arrow still arrives - that is one node per column, at most
  * nine per card, and it is the part a reader actually watches.
  */
 function HeaderCell({ col }: { col: Col }): React.ReactElement {
@@ -376,7 +376,7 @@ function HeaderCell({ col }: { col: Col }): React.ReactElement {
   return (
     // `--w` is the width, and the slack a card has over its table falls OUTSIDE the columns. A card
     // is as wide as the widest thing in it, which is regularly its own title bar rather than its
-    // table — `result · 9 rows · showing 1` over one `count` column. Stretching the columns to close
+    // table - `result · 9 rows · showing 1` over one `count` column. Stretching the columns to close
     // that gap moved the emptiness inside them, which reads worst in exactly the narrowest case: a
     // right-aligned number ends up on the card's edge, a lone digit an inch from the label it
     // belongs to. The header and the rows centre their columns instead, and carry the same width
@@ -441,7 +441,7 @@ function Row({
    *
    * Off everywhere else, and that costs nothing to look at. A station that REBUILDS its rows gives
    * them new cells, a row's key is the hash of its cells, so the row remounts and fades whatever the
-   * projection system is told — all `layoutId` bought there was a measurement of every row on stage
+   * projection system is told - all `layoutId` bought there was a measurement of every row on stage
    * on every frame of every transition.
    */
   const moves = useRowsMove();
@@ -451,7 +451,7 @@ function Row({
    * When this row's turn comes, in seconds: rows ARRIVE one after another rather than all at once.
    *
    * This is what a station's beat is actually spent on. Without it every row of a card faded in
-   * together over 220ms and then the scene sat still until the next station — a flash followed by a
+   * together over 220ms and then the scene sat still until the next station - a flash followed by a
    * wait, which is what "too fast" means here even when the beat itself is long. Lengthening the
    * beat only lengthens the wait; the fix is to give the reader something arriving THROUGH it.
    *
@@ -520,11 +520,11 @@ function Row({
 }
 
 /**
- * One cell. A plain div sized by a custom property — the pattern the grid card already uses.
+ * One cell. A plain div sized by a custom property - the pattern the grid card already uses.
  *
  * This used to be a `motion.div` folding its own width in and out, which is the most expensive thing
  * this file ever did: `width` is not a transform, so each of them wrote a layout property every
- * frame, and a join scene carries three cards of twenty-five rows by eight columns — six hundred
+ * frame, and a join scene carries three cards of twenty-five rows by eight columns - six hundred
  * JavaScript-driven animations, each invalidating the layout of a card that was ALSO being measured
  * by the projection nodes above it. The fold it paid for was mostly invisible anyway: a row's key is
  * the hash of its cells, so a card whose columns changed has already remounted every row.

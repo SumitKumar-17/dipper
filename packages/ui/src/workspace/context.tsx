@@ -6,7 +6,7 @@ const WorkspaceContext = React.createContext<WorkspaceApi | null>(null);
 /**
  * Supplies the workspace contract to every surface below it.
  *
- * The implementation is deliberately not here: apps/web builds it over @perch/client, and this
+ * The implementation is deliberately not here: apps/web builds it over @pipit/client, and this
  * package never learns how. That is what keeps every component in it testable against a shape
  * rather than against a server, and it is one prop to replace.
  */

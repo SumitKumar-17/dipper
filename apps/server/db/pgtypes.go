@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgconn"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // Builtin OIDs worth naming; anything else is reported as oid:<n>.
@@ -77,7 +77,7 @@ func pgQueryError(err error, statementSQL string) protocol.QueryError {
 // looksRowReturning reports whether a statement is expected to produce a result set.
 // Row-returning statements stream through a cursor; the rest go through the simple protocol,
 // which is the only one that can run e.g. VACUUM. A wrong guess costs streaming, never
-// correctness — the rows are emitted either way.
+// correctness - the rows are emitted either way.
 func looksRowReturning(sql string) bool {
 	switch firstWord(sql) {
 	case "select", "with", "table", "values", "show", "explain", "fetch":

@@ -1,6 +1,6 @@
 // What KIND of statement the text is, before anything tries to slice it into clauses.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import { statementTokens, TokenCursor } from "./clause-tokens";
 import type { Cte, Range } from "./clause-types";
 import { readWith } from "./parse-select";
@@ -11,7 +11,7 @@ type StatementKind = "select" | "values" | "write" | "other";
 /**
  * A shallow reading of a statement the clause slicer may well refuse.
  *
- * `parseSelect` answers one question — can this be walked clause by clause — and says "unsupported"
+ * `parseSelect` answers one question - can this be walked clause by clause - and says "unsupported"
  * to everything else, which is the right contract for it and the wrong one for deciding what to DO
  * with a CTE. `with v as (values (1),(2))` is not walkable and is also not broken: it runs, it
  * returns rows, and a chapter that shows those rows is the honest thing to build. So this reports
@@ -26,7 +26,7 @@ type StatementShape = {
   readonly ctes: readonly Cte[];
   readonly with: Range | null;
   /** `select` only: whether it has a FROM at its own depth. A FROM inside a subquery is inside a
-   *  `Parens` token and is deliberately invisible here — it belongs to that subquery, not this. */
+   *  `Parens` token and is deliberately invisible here - it belongs to that subquery, not this. */
   readonly from: boolean;
   /** `write` only: `insert`, `update`, `delete` or `merge`, as the grammar spelled it. */
   readonly verb: string | null;

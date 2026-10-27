@@ -1,4 +1,4 @@
-import type { ServerEvent } from "@perch/protocol";
+import type { ServerEvent } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 import { readSse } from "./sse";
 

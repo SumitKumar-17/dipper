@@ -1,19 +1,19 @@
 // "Your query": the whole statement the reader wrote, with the open chapter lit inside it.
 //
-// The walk runs a SECTION, and a section's text is not the reader's — it is a body trimmed out of
+// The walk runs a SECTION, and a section's text is not the reader's - it is a body trimmed out of
 // the statement with a WITH prefix spliced onto the front, so quoting it here shows `with recursive
 // chain as (…) select * from chain` to someone who never typed that line, and says nothing about
 // where in their query the chapter sits. The answer to "where am I" is only visible if the whole
 // query is on screen, so the whole query is what this renders, in four layers: everything outside
-// the section dimmed, the section at full contrast, the current station's clause marked, and — for a
-// CTE — the places the query READS it marked differently, because a CTE is declared at the top and
+// the section dimmed, the section at full contrast, the current station's clause marked, and - for a
+// CTE - the places the query READS it marked differently, because a CTE is declared at the top and
 // used fifty lines down and the use is the part that answers the question.
 //
 // The layers are cut into non-overlapping runs before anything is rendered, so a clause that
 // overlaps a use still comes out as one span carrying both, and each run is highlighted on its own.
 //
 // A null mapping is not an approximation. `Section.rootMap` is null when the section's text was
-// invented rather than sliced — a recursive CTE's body, a CTE list merged into a prefix — and then
+// invented rather than sliced - a recursive CTE's body, a CTE list merged into a prefix - and then
 // no offset inside it is an offset in the query on screen. Rather than guess, the pane falls back to
 // the section's own text exactly as it did before: a highlight in the wrong place reads as a fact
 // about the query and is believed.
@@ -100,7 +100,7 @@ export function QueryPane({
   /** The section's own text, shown when the section cannot be placed in `root`. */
   fallback: string;
 }): React.ReactElement {
-  // A section with no mapping can still be shown in place IF the station knows its own root range —
+  // A section with no mapping can still be shown in place IF the station knows its own root range -
   // that range was computed against the root and needs no mapping to be true. Without either, the
   // root would render with nothing lit and no chapter marked, which is less than the old pane gave.
   //

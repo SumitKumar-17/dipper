@@ -4,7 +4,7 @@
 //   A statement with no `columns` is an `UPDATE 3` or a `CREATE TABLE`, not an empty result, so it
 //   gets an outcome of its own rather than reading as "no rows returned".
 //   A multi-statement run needs a way to reach statement 2; the strip of statement tabs is that.
-//   `cancelled` and `truncated` are outcomes, not errors — rows cut at `maxRows` are still correct,
+//   `cancelled` and `truncated` are outcomes, not errors - rows cut at `maxRows` are still correct,
 //   but showing 1000 of 4 million silently would be a lie, so truncation is always visible.
 //
 // Export is a prop, not a fetch: this package never talks to the server (see types.ts).
@@ -60,7 +60,7 @@ export function ResultsPanel({
       : null;
 
   // A run that only spoke has nothing for the grid to hold: a `DO` block's `RAISE NOTICE`, a
-  // `CALL`. Its notices are the result. Keyed on `columns`, not `rows` — a SELECT that matched
+  // `CALL`. Its notices are the result. Keyed on `columns`, not `rows` - a SELECT that matched
   // nothing still answered the question, and pulling the view off that empty grid would hide it.
   const spoke = statements.some((result) => result.notices.length > 0);
   const showed = statements.some((result) => result.columns.length > 0);
@@ -126,7 +126,7 @@ export function ResultsPanel({
       {/* Only for a run opened from History, which is the one case where nothing else on screen
           says which query these rows answer. After pressing Run the query is in the editor directly
           above, and captioning the results with it is the pane repeating what you are looking at.
-          A pinned run belongs to its caller, which shows its own SQL — see the notebook's cells.
+          A pinned run belongs to its caller, which shows its own SQL - see the notebook's cells.
 
           The selected statement's SQL, not the run's, so a multi-statement run shows the one whose
           rows are on screen. */}
@@ -145,11 +145,11 @@ export function ResultsPanel({
       )}
 
       {/* A result arriving is the payoff of the whole app, so it fades in rather than blinking
-          into place. The key changes on a new run, a different statement, or the other view —
+          into place. The key changes on a new run, a different statement, or the other view -
           the three things that mean "this is a different answer now".
 
           `popLayout`, not `wait`. `wait` runs the exit to completion before the enter starts, so for
-          the length of both transitions this region holds nothing at all — and a region holding
+          the length of both transitions this region holds nothing at all - and a region holding
           nothing has no height, so the box collapses and springs back. That collapse is the flicker.
           `popLayout` takes the outgoing copy out of flow instead, and the incoming one occupies the
           space on the same frame: a crossfade, with the geometry never leaving. */}

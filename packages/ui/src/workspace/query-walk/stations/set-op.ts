@@ -8,7 +8,7 @@ import { station, wrap, type Query, type Station } from "../station-types";
  * One station per meeting of two results in a set-operator chain.
  *
  * WHY THIS IS NOT A PLACEHOLDER ANY MORE. A combine has no clauses, so the station rail's usual
- * vocabulary says nothing about it — but "which rows survived, and from which side" is a question
+ * vocabulary says nothing about it - but "which rows survived, and from which side" is a question
  * with an exact answer, and the database can be asked it directly. What made it look unanswerable
  * was that the obvious way to answer it is wrong: the branches' own cards hold 25 sampled rows
  * each, and deciding membership by comparing those two samples would report a row as dropped by an
@@ -27,7 +27,7 @@ import { station, wrap, type Query, type Station } from "../station-types";
  * real result, and say why the regions are missing.
  *
  * Each subtree is a CONTIGUOUS run of branches, and its verbatim text re-parses to the same
- * grouping, because that grouping came from precedence in the first place — which is what lets a
+ * grouping, because that grouping came from precedence in the first place - which is what lets a
  * node's SQL be a slice of the user's statement rather than something reassembled.
  */
 export function buildSetStations(parsed: ParsedSetOp): Station[] {
@@ -50,7 +50,7 @@ export function buildSetStations(parsed: ParsedSetOp): Station[] {
   const { limited, counted } = wrap(withPrefix);
   const pair = (id: string, label: string, sql: string): Query[] => [
     { id: `${id}.sample`, label, sql: limited(sql) },
-    { id: `${id}.count`, label: `${label} — count`, sql: counted(sql) },
+    { id: `${id}.count`, label: `${label} - count`, sql: counted(sql) },
   ];
 
   const nodes: Extract<SetTree, { kind: "combine" }>[] = [];
@@ -84,7 +84,7 @@ export function buildSetStations(parsed: ParsedSetOp): Station[] {
 
     // Two batches on purpose. The first is the chapter: the inputs and the answer, and it must not
     // be lost to a dialect that cannot evaluate the second. The second is the Venn regions, which
-    // need INTERSECT and EXCEPT — MySQL only learned them in 8.0.31 — so when they fail they fail
+    // need INTERSECT and EXCEPT - MySQL only learned them in 8.0.31 - so when they fail they fail
     // alone and the scene says the regions are unavailable rather than showing them empty.
     const batches: Query[][] = [
       [
@@ -95,8 +95,8 @@ export function buildSetStations(parsed: ParsedSetOp): Station[] {
       ],
     ];
     if (!keepsDuplicates) {
-      // One region of every INTERSECT and EXCEPT is the operator's own answer — `L intersect R` IS
-      // the middle region, `L except R` IS the left one — so asking for it again would send the
+      // One region of every INTERSECT and EXCEPT is the operator's own answer - `L intersect R` IS
+      // the middle region, `L except R` IS the left one - so asking for it again would send the
       // same statement to the user's database twice per station. The region is dropped here and
       // the scene reads it off `sample`, which also means it survives a dialect that cannot
       // evaluate the rest of this batch.

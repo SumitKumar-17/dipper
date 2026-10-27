@@ -1,7 +1,7 @@
 // The workspace exactly as apps/web lays it out (apps/web/src/routes/index.tsx `Workspace`), filling
 // the frame's app area instead of the viewport. The differences are only what a page with several
-// workspaces on it needs: the parts that listen on `window` — shortcuts, the palette, the dialogs
-// opened by event — are mounted only while the visitor is using this scene (see active-scene.ts).
+// workspaces on it needs: the parts that listen on `window` - shortcuts, the palette, the dialogs
+// opened by event - are mounted only while the visitor is using this scene (see active-scene.ts).
 
 import {
   AppTopbar,
@@ -11,7 +11,7 @@ import {
   ConnectionPicker,
   EditorGrid,
   FilesList,
-  PerchMark,
+  PipitMark,
   QueryWalkDialog,
   ResizableSidebar,
   RunButton,
@@ -25,7 +25,7 @@ import {
   requestSaveQuery,
   useHotkey,
   useWorkspace,
-} from "@perch/ui";
+} from "@pipit/ui";
 import { PanelLeftIcon, SettingsIcon } from "lucide-react";
 import * as React from "react";
 import { RunHistory } from "../../../../../web/src/run-history";
@@ -67,8 +67,8 @@ function Workspace({ active }: { active: boolean }): React.ReactElement {
         }
         start={
           <>
-            <span aria-label="Perch" className="flex items-center pr-1 pl-0.5" role="img">
-              <PerchMark className="size-5" />
+            <span aria-label="Pipit" className="flex items-center pr-1 pl-0.5" role="img">
+              <PipitMark className="size-5" />
             </span>
             <div aria-hidden className="mr-0.5 h-4 w-px bg-border" />
             <button

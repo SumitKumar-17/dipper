@@ -77,7 +77,7 @@ type RunRecord struct {
 	Error        *QueryError       `json:"error,omitempty"`
 	Source       RunSource         `json:"source"`
 	// The workspace root the query came from, when it came from a file in one. Empty means the
-	// run belongs to no folder — an untitled buffer, perch's own queries directory, or the CLI —
+	// run belongs to no folder - an untitled buffer, pipit's own queries directory, or the CLI -
 	// which the History tab calls global.
 	Workspace string `json:"workspace,omitempty"`
 }

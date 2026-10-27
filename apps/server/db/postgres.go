@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // The connection's own pool. A statement holds one connection at a time; four covers concurrent
@@ -53,7 +53,7 @@ func (d *postgresDriver) Dialect() protocol.Dialect { return protocol.DialectPos
 
 // quoteDSN makes a value safe to put in a libpq keyword/value connection string.
 //
-// Unquoted, a space ends the value and the next word is read as another keyword — so a role or
+// Unquoted, a space ends the value and the next word is read as another keyword - so a role or
 // database named with a space in it does not fail at the server, it fails at the parser, with a
 // message about the connection string rather than about the login. Single quotes allow the space
 // through; inside them a backslash escapes a quote or another backslash. The password is not
@@ -69,7 +69,7 @@ func (d *postgresDriver) poolConfig(database string, max int32) (*pgxpool.Config
 	if database == "" {
 		database = d.config.Database
 	}
-	appName := "perch"
+	appName := "pipit"
 	if v, ok := d.config.Options["application_name"].(string); ok && v != "" {
 		appName = v
 	}

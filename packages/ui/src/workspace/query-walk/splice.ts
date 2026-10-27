@@ -6,10 +6,10 @@ import type { Range, SqlPart } from "./clause-types";
 /**
  * The prefix every name the walk invents carries, so one can never collide with a name the user
  * wrote. It lives down here, where the query builders and the parser can both reach it; `steps.ts`
- * re-exports this one, because importing it the other way round would invert the layering —
+ * re-exports this one, because importing it the other way round would invert the layering -
  * `steps.ts` is what imports `clauses.ts`.
  */
-export const WALK_PREFIX = "_perch_walk_";
+export const WALK_PREFIX = "_pipit_walk_";
 
 /** Rebuilds `statement` with each edit's range swapped for its replacement, everything between
  *  them kept exactly as the user typed it. An edit that overlaps one already applied is dropped,
@@ -43,8 +43,8 @@ export function spliceParts(
   parts.push({ text: text.slice(cursor, statement.to), over: null });
   // The trim has to survive the split, because `spliceRanges` is these parts joined and callers
   // compare its output against SQL they already have. Trimming the first and last runs in place is
-  // NOT the same thing — a run that is entirely whitespace would keep the whitespace in the run
-  // before it — so whole runs are dropped from each end until one has something in it. Checked
+  // NOT the same thing - a run that is entirely whitespace would keep the whitespace in the run
+  // before it - so whole runs are dropped from each end until one has something in it. Checked
   // against the previous implementation over 20,000 random splices.
   while (parts.length > 0) {
     const first = parts[0]!;

@@ -1,4 +1,4 @@
-// The notebook: the same file, shown as a column of cards. A notebook is a view, not a format —
+// The notebook: the same file, shown as a column of cards. A notebook is a view, not a format -
 // one plain `.sql` file, nothing new on the wire. `cells.ts` does the splitting; editing is the part
 // that fights back, in two ways.
 //
@@ -98,7 +98,7 @@ export function Notebook({
       <div className="min-h-0 flex-1 overflow-auto">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 p-4">
           {/* Cards animate in and out, and `layout` on each card carries every other card to its
-              new place — adding a cell, deleting one, or a result opening underneath one. */}
+              new place - adding a cell, deleting one, or a result opening underneath one. */}
           <AnimatePresence initial={false}>
             {cards.map((cell, index) => (
               <NotebookCard

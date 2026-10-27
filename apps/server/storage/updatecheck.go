@@ -1,6 +1,6 @@
 package storage
 
-// update.json remembers the last release perch saw, so the look `perch serve` takes for a newer
+// update.json remembers the last release pipit saw, so the look `pipit serve` takes for a newer
 // version costs one request a day rather than one per start.
 type UpdateCheck struct {
 	CheckedAt string `json:"checkedAt"`

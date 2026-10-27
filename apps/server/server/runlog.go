@@ -4,7 +4,7 @@ import (
 	"sort"
 	"sync"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 const maxRuns = 50
@@ -48,7 +48,7 @@ func (l *RunLog) Get(runID string) (protocol.RunRecord, bool) {
 	return *record, true
 }
 
-// List is newest first, without result rows — those come from Get.
+// List is newest first, without result rows - those come from Get.
 func (l *RunLog) List() []protocol.RunRecord {
 	l.mu.Lock()
 	out := make([]protocol.RunRecord, 0, len(l.runs))

@@ -1,12 +1,12 @@
-import { THEME_BOOT_SCRIPT } from "@perch/ui";
+import { THEME_BOOT_SCRIPT } from "@pipit/ui";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import type * as React from "react";
 import { NotFound } from "@/not-found";
 import appCss from "@/styles.css?url";
 
-// The product is "Perch"; the command, the scopes and `~/.perch` stay lowercase. The tab is the
-// only label a local tool gets, so a route with something more specific to say — a database name,
-// with several windows open on several databases — sets its own `title` here, which wins over this
+// The product is "Pipit"; the command, the scopes and `~/.pipit` stay lowercase. The tab is the
+// only label a local tool gets, so a route with something more specific to say - a database name,
+// with several windows open on several databases - sets its own `title` here, which wins over this
 // one. That is also why only the overridable half of the head lives in `head()`; the fixed half is
 // written out in the shell below.
 //
@@ -15,9 +15,9 @@ import appCss from "@/styles.css?url";
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { title: "Perch" },
+      { title: "Pipit" },
       { name: "description", content: "A fast, local SQL client for Postgres and MySQL." },
-      { name: "application-name", content: "Perch" },
+      { name: "application-name", content: "Pipit" },
     ],
     links: [
       // A real <link> in the prerendered shell rather than a stylesheet the bundle injects once it
@@ -49,7 +49,7 @@ function RootDocument({ children }: { children: React.ReactNode }): React.ReactE
         <meta content="#0a0a0a" media="(prefers-color-scheme: dark)" name="theme-color" />
         {/* Blocking, and as early as React will place it: a theme applied after the first paint is
             a flash, not a theme. React hoists <meta> and <link> above any inline script, so this
-            lands under them — still parsed and run before the body, which is what matters. */}
+            lands under them - still parsed and run before the body, which is what matters. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <HeadContent />
       </head>

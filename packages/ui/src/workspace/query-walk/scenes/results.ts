@@ -1,7 +1,7 @@
 // Reading the step results: pulling a sample, an error or a count out of what a station's queries
 // came back with, and the row counts a station starts from and leaves behind.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import type { KeyPair } from "../clauses";
 import { countId, sampleId, type Station } from "../steps";
 
@@ -40,7 +40,7 @@ export function sampleOf(walk: WalkData, index: number): StatementResult | null 
  *
  * A natural join is the only join whose condition is absent from the query. It matches on every
  * column name the two sides share, so the condition depends on what the left side happens to be
- * CARRYING by the time the join runs — and the left side of a second join is the output of the
+ * CARRYING by the time the join runs - and the left side of a second join is the output of the
  * first. A column that arrives up there, from an earlier join or a widening `select *`, silently
  * joins these two tables on one more thing, and the query keeps running and answers wrongly. That
  * is the one fact this walk can show and the text cannot, so it is read off the samples.
@@ -55,7 +55,7 @@ export function joinKeys(
   if (!join.natural) return join.keys;
   const previous = previousIndex(walk, index);
   const left = previous === null ? null : sampleOf(walk, previous);
-  // Every source is sampled once, by the FROM station at index 0 — `src0` is the first source and
+  // Every source is sampled once, by the FROM station at index 0 - `src0` is the first source and
   // `src{n+1}` is the one join n brings in. The join stations read theirs from there too.
   const right = okResult(walk.results[0], `src${station.joinIndex + 1}.sample`);
   if (!left || !right) return null;

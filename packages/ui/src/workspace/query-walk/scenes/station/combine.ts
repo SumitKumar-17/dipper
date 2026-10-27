@@ -3,7 +3,7 @@
 // Three beats. The two sides as they arrived, then the regions they share, then what the operator
 // kept. The middle beat is the one that took a while to exist, and the reason is worth keeping in
 // front of whoever edits this next: the two side cards hold 25 sampled rows each, so deciding here
-// which of them survived an INTERSECT — by comparing the samples in JavaScript — would mark a row
+// which of them survived an INTERSECT - by comparing the samples in JavaScript - would mark a row
 // as dropped whenever its partner happened to fall outside the other sample. Nothing in this file
 // compares rows. Each region is a set operation the database evaluated over the FULL branches, and
 // this only lays the answers out.
@@ -72,7 +72,7 @@ export function combineScene(
   // Beat 2: the regions, each tinted by whether this operator keeps it.
   if (hasRegions && phase === 1) {
     const kept = keeps(word);
-    // The region an operator's own answer already IS — see `buildSetStations`, which does not send
+    // The region an operator's own answer already IS - see `buildSetStations`, which does not send
     // that query twice. Reading it off `sample` is not an inference: it is the same statement.
     const isResult = word.startsWith("INTERSECT")
       ? "both"
@@ -83,7 +83,7 @@ export function combineScene(
       const view = card(
         result,
         id === isResult ? "" : id,
-        `${title} — ${survives ? "kept" : "dropped"}`,
+        `${title} - ${survives ? "kept" : "dropped"}`,
       );
       return {
         ...view,
@@ -105,6 +105,6 @@ export function combineScene(
     );
   }
 
-  // Beat 3: what the operator actually returned — the database's own answer, not the regions added up.
+  // Beat 3: what the operator actually returned - the database's own answer, not the regions added up.
   return tables([card(result, "", `after ${word}`)], resultCount);
 }

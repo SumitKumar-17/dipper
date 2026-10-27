@@ -1,5 +1,5 @@
 // The four string helpers every sentence in this folder is built out of, and the two files outside
-// it — `program.ts` and `terminus.ts` — that write labels in the same voice.
+// it - `program.ts` and `terminus.ts` - that write labels in the same voice.
 
 /** SQL as it will be read, not as it was typed: newlines and runs of spaces collapsed to one. */
 export const oneLine = (text: string): string => text.replace(/\s+/g, " ").trim();

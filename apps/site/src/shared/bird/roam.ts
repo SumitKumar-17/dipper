@@ -9,14 +9,14 @@ export type RoamEdge = {
   from?: number;
   /** 0..1 along the edge. Default 1. */
   to?: number;
-  /** Lowers the edge, as for a perch. */
+  /** Lowers the edge, as for a roost. */
   offsetY?: number;
   facing?: BirdFacing;
 };
 
-/** One stretch of the page, usually a section: the perches in it and the text it must keep off. */
+/** One stretch of the page, usually a section: the roosts in it and the text it must keep off. */
 export type RoamZone = {
-  /** The zone's main perch: where it is on the page, and the only perch under reduced motion. */
+  /** The zone's main roost: where it is on the page, and the only roost under reduced motion. */
   home: RoamEdge & { at: number };
   /** The other edges it may stand on, read when the bird next decides where to go. */
   edges?: () => RoamEdge[];
@@ -31,7 +31,7 @@ export type RoamZone = {
 export type RoamOptions = {
   /** In page order. */
   zones: RoamZone[];
-  /** Flights stay below this element and perches clear of it: a sticky nav. */
+  /** Flights stay below this element and roosts clear of it: a sticky nav. */
   ceiling?: Element | null;
   seed?: number;
 };
@@ -48,8 +48,8 @@ const KINDS: [Kind, number][] = [
   ["glide", 0.14],
   ["lap", 0.12],
 ];
-// A bird a reader is scrolling with: it re-perches once the page has carried it this share of the
-// view, even when its perch is still in the open.
+// A bird a reader is scrolling with: it re-roosts once the page has carried it this share of the
+// view, even when its roost is still in the open.
 const DRIFT = 0.3;
 // Mid-flight, a fresh pick may bend the path at most this often (ms), so a fling is one flight.
 const BEND_MS = 300;
@@ -62,9 +62,9 @@ const LAP_EVERY_MS = 14000;
  * Keeps the bird busy around the part of the page being read. It follows the reader at once as they
  * scroll, and between scrolls never sits more than a few seconds: it shuffles along its branch, or
  * takes off for a lazy arc, a loop, a glide down or a lap round the zone's window, and lands on
- * another perch in the open part of the view. Everything is drawn from one seeded random, so no
+ * another roost in the open part of the view. Everything is drawn from one seeded random, so no
  * two minutes look alike. Under reduced motion, or with the SVG fallback that cannot fly, it only
- * keeps to each zone's home perch. Returns stop().
+ * keeps to each zone's home roost. Returns stop().
  */
 export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): () => void {
   const first = zones[0];
@@ -174,7 +174,7 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
     clearTimeout(timer);
     timer = 0;
     bird
-      .perchOn(spot.edge.el, {
+      .roostOn(spot.edge.el, {
         at: spot.at,
         offsetY: spot.edge.offsetY,
         facing: flight.facing ?? spot.edge.facing,
@@ -293,7 +293,7 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
           ...along([from, ring[0] as Point], 3),
           ...along([ring[2] as Point, to], 3),
         ];
-        // a little preference for the loop out to the side away from the perch it lands on
+        // a little preference for the loop out to the side away from the roost it lands on
         const c = crowding(samples, avoid) + (out === away ? 0 : 0.5) + rand() * 0.4;
         if (c < score) [best, score] = [ring, c];
       }
@@ -301,7 +301,7 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
     return best.map((p) => tie(to.edge.el, p));
   }
 
-  // Wingbeats up to a high point, then a long glide down onto the perch; the high point goes to
+  // Wingbeats up to a high point, then a long glide down onto the roost; the high point goes to
   // whichever side has the clearer air.
   function glideVia(from: Point, to: Spot, avoid: Rect[]): ViaPoint[] {
     const s = bird.size;
@@ -311,7 +311,7 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
     return [tie(to.edge.el, pick)];
   }
 
-  /** Down one side of the window, across its lower part and up the other, to a perch at the end. */
+  /** Down one side of the window, across its lower part and up the other, to a roost at the end. */
   function lap(from: Point, zi: number, spots: Spot[], avoid: Rect[]): boolean {
     const win = zoneAt(zi).around?.();
     if (!win?.isConnected) return false;
@@ -346,8 +346,8 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
   }
 
   function current(): Spot | null {
-    const perch = bird.perch;
-    return target && perch && perch.el === target.edge.el && Math.abs(perch.at - target.at) < 1e-3 ? target : null;
+    const roost = bird.roost;
+    return target && roost && roost.el === target.edge.el && Math.abs(roost.at - target.at) < 1e-3 ? target : null;
   }
 
   function wander() {
@@ -417,7 +417,7 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
   }
 
   /**
-   * The best perch for the reader's eye line as they scroll, skipping any the scroll is about to
+   * The best roost for the reader's eye line as they scroll, skipping any the scroll is about to
    * carry out of the open part of the view (v: px/s the content is moving up).
    */
   function guideSpot(zi: number, avoid: Rect[], v: number): (Spot & Flight) | null {
@@ -450,7 +450,7 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
     if (!live) return;
     const zi = activeZone();
     if (still()) {
-      // No flights: the home perch nearest the eye line in the open part of the view, crossfaded;
+      // No flights: the home roost nearest the eye line in the open part of the view, crossfaded;
       // with none in the open, the next one down, where it waits for the reader.
       const lo = top() + bird.size + 6;
       const hi = innerHeight - 8;
@@ -469,20 +469,20 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
         homeZone = next;
         const { home } = zoneAt(next);
         target = null;
-        bird.perchOn(home.el, home).catch(() => undefined);
+        bird.roostOn(home.el, home).catch(() => undefined);
       }
       return;
     }
     homeZone = -1;
     if (!bird.position) {
-      // not on the page yet (a reload part-way down): it appears on the best perch in view
+      // not on the page yet (a reload part-way down): it appears on the best roost in view
       const spot = guideSpot(zi, avoidNow(), 0);
       if (spot) go(spot);
       return;
     }
     const s = bird.size;
     const p = target ? pointOn(target.edge, target.at) : null;
-    // Where the scroll will have carried the perch by the time the bird is off it, so it leaves
+    // Where the scroll will have carried the roost by the time the bird is off it, so it leaves
     // before the nav can cover it rather than after.
     const v = performance.now() - lastT > 150 ? 0 : speed;
     const ahead = p ? p.y - v * LOOKAHEAD_S : 0;
@@ -529,8 +529,8 @@ export function roam(bird: Bird, { zones, ceiling = null, seed }: RoamOptions): 
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);
   // Start from wherever the bird already stands, if that is one of the zones' homes.
-  const zi = zones.findIndex((zone) => zone.home.el === bird.perch?.el);
-  const at = bird.perch?.at ?? 0;
+  const zi = zones.findIndex((zone) => zone.home.el === bird.roost?.el);
+  const at = bird.roost?.at ?? 0;
   const start = zi >= 0 ? pointOn(zoneAt(zi).home, at) : null;
   if (start) target = { ...start, zone: zi, edge: zoneAt(zi).home, at };
   check();

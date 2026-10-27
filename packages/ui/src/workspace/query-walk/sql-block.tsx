@@ -1,6 +1,6 @@
 // A statement shown as reference rather than as a gesture: highlighted, wrapped, and still.
 //
-// `SqlParts` is the other half of this — the same block with its substitutions cross-fading. This
+// `SqlParts` is the other half of this - the same block with its substitutions cross-fading. This
 // one is for the statements nothing is being spliced into, which is most of them.
 
 import type * as React from "react";

@@ -1,5 +1,5 @@
 // The editor grid's shape: which panes exist, how they nest, and which has focus. Pure data and
-// pure functions — no React, no DOM — so everything here is a transform from one layout to the next.
+// pure functions - no React, no DOM - so everything here is a transform from one layout to the next.
 //
 // Three disciplines make that work:
 //

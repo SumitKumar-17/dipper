@@ -2,9 +2,9 @@
  * The window is drawn at desktop size and scaled to the page, but the diagram measures its
  * viewport with `getBoundingClientRect` and reads pointer travel from `clientX`/`clientY`, both in
  * screen pixels. Under the scale both are off by it: Fit would fit a box the scale's size, and a
- * dragged card would trail the finger. This puts them back in the window's own pixels — the
+ * dragged card would trail the finger. This puts them back in the window's own pixels - the
  * viewport reports its layout size, and pointer coordinates over it are divided by the scale about
- * its corner — so every gesture runs through the app's own code and lands where the finger is.
+ * its corner - so every gesture runs through the app's own code and lands where the finger is.
  *
  * Only the viewport is patched: the cards, the window and everything a page anchors to still
  * report where they are on screen.

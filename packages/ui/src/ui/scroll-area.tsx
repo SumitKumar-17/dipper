@@ -21,7 +21,7 @@ export function ScrollArea({
   /**
    * Own the element that actually scrolls.
    *
-   * The viewport is the scrollport, and a caller sometimes needs it to be something else — a
+   * The viewport is the scrollport, and a caller sometimes needs it to be something else - a
    * `motion.div` with `layoutScroll`, so layout animations inside are measured against the scroll
    * offset rather than the page. Without this the caller hand-rolls a scroller and the fade that
    * goes with it, which is how you end up with two of everything.

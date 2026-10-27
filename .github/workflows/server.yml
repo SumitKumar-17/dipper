@@ -52,9 +52,9 @@ jobs:
       # No UI is built here: the binary serves the API and says the UI is missing, which is the
       # behaviour this job is checking does not crash.
       - run: bash scripts/build.sh
-      - run: ./dist/perch --version && ./dist/perch status
+      - run: ./dist/pipit --version && ./dist/pipit status
         env:
-          PERCH_HOME: ${{ runner.temp }}/perch-home
+          PIPIT_HOME: ${{ runner.temp }}/pipit-home
 
   # Every release target builds from one machine, because CGO is off and every dependency is
   # pure Go. This is the job that would fail if that ever stopped being true.
@@ -77,14 +77,14 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: perch
-          POSTGRES_PASSWORD: perch
-          POSTGRES_DB: perch
+          POSTGRES_USER: pipit
+          POSTGRES_PASSWORD: pipit
+          POSTGRES_DB: pipit
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U perch" --health-interval 5s --health-timeout 5s --health-retries 10
+          --health-cmd "pg_isready -U pipit" --health-interval 5s --health-timeout 5s --health-retries 10
     env:
-      PERCH_SMOKE_PG: postgres://perch:perch@localhost:5432/perch
+      PIPIT_SMOKE_PG: postgres://pipit:pipit@localhost:5432/pipit
     defaults:
       run:
         working-directory: apps/server
@@ -99,5 +99,5 @@ jobs:
         with:
           node-version: 22
       - run: bash scripts/build.sh
-      - run: psql "$PERCH_SMOKE_PG" -f scripts/smoke-fixtures.sql
+      - run: psql "$PIPIT_SMOKE_PG" -f scripts/smoke-fixtures.sql
       - run: bash scripts/smoke.sh

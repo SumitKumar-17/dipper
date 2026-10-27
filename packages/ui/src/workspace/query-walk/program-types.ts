@@ -3,7 +3,7 @@
 // A section is a named intermediate result with its own full station walk: a CTE, a derived table, a
 // subquery predicate, a branch of a set operation, or the statement itself. They are emitted
 // depth-first, so a section always lands after everything it reads and the chapter strip can be read
-// top to bottom. Nothing is a detour any more — a later section REFERENCES an earlier one by name
+// top to bottom. Nothing is a detour any more - a later section REFERENCES an earlier one by name
 // instead of recomputing it.
 //
 // CORRELATION is the property that decides everything. A subquery that does not depend on the outer
@@ -12,7 +12,7 @@
 //
 // The trap: `SubqueryPredicate.correlated` only reports QUALIFIED references, because `course_id`
 // with no table in front of it cannot be resolved without a catalogue. So an empty list means "no
-// PROVABLE correlation", never "uncorrelated" — promoting such a subquery to a standalone section
+// PROVABLE correlation", never "uncorrelated" - promoting such a subquery to a standalone section
 // would run it once and show a confidently wrong result. That uncertainty is not flattened here: it
 // is carried as `Binding.certain`, for a later wave to settle by probing.
 //
@@ -21,23 +21,23 @@
 // a probe built from it needs nothing prepended. `prefix` records what was spliced on.
 //
 // That synthesis is also why every section has to carry a way BACK. What a section runs is not what
-// the reader wrote — it has a WITH prefix the walk invented on the front and a body trimmed at both
-// ends — so a chapter shown as "your query" is a statement nobody typed, and nothing built from a
+// the reader wrote - it has a WITH prefix the walk invented on the front and a body trimmed at both
+// ends - so a chapter shown as "your query" is a statement nobody typed, and nothing built from a
 // section's own ranges can be pointed at the query on screen. `source`, `rootMap` and `uses` are the
 // return path, and they are cheap because the body IS a verbatim slice of `Program.text`: one
 // subtraction maps any offset in it back, and mapping a child's body through its parent's mapping at
 // build time makes it compose to any depth.
 //
-// Where the body is NOT a verbatim slice the mapping is null rather than approximate — see
+// Where the body is NOT a verbatim slice the mapping is null rather than approximate - see
 // `Section.rootMap`. A highlight in the wrong place reads as a fact about the query and is believed;
 // a missing one reads as a missing feature. The UI's fallback for a null is to show the statement
 // with nothing lit up.
 
 // This file is the vocabulary: what a section IS, and what each field of one is allowed to mean.
-// Nothing here parses or emits anything — `program-build.ts` does that — so the documentation of a
+// Nothing here parses or emits anything - `program-build.ts` does that - so the documentation of a
 // field sits next to the field rather than next to whichever function happened to fill it in.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import type {
   Cte,
   ParsedSelect,
@@ -86,7 +86,7 @@ export type Binding =
  * Why a section produces a table but has no clause sequence to step through.
  *
  * These are not failures. A `VALUES` list, a `select` with no FROM and a data-modifying `RETURNING`
- * CTE all run on the database and all hand back real rows — there is simply no FROM → WHERE →
+ * CTE all run on the database and all hand back real rows - there is simply no FROM → WHERE →
  * SELECT order inside them for the walk to animate. Before this existed each one was dropped as
  * "unsupported", which told the reader their CTE was not part of the query when in fact it is the
  * first thing that runs.
@@ -107,7 +107,7 @@ export type ResultOnly = {
    * two-line `values` list is not introduced by the fifty lines of CTEs that happen to precede it.
    */
   readonly body: string;
-  /** `insert`, `update`, `delete`, `merge` — for `writes` only, so the chapter can name the verb. */
+  /** `insert`, `update`, `delete`, `merge` - for `writes` only, so the chapter can name the verb. */
   readonly verb: string | null;
   /** What the clause slicer said when it refused, kept so the chapter can stay honest about it. */
   readonly reason: string;
@@ -119,7 +119,7 @@ export type SelfRef = {
   /** Where it sits in `Recursion.stepSql`, source as written and alias included. Never null: the
    *  probe splices by this range, and a probe that could not be built is not a probe. */
   readonly range: Range;
-  /** The alias the reader gave it, or the CTE's own name when they gave none — a derived table
+  /** The alias the reader gave it, or the CTE's own name when they gave none - a derived table
    *  spliced in its place must answer to whatever the rest of the term calls it. */
   readonly alias: string;
   /** The same reference in `Program.text`, or null when the mapping refused it. */
@@ -130,7 +130,7 @@ export type SelfRef = {
  * A recursive CTE split into the two queries the database actually runs.
  *
  * Only ever set when the split is CERTAIN. The alternative to falling back is not a slightly wrong
- * picture: a recursive query assembled wrong does not fail politely, it hangs or floods — so the
+ * picture: a recursive query assembled wrong does not fail politely, it hangs or floods - so the
  * anchor has to be an anchor (a query that can run before anything has been collected) and the step
  * has to name the CTE in source position only, where a derived table can stand in its place. Every
  * shape that does not read that way stays the black box it was, which teaches less and lies none.
@@ -142,7 +142,7 @@ export type SelfRef = {
 export type Recursion = {
   /** The CTE's name, as the reader spelled it. */
   readonly name: string;
-  /** The half that does not mention the CTE — where the recursion begins. */
+  /** The half that does not mention the CTE - where the recursion begins. */
   readonly anchorSql: string;
   /** The half that does. Its self-references are still in it; splicing them is the probe's job. */
   readonly stepSql: string;
@@ -171,14 +171,14 @@ export type RecursionSentences = {
  * Where a section's text sits in the text the reader wrote.
  *
  * A section's text is `prefix + body`: the WITH the walk spliced on, then a verbatim slice of
- * `Program.text` — trimmed at both ends, but not otherwise touched. So the whole mapping is two
+ * `Program.text` - trimmed at both ends, but not otherwise touched. So the whole mapping is two
  * numbers, and `toRootOffset` is a subtraction. Kept as data rather than a closure because a
  * `Program` is handed around, compared and memoised, and a function on it would be none of those.
  */
 export type RootMap = {
   /**
    * How many characters at the head of `Section.text` the walk INVENTED. An offset below it is in
-   * the spliced prefix — text the reader never wrote — and maps to nothing.
+   * the spliced prefix - text the reader never wrote - and maps to nothing.
    */
   readonly prefixLength: number;
   /** Where `Section.text.slice(prefixLength)` begins in `Program.text`. */
@@ -213,7 +213,7 @@ export type Section = {
    *
    * This is true of far more sections than the write itself. Every probe the walk builds carries
    * the section's whole WITH prefix, so in `with d as (delete from takes returning *) select * from
-   * d` it is not only `d` that deletes — the final query's FROM, WHERE and SELECT probes each
+   * d` it is not only `d` that deletes - the final query's FROM, WHERE and SELECT probes each
    * splice that same prefix in and delete again, thirty times over. The flag is therefore set from
    * the section's OWN composed text, which is exactly what would be sent.
    */
@@ -226,8 +226,8 @@ export type Section = {
   /**
    * Predicates this section SWALLOWED, by label, rather than giving each a chapter of its own.
    *
-   * A doubly-correlated predicate has no table of outer rows to scrub — its outer rows do not exist
-   * until a row of ITS outer section is picked — so a chapter for it could only ever hold a note.
+   * A doubly-correlated predicate has no table of outer rows to scrub - its outer rows do not exist
+   * until a row of ITS outer section is picked - so a chapter for it could only ever hold a note.
    * When a grid can be built it becomes the cells of this section's grid instead, which is a better
    * picture and a real one. Empty for every other section; non-empty is what the chapter strip reads
    * to say where that piece of SQL went.
@@ -235,7 +235,7 @@ export type Section = {
   readonly absorbed: readonly string[];
   /**
    * This section's own span in `Program.text`: a CTE's `name AS (…)`, a derived table as written, a
-   * predicate as written, a branch, or — for `main` — the whole statement.
+   * predicate as written, a branch, or - for `main` - the whole statement.
    *
    * Null when the span could not be established, which is the same condition as a null `rootMap`
    * plus one more: an origin range that did not survive the check against the root text. A reader
@@ -246,8 +246,8 @@ export type Section = {
    * How an offset in `text` becomes an offset in `Program.text`. Read it through `toRootOffset`.
    *
    * Null when this section's text is not a verbatim slice of the root, which happens in exactly two
-   * places. `addRecursiveCte` INVENTS a body — `select * from chain` is the walk's sentence, not the
-   * reader's — and `compose` rewrites a body that declares a WITH of its own, because merging its
+   * places. `addRecursiveCte` INVENTS a body - `select * from chain` is the walk's sentence, not the
+   * reader's - and `compose` rewrites a body that declares a WITH of its own, because merging its
    * list into the prefix is the only way the two can be one statement. Both are real SQL that was
    * never typed, so no offset in them is an offset in the query on screen.
    *
@@ -256,7 +256,7 @@ export type Section = {
    */
   readonly rootMap: RootMap | null;
   /**
-   * For a `cte` section: where in `Program.text` this CTE is READ by name — the `chain` in `from
+   * For a `cte` section: where in `Program.text` this CTE is READ by name - the `chain` in `from
    * chain` or `join chain c`, narrowed to the name and never including the alias.
    *
    * It is the one kind of section whose `source` is nowhere near the line that needs it: a CTE is
@@ -270,8 +270,8 @@ export type Section = {
    *
    * Set only on a `cte` section built by `addRecursiveCte`, and only when every test in
    * `readRecursion` passed. Its presence is what swaps the ordinary ten-station walk over the
-   * invented `select * from chain` — which narrates a trivial SELECT and never mentions the
-   * recursion — for the three stations that do.
+   * invented `select * from chain` - which narrates a trivial SELECT and never mentions the
+   * recursion - for the three stations that do.
    */
   readonly recursion: Recursion | null;
 };

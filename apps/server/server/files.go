@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"perch/httpx"
-	"perch/protocol"
+	"pipit/httpx"
+	"pipit/protocol"
 )
 
 // Every client-supplied path goes through SafePath, which realpaths the roots and the target

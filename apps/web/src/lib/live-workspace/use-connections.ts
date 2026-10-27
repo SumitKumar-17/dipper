@@ -1,18 +1,18 @@
 // Which server the workspace is pointed at, and which database on it.
 //
 // The database is a *pick*, not a copy: `null` means "whatever this connection says", so a
-// connection whose summary changes underneath — edited in Settings, re-dialled onto a different
-// default — is followed rather than shadowed by a value bootstrapped once at startup.
+// connection whose summary changes underneath - edited in Settings, re-dialled onto a different
+// default - is followed rather than shadowed by a value bootstrapped once at startup.
 
-import type { PerchClient } from "@perch/client";
-import type { ConnectionSummary } from "@perch/protocol";
+import type { PipitClient } from "@pipit/client";
+import type { ConnectionSummary } from "@pipit/protocol";
 import {
   asyncData,
   asyncLoading,
   asyncReady,
   asyncRefreshing,
   type Async,
-} from "@perch/ui";
+} from "@pipit/ui";
 import * as React from "react";
 import { upsertSummary, useConnectionCrud, type ConnectionCrud } from "./connection-crud";
 import { applyError, useAbortable } from "./use-async-resource";
@@ -27,7 +27,7 @@ export type ConnectionsState = ConnectionCrud & {
   selectDatabase: (database: string) => Promise<void>;
 };
 
-export function useConnections(getClient: () => PerchClient, enabled: boolean): ConnectionsState {
+export function useConnections(getClient: () => PipitClient, enabled: boolean): ConnectionsState {
   const [connections, setConnections] =
     React.useState<Async<readonly ConnectionSummary[]>>(asyncLoading);
   const [connectionId, setConnectionId] = React.useState<string | null>(null);
@@ -50,7 +50,7 @@ export function useConnections(getClient: () => PerchClient, enabled: boolean): 
   );
 
   // Its own effect rather than `useAsyncResource`: the list is only half of what the first read is
-  // for — the other half is deciding which connection the app opens on, and dialling it.
+  // for - the other half is deciding which connection the app opens on, and dialling it.
   const bootstrap = React.useCallback(
     async (signal: AbortSignal): Promise<void> => {
       const list = await load(signal);
@@ -93,7 +93,7 @@ export function useConnections(getClient: () => PerchClient, enabled: boolean): 
   const crud = useConnectionCrud(getClient, setConnections, { connectionId, select });
 
   // Async because the contract is: every action returns a promise so a caller can sequence work.
-  // There is nothing here to await — switching database is a local pick, and the panes below
+  // There is nothing here to await - switching database is a local pick, and the panes below
   // re-read from it.
   const selectDatabase = React.useCallback(
     (next: string): Promise<void> => {

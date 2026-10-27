@@ -9,9 +9,9 @@ import (
 	"strings"
 	"syscall"
 
-	"perch/fsx"
-	"perch/httpx"
-	"perch/protocol"
+	"pipit/fsx"
+	"pipit/httpx"
+	"pipit/protocol"
 )
 
 // A 409 carries the file's current text back inline only while it is small enough to be cheap.

@@ -2,7 +2,7 @@
 // structure. Directories may arrive as entries, arrive after their children, or never arrive, so
 // paths are threaded onto a node map keyed by full path and missing directories are synthesised.
 
-import type { FileEntry } from "@perch/protocol";
+import type { FileEntry } from "@pipit/protocol";
 import { baseName, isUnder } from "../../lib/paths";
 
 export type TreeNode = {
@@ -70,7 +70,7 @@ export function buildForest(
   return [...buckets].map(([root, children]) => ({ children: sortNodes(children), root }));
 }
 
-/** Directories first, then name order — what a file browser has trained everyone to expect. */
+/** Directories first, then name order - what a file browser has trained everyone to expect. */
 function sortNodes(nodes: TreeNode[]): readonly TreeNode[] {
   for (const node of nodes) sortNodes(node.children);
   nodes.sort((a, b) =>

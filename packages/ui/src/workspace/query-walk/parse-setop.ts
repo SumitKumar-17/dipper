@@ -4,7 +4,7 @@
 // separate reading of the same tokens rather than a case inside that one. Each branch, once cut
 // out, IS an ordinary SELECT and goes straight back through `parseTokens`.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   isSelectParens,
   isTailStart,
@@ -49,7 +49,7 @@ const SET_PRECEDENCE: Record<SetOperator, number> = {
  * Two levels and left association are the whole grammar, so this is two loops rather than a general
  * precedence climb: the inner one takes every INTERSECT it can reach, the outer one folds what is
  * left. The cursor is both "next branch to take" and "index of the operator that follows what has
- * been taken so far" — those stay equal because branches and operators alternate, and it is why one
+ * been taken so far" - those stay equal because branches and operators alternate, and it is why one
  * counter is enough for both.
  */
 function setTree(ops: readonly SetOperator[]): SetTree {
@@ -99,8 +99,8 @@ export function parseStatement(
   const toks = statementTokens(text, dialect);
   if (!toks) return { kind: "unsupported", reason: "There is no statement to walk." };
 
-  // The WITH prefix is read first so its `x as (select … union …)` parentheses — which are one
-  // Parens token and therefore invisible at depth zero anyway — are never mistaken for the
+  // The WITH prefix is read first so its `x as (select … union …)` parentheses - which are one
+  // Parens token and therefore invisible at depth zero anyway - are never mistaken for the
   // statement's own chain, and so the branch scan starts at the first branch.
   const cur = new TokenCursor(toks, text);
   const prefix = readWith(cur);
@@ -114,7 +114,7 @@ export function parseStatement(
   if (operators.length === 0) return parseTokens(text, toks, []);
 
   // A trailing ORDER BY / LIMIT / OFFSET after the last branch sorts and cuts the COMBINED result,
-  // so it must come off before the last branch is parsed — otherwise `… union select b from u
+  // so it must come off before the last branch is parsed - otherwise `… union select b from u
   // order by 1` would show the sort as happening inside the second branch, which is not what runs.
   let tailStart = toks.length;
   for (let i = operators[operators.length - 1]!.after; i < toks.length; i++) {
@@ -147,8 +147,8 @@ export function parseStatement(
       };
     }
     // `(select …) union (select …)`: the branch's own range keeps the parentheses, because that is
-    // what the user wrote and what gets highlighted, but the parse — and so any probe spliced from
-    // it — works on the body, where the branch's own ORDER BY and LIMIT legitimately live.
+    // what the user wrote and what gets highlighted, but the parse - and so any probe spliced from
+    // it - works on the body, where the branch's own ORDER BY and LIMIT legitimately live.
     const inner = unwrapBranch(run, text);
     return {
       range: { from: head.from, to: tailTok.to },
@@ -175,7 +175,7 @@ export function parseStatement(
 }
 
 /**
- * A set operator at `index`, with its `ALL` or `DISTINCT` swallowed — `union all` is a different
+ * A set operator at `index`, with its `ALL` or `DISTINCT` swallowed - `union all` is a different
  * operator from `union`, and reading them as two tokens would make the second branch start at the
  * word `all`. MINUS is Oracle's spelling of EXCEPT; it is matched only if the dialect's grammar
  * calls it a Keyword, which neither of ours does today, so this costs nothing and breaks nothing.
@@ -208,7 +208,7 @@ function readSetOperator(
  * The branches of a set-operation body, parsed over the SAME text the caller is scanning.
  *
  * `parseStatement` would also produce branches, but only by re-parsing a SLICE, and every range it
- * returned would then index that slice instead of this text — which is useless to a scan that works
+ * returned would then index that slice instead of this text - which is useless to a scan that works
  * in the enclosing statement's coordinates. Splitting the token run here keeps one coordinate
  * space, and reuses the same operator reader the statement-level split does.
  */
@@ -246,7 +246,7 @@ export function setOpBranchParses(
  * A branch written `(select …)`, read as the SELECT inside it.
  *
  * The branch's own range keeps the parentheses, because that is what the user wrote and what gets
- * highlighted — but the parse, and so any probe spliced from it, works on the body, where the
+ * highlighted - but the parse, and so any probe spliced from it, works on the body, where the
  * branch's own ORDER BY and LIMIT legitimately live.
  */
 function unwrapBranch(run: readonly Token[], text: string): readonly Token[] {

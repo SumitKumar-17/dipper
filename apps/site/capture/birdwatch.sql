@@ -1,9 +1,9 @@
--- Birdwatch: a small, original birding dataset for the Perch site recordings.
+-- Birdwatch: a small, original birding dataset for the Pipit site recordings.
 -- Real species and places, invented observers and checklists. Fixed dates (spring 2026), so every
 -- recording is reproducible. Idempotent: drops and recreates its own objects.
 --
---   createdb perch_site_demo
---   psql -d perch_site_demo -f apps/site/capture/birdwatch.sql
+--   createdb pipit_site_demo
+--   psql -d pipit_site_demo -f apps/site/capture/birdwatch.sql
 
 set client_min_messages = warning;
 

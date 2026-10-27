@@ -5,7 +5,7 @@
 // name the user wrote. None of them is ever shown: the scene reads them off the result and drops
 // them before the card is drawn.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import { inLists, WALK_PREFIX, type InList, type ParsedSelect } from "./clauses";
 
 /** Rows a sample asks for. The server caps at the same number through `maxRows`. */
@@ -23,7 +23,7 @@ export const MATCH_COLUMN = `${WALK_PREFIX}n`;
 export const bindColumn = (index: number): string => `${WALK_PREFIX}v${index}`;
 
 /**
- * The outer row's value for the expression a predicate compares — `s.dept_name` in
+ * The outer row's value for the expression a predicate compares - `s.dept_name` in
  * `s.dept_name in (select …)`.
  *
  * It rides on the outer probe that already runs rather than costing a statement of its own, and it
@@ -54,7 +54,7 @@ export const memberNullColumn = (list: number): string => `${WALK_PREFIX}mn${lis
  * A long `IN` list is a lookup table pasted into a query, not a lesson: past a dozen values the
  * card cannot show them and the reader was never reading them one by one. Lists past the cap keep
  * the ordinary pass/fail they have today rather than a partial answer, which would be the worse
- * of the two — a row reported as matching nothing when the value it matched was simply not asked
+ * of the two - a row reported as matching nothing when the value it matched was simply not asked
  * about.
  */
 export const MAX_IN_VALUES = 12;
@@ -65,7 +65,7 @@ export const MAX_IN_LISTS = 3;
  * Every `IN` list of a WHERE, each saying whether it was small enough to measure.
  *
  * The unmeasured ones are carried rather than dropped so the scene can SAY that a list is being
- * shown as one plain pass/fail — a reader who got a matched column on one list and nothing on the
+ * shown as one plain pass/fail - a reader who got a matched column on one list and nothing on the
  * next would otherwise read the gap as a bug rather than as a cap.
  */
 export function measurableInLists(
@@ -84,7 +84,7 @@ export function measurableInLists(
  * The two names the grid probe adds on top of those.
  *
  * They live here beside the others rather than next to the grid builder so that `bound.ts` and
- * `grid.ts` can both read a probe's columns back without either importing the other — the cycle
+ * `grid.ts` can both read a probe's columns back without either importing the other - the cycle
  * that would otherwise run program → grid → bound → program.
  */
 export const CELL_COLUMN = `${WALK_PREFIX}cell`;

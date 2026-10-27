@@ -1,6 +1,6 @@
 // The gear.
 //
-// Owns the dialog it opens, so a caller mounts one element and gets both — the alternative is
+// Owns the dialog it opens, so a caller mounts one element and gets both - the alternative is
 // every surface that wants a settings button also holding a piece of settings state, and two of
 // them eventually holding it at once. ⌘, is bound here for the same reason: the shortcut and the
 // button are the same control, and binding it anywhere else would let them drift apart.

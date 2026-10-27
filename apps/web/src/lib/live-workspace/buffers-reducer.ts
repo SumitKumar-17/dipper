@@ -1,7 +1,7 @@
 // Every rule about dirty, saved and conflicted, in one place.
 //
 // This used to be a stored `saveState` written from five call sites whose rules only made sense
-// read together. Two of its four values — "saved" and "unsaved" — are not state at all: they are
+// read together. Two of its four values - "saved" and "unsaved" - are not state at all: they are
 // `buffers.some(b => b.path !== null && b.dirty)`, which AGENTS.md says not to store. Only "saving"
 // and "error" are genuinely extra, so only those two are a `phase`, and `saveStateOf` derives the
 // answer the UI reads.
@@ -11,7 +11,7 @@
 // `dirty: content !== written`, so the buffers already carry that answer and the counter had
 // nothing left to decide.
 
-import type { Buffer, SaveState } from "@perch/ui";
+import type { Buffer, SaveState } from "@pipit/ui";
 
 export type BuffersState = {
   readonly buffers: readonly Buffer[];
@@ -23,7 +23,7 @@ export type BuffersState = {
   readonly phase: "idle" | "saving" | "error";
   /**
    * Bumped whenever `buffers` is replaced. The autosave effect is keyed on this, which is what
-   * makes autosave debounce — see `use-buffers.ts`.
+   * makes autosave debounce - see `use-buffers.ts`.
    */
   readonly revision: number;
 };

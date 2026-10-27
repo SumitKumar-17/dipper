@@ -1,4 +1,4 @@
-import type { HistoryScope, HistoryStats, RunRecord } from "@perch/protocol";
+import type { HistoryScope, HistoryStats, RunRecord } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type HistoryOptions = CallOptions & {

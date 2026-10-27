@@ -5,7 +5,7 @@
 // only fire when that button already had focus, which is never when you want it.
 //
 // The one thing a global handler must not do is steal a keystroke from someone typing. Anything
-// with a bare printable key is ignored inside an input, a textarea or a contenteditable —
+// with a bare printable key is ignored inside an input, a textarea or a contenteditable -
 // CodeMirror included, which renders a contenteditable. Modifier combinations are allowed through,
 // because ⌘S inside the editor is exactly where you press it.
 
@@ -44,7 +44,7 @@ function matches(event: KeyboardEvent, hotkey: Hotkey): boolean {
 /**
  * Binds one global shortcut for as long as the component is mounted.
  *
- * `handler` is held in a ref so a caller does not have to memoise it — passing an inline closure is
+ * `handler` is held in a ref so a caller does not have to memoise it - passing an inline closure is
  * the normal case, and re-binding the listener on every render would be a waste.
  */
 export function useHotkey(hotkey: Hotkey, handler: () => void, enabled = true): void {

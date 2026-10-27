@@ -1,5 +1,5 @@
-import type { ServerInfo } from "@perch/protocol";
-import { NOT_API, PerchError } from "./errors";
+import type { ServerInfo } from "@pipit/protocol";
+import { NOT_API, PipitError } from "./errors";
 import { createTransport, type CallOptions, type ClientOptions, type Transport } from "./http";
 import { connectionsApi, type ConnectionsApi } from "./connections";
 import { browseApi, type BrowseApi } from "./browse";
@@ -11,7 +11,7 @@ import { settingsApi, type SettingsApi } from "./settings";
 import { filesApi, type FilesApi } from "./files";
 import { eventsApi, type EventsApi } from "./events";
 
-export type PerchClient = {
+export type PipitClient = {
   readonly baseUrl: string;
   /** Cheap liveness probe: "is the server up, and is it this server?" */
   health(opts?: CallOptions): Promise<ServerInfo>;
@@ -32,13 +32,13 @@ export type PerchClient = {
 
 /**
  * `health` is used as a "is the server up?" probe, so a 200 from something that is merely *at*
- * this address — another app on the port, a proxy, a dev server with a catch-all route — must
+ * this address - another app on the port, a proxy, a dev server with a catch-all route - must
  * fail rather than pass. `name` is the cheapest thing that only this server sends.
  */
 async function health(http: Transport, opts?: CallOptions): Promise<ServerInfo> {
   const info = await http.json<ServerInfo>("/api/health", { signal: opts?.signal });
-  if (info?.name !== "perch") {
-    throw new PerchError("answered, but it is not an perch server", {
+  if (info?.name !== "pipit") {
+    throw new PipitError("answered, but it is not an pipit server", {
       status: 200,
       route: "GET /api/health",
       code: NOT_API,
@@ -48,7 +48,7 @@ async function health(http: Transport, opts?: CallOptions): Promise<ServerInfo> 
   return info;
 }
 
-export function createClient(options: ClientOptions): PerchClient {
+export function createClient(options: ClientOptions): PipitClient {
   const http = createTransport(options);
   return {
     baseUrl: http.baseUrl,

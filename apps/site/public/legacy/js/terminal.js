@@ -1,9 +1,9 @@
 /**
- * <perch-terminal> — installing Perch and starting it for the first time, replayed from a recording
- * of the real installer and binary (assets/data/terminal.json), ending on the browser `perch` opens.
+ * <pipit-terminal> — installing Pipit and starting it for the first time, replayed from a recording
+ * of the real installer and binary (assets/data/terminal.json), ending on the browser `pipit` opens.
  *
  *   <script type="module" src="assets/js/terminal.js"></script>
- *   <perch-terminal></perch-terminal>
+ *   <pipit-terminal></pipit-terminal>
  *
  * Attributes
  *   autoplay  On unless autoplay="false". Plays while at least 40% visible, pauses offscreen.
@@ -150,9 +150,9 @@ class Clock {
 }
 
 // @font-face does not apply from inside a shadow root, so the faces go on the document, once, under
-// the same marker <perch-workspace> and the page use, so whichever comes first wins.
+// the same marker <pipit-workspace> and the page use, so whichever comes first wins.
 function registerFonts() {
-  if (document.querySelector("style[data-perch-workspace-fonts]")) return;
+  if (document.querySelector("style[data-pipit-workspace-fonts]")) return;
   const ranges = {
     latin:
       "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD",
@@ -169,7 +169,7 @@ function registerFonts() {
     }
   }
   const style = document.createElement("style");
-  style.dataset.perchWorkspaceFonts = "";
+  style.dataset.pipitWorkspaceFonts = "";
   style.textContent = faces.join("\n");
   document.head.append(style);
 }
@@ -321,7 +321,7 @@ const CSS = `
 }
 `;
 
-class PerchTerminal extends HTMLElement {
+class PipitTerminal extends HTMLElement {
   static observedAttributes = ["paused", "autoplay"];
 
   #root;
@@ -409,7 +409,7 @@ class PerchTerminal extends HTMLElement {
     const stage = document.createElement("div");
     stage.className = "stage";
     stage.setAttribute("role", "group");
-    stage.setAttribute("aria-label", "Installing Perch in a terminal and starting it");
+    stage.setAttribute("aria-label", "Installing Pipit in a terminal and starting it");
     stage.innerHTML = `
       <section class="window term" aria-label="Terminal">
         <div class="bar">
@@ -426,7 +426,7 @@ class PerchTerminal extends HTMLElement {
         <div class="view">
           <img class="scan" alt="" draggable="false" decoding="async" />
           <img class="found" draggable="false" decoding="async"
-            alt="Perch's first-run screen, Connect a database, listing the Postgres server it found on this machine" />
+            alt="Pipit's first-run screen, Connect a database, listing the Postgres server it found on this machine" />
           <div class="wire" aria-hidden="true"><div class="pulse"></div></div>
         </div>
       </section>`;
@@ -684,4 +684,4 @@ class PerchTerminal extends HTMLElement {
   }
 }
 
-if (!customElements.get("perch-terminal")) customElements.define("perch-terminal", PerchTerminal);
+if (!customElements.get("pipit-terminal")) customElements.define("pipit-terminal", PipitTerminal);

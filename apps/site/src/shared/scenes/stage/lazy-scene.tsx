@@ -24,7 +24,7 @@ const MOUNT_AHEAD = 1.5;
 type Loader = () => Promise<{ default: React.ComponentType<RealSceneProps> }>;
 
 /**
- * A real scene as the light export prototypes import. The frame — chrome, aspect ratio, scale — is
+ * A real scene as the light export prototypes import. The frame - chrome, aspect ratio, scale - is
  * here and paints at once; CodeMirror and the workspace are in `load`'s module, fetched only once
  * the frame comes within a viewport and a half of being seen, and rendered into the frame's app area.
  * The frame's elements never change, so an anchor taken from them stays good. `phone` is the app's

@@ -7,7 +7,7 @@ import { LG, useMediaQuery } from "../../shared/viewport/media";
 import { EASE_OUT } from "../../shared/motion";
 import { useHop } from "../bird/use-hop";
 import { Container } from "../layout/container";
-import { Perch } from "../layout/perch";
+import { Roost } from "../layout/roost";
 import { SectionText } from "../layout/section";
 import { Stage } from "../layout/stage";
 import { type LockPillHandle, LockPill } from "./try/lock-pill";
@@ -34,7 +34,7 @@ export type TrySectionProps = {
 export function TrySection({ settled }: TrySectionProps) {
   const { target, markRan } = useTryWindow();
   const mounted = useMountWindow(settled, target.frame);
-  const hop = useHop(target.perch);
+  const hop = useHop(target.roost);
   const [beat, setBeat] = useState(-1);
   const [skipped, setSkipped] = useState(false);
   const [live, setLive] = useState(false);
@@ -66,7 +66,7 @@ export function TrySection({ settled }: TrySectionProps) {
                   if (wide && !live && !onPill) pill.current?.nudge();
                 }}
               >
-                <Perch ref={target.perch} />
+                <Roost ref={target.roost} />
                 {mounted ? (
                   <>
                     <HeroScene

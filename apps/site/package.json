@@ -1,9 +1,9 @@
 {
-  "name": "@perch/site",
+  "name": "@pipit/site",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Perch's landing page: a Vite multi-page app deployed on Vercel, showing the product through @perch/ui.",
+  "description": "Pipit's landing page: a Vite multi-page app deployed on Vercel, showing the product through @pipit/ui.",
   "scripts": {
     "dev": "vite --port 5180",
     "build": "vite build",
@@ -13,8 +13,8 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
-    "@perch/protocol": "*",
-    "@perch/ui": "*",
+    "@pipit/protocol": "*",
+    "@pipit/ui": "*",
     "clsx": "^2.1.1",
     "lucide-react": "^1.33.0",
     "motion": "^13.1.1",
@@ -24,7 +24,7 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
-    "@perch/tsconfig": "*",
+    "@pipit/tsconfig": "*",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",

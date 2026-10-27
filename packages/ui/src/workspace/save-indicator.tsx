@@ -24,7 +24,7 @@ import { SAVE_LABEL, isScratch } from "./types";
  * Whether the buffer is on disk yet.
  *
  * With autosave on, saving is something that happens to you rather than something you do, so the
- * only honest thing the UI can offer is a running answer to "is my work safe" — and the answer has
+ * only honest thing the UI can offer is a running answer to "is my work safe" - and the answer has
  * to stay legible while it changes, which is why every state renders in the same slot at the same
  * size instead of appearing and disappearing.
  *
@@ -43,7 +43,7 @@ export function SaveIndicator({
   const { activeBuffer, saveState, settings, updateSettings } = useWorkspace();
   const fade = useFade();
 
-  // A scratch buffer has nowhere to be written, so every save state is a lie about it — "Unsaved
+  // A scratch buffer has nowhere to be written, so every save state is a lie about it - "Unsaved
   // changes" most of all, which implies work is at risk when nothing was ever going to be kept.
   const scratch = activeBuffer !== undefined && isScratch(activeBuffer);
 

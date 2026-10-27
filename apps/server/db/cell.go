@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"time"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // toCell maps a driver value to the wire Cell the UI renders. Dates, byte slices and structured

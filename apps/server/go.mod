@@ -1,4 +1,4 @@
-module perch
+module pipit
 
 go 1.25.0
 

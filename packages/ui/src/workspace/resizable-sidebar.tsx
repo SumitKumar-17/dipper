@@ -4,8 +4,8 @@ import { cn } from "../lib/utils";
 const KEYBOARD_STEP = 16;
 
 /**
- * The left sidebar and its drag handle. The range is wide in both directions — a deep schema path
- * needs room, a bare file list does not — and the width is persisted by the caller.
+ * The left sidebar and its drag handle. The range is wide in both directions - a deep schema path
+ * needs room, a bare file list does not - and the width is persisted by the caller.
  *
  * The handle is a real `separator` with arrow-key support, not a decorative strip: resizing a pane
  * is exactly the kind of thing that silently becomes mouse-only.

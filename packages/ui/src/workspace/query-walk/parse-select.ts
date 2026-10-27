@@ -1,11 +1,11 @@
 // One SELECT, read clause by clause into character ranges.
 //
 // `parseTokens` is the whole file: it walks the statement's depth-zero tokens once, left to right,
-// and records where each clause starts and stops. Nothing here looks INSIDE a clause — that is
-// `scan-predicates.ts` — and nothing here handles a set-operator chain, which `parse-setop.ts`
+// and records where each clause starts and stops. Nothing here looks INSIDE a clause - that is
+// `scan-predicates.ts` - and nothing here handles a set-operator chain, which `parse-setop.ts`
 // splits into branches before handing each one back to `parseTokens`.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   bareName,
   children,
@@ -206,7 +206,7 @@ export function parseSelect(text: string, dialect: Dialect): ParsedSelect | Unsu
  *
  * `scopeCtes` are the CTEs an enclosing WITH put in scope. They are prepended to whatever this run
  * declares itself, so a branch or a subquery still resolves `from x` to a CTE and can offer its
- * body — but `with` stays null for them, because the prefix belongs to the enclosing statement and
+ * body - but `with` stays null for them, because the prefix belongs to the enclosing statement and
  * a probe has to take it from there.
  */
 export function parseTokens(
@@ -375,8 +375,8 @@ export function parseTokens(
       // Everything inside `using (…)` is a column name. Nothing else can be there, so the names are
       // taken by removing the punctuation rather than by keeping what the grammar calls an
       // identifier: a dialect's keyword list wins over that test, and `using (id)` reads as a
-      // KEYWORD under the PostgreSQL grammar. Filtering for identifiers dropped it — `using (id)`
-      // came back with no keys at all, and `using (id, dept)` with only `dept` — so the column a
+      // KEYWORD under the PostgreSQL grammar. Filtering for identifiers dropped it - `using (id)`
+      // came back with no keys at all, and `using (id, dept)` with only `dept` - so the column a
       // join actually matched on was the one column the walk would not light.
       keys = children(parens.node, text)
         .filter((child) => child.name !== "(" && child.name !== ")" && child.name !== "Punctuation")
@@ -445,7 +445,7 @@ export function parseTokens(
  *
  * Three cases and nothing else, because anything cleverer would be a guess about the database's
  * own naming: `expr as name` is called `name`, a bare or qualified column reference is called by
- * its last part, and a star makes the whole list unknowable — `*` names whatever the catalogue
+ * its last part, and a star makes the whole list unknowable - `*` names whatever the catalogue
  * holds, and the one caller for this asks "is this name definitely NOT an output column", which a
  * list missing the star's columns would answer wrongly and confidently.
  */
@@ -461,8 +461,8 @@ function outputNames(items: readonly (readonly Token[])[], text: string): string
     }
     // A `*`, on its own or as `t.*`, is the case that makes the whole list unknown.
     if (sliceTokens(item, text).trimEnd().endsWith("*")) return null;
-    // One token, and it is a name: `i_id`, `a.i_id`, `"Total"`. Anything else — an arithmetic
-    // expression, a function call, a CASE — is named by the database rather than by this text.
+    // One token, and it is a name: `i_id`, `a.i_id`, `"Total"`. Anything else - an arithmetic
+    // expression, a function call, a CASE - is named by the database rather than by this text.
     if (n === 1 && IDENT.has(last.name)) names.push(bareName(last.text));
   }
   return names;

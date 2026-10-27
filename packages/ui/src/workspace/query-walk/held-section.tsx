@@ -1,7 +1,7 @@
 // The stage a chapter shows when it is real but was deliberately not run.
 //
-// Three of them exist — a write, a chapter downstream of a write, and a correlated section with
-// nothing to bind it to — and they must not look like an error or like loading, because a reader
+// Three of them exist - a write, a chapter downstream of a write, and a correlated section with
+// nothing to bind it to - and they must not look like an error or like loading, because a reader
 // who cannot tell "nothing to show here" from "broken" stops trusting the rest of the screen. What
 // they get instead is a heading, a sentence naming exactly what happened, and the SQL itself.
 

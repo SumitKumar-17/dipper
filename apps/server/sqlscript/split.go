@@ -3,7 +3,7 @@
 // skipped verbatim.
 //
 // packages/sql/src/split.ts is the same rule in TypeScript, because the editor needs the ranges
-// the server will run. Change one, change the other — two languages cannot be diffed, so nothing
+// the server will run. Change one, change the other - two languages cannot be diffed, so nothing
 // checks this for you.
 package sqlscript
 
@@ -16,7 +16,7 @@ import (
 type Statement struct {
 	// Whitespace-trimmed, never empty.
 	SQL string
-	// Offset of SQL[0] in the original script, in UTF-16 code units — what the editor counts.
+	// Offset of SQL[0] in the original script, in UTF-16 code units - what the editor counts.
 	Offset int
 }
 
@@ -86,7 +86,7 @@ func peek(src []rune, i int) rune {
 // skipQuoted consumes a quoted run starting at the opening quote. Doubling escapes the quote
 // ('it”s'). Backslash escapes are honoured for ' and " because MySQL and PostgreSQL's E'...'
 // literals use them, which makes a lone trailing backslash in a standard-conforming literal
-// ('\') look unterminated — a much rarer shape than '\”.
+// ('\') look unterminated - a much rarer shape than '\”.
 func skipQuoted(src []rune, i int, quote rune, backslashEscapes bool) int {
 	for j := i + 1; j < len(src); j++ {
 		if backslashEscapes && src[j] == '\\' {

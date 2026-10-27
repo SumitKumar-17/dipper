@@ -1,15 +1,15 @@
-# @perch/site
+# @pipit/site
 
-Perch's landing page: a Vite + React app, deployed on Vercel. It shows the product
-through `@perch/ui` and the scenes under `src/shared/scenes`.
+Pipit's landing page: a Vite + React app, deployed on Vercel. It shows the product
+through `@pipit/ui` and the scenes under `src/shared/scenes`.
 
 ## Develop
 
 From the repo root (one `bun install` there covers every workspace; never install in here):
 
 ```sh
-bun run --filter @perch/site dev               # http://localhost:5180
-bun run --filter @perch/site dev --port 5183   # any other port
+bun run --filter @pipit/site dev               # http://localhost:5180
+bun run --filter @pipit/site dev --port 5183   # any other port
 ```
 
 The page is `/`. `/lab/` is a dev-only test page with every scene, the bird and the release links
@@ -18,9 +18,9 @@ on it; it is not part of the build.
 ## Build
 
 ```sh
-bun run --filter @perch/site build     # dist/
-bun run --filter @perch/site preview   # serves dist/
-bun run --filter @perch/site typecheck
+bun run --filter @pipit/site build     # dist/
+bun run --filter @pipit/site preview   # serves dist/
+bun run --filter @pipit/site typecheck
 bun run lint                           # from the root; covers apps/site/src
 ```
 
@@ -30,7 +30,7 @@ bun run lint                           # from the root; covers apps/site/src
   brand mark and the sky; `layout/` the container, type scale and section anatomy; `sections/`
   the page section by section, each `<name>.tsx` with a `<name>/` folder of its parts when it
   has some. The first view is `landing/`: one copy block and a scene picked by width, each
-  scene its own chunk — `keys/` (hunt & peck, from 1024px) and `grid/` (the grid bird, below).
+  scene its own chunk - `keys/` (hunt & peck, from 1024px) and `grid/` (the grid bird, below).
   "Your turn" (`sections/try.tsx`) is the real window the landing hands over to. `bird/` holds
   who flies the one bird (`driver.tsx`: the landing, or the page's roaming route) and that route.
 - `src/shared/`: what every page uses: `styles/base.css` (Tailwind, the app's tokens, Geist),

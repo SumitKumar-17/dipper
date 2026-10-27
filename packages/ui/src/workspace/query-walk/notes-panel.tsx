@@ -6,8 +6,8 @@
 // the bottom. The walk now strips the comments before it parses anything, which is why the rest of
 // this screen is comment-free; this tab is where they go instead.
 //
-// The distinction that matters is WHERE the comment sat. A PREAMBLE — nothing of the query survives
-// above it — is the question, and it belongs here and nowhere else: rendering three lines of prompt
+// The distinction that matters is WHERE the comment sat. A PREAMBLE - nothing of the query survives
+// above it - is the question, and it belongs here and nowhere else: rendering three lines of prompt
 // next to the SELECT station would put back the wall of text the strip removed. An INTERIOR comment
 // is a remark about the clause it sits on (`-- one per student`), so it also gets a single muted
 // line under the narrator's sentence while that clause is the station being walked.
@@ -15,7 +15,7 @@
 // Consecutive `--` lines are grouped into one paragraph, because that is how a multi-line prompt is
 // written; the group keeps the line number it started on, so the reader can find it in the editor.
 
-import type { SqlComment } from "@perch/sql";
+import type { SqlComment } from "@pipit/sql";
 import type * as React from "react";
 import type { Range } from "./clauses";
 
@@ -35,7 +35,7 @@ type Note = {
  * Comments in source order, with adjacent `--` lines merged.
  *
  * Only line comments merge, and only when the next one is on the very next line and sits on the same
- * side of the query's first character — two remarks separated by a clause are two remarks, and a
+ * side of the query's first character - two remarks separated by a clause are two remarks, and a
  * block comment is already a paragraph of its own.
  */
 function group(comments: readonly SqlComment[]): Note[] {
@@ -63,7 +63,7 @@ function group(comments: readonly SqlComment[]): Note[] {
 /**
  * How many notes the tab has to offer: paragraphs, not comments.
  *
- * A four-line `--` question is one note, and that is the number the tab should carry — a `Notes · 4`
+ * A four-line `--` question is one note, and that is the number the tab should carry - a `Notes · 4`
  * beside a panel showing one paragraph is a count of something the reader cannot see. It is also
  * what decides whether the tab is enabled at all, so the tab is live exactly when the panel has
  * something in it: a statement whose only comment is an empty `--` has no notes and no tab.
@@ -91,7 +91,7 @@ function Group({ title, notes }: { title: string; notes: readonly Note[] }): Rea
       {notes.map((note) => (
         <div className="flex min-w-0 gap-2" key={`${note.line}:${note.text}`}>
           {/* The line number is the way back to the comment in the editor, so it is monospaced and
-              quiet — a gutter, not a label. */}
+              quiet - a gutter, not a label. */}
           <span className="shrink-0 font-mono text-muted-foreground/70 text-xs leading-5 tabular-nums">
             {note.line}
           </span>
@@ -106,7 +106,7 @@ function Group({ title, notes }: { title: string; notes: readonly Note[] }): Rea
  * The interior comments that annotate the station being walked, as ONE line.
  *
  * Under the narrator's sentence, where a remark about this clause is worth a glance and a paragraph
- * would be the old problem again — so several notes are joined rather than stacked, and the line
+ * would be the old problem again - so several notes are joined rather than stacked, and the line
  * truncates rather than growing. The full text is a hover away, and all of it is in the Notes tab.
  */
 export function StationNote({

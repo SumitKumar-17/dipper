@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
 )
 
 func (s *Server) registerRuns() {
@@ -62,7 +62,7 @@ func (s *Server) registerRuns() {
 		switch format {
 		case "json":
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-			w.Header().Set("Content-Disposition", `attachment; filename="perch-`+stamp+`.json"`)
+			w.Header().Set("Content-Disposition", `attachment; filename="pipit-`+stamp+`.json"`)
 			body, err := json.MarshalIndent(rowsToObjects(result.Columns, result.Rows), "", "  ")
 			if err != nil {
 				return err
@@ -71,7 +71,7 @@ func (s *Server) registerRuns() {
 			return err
 		case "csv":
 			w.Header().Set("Content-Type", "text/csv; charset=utf-8")
-			w.Header().Set("Content-Disposition", `attachment; filename="perch-`+stamp+`.csv"`)
+			w.Header().Set("Content-Disposition", `attachment; filename="pipit-`+stamp+`.csv"`)
 			return writeCSV(w, result)
 		}
 		return httpx.BadRequest("unsupported export format: " + format)
@@ -80,7 +80,7 @@ func (s *Server) registerRuns() {
 
 // runWithRows finds a run's rows wherever they still are: in memory for the last fifty, and in
 // history for anything older that was recorded with `historyMode: results`. Before the store this
-// was memory only, which is why an export link went dead as soon as a run aged out — and why every
+// was memory only, which is why an export link went dead as soon as a run aged out - and why every
 // run went dead at a restart.
 func runWithRows(log *RunLog, runID string) (protocol.RunRecord, bool) {
 	if run, ok := log.Get(runID); ok {

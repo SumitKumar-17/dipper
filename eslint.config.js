@@ -1,6 +1,6 @@
-// ESLint config for the perch monorepo: one config, every workspace, one ESLint 10.
+// ESLint config for the pipit monorepo: one config, every workspace, one ESLint 10.
 //
-// apps/web used to be the exception — eslint-config-next bundled an eslint-plugin-react that still
+// apps/web used to be the exception - eslint-config-next bundled an eslint-plugin-react that still
 // called the context.getFilename() ESLint 10 removed, so the app pinned ESLint 9 behind a nested
 // config and the root `lint` script shelled out to it. Next is gone and so is the pin.
 //
@@ -25,7 +25,7 @@ const base = tseslint.config(js.configs.recommended, ...tseslint.configs.recomme
  * The design system, enforced. Tailwind first: theme tokens rather than raw colors, real utilities
  * rather than arbitrary values, and plain CSS only for what Tailwind cannot express (keyframes).
  *
- * `packages/ui/src/ui/**` is excluded — it is vendored registry output, and regenerating a component
+ * `packages/ui/src/ui/**` is excluded - it is vendored registry output, and regenerating a component
  * would undo anything fixed there. The cost is real, so re-run the class check over it by hand after
  * adding or updating a component:
  *     bunx eslint packages/ui/src/ui --rule '{"shadcn/no-unknown-classes":"error"}'
@@ -34,7 +34,7 @@ const base = tseslint.config(js.configs.recommended, ...tseslint.configs.recomme
  */
 const shadcnRules = {
   // Only layout is a surface's business. Spacing was tried as an allowance and turned out not to
-  // be needed — every violation it would have permitted had a better fix in the primitive's own
+  // be needed - every violation it would have permitted had a better fix in the primitive's own
   // size/variant. Colour, shape and effects stay owned by the primitive.
   "shadcn/no-restyle": ["error", { allow: ["layout"] }],
   "shadcn/no-raw-colors": "error",
@@ -50,9 +50,9 @@ const designSystem = [
     plugins: { shadcn },
     settings: {
       shadcn: {
-        ui: "@perch/ui",
+        ui: "@pipit/ui",
         // The app only ever reaches primitives by package name.
-        componentImports: ["^@perch/ui(/|$)"],
+        componentImports: ["^@pipit/ui(/|$)"],
       },
     },
     rules: shadcnRules,
@@ -62,8 +62,8 @@ const designSystem = [
     plugins: { shadcn },
     settings: {
       shadcn: {
-        ui: "@perch/ui",
-        componentImports: ["^@perch/ui(/|$)"],
+        ui: "@pipit/ui",
+        componentImports: ["^@pipit/ui(/|$)"],
       },
     },
     rules: shadcnRules,
@@ -74,12 +74,12 @@ const designSystem = [
     plugins: { shadcn },
     settings: {
       shadcn: {
-        ui: "@perch/ui",
-        // Apps import primitives as "@perch/ui"; files inside the package reach them by relative
+        ui: "@pipit/ui",
+        // Apps import primitives as "@pipit/ui"; files inside the package reach them by relative
         // path, from one or two levels down. Without every pattern no-restyle silently matches
         // nothing here.
         componentImports: [
-          "^@perch/ui(/|$)",
+          "^@pipit/ui(/|$)",
           "^\\.\\./\\.\\./ui(/|$)",
           "^\\.\\./ui(/|$)",
           "^\\./ui(/|$)",

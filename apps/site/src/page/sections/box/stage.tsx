@@ -2,7 +2,7 @@ import type { Ref, RefObject } from "react";
 import { cn } from "../../../shared/cn";
 import { Reveal } from "../../../shared/motion";
 import { Container } from "../../layout/container";
-import { Perch } from "../../layout/perch";
+import { Roost } from "../../layout/roost";
 import { heading, small } from "../../layout/type";
 import { BOX_ITEMS } from "./items";
 import { BoxList } from "./list";
@@ -13,7 +13,7 @@ import { BoxPane, type CropState } from "./pane";
 const SPACERS = Math.ceil(BOX_ITEMS.length / 2);
 
 export type BoxStageProps = {
-  perchRef: Ref<HTMLDivElement>;
+  roostRef: Ref<HTMLDivElement>;
   track: RefObject<HTMLDivElement | null>;
   stage: RefObject<HTMLDivElement | null>;
   pane: RefObject<HTMLDivElement | null>;
@@ -30,16 +30,16 @@ export type BoxStageProps = {
  * The page's own scroll moves through the items; past the last one the stage lets go.
  *
  * The section spaces itself rather than going through `Section`, whose wrapper would sit outside the
- * sticky stage and leave the bird's perch behind on the heading's first position.
+ * sticky stage and leave the bird's roost behind on the heading's first position.
  */
-export function BoxStage({ perchRef, track, stage, pane, list, active, shown, onCrop, onPoint }: BoxStageProps) {
+export function BoxStage({ roostRef, track, stage, pane, list, active, shown, onCrop, onPoint }: BoxStageProps) {
   return (
     <section id="in-the-box" aria-labelledby="box-title" className="relative mt-32">
       <div ref={track} className="relative">
         <div ref={stage} className="sticky top-0 flex h-svh flex-col pt-16">
           <Container className="flex min-h-0 flex-1 flex-col justify-center py-12">
             <div className="relative shrink-0">
-              <Perch ref={perchRef} section />
+              <Roost ref={roostRef} section />
               <Reveal>
                 <h2 id="box-title" className={heading}>
                   Also in the box.

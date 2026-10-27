@@ -1,4 +1,4 @@
-// The one line a form or a dialog shows when a write came back refused. Small, red, announced —
+// The one line a form or a dialog shows when a write came back refused. Small, red, announced -
 // and identical everywhere, because a failure that looks different in each dialog reads as a
 // different kind of failure.
 //

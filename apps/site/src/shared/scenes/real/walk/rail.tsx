@@ -1,7 +1,7 @@
 // The clause rail under the Query Walk scene: every clause of a SELECT in the order the database
 // reads them, lit where the real walk is. It reads the walk's own station rail out of the DOM, so it
 // never holds a position of its own that could drift from the one on screen. It only follows: like
-// the window above it, it takes no pointer or key. Light: nothing here imports @perch/ui.
+// the window above it, it takes no pointer or key. Light: nothing here imports @pipit/ui.
 
 import * as React from "react";
 import { cn } from "../../../cn";

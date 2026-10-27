@@ -1,7 +1,7 @@
 // The only module that knows how a request is shaped: base-URL joining, JSON parsing, and turning
-// a non-2xx reply into a PerchError. Every resource module below is just a list of routes over this.
+// a non-2xx reply into a PipitError. Every resource module below is just a list of routes over this.
 
-import { NETWORK, NOT_API, PerchError, type ApiErrorBody } from "./errors";
+import { NETWORK, NOT_API, PipitError, type ApiErrorBody } from "./errors";
 
 /**
  * Narrower than `typeof fetch` on purpose: we only ever pass a string URL, so a hand-written
@@ -56,7 +56,7 @@ export function joinUrl(baseUrl: string, path: string, query?: QueryParams): str
   return base + suffix + searchString(query);
 }
 
-/** An abort is the caller's own doing, so it propagates as-is rather than becoming a PerchError. */
+/** An abort is the caller's own doing, so it propagates as-is rather than becoming a PipitError. */
 function isAbort(err: unknown, signal?: AbortSignal): boolean {
   if (signal?.aborted) return true;
   return err instanceof Error && err.name === "AbortError";
@@ -65,7 +65,7 @@ function isAbort(err: unknown, signal?: AbortSignal): boolean {
 /**
  * Whether a reply came from something other than this API: a dev server's 404 page, a proxy's
  * error page, a captive portal. Their bodies are HTML, and pasting a page of markup into an error
- * message buries the one fact that matters — the status — under 500 characters of `<!DOCTYPE`.
+ * message buries the one fact that matters - the status - under 500 characters of `<!DOCTYPE`.
  */
 function looksLikeHtml(response: Response, text: string): boolean {
   const type = response.headers.get("content-type") ?? "";
@@ -73,7 +73,7 @@ function looksLikeHtml(response: Response, text: string): boolean {
   return /^\s*<(?:!doctype|html|\?xml)\b/i.test(text);
 }
 
-async function errorFor(response: Response, route: string): Promise<PerchError> {
+async function errorFor(response: Response, route: string): Promise<PipitError> {
   let text = "";
   try {
     text = await response.text();
@@ -90,14 +90,14 @@ async function errorFor(response: Response, route: string): Promise<PerchError> 
   const status = `${response.status} ${response.statusText || "request failed"}`;
   const html = body === undefined && looksLikeHtml(response, text);
   // Prefer the server's own message; fall back to a short plain-text body, then the status. An
-  // HTML page is not a message — it is evidence that whatever answered is not this API, which the
+  // HTML page is not a message - it is evidence that whatever answered is not this API, which the
   // `not_api` code says in a form a caller can branch on.
   let message = api?.error?.message;
   if (!message && body === undefined && !html && text.trim() !== "") {
     message = text.trim().slice(0, 500);
   }
   if (!message) message = html ? `${status} (an HTML page, not this API)` : status;
-  return new PerchError(message, {
+  return new PipitError(message, {
     status: response.status,
     route,
     code: api?.error?.code ?? (html ? NOT_API : undefined),
@@ -127,7 +127,7 @@ export function createTransport(options: ClientOptions): Transport {
     } catch (err) {
       if (isAbort(err, opts.signal)) throw err;
       const message = err instanceof Error ? err.message : "the request failed";
-      throw new PerchError(message, { status: 0, route, code: NETWORK, cause: err });
+      throw new PipitError(message, { status: 0, route, code: NETWORK, cause: err });
     }
     if (!response.ok) throw await errorFor(response, route);
     return response;
@@ -140,7 +140,7 @@ export function createTransport(options: ClientOptions): Transport {
     try {
       return JSON.parse(text) as T;
     } catch (err) {
-      throw new PerchError("the reply was not JSON", {
+      throw new PipitError("the reply was not JSON", {
         status: response.status,
         route: `${opts.method ?? "GET"} ${path}`,
         code: NOT_API,

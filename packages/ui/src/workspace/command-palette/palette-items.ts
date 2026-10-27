@@ -1,12 +1,12 @@
 // What the palette lists, apart from the commands.
 //
-// Four pure builders, one per group, over data the caller has already unwrapped with `asyncData` —
+// Four pure builders, one per group, over data the caller has already unwrapped with `asyncData` -
 // the last value that loaded, whatever the status, because a palette that renders nothing until the
 // schema arrives feels broken on the first ⌘K. Nothing here touches React, so each group is a
 // function of its input and the "what should this row say" decisions sit together rather than
 // inside a 150-line `useMemo`.
 
-import type { ConnectionSummary, DatabaseSchema, Table } from "@perch/protocol";
+import type { ConnectionSummary, DatabaseSchema, Table } from "@pipit/protocol";
 import type { LucideIcon } from "lucide-react";
 import { DatabaseIcon, EyeIcon, FileIcon, Table2Icon } from "lucide-react";
 import { plural } from "../../lib/format";

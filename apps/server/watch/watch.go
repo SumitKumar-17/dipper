@@ -19,7 +19,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 const (
@@ -73,7 +73,7 @@ type Watcher struct {
 func New(onEvent func(protocol.FileEvent)) *Watcher {
 	fsw, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Printf("[perch] cannot start the file watcher: %v. Live file sync is off; saving is still safe (the mtime check is authoritative).", err)
+		log.Printf("[pipit] cannot start the file watcher: %v. Live file sync is off; saving is still safe (the mtime check is authoritative).", err)
 		return nil
 	}
 	w := &Watcher{
@@ -391,5 +391,5 @@ func (w *Watcher) warnOnce(root string, err error) {
 		return
 	}
 	w.warned = true
-	log.Printf("[perch] cannot watch %s: %v. Live file sync is off for it; saving is still safe (the mtime check is authoritative).", root, err)
+	log.Printf("[pipit] cannot watch %s: %v. Live file sync is off for it; saving is still safe (the mtime check is authoritative).", root, err)
 }

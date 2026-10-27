@@ -1,56 +1,56 @@
 # Capture
 
 The recording rig for the site's captured assets, made from the real app running against a real
-Postgres. None of it is deployed. `capture.ts` was written for `<perch-workspace>`, which the real
-`@perch/ui` scenes have replaced: of what it writes, only `fonts/` is still loaded (by the walk and
+Postgres. None of it is deployed. `capture.ts` was written for `<pipit-workspace>`, which the real
+`@pipit/ui` scenes have replaced: of what it writes, only `fonts/` is still loaded (by the walk and
 terminal scenes), so a re-run brings back `css/`, `markup/` and `data/*.json` files nothing reads.
 
 | File            | What it is                                                                       |
 | --------------- | -------------------------------------------------------------------------------- |
 | `birdwatch.sql` | The sample database: real species and places, invented observers, spring 2026.   |
 | `queries/`      | The three `.sql` files the window has open. `spring-migration.sql` is the hero.  |
-| `capture.ts`    | Runs the built `perch`, drives it in headless Chrome, writes the assets.         |
+| `capture.ts`    | Runs the built `pipit`, drives it in headless Chrome, writes the assets.         |
 
 ## Re-recording
 
 You need the built binary, a local Postgres, Google Chrome and bun.
 
 ```sh
-createdb perch_site_demo
-psql -d perch_site_demo -f apps/site/capture/birdwatch.sql   # idempotent; rerun to reset the data
-bun run build                                            # apps/server/dist/perch, with the current UI
+createdb pipit_site_demo
+psql -d pipit_site_demo -f apps/site/capture/birdwatch.sql   # idempotent; rerun to reset the data
+bun run build                                            # apps/server/dist/pipit, with the current UI
 bun apps/site/capture/capture.ts
 ```
 
-The script starts its own `perch serve` on port 4691 with a throwaway `PERCH_HOME` and workspace
-folder (both deleted when it exits, so `~/.perch` is never touched), adds a `birdwatch` connection
+The script starts its own `pipit serve` on port 4691 with a throwaway `PIPIT_HOME` and workspace
+folder (both deleted when it exits, so `~/.pipit` is never touched), adds a `birdwatch` connection
 over the API, and drives a headless Chrome with its own throwaway profile.
 
 Environment, all optional: `PGHOST`, `PGPORT`, `PGUSER` (default: your login name) and
 `CAPTURE_DB` for the database; `CAPTURE_PORT` and `CAPTURE_CDP_PORT` for the two ports; `CHROME` for
 the browser binary; `CAPTURE_REF` for where reference screenshots and full DOM snapshots go
-(default `$TMPDIR/perch-site-reference`).
+(default `$TMPDIR/pipit-site-reference`).
 
 ## What it writes
 
 Into `apps/site/public/legacy/`:
 
-- `css/app.css` — the app's compiled stylesheet plus the CSS CodeMirror injects at runtime (its
+- `css/app.css` - the app's compiled stylesheet plus the CSS CodeMirror injects at runtime (its
   generated `ͼ…` classes), adapted to live in a shadow root: fonts and `@property` registrations
   become things a shadow tree honours, viewport media queries are resolved for the captured width
   (1280px), and the theme tokens are put in force at `:host`, dark.
-- `fonts/` — Geist and Geist Mono, latin and latin-ext, with `OFL.txt`.
-- `markup/workspace.html` — the app root in the hero's first frame.
-- `markup/states.json` — every later state, stored as only the regions that differ from that frame:
-  `k1`–`k3` (typing `g`, `gr`, `gro`), `k4` (`group by` accepted), `s1` and `s2` (the column
+- `fonts/` - Geist and Geist Mono, latin and latin-ext, with `OFL.txt`.
+- `markup/workspace.html` - the app root in the hero's first frame.
+- `markup/states.json` - every later state, stored as only the regions that differ from that frame:
+  `k1`-`k3` (typing `g`, `gr`, `gro`), `k4` (`group by` accepted), `s1` and `s2` (the column
   completion after `s` and `s.`), `typed`, `saved`, `running`, `results`, and `tree` (every table
   expanded, for the sidebar).
-- `data/*.json` — each query's columns, rows, row count and timings from the run the UI showed, and
+- `data/*.json` - each query's columns, rows, row count and timings from the run the UI showed, and
   `schema.json`, the tree the sidebar draws.
 
 ## Query Walk
 
-`walk.ts` records the walk `<perch-walk>` plays, from the same binary and database: it opens the
+`walk.ts` records the walk `<pipit-walk>` plays, from the same binary and database: it opens the
 walk on `walk.sql` and screencasts it at device scale 2. It writes `clips/walk.{mp4,webm,webp}`,
 `clips/walk-small.mp4` and `data/walk.json` (the clause times the rail follows).
 
@@ -68,14 +68,14 @@ WALK_WIDTH=470 WALK_HEIGHT=1100 WALK_NAME=walk-phone bun apps/site/capture/walk.
 ```
 
 That writes `clips/walk-phone.{mp4,webm,webp}` and `data/walk-phone.json`, and no small cut: at 940
-pixels wide the 2x clip is already a phone's size. `<perch-walk variant="phone">` plays it. 1100 is
+pixels wide the 2x clip is already a phone's size. `<pipit-walk variant="phone">` plays it. 1100 is
 the shortest height at which nothing in the stacked walk scrolls. `WALK_SQL` takes another query
 file, and `WALK_PORT` and `WALK_CDP_PORT` move the two ports.
 
 ## Privacy
 
-Snapshots are scrubbed as they are taken: the throwaway workspace reads `~/birdwatch`, perch's home
-reads `~/.perch`, any `/Users/<name>` or `/home/<name>` becomes `~`, and your login name becomes
+Snapshots are scrubbed as they are taken: the throwaway workspace reads `~/birdwatch`, pipit's home
+reads `~/.pipit`, any `/Users/<name>` or `/home/<name>` becomes `~`, and your login name becomes
 `birder`. Grep before committing a fresh capture:
 
 ```sh
@@ -87,6 +87,6 @@ grep -rniE "$(whoami)|/Users/|/private/|/var/folders" apps/site/public
 Run the site and open its lab page, which mounts every scene:
 
 ```sh
-bun run --filter @perch/site dev
+bun run --filter @pipit/site dev
 # http://localhost:5180/lab/
 ```

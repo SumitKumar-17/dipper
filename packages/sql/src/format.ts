@@ -2,9 +2,9 @@
 // document" action.
 //
 // This is frontend-only: unlike split.ts, apps/server has no need to format SQL, so there is no
-// server copy for `bun run --filter @perch/sql check` to keep this in sync with.
+// server copy for `bun run --filter @pipit/sql check` to keep this in sync with.
 
-import type { Dialect, Settings } from "@perch/protocol";
+import type { Dialect, Settings } from "@pipit/protocol";
 import { splitStatements } from "./split";
 
 export type FormatSqlResult = {
@@ -12,7 +12,7 @@ export type FormatSqlResult = {
   text: string;
   /**
    * Offsets, in the original `sql`, of the statements the parser could not read. Empty when
-   * everything formatted. The caller turns these into something a person can act on — which is
+   * everything formatted. The caller turns these into something a person can act on - which is
    * the point: a statement left exactly as typed is indistinguishable from one already formatted.
    */
   unformatted: number[];
@@ -36,7 +36,7 @@ type Printer = {
 /**
  * `prettier-plugin-sql-cst` parses SQL into a concrete syntax tree and prints it through
  * Prettier, so the layout follows the text: a clause that fits stays on one line, one that does
- * not breaks. `prettier/standalone` is the browser build — the default entry point reaches for
+ * not breaks. `prettier/standalone` is the browser build - the default entry point reaches for
  * node:fs.
  *
  * Lazily imported, and memoised so a second format does not pay the import again. It is the
@@ -59,7 +59,7 @@ const parserFor = (dialect: Dialect): "mysql" | "postgresql" =>
 /**
  * A real grammar rejects what it does not know, and this one has holes: `EXPLAIN (ANALYZE, …)`,
  * `VACUUM` and `COPY … FROM` on PostgreSQL; `GROUP_CONCAT(… SEPARATOR …)`, index hints and
- * `CAST(x AS UNSIGNED)` on MySQL. Those statements — and any statement still being typed — keep
+ * `CAST(x AS UNSIGNED)` on MySQL. Those statements - and any statement still being typed - keep
  * the author's text rather than costing 285K of tokeniser to reflow. `null` says so, so the
  * caller can tell the difference between "left alone" and "already formatted".
  */
@@ -76,14 +76,14 @@ async function formatStatement(
       tabWidth: 2,
       sqlKeywordCase: options.keywordCase,
       // The plugin upper-cases literals and type names by default, which would rewrite `true` and
-      // `numeric` even when the author asked for `preserve`. Keyword case is the one setting perch
+      // `numeric` even when the author asked for `preserve`. Keyword case is the one setting pipit
       // exposes, so everything case-related follows it.
       sqlLiteralCase: options.keywordCase,
       sqlTypeCase: options.keywordCase,
       // `splitStatements` hands over statements with the `;` already stripped into the gap text,
       // so the printer must not add one back.
       sqlFinalSemicolon: false,
-      // Canonical syntax rewrites the author's SQL — `orders o` becomes `orders AS o`. Formatting
+      // Canonical syntax rewrites the author's SQL - `orders o` becomes `orders AS o`. Formatting
       // moves whitespace; it does not edit what someone wrote.
       sqlCanonicalSyntax: false,
     });
@@ -118,8 +118,8 @@ export async function formatSql(
   let out = "";
   let cursor = 0;
   for (const statement of statements) {
-    // Whatever sits between the previous statement and this one — the semicolon, blank lines,
-    // comments — is copied verbatim.
+    // Whatever sits between the previous statement and this one - the semicolon, blank lines,
+    // comments - is copied verbatim.
     out += sql.slice(cursor, statement.offset);
     const formatted = await formatStatement(statement.sql, resolved);
     if (formatted === null) unformatted.push(statement.offset);

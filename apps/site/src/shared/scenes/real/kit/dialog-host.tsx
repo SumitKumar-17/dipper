@@ -2,14 +2,14 @@
 // the app's dialogs with the dialog taken away: `SchemaDiagram` and `QueryWalk` are what
 // `SchemaDiagramDialog` and `QueryWalkDialog` put in their popup, and they are mounted here inside
 // the scene's window instead, over the same backdrop and at the same inset. The dialogs themselves
-// cannot be used on a page — they are modal, so opening one would lock the page's scroll.
+// cannot be used on a page - they are modal, so opening one would lock the page's scroll.
 
-import { Dialog, DialogPortal } from "@perch/ui";
+import { Dialog, DialogPortal } from "@pipit/ui";
 import * as React from "react";
 
 /**
- * The context the two surfaces need from a dialog — their title, description and close button are
- * Base UI dialog parts — without a dialog. Non-modal and never closed by Base UI itself: an outside
+ * The context the two surfaces need from a dialog - their title, description and close button are
+ * Base UI dialog parts - without a dialog. Non-modal and never closed by Base UI itself: an outside
  * press or Escape is ignored, and only the surface's own close button reaches `onClose`.
  *
  * Every portal inside resolves to this one's node, which is in the window: the toolbar's tooltips

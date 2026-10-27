@@ -7,7 +7,7 @@ import { station, type Station } from "../station-types";
  * The whole walk for a section that produces a table but has no clauses to step through: one
  * station, which runs the statement and counts it.
  *
- * `text` is spliced in exactly as it stands, prefix and all, and NOTHING is appended to it — the
+ * `text` is spliced in exactly as it stands, prefix and all, and NOTHING is appended to it - the
  * same rule the LIMIT station follows for the same reason. A `VALUES` list or a `select 1` may
  * carry a LIMIT of its own, and gluing a second one on the end would turn a query that runs into a
  * syntax error; the row cap the server applies through `maxRows` does the job either way.

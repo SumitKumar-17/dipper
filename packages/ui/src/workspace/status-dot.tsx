@@ -1,8 +1,8 @@
 // The 6px dot that says whether something is up.
 //
 // One component rather than four copies of the same three classes, because these dots sit in four
-// different surfaces — the topbar picker, the status bar, the Settings list and the discovery
-// scan — and a user reads them as one language. When they were four literals, one of them had
+// different surfaces - the topbar picker, the status bar, the Settings list and the discovery
+// scan - and a user reads them as one language. When they were four literals, one of them had
 // quietly grown a third state the others did not have.
 
 import { AnimatePresence, motion } from "motion/react";

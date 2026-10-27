@@ -12,7 +12,7 @@ export type Pose = {
   pitch: number;
   /** 0 streamlined, 1 fanned and lowered, as for landing. */
   tail: number;
-  /** 0 tucked, 1 reaching down for the perch. */
+  /** 0 tucked, 1 reaching down for the roost. */
   legs: number;
 };
 
@@ -25,10 +25,10 @@ export const FW = Math.round(BOX.width * RES);
 export const FH = Math.round(BOX.height * RES);
 
 /**
- * The perched pose's feet, in bird units from the origin: the point that lands on the headline, the
+ * The roosted pose's feet, in bird units from the origin: the point that lands on the headline, the
  * same point the porcelain bird stands on.
  */
-export const PERCHED_FEET = { x: 0, y: 0.42 };
+export const ROOSTED_FEET = { x: 0, y: 0.42 };
 
 type Ctx = OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D;
 
@@ -129,14 +129,14 @@ function drawFlying(ctx: Ctx, pose: Pose) {
 }
 
 /** Standing, as the porcelain bird stands: upright and round, tail down behind, feet on the line. */
-function drawPerched(ctx: Ctx) {
+function drawRoosted(ctx: Ctx) {
   ctx.strokeStyle = ink(0.5);
   ctx.lineWidth = 0.035;
   ctx.lineCap = "round";
   for (const x of [0.09, -0.1]) {
     ctx.beginPath();
     ctx.moveTo(x, 0.18);
-    ctx.lineTo(x, PERCHED_FEET.y);
+    ctx.lineTo(x, ROOSTED_FEET.y);
     ctx.stroke();
   }
   ctx.fillStyle = ink(0.7);
@@ -196,7 +196,7 @@ export type Frames = {
   glide: Field;
   /** Wings high, tail fanned, legs reaching: the moment before touching down. */
   flare: Field;
-  perch: Field;
+  roost: Field;
 };
 
 export const FLAP_FRAMES = 12;
@@ -219,7 +219,7 @@ export function bakeFrames(): Frames {
     flap,
     glide: flying({ wing: 0.42, spread: 1, pitch: 0.03, tail: 0, legs: 0 }),
     flare: flying({ wing: 0.95, spread: 0.9, pitch: -0.5, tail: 1, legs: 0.8 }),
-    perch: bake(drawPerched, surface),
+    roost: bake(drawRoosted, surface),
   };
 }
 

@@ -1,14 +1,14 @@
 import type { EditorView } from "@codemirror/view";
-import type { Dialect, Settings } from "@perch/protocol";
-import { formatSql } from "@perch/sql";
+import type { Dialect, Settings } from "@pipit/protocol";
+import { formatSql } from "@pipit/sql";
 import { showFormatNotice } from "./format-notice";
 
 /**
  * "Format document" fires this on `window`, scoped to the buffer it means. A DOM event rather than a
- * `WorkspaceApi` method because formatting belongs to an editor instance, not to the workspace —
+ * `WorkspaceApi` method because formatting belongs to an editor instance, not to the workspace -
  * several panes can hold live editors at once, and the contract has no notion of a focused pane.
  */
-export const FORMAT_DOCUMENT_EVENT = "perch:format";
+export const FORMAT_DOCUMENT_EVENT = "pipit:format";
 
 /** `FORMAT_DOCUMENT_EVENT`'s payload: which buffer should format itself. */
 export type FormatDocumentEventDetail = { bufferId: string };
@@ -17,12 +17,12 @@ export type FormatDocumentEventDetail = { bufferId: string };
  * Formats the whole document via `formatSql`, then restores the cursor.
  *
  * Statements the parser cannot read come back as they were typed, which on screen is
- * indistinguishable from "already formatted" — so those are named in a notice under the editor
+ * indistinguishable from "already formatted" - so those are named in a notice under the editor
  * rather than passed over in silence.
  *
  * One whole-document replacement, since `formatSql` already did the per-statement work. CodeMirror
- * cannot map a point selection through a replace that spans it — the position collapses to one edge,
- * reading as "cursor jumped to the top of the file" — so the line and column are recorded first and
+ * cannot map a point selection through a replace that spans it - the position collapses to one edge,
+ * reading as "cursor jumped to the top of the file" - so the line and column are recorded first and
  * reapplied afterwards, clamped to the reformatted document.
  */
 export async function formatDocument(
@@ -73,6 +73,6 @@ function unformattedNotice(view: EditorView, offsets: number[]): string | null {
   const rest = lines.length - MAX_LISTED_LINES;
 
   return lines.length === 1
-    ? `Couldn't format the statement on line ${listed} — unsupported syntax, left as written.`
-    : `Couldn't format ${lines.length} statements (lines ${listed}${rest > 0 ? `, +${rest} more` : ""}) — unsupported syntax, left as written.`;
+    ? `Couldn't format the statement on line ${listed} - unsupported syntax, left as written.`
+    : `Couldn't format ${lines.length} statements (lines ${listed}${rest > 0 ? `, +${rest} more` : ""}) - unsupported syntax, left as written.`;
 }

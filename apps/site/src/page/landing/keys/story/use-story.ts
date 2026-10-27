@@ -96,7 +96,7 @@ export function useStory(rig: Rig, { ready, bird, reduced, play, setBeat, onSett
     if (!settled || !bird || rig.handedOver.current) return;
     const home = rig.anchors.current[rig.home.current];
     if (!home) return;
-    if (bird.perch?.el !== home) void bird.appear(home, { at: 0.5, facing: "left" });
+    if (bird.roost?.el !== home) void bird.appear(home, { at: 0.5, facing: "left" });
     rig.sculpture.current?.setOccupied(rig.home.current);
   }, [settled, bird, rig]);
 

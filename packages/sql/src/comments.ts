@@ -3,7 +3,7 @@
 // belongs in the narration; it does not belong in the text of the query the walk echoes.
 //
 // This is frontend-only, so unlike split.ts there is no server copy for
-// `bun run --filter @perch/sql check` to hold it to. split.ts is the one mirrored file and must
+// `bun run --filter @pipit/sql check` to hold it to. split.ts is the one mirrored file and must
 // stay byte-identical to `apps/server/src/core/sql/split.ts`, which is why the quote, comment and
 // dollar-quote skipping below is duplicated here rather than imported from it: sharing a helper
 // would mean editing split.ts, and that file is not this package's to edit.
@@ -57,7 +57,7 @@ function skipQuoted(sql: string, i: number, quote: string, backslashEscapes: boo
 }
 
 /**
- * End of a `-- comment`, *excluding* the newline — where split.ts includes it.
+ * End of a `-- comment`, *excluding* the newline - where split.ts includes it.
  *
  * The newline is not the comment's to give away: it is the line break the author wrote between two
  * clauses, and swallowing it would put `from t` on the end of `select 1`.
@@ -169,7 +169,7 @@ const EMPTY: readonly SqlComment[] = [];
  *
  *   - A block comment becomes one space, because the two halves it separated may be two tokens.
  *   - A line comment goes, but its newline stays.
- *   - A line left holding nothing but whitespace goes entirely, newline included — otherwise a
+ *   - A line left holding nothing but whitespace goes entirely, newline included - otherwise a
  *     five-line `--` prompt leaves five blank lines above the query. A line that still holds SQL
  *     keeps its newline and loses its trailing whitespace.
  *
@@ -213,7 +213,7 @@ export function stripComments(sql: string): {
 
     for (; mark < next; mark++) {
       // A dropped line has no offset of its own left, so its comments anchor at the first
-      // character that survived it — `out.length` is exactly where the next kept line starts.
+      // character that survived it - `out.length` is exactly where the next kept line starts.
       anchors.push(drop ? out.length : out.length + Math.min(marks[mark]! - start, kept.length));
     }
 

@@ -10,13 +10,13 @@ import { useGridScene } from "./use-grid-scene";
  * shrinks the grid into the real window's results pane as the page scrolls.
  */
 export default function GridBirdScene({ stage, copy, bird, target, onSettled }: LandingSceneProps) {
-  const { frame, results, perch, ran } = target;
+  const { frame, results, roost, ran } = target;
   const layer = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const handOver = useRef<HandOver | null>(null);
   const ranRef = useRef(ran);
   const settledRef = useRef(onSettled);
-  const [porcelain] = useState(() => new PorcelainBird(perch));
+  const [porcelain] = useState(() => new PorcelainBird(roost));
   const tryWindow = useMemo(() => ({ frame, results }), [frame, results]);
 
   useEffect(() => {

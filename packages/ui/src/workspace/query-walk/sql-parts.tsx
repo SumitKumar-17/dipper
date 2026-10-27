@@ -1,9 +1,9 @@
-// A spliced statement, with the substitutions marked — and only the substitutions moving.
+// A spliced statement, with the substitutions marked - and only the substitutions moving.
 //
 // This is the whole point of the per-row SQL: `takes.ID = s.ID` becomes `takes.ID = '12345'`, and
 // the lesson is that ONE thing changed. Re-rendering the block as the cursor moves re-flows every
 // line and the eye loses its place, so the text around a literal is rendered once and stays put
-// while the literal itself cross-fades in a grid cell of its own — the same trick the stage's column
+// while the literal itself cross-fades in a grid cell of its own - the same trick the stage's column
 // headers use to swap a label without the header jumping.
 
 import type * as React from "react";

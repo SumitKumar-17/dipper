@@ -23,7 +23,7 @@ export function isUnsupportedProgram(value: Program | Unsupported): value is Uns
  *
  * A CTE is matched by NAME, not by id: a CTE declared in an ancestor is computed exactly once, and
  * every descendant that selects from it points at that single section rather than at one of its
- * own — so its id is spelled with the ancestor's path, not `from`'s. A derived table is matched by
+ * own - so its id is spelled with the ancestor's path, not `from`'s. A derived table is matched by
  * range instead, because it lives in `from`'s own text and its section kept the very `SourceRef`
  * the FROM card was drawn from.
  *

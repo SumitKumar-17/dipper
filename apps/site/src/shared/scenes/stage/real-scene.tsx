@@ -1,10 +1,10 @@
 // One real scene: the workspace on replayed data inside its frame, and a script that plays it like a
-// person would — on a loop, or once and then handed to the visitor for a `usable` scene. Shared by
+// person would - on a loop, or once and then handed to the visitor for a `usable` scene. Shared by
 // every real scene; a scene supplies only its `SceneScript`.
 
 import { closeCompletion } from "@codemirror/autocomplete";
 import { EditorView } from "@codemirror/view";
-import { RESULTS_PANE, WorkspaceProvider, type EditorLayout, type WorkspaceApi } from "@perch/ui";
+import { RESULTS_PANE, WorkspaceProvider, type EditorLayout, type WorkspaceApi } from "@pipit/ui";
 import * as React from "react";
 import type { SceneAnchors } from "../types";
 import type { ReplayInput, ReplayWorkspace } from "../../replay/types";
@@ -142,7 +142,7 @@ export function RealScene({
     };
   }, [parts, script]);
 
-  // Every editor the app mounts — the scene's, a tab the visitor opens, a notebook cell — keeps its
+  // Every editor the app mounts - the scene's, a tab the visitor opens, a notebook cell - keeps its
   // popups inside the window.
   React.useEffect(() => {
     const stage = stageRef.current;

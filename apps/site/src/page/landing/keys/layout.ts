@@ -31,7 +31,7 @@ const NOTE = 24;
 const SLIP_PITCH = 30;
 const CAPTION = 24;
 const KEPT = { min: 4, max: 8 };
-// How much of the bird's length stands above the back row when it perches there.
+// How much of the bird's length stands above the back row when it roosts there.
 const HEADROOM = 0.45;
 
 /**

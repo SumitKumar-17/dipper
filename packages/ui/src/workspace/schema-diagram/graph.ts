@@ -1,4 +1,4 @@
-import type { Column, DatabaseSchema, ForeignKey, Table } from "@perch/protocol";
+import type { Column, DatabaseSchema, ForeignKey, Table } from "@pipit/protocol";
 import { CARD_W, COLLAPSE_AT, cardHeight } from "./geometry";
 
 export type Node = {

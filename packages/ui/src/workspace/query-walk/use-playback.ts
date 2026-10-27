@@ -11,7 +11,7 @@ import type { Pos } from "./walk-cursor";
  * Whether the focused control wants the arrow keys for itself.
  *
  * The walk binds them on `window` in the capture phase, which is what lets them step the scene from
- * wherever focus happens to sit — and which also means a control that steers with arrows cannot get
+ * wherever focus happens to sit - and which also means a control that steers with arrows cannot get
  * them back by stopping propagation. A text field never wanted them; neither does the bound
  * section's scrubber, which is a slider and moves by one row per press.
  */
@@ -52,7 +52,7 @@ export function useAutoPlay(settled: boolean, touched: React.RefObject<boolean>,
  *
  * The schedule only runs while playing, and only once the station's data is there: a station still
  * loading holds the player until its results land, then this effect re-runs. A per-row section
- * keeps its own time — one beat per outer row — and calls `advance` when it has shown the last one,
+ * keeps its own time - one beat per outer row - and calls `advance` when it has shown the last one,
  * so it is skipped here; its chapter would otherwise end after a single hold.
  */
 export function useBeat(args: {

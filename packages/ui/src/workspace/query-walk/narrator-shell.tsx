@@ -1,7 +1,7 @@
 // The panel beside the stage: what is happening, and the SQL it happened with.
 //
 // The station narrator and the per-row panel are two readings of the same thing and share this
-// frame on purpose — a reader who moves from a station walk into a per-row chapter should not feel
+// frame on purpose - a reader who moves from a station walk into a per-row chapter should not feel
 // they have changed screens.
 
 import type * as React from "react";

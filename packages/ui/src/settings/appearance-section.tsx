@@ -1,7 +1,7 @@
 // Settings → Appearance. Theme is stored on the server, so every browser pointed at this machine
 // agrees; editor font size is a per-browser convenience and is stored locally instead.
 
-import type { Settings } from "@perch/protocol";
+import type { Settings } from "@pipit/protocol";
 import * as React from "react";
 import { Radio, RadioGroup } from "../ui/radio-group";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";

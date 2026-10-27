@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
-# Shell scripts must keep LF even on Windows checkouts — CI runs the smoke test on
+# Shell scripts must keep LF even on Windows checkouts - CI runs the smoke test on
 # windows-latest and CRLF would break the shebang.
 *.sh text eol=lf
 

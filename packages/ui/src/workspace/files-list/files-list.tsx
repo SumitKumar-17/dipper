@@ -1,6 +1,6 @@
 // The Files sidebar: what is open, and what is openable.
 //
-// Two sections. Open is `buffers` — editor state, including scratch tabs that exist nowhere on disk.
+// Two sections. Open is `buffers` - editor state, including scratch tabs that exist nowhere on disk.
 // Workspace is the server's view of the directories `Settings.workspaces` permits, and the only
 // source of paths `openFile` can legally be called with.
 //
@@ -91,7 +91,7 @@ export function FilesList({ className }: { className?: string }): React.ReactEle
     <div className={cn("flex min-h-0 flex-col", className)}>
       {/* Making a document belongs to the list the document joins: a new query is an open buffer
           before it is anything else. One menu here replaces the two full-width buttons that used
-          to sit in a footer at the bottom of this tab — where they were both the loudest thing in
+          to sit in a footer at the bottom of this tab - where they were both the loudest thing in
           the panel and invisible from the other two tabs. */}
       <GroupHeader
         count={buffers.length}

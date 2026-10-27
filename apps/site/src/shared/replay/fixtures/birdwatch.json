@@ -1,15 +1,15 @@
 {
  "version": 1,
  "recordedAt": "2026-10-10T21:26:14.456Z",
- "perchVersion": "0.2.0",
+ "pipitVersion": "0.2.0",
  "server": {
-  "name": "perch",
+  "name": "pipit",
   "version": "0.2.0",
   "pid": 0,
   "url": "http://127.0.0.1:4600",
   "startedAt": "2026-10-10T21:26:13.273Z",
-  "configDir": "~/.perch",
-  "queriesDir": "~/.perch/queries"
+  "configDir": "~/.pipit",
+  "queriesDir": "~/.pipit/queries"
  },
  "connections": [
   {
@@ -19,24 +19,24 @@
    "host": "localhost",
    "port": 5432,
    "user": "birder",
-   "database": "perch_site_demo",
+   "database": "pipit_site_demo",
    "createdAt": "2026-10-10T21:26:13.349Z",
    "status": "connected",
    "databases": [
-    "perch_site_demo",
+    "pipit_site_demo",
     "postgres"
    ]
   }
  ],
  "databases": {
   "41d33762-ce25-4487-96f6-24bb21a52db3": [
-   "perch_site_demo",
+   "pipit_site_demo",
    "postgres"
   ]
  },
  "schemas": {
-  "41d33762-ce25-4487-96f6-24bb21a52db3/perch_site_demo": {
-   "database": "perch_site_demo",
+  "41d33762-ce25-4487-96f6-24bb21a52db3/pipit_site_demo": {
+   "database": "pipit_site_demo",
    "schemas": [
     {
      "name": "public",
@@ -548,7 +548,7 @@
   "completion": "smart",
   "onboarded": true,
   "recentWorkspaces": [
-   "~/.perch/queries"
+   "~/.pipit/queries"
   ],
   "historyMode": "queries",
   "historyLimit": 500,
@@ -653,7 +653,7 @@
    "record": {
     "id": "56beff21-40c0-4997-9db4-cc0dbb09dfef",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "-- First arrivals of spring\nselect s.common_name, to_char(min(g.seen_at), 'YYYY-MM-DD') as first_seen, sum(g.count) as birds\nfrom sightings g\njoin species s on s.id = g.species_id\nwhere s.migrant\ngroup by s.common_name\norder by first_seen;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.197Z",
@@ -874,7 +874,7 @@
    "record": {
     "id": "906de653-e40a-4757-80e8-6e3b007b2658",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "-- Red List species, most recent first\nselect s.common_name, s.status, t.name as site, g.count, to_char(g.seen_at, 'YYYY-MM-DD') as seen_on\nfrom sightings g\njoin species s on s.id = g.species_id\njoin checklists c on c.id = g.checklist_id\njoin sites t on t.id = c.site_id\nwhere s.status <> 'LC'\norder by g.seen_at desc;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.248Z",
@@ -1477,7 +1477,7 @@
    "record": {
     "id": "69d3f82b-d666-4389-997d-4078bdd93373",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "-- Which sites turned up the most species?\nselect t.name, t.habitat, count(distinct g.species_id) as species, sum(g.count) as birds\nfrom sites t\njoin checklists c on c.site_id = t.id\njoin sightings g on g.checklist_id = c.id\ngroup by t.id\norder by species desc;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.264Z",
@@ -1614,7 +1614,7 @@
    "record": {
     "id": "a42982db-bfb8-474f-ac12-468d721bd6cc",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "-- Birds counted at each site\nselect t.name, sum(g.count) as birds\nfrom sightings g\njoin checklists c on g.checklist_id = c.id\njoin sites t on c.site_id = t.id\ngroup by t.name\norder by birds desc;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.280Z",
@@ -1713,7 +1713,7 @@
    "record": {
     "id": "46d6e61a-d07a-4dfd-bfa9-64b6b3f3064a",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select count(*) as checklists, count(distinct observer_id) as observers from checklists;\n-- %%\nselect o.name, count(*) as checklists from checklists c join observers o on o.id = c.observer_id\ngroup by o.name order by checklists desc limit 3;\n-- %%\nselect extract(hour from seen_at) as hour, count(*) as sightings from sightings\ngroup by hour order by sightings desc limit 3;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.301Z",
@@ -1840,7 +1840,7 @@
    "record": {
     "id": "c56bb859-199a-4953-a2a4-290e1d274eb8",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select count(*) as checklists, count(distinct observer_id) as observers from checklists;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.320Z",
@@ -1891,7 +1891,7 @@
    "record": {
     "id": "d0768b78-0276-4dc3-89ab-a5842dc93d30",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select o.name, count(*) as checklists from checklists c join observers o on o.id = c.observer_id\ngroup by o.name order by checklists desc limit 3;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.335Z",
@@ -1954,7 +1954,7 @@
    "record": {
     "id": "dc1ddb12-aa46-4842-a103-0e6af9f65bc9",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select extract(hour from seen_at) as hour, count(*) as sightings from sightings\ngroup by hour order by sightings desc limit 3;",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.348Z",
@@ -2013,7 +2013,7 @@
    "record": {
     "id": "85f2e86f-5640-40a9-a038-8bcba5510535",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select * from species",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.360Z",
@@ -2572,7 +2572,7 @@
    "record": {
     "id": "b585ef46-83c8-4ff6-931c-2c322a669af0",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select * from families",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.375Z",
@@ -2781,7 +2781,7 @@
    "record": {
     "id": "80ac2396-ec6f-41cf-a538-2be10d3b7b24",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select * from sites",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.391Z",
@@ -2968,7 +2968,7 @@
    "record": {
     "id": "de16b04e-1123-4b2d-abf1-eb412ead6653",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select * from observers",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.407Z",
@@ -3062,7 +3062,7 @@
    "record": {
     "id": "800446eb-3bdb-4f9f-9f12-4d80542047db",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select * from checklists",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.421Z",
@@ -3802,7 +3802,7 @@
    "record": {
     "id": "5cd97a6d-a2c4-475b-8394-63317f98e8dd",
     "connectionId": "41d33762-ce25-4487-96f6-24bb21a52db3",
-    "database": "perch_site_demo",
+    "database": "pipit_site_demo",
     "sql": "select * from sightings",
     "status": "done",
     "startedAt": "2026-10-10T21:26:14.438Z",

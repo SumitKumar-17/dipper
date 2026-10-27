@@ -45,13 +45,13 @@ export const editorThemeBase = EditorView.theme({
     borderLeftColor: "var(--color-foreground)",
     borderLeftWidth: "2px",
   },
-  // The focused selection has to be claimed at the depth CodeMirror claims it — its base theme
+  // The focused selection has to be claimed at the depth CodeMirror claims it - its base theme
   // styles `&light.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground`, five
   // classes, and a plainer selector loses to it however late it is declared. What wins there is
   // `#d7d4f0`, because the editor is in CodeMirror's LIGHT scope: its `dark` flag is fixed when a
   // theme is built and the app's mode flips at runtime, so it is never set. In dark mode that is a
   // near-white slab over dark syntax, which is the whole bug. An equal selector settles it: base
-  // themes mount first, so this module's rules come later in the sheet — and `.cm-editor`, which is
+  // themes mount first, so this module's rules come later in the sheet - and `.cm-editor`, which is
   // on the same wrapper element as the theme's own class, puts this one class ahead of it outright
   // rather than resting on that order.
   "&.cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": {
@@ -93,7 +93,7 @@ export const editorThemeBase = EditorView.theme({
     fontFamily: "var(--font-sans)",
   },
   // The completion popup, rebuilt. CodeMirror's default gives a row 1px of padding and marks the
-  // matched characters with `text-decoration: underline` — the same signal the linter uses for an
+  // matched characters with `text-decoration: underline` - the same signal the linter uses for an
   // error, on a list you read dozens of times an hour. A row here has the shape of a command
   // palette item instead: a kind glyph, the label, and the detail pinned to the right edge so the
   // details read as a column rather than a ragged trail.

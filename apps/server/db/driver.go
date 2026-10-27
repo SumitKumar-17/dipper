@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"perch/protocol"
-	"perch/sqlscript"
+	"pipit/protocol"
+	"pipit/sqlscript"
 )
 
 // Driver is the contract every dialect implements. Server-internal: nothing here crosses the
@@ -34,7 +34,7 @@ type Driver interface {
 type RunOptions struct {
 	RunID string
 	// Database is set when the run is aimed at a database other than the one the connection was
-	// configured with — the topbar's picker. Dropping it is what made picking a database change
+	// configured with - the topbar's picker. Dropping it is what made picking a database change
 	// the schema tree and nothing else.
 	Database  string
 	MaxRows   int

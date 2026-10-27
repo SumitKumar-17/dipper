@@ -10,7 +10,7 @@ import { useGrid } from "./grid-context";
 
 /**
  * How long the results pane takes to drop out of sight, in ms. It cannot simply be removed from the
- * layout — `reconcile` would reclaim the space on the same frame and the editor would snap taller —
+ * layout - `reconcile` would reclaim the space on the same frame and the editor would snap taller -
  * so the tree keeps it for exactly this long. Must stay in step with the transition below.
  */
 export const RESULTS_EXIT_MS = 260;

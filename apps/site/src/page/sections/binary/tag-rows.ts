@@ -8,7 +8,7 @@ export type TagRow = {
 
 /**
  * The tag's four lines, from the release: the version, this machine's system and chip, and the size
- * of its build. A phone, or a system Perch has no build for, gets the three systems there are.
+ * of its build. A phone, or a system Pipit has no build for, gets the three systems there are.
  */
 export function tagRows({ version, os, mobile, primary }: Release): TagRow[] {
   const head: TagRow = { text: version, tone: "muted" };

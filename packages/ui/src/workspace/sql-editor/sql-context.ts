@@ -2,8 +2,8 @@
 //
 // The parser this answers for is `@codemirror/lang-sql`'s, and it cannot answer this: its tree is
 // built for highlighting, so a half-typed `select na| from x join y` is mostly error nodes by the
-// time completion runs. A hand-written tokenizer over the raw statement degrades better — every
-// input here is unfinished by definition — which is why this file owns its own lexer rather than
+// time completion runs. A hand-written tokenizer over the raw statement degrades better - every
+// input here is unfinished by definition - which is why this file owns its own lexer rather than
 // walking a syntax tree.
 //
 // Nothing in here throws. `analyzeSql` is called on every keystroke that opens the popup, and a
@@ -43,7 +43,7 @@ export type SqlContext = {
   tables: TableRef[];
   /**
    * The identifier immediately before the `.` the cursor is typing: `s` in `s.na|`. For a two-part
-   * prefix this is the *last* part — `t` in `public.t.col|` — because that is the one to resolve
+   * prefix this is the *last* part - `t` in `public.t.col|` - because that is the one to resolve
    * against aliases and table names. `qualifierPath` carries every part, so a caller that wants to
    * check the schema half has it.
    */
@@ -70,7 +70,7 @@ const OPERATOR_CHAR = /[+\-*/<>=!%|&^~@#?:]/;
 
 /**
  * Words that end a table reference rather than aliasing it. `from users order by …` must not come
- * out as "the table users aliased order" — the alias slot is the only place a bare identifier is
+ * out as "the table users aliased order" - the alias slot is the only place a bare identifier is
  * ambiguous, so the check lives here and nowhere else.
  */
 const RESERVED = new Set([
@@ -281,7 +281,7 @@ function keywordAt(tokens: Token[], index: number): string {
 /**
  * Where in `tokens` the cursor sits: the index of the word it is part-way through typing, or of the
  * first token that starts at or after it. A `(` or `.` that ends exactly at the cursor is *behind*
- * it and must still be walked — `insert into t (|` is inside the column list, not before it.
+ * it and must still be walked - `insert into t (|` is inside the column list, not before it.
  */
 function cursorTokenIndex(tokens: Token[], pos: number): number {
   for (let i = 0; i < tokens.length; i++) {
@@ -324,7 +324,7 @@ const TABLE_CLAUSES = new Set<SqlClause>(["from", "join", "insertInto", "update"
 export function analyzeSql(sql: string, pos: number): SqlContext {
   try {
     // Deliberately not clamped to `sql.length`: the splitter trims a statement, so a cursor sitting
-    // in the whitespace after it lands past the end — and that is exactly "after every token",
+    // in the whitespace after it lands past the end - and that is exactly "after every token",
     // whereas clamping would read it as being part-way through the last word.
     return analyze(sql, Math.max(0, pos));
   } catch {

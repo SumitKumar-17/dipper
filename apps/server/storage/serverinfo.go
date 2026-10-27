@@ -1,8 +1,8 @@
 package storage
 
-import "perch/protocol"
+import "pipit/protocol"
 
-// server.json is how `perch status` and `perch stop` find a running instance.
+// server.json is how `pipit status` and `pipit stop` find a running instance.
 var serverInfoStore = NewStore(ServerInfoFile, 0o600, func() *protocol.ServerInfo { return nil })
 
 func WriteServerInfo(info protocol.ServerInfo) error { return serverInfoStore.Write(&info) }

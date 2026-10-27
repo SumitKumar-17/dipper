@@ -1,10 +1,10 @@
-// The heavy half of the Query Walk scene: the walk @perch/ui ships, on probes recorded from a real
-// Perch and Postgres, played by pressing its own controls the way a reader would. Imported only
+// The heavy half of the Query Walk scene: the walk @pipit/ui ships, on probes recorded from a real
+// Pipit and Postgres, played by pressing its own controls the way a reader would. Imported only
 // by walk.tsx, lazily, once the window comes near.
 
-import { WorkspaceProvider, type WorkspaceApi } from "@perch/ui";
+import { WorkspaceProvider, type WorkspaceApi } from "@pipit/ui";
 import * as React from "react";
-// @perch/ui exports only the modal dialog around the walk, which would lock the page's scroll. This
+// @pipit/ui exports only the modal dialog around the walk, which would lock the page's scroll. This
 // is the file its barrel resolves to, so the two share one copy of every React context.
 import { QueryWalk } from "../../../../../../../packages/ui/src/workspace/query-walk/query-walk";
 import { birdwatch, normaliseSql, type Recording, useReplayWorkspace } from "../../../replay";
@@ -59,7 +59,7 @@ const playable = (button: Element): boolean => !/, (not in this query|failed)$/.
 
 /**
  * Plays the walk through its own buttons. Everything it knows about the walk it reads back from
- * the walk's DOM — the Play/Pause label, a disabled Step forward at the end, the lit station — so it
+ * the walk's DOM - the Play/Pause label, a disabled Step forward at the end, the lit station - so it
  * cannot disagree with what is on screen, and the visitor's presses and its own go through the same
  * code. It acts at most once per landed press.
  */
@@ -174,7 +174,7 @@ class Pilot {
     return null;
   }
 
-  /** Reduced motion or autoplay off: the answer, at once — the last station's last phase. */
+  /** Reduced motion or autoplay off: the answer, at once - the last station's last phase. */
   #final(c: Controls, atEnd: boolean): HTMLButtonElement | null {
     if (this.#finished || c.stations.some(loading)) return null;
     const last = c.stations.findLast(playable);
@@ -236,7 +236,7 @@ function useCountedProbe(probe: WorkspaceApi["probe"]): WorkspaceApi["probe"] {
 
 /**
  * The walk's narrator scrolls the clause it is on into view with `scrollIntoView`, which also
- * scrolls the PAGE whenever that clause is off screen — mid-walk, under a visitor reading
+ * scrolls the PAGE whenever that clause is off screen - mid-walk, under a visitor reading
  * something else. Inside a walk window it scrolls the walk's own scroll boxes instead, and stops
  * at the window.
  */

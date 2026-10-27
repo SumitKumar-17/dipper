@@ -3,24 +3,24 @@
 // Nothing else is requested until it is `ready`, so eleven panels cannot each render their own copy
 // of the same failure.
 
-import type { PerchClient } from "@perch/client";
-import type { ServerState, ServerStatus } from "@perch/ui";
+import type { PipitClient } from "@pipit/client";
+import type { ServerState, ServerStatus } from "@pipit/ui";
 import * as React from "react";
 import { serverBaseUrl } from "../server-client";
 import { aborted, RECONNECT_MAX_MS, RECONNECT_MIN_MS, sleep } from "./helpers";
 
 export function useServerGate(
-  getClient: () => PerchClient,
-  injected: PerchClient | undefined,
+  getClient: () => PipitClient,
+  injected: PipitClient | undefined,
 ): { server: ServerState; enabled: boolean } {
   const [status, setStatus] = React.useState<ServerStatus>("connecting");
-  /** From the health reply: perch's own queries folder, for "save this untitled query". */
+  /** From the health reply: pipit's own queries folder, for "save this untitled query". */
   const [queriesDir, setQueriesDir] = React.useState<string | null>(null);
   /** Bumped by `retry()` to restart the probe loop from its shortest delay. */
   const [probeNonce, setProbeNonce] = React.useState(0);
 
   // `probing`, not `status`, or settling to `unreachable` restarts the loop and resets the
-  // backoff to zero on every failure — a hot spin against a port nobody is listening on.
+  // backoff to zero on every failure - a hot spin against a port nobody is listening on.
   const probing = status === "connecting" || status === "unreachable";
   React.useEffect(() => {
     if (!probing) return;

@@ -1,4 +1,4 @@
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import * as React from "react";
 import type { ConnectionInput } from "../../workspace/types";
 import { DIALECT_DEFAULTS } from "../dialect-mark";
@@ -33,7 +33,7 @@ export type ConnectionFields = {
   buildInput: () => ConnectionInput;
 };
 
-/** Anything that is not this machine. Hosted Postgres — Neon, Supabase, RDS — is all of it. */
+/** Anything that is not this machine. Hosted Postgres - Neon, Supabase, RDS - is all of it. */
 function isRemote(host: string): boolean {
   const local = new Set(["localhost", "127.0.0.1", "::1", "[::1]", ""]);
   return !local.has(host.trim().toLowerCase());
@@ -54,7 +54,7 @@ function urlWantsTLS(raw: string): boolean {
 
 /**
  * A name for a pasted URL. Hosted providers hand out a host that already identifies the database
- * — `ep-cool-darkness-12345.eu-central-1.aws.neon.tech` — so its first label beats anything
+ * - `ep-cool-darkness-12345.eu-central-1.aws.neon.tech` - so its first label beats anything
  * generated, and beats making the user invent one before the form will submit.
  */
 function nameFromUrl(raw: string): string {

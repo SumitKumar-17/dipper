@@ -1,14 +1,14 @@
 // Settings → Connections.
 //
 // Three things stacked, in the order they are needed: what you already have, what is already on
-// this machine, and — only once you ask for it — a form. The discovery scan starts when the pane
+// this machine, and - only once you ask for it - a form. The discovery scan starts when the pane
 // mounts rather than when you press Add, because the answer takes a second to arrive and the
 // whole point is that it is waiting for you when you get there.
 //
 // This file owns only which of those is open. The list, the row and the two write actions live in
 // `connections/`.
 
-import type { ConnectionSummary } from "@perch/protocol";
+import type { ConnectionSummary } from "@pipit/protocol";
 import { PlusIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";

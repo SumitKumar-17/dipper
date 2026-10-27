@@ -1,4 +1,4 @@
-// Package server is the HTTP API. This file owns the wiring only — middleware order, the shared
+// Package server is the HTTP API. This file owns the wiring only - middleware order, the shared
 // state routes close over, and the lifetimes that outlive a request. Routes live one file each.
 package server
 
@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	"perch/discover"
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
-	"perch/watch"
+	"pipit/discover"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
+	"pipit/watch"
 )
 
 type Options struct {
@@ -139,13 +139,13 @@ func (s *Server) Close() {
 	s.bus.CloseAll()
 	s.pool.Shutdown()
 	// bbolt holds a file lock on history.db; a process that exits without releasing it makes the
-	// next `perch serve` wait two seconds for nothing.
+	// next `pipit serve` wait two seconds for nothing.
 	_ = storage.CloseHistory()
 }
 
 func (s *Server) ServerInfo(pid int) protocol.ServerInfo {
 	return protocol.ServerInfo{
-		Name:       "perch",
+		Name:       "pipit",
 		Version:    s.version,
 		PID:        pid,
 		URL:        s.url,

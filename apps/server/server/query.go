@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
 )
 
 // How hard we chase a cancel for a client that disconnected mid-run.

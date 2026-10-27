@@ -1,4 +1,4 @@
-import type { DatabaseSchema } from "@perch/protocol";
+import type { DatabaseSchema } from "@pipit/protocol";
 import { EyeIcon, LayersIcon, Table2Icon } from "lucide-react";
 
 export { INDENT_BASE, INDENT_STEP, indent, toggle } from "../../lib/tree";
@@ -13,8 +13,8 @@ export const KIND_ICON = {
 } as const;
 
 /**
- * Whether the schema name is worth a row of its own. One schema makes it a constant — `public` on
- * Postgres, the database itself on MySQL — costing an indent level and a click to say nothing.
+ * Whether the schema name is worth a row of its own. One schema makes it a constant - `public` on
+ * Postgres, the database itself on MySQL - costing an indent level and a click to say nothing.
  *
  * Decided from the full response, not the filtered one, so typing cannot reshape the tree.
  */

@@ -1,4 +1,4 @@
-import type { Cell, ResultColumn } from "@perch/protocol";
+import type { Cell, ResultColumn } from "@pipit/protocol";
 import { AnimatePresence, motion } from "motion/react";
 import type * as React from "react";
 import { FADE_EASE, FADE_S } from "../../lib/motion";
@@ -15,7 +15,7 @@ const ROW_STAGGER_MAX = 12;
 
 /**
  * One rendered row of the window. `index` is the row's absolute index in the result, not its
- * position in the window — everything visible hangs off it, because a windowed row's DOM position
+ * position in the window - everything visible hangs off it, because a windowed row's DOM position
  * changes as you scroll.
  */
 export function GridRow({
@@ -44,7 +44,7 @@ export function GridRow({
       animate={{ opacity: 1 }}
       aria-rowindex={index + 2}
       className={cn(
-        "grid grid-cols-(--perch-grid-cols) hover:bg-accent/40",
+        "grid grid-cols-(--pipit-grid-cols) hover:bg-accent/40",
         // Zebra by absolute index: a windowed row's DOM position changes as you
         // scroll, so an nth-child stripe would crawl.
         index % 2 === 1 && "bg-muted/40",
@@ -87,7 +87,7 @@ export function GridRow({
             ) : (
               <span className="truncate">{String(value)}</span>
             )}
-            {/* Lifts in and leaves upward, the way it did before the rewrite — a chip
+            {/* Lifts in and leaves upward, the way it did before the rewrite - a chip
                 that blinks on and off reads as a glitch rather than as feedback. */}
             <AnimatePresence>
               {isCopied && (

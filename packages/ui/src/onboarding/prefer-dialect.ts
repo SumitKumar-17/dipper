@@ -1,8 +1,8 @@
-import type { ConnectionSummary, Dialect, DiscoveredServer } from "@perch/protocol";
+import type { ConnectionSummary, Dialect, DiscoveredServer } from "@pipit/protocol";
 
 /**
- * Which dialect the screen is about. Reachable beats merely present — an installed but idle
- * Postgres is a worse answer than a MySQL accepting connections — and Postgres breaks a tie.
+ * Which dialect the screen is about. Reachable beats merely present - an installed but idle
+ * Postgres is a worse answer than a MySQL accepting connections - and Postgres breaks a tie.
  */
 export function preferDialect(
   found: readonly DiscoveredServer[] | null,

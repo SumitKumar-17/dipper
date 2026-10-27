@@ -1,9 +1,9 @@
 {
-  "name": "@perch/client",
+  "name": "@pipit/client",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Typed HTTP client for the perch API: the only module in a frontend that knows the server exists.",
+  "description": "Typed HTTP client for the pipit API: the only module in a frontend that knows the server exists.",
   "types": "./src/index.ts",
   "exports": {
     ".": {
@@ -18,10 +18,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@perch/protocol": "*"
+    "@pipit/protocol": "*"
   },
   "devDependencies": {
-    "@perch/tsconfig": "*",
+    "@pipit/tsconfig": "*",
     "typescript": "^6.0.3"
   }
 }

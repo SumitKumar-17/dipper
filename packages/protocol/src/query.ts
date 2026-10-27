@@ -59,7 +59,7 @@ export type RunRecord = {
   source: "ui" | "cli";
   /**
    * The workspace root the query came from, when it came from a file in one. Absent means the run
-   * belongs to no folder — an untitled buffer, perch's own queries directory, or the CLI — which
+   * belongs to no folder - an untitled buffer, pipit's own queries directory, or the CLI - which
    * the History tab calls global.
    */
   workspace?: string;

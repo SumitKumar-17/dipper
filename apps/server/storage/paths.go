@@ -1,5 +1,5 @@
-// Package storage owns everything perch keeps on disk. One directory holds all of it (default
-// ~/.perch, override with PERCH_HOME): connections.json (0600), settings.json, history.db,
+// Package storage owns everything pipit keeps on disk. One directory holds all of it (default
+// ~/.pipit, override with PIPIT_HOME): connections.json (0600), settings.json, history.db,
 // server.json, update.json, plus queries/, the workspace created on first run.
 package storage
 
@@ -20,14 +20,14 @@ const (
 )
 
 func ConfigDir() string {
-	if dir := os.Getenv("PERCH_HOME"); dir != "" {
+	if dir := os.Getenv("PIPIT_HOME"); dir != "" {
 		return dir
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return ".perch"
+		return ".pipit"
 	}
-	return filepath.Join(home, ".perch")
+	return filepath.Join(home, ".pipit")
 }
 
 // DefaultQueriesDir is the workspace root created on first run, where .sql files live by default.

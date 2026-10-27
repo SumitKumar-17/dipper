@@ -1,7 +1,7 @@
 // localStorage, with the two facts about it that every call site otherwise repeats: it throws in a
 // private window or with site data blocked, and what comes out of it is whatever a previous release
 // (or the user's devtools) left behind. So reads are validated by the caller and both directions
-// are wrapped — a store that is missing, full or blocked costs the convenience it held, never the
+// are wrapped - a store that is missing, full or blocked costs the convenience it held, never the
 // app.
 //
 // Only per-viewer conveniences belong here. Anything the server owns is a setting, and goes over
@@ -44,7 +44,7 @@ export function writeRaw(key: string, value: string): void {
   try {
     globalThis.localStorage?.setItem(key, value);
   } catch {
-    // Storage unavailable — the session still works, it just will not be remembered.
+    // Storage unavailable - the session still works, it just will not be remembered.
   }
 }
 

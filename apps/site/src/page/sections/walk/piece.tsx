@@ -15,7 +15,7 @@ const SHIFTS = ["", "translate-x-0.75", "-translate-x-0.75", "", "translate-x-0.
  * The bird stands on FROM, the slip the stack starts from. Under lg the stack starts low enough to
  * keep the bird clear of the body text above the slot.
  */
-export function WalkPiece({ perchRef }: { perchRef: Ref<HTMLElement> }) {
+export function WalkPiece({ roostRef }: { roostRef: Ref<HTMLElement> }) {
   const ref = useRef<HTMLDivElement>(null);
   useLoop(ref, walkLoop);
   return (
@@ -28,7 +28,7 @@ export function WalkPiece({ perchRef }: { perchRef: Ref<HTMLElement> }) {
             from={CLAUSES[i - 1]?.rows ?? clause.rows}
             tilt={TILTS[i % TILTS.length] ?? 0}
             shift={SHIFTS[i % SHIFTS.length] ?? ""}
-            perchRef={i === 0 ? perchRef : undefined}
+            roostRef={i === 0 ? roostRef : undefined}
           />
         ))}
       </div>

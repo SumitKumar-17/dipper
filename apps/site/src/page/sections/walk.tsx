@@ -3,7 +3,7 @@ import { type FeatureSectionProps, Section, SectionText } from "../layout/sectio
 import { Stage, StagePiece } from "../layout/stage";
 import { WalkPiece } from "./walk/piece";
 
-export function WalkSection({ perchRef, onSceneDone }: FeatureSectionProps) {
+export function WalkSection({ roostRef, onSceneDone }: FeatureSectionProps) {
   return (
     <Section id="query-walk" labelledBy="walk-title" stage>
       <Stage
@@ -15,7 +15,7 @@ export function WalkSection({ perchRef, onSceneDone }: FeatureSectionProps) {
         }
         below={
           <StagePiece>
-            <WalkPiece perchRef={perchRef} />
+            <WalkPiece roostRef={roostRef} />
           </StagePiece>
         }
         scene={(held) => <WalkScene paused={held} onDone={onSceneDone} />}

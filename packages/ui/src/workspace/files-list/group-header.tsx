@@ -6,8 +6,8 @@ import { useFade } from "../../lib/motion";
 /**
  * The label over a group of rows, and the home for that group's actions.
  *
- * One component for both groups, because they had drifted into two different headings — "Open" was
- * a bare label, "Workspace" a bordered strip with buttons on it — and a panel whose two sections
+ * One component for both groups, because they had drifted into two different headings - "Open" was
+ * a bare label, "Workspace" a bordered strip with buttons on it - and a panel whose two sections
  * cannot agree on what a heading looks like reads as two panels that happen to be stacked. The
  * border is gone with them: the type is quiet enough to separate the groups on its own, and a rule
  * every 28px is what made this tab look like a form.

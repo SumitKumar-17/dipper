@@ -15,7 +15,7 @@ export type Rig = {
   column: RefObject<HTMLDivElement | null>;
   query: RefObject<HTMLDivElement | null>;
   slips: RefObject<SlipsHandle | null>;
-  /** One element per key, kept on the key's top for the bird to perch on. */
+  /** One element per key, kept on the key's top for the bird to roost on. */
   anchors: RefObject<Partial<Record<KeyId, HTMLDivElement | null>>>;
   sculpture: RefObject<Sculpture | null>;
   layout: RefObject<SceneLayout | null>;

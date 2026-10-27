@@ -1,14 +1,14 @@
 // Settings.
 //
 // Six panes behind a left nav, at a fixed size so the dialog never resizes under the cursor
-// when you switch sections — a preferences window that changes shape as you browse it is one you
+// when you switch sections - a preferences window that changes shape as you browse it is one you
 // stop trusting to stay where you put it. The active pane is marked by one indicator that slides
 // (`layoutId`) rather than by five that blink, which is the difference between "this moved" and
 // "something else is selected now".
 //
 // There is no Save button; see saved-tick.tsx for why, and for the receipt that replaces it.
 
-import type { Settings } from "@perch/protocol";
+import type { Settings } from "@pipit/protocol";
 import {
   DatabaseIcon,
   FolderIcon,
@@ -49,11 +49,11 @@ const PANES = [
 export type SettingsPane = (typeof PANES)[number]["id"];
 
 /** Dispatch on `window` to open Settings, on a named pane when one is given. */
-export const SETTINGS_EVENT = "perch:settings";
+export const SETTINGS_EVENT = "pipit:settings";
 
 /**
  * Open Settings from anywhere. A surface that explains a setting should be able to hand you the
- * setting — the History panel, off because history recording is off, is the first caller.
+ * setting - the History panel, off because history recording is off, is the first caller.
  */
 export function requestSettings(pane?: SettingsPane): void {
   window.dispatchEvent(new CustomEvent(SETTINGS_EVENT, { detail: { pane } }));
@@ -124,7 +124,7 @@ export function SettingsDialog({
 
           <ScrollArea className="min-h-0 flex-1" overscrollContain scrollFade>
             {/* `popLayout`, not `wait`. `wait` runs the exit to completion before the enter starts, so for
-          the length of both transitions this region holds nothing at all — and a region holding
+          the length of both transitions this region holds nothing at all - and a region holding
           nothing has no height, so the box collapses and springs back. That collapse is the flicker.
           `popLayout` takes the outgoing copy out of flow instead, and the incoming one occupies the
           space on the same frame: a crossfade, with the geometry never leaving. */}

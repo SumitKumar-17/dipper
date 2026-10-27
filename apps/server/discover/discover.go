@@ -1,5 +1,5 @@
 // Package discover looks for Postgres and MySQL servers already installed or running on this
-// machine. perch never bundles a database; it offers to connect to what is already there.
+// machine. pipit never bundles a database; it offers to connect to what is already there.
 //
 // Every probe is best-effort and short-timeout: discovery never fails, it just finds less.
 package discover
@@ -19,7 +19,7 @@ import (
 	"sync"
 	"time"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // A UI that polls discovery should not shell out every time.
@@ -173,8 +173,8 @@ func suggestedURL(dialect protocol.Dialect, host string, port int) string {
 }
 
 // credentialedURL is suggestedURL for a candidate that knows better. A container has no account
-// named after the person running it, so the OS user — the right guess for a server installed on
-// this machine — is the one guess guaranteed to fail there.
+// named after the person running it, so the OS user - the right guess for a server installed on
+// this machine - is the one guess guaranteed to fail there.
 func credentialedURL(c candidate) string {
 	user, database := c.user, c.database
 	scheme := "postgres"
@@ -287,7 +287,7 @@ func binaryVersion(ctx context.Context, path string) string {
 // probeDocker reports running containers whose image looks like a database, with the host port
 // its server port is published on and the login the image was started with.
 //
-// Three things it does not take for granted. The CLI may not be on PATH — Docker Desktop installs
+// Three things it does not take for granted. The CLI may not be on PATH - Docker Desktop installs
 // it where a GUI-launched process cannot see it, so the known locations are tried too. The
 // runtime may not be Docker: podman and nerdctl speak the same two subcommands. And the login is
 // never the OS user, which is why the image's own environment is read: a container has no account
@@ -378,7 +378,7 @@ func containerCLI() (string, bool) {
 }
 
 // containerLogin reads the user and database the image was started with. The password is in the
-// same environment and is deliberately not read: perch asks for it rather than lifting a secret
+// same environment and is deliberately not read: pipit asks for it rather than lifting a secret
 // out of a process and writing it to disk.
 func containerLogin(ctx context.Context, cli, id string, dialect protocol.Dialect) (user, database string) {
 	out, err := run(ctx, cli, "inspect", "--format", "{{range .Config.Env}}{{println .}}{{end}}", id)
@@ -546,8 +546,8 @@ func firstField(s string) string {
 // The login a server on this machine is likeliest to accept when nothing else named one.
 //
 // On Unix the OS user is the convention and usually right: a package install creates a role named
-// after whoever ran it, and peer auth matches on it. Windows has no such convention — the
-// installer creates `postgres` and nothing else — and user.Current() there answers
+// after whoever ran it, and peer auth matches on it. Windows has no such convention - the
+// installer creates `postgres` and nothing else - and user.Current() there answers
 // `MACHINE\Name`, a backslash and often a space that no role is ever called. Suggesting it
 // produces a login certain to be refused, under a name nobody typed.
 func osUser() string {

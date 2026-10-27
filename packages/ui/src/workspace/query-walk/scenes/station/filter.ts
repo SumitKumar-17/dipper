@@ -1,8 +1,8 @@
-// WHERE and HAVING: the same two beats — every input row judged pass or fail, then only the
-// survivors — so they share one builder and differ by which clause they read and what they call
+// WHERE and HAVING: the same two beats - every input row judged pass or fail, then only the
+// survivors - so they share one builder and differ by which clause they read and what they call
 // the card.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { memberColumn, memberNullColumn, PASS_COLUMN, type Station } from "../../steps";
 import {
   colsOf,
@@ -45,14 +45,14 @@ function membershipCols(
       source.columns.findIndex((column) => column.name === memberColumn(index, vi)),
     );
     const nullAt = source.columns.findIndex((column) => column.name === memberNullColumn(index));
-    // A probe that came back without these columns is one the walk did not widen — an older result
+    // A probe that came back without these columns is one the walk did not widen - an older result
     // still on screen, or a dialect that refused the statement. No column beats a column of nulls.
     if (at.some((i) => i < 0) || nullAt < 0) continue;
     const label = `${text.slice(list.left.from, list.left.to)} matched`;
     const values = source.rows.map((row) => {
       const won = at.findIndex((i) => truthy(row[i]));
       if (won >= 0) return text.slice(list.values[won]!.from, list.values[won]!.to);
-      return truthy(row[nullAt]) ? "null — matches nothing" : "no match";
+      return truthy(row[nullAt]) ? "null - matches nothing" : "no match";
     });
     cols.push({ id: `in${index}`, label, width: widthFor(label, values), num: false, hl: true });
     cells.push(values);

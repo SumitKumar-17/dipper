@@ -86,7 +86,7 @@ export function useDiagramDrag({
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    // Whatever the last frame was going to do, do it now — a gesture that ends between frames
+    // Whatever the last frame was going to do, do it now - a gesture that ends between frames
     // would otherwise drop its final millimetre of travel.
     flush();
     const panned = livePan.current;

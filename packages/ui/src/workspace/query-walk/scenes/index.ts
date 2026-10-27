@@ -50,8 +50,8 @@ export {
 
 export function buildScene(index: number, phase: number, walk: WalkData): Scene {
   const scene = sceneAt(index, phase, walk);
-  // The grid's own column axis is capped where it is built — by dropping driving rows, not by
-  // narrowing the card — so only the ordinary cards beside it go through the width cap.
+  // The grid's own column axis is capped where it is built - by dropping driving rows, not by
+  // narrowing the card - so only the ordinary cards beside it go through the width cap.
   if (scene.kind === "buckets") return scene;
   return { ...scene, tables: scene.tables.map(capCols) };
 }

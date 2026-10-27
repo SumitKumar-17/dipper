@@ -3,7 +3,7 @@ import { type FeatureSectionProps, Section, SectionText } from "../layout/sectio
 import { Stage, StagePiece } from "../layout/stage";
 import { RelationsPiece } from "./relations/piece";
 
-export function RelationsSection({ perchRef, onSceneDone }: FeatureSectionProps) {
+export function RelationsSection({ roostRef, onSceneDone }: FeatureSectionProps) {
   return (
     <Section id="relationships" labelledBy="relations-title" stage>
       <Stage
@@ -16,7 +16,7 @@ export function RelationsSection({ perchRef, onSceneDone }: FeatureSectionProps)
         }
         below={
           <StagePiece>
-            <RelationsPiece perchRef={perchRef} />
+            <RelationsPiece roostRef={roostRef} />
           </StagePiece>
         }
         scene={(held) => <RelationsScene paused={held} onDone={onSceneDone} />}

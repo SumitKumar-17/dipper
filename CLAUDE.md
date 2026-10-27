@@ -1,7 +1,7 @@
 # Conventions
 
 **Read [AGENTS.md](AGENTS.md).** It is the canonical conventions file for this repo and applies
-in full to Claude Code: workspace and install rules, the `@perch/protocol` types-only constraint,
+in full to Claude Code: workspace and install rules, the `@pipit/protocol` types-only constraint,
 the `apps/server` layering ESLint enforces, how to verify a change, and the project facts that
 trip agents up.
 
@@ -12,4 +12,4 @@ file is only for guidance specific to Claude Code.
 
 - `AGENTS.md` is the single source of truth for conventions; `CONTRIBUTING.md` is written for
   humans and covers the same ground in more detail. When they disagree, `AGENTS.md` wins for
-  agent-facing rules and the code wins over both — verify before trusting either.
+  agent-facing rules and the code wins over both - verify before trusting either.

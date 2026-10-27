@@ -49,7 +49,7 @@ type PickedCell = {
    *
    * Never re-derived from the rows the cell's own probe brought back. Those rows are the evidence
    * and this is the verdict, and the one moment they would disagree is the moment the cell's probe
-   * has not landed yet — where guessing would print "false" over a cell the grid is drawing as true.
+   * has not landed yet - where guessing would print "false" over a cell the grid is drawing as true.
    */
   readonly returned: boolean | null;
 };
@@ -74,8 +74,8 @@ export function BoundPanel({
   /**
    * The card beside the ledger, when the kind has one of its own.
    *
-   * It is what the sentences for IN and for a scalar are written from — the needle and its match,
-   * the value that came back, the row count that broke the one-row promise — so the panel and the
+   * It is what the sentences for IN and for a scalar are written from - the needle and its match,
+   * the value that came back, the row count that broke the one-row promise - so the panel and the
    * card can never disagree about what the subquery answered.
    */
   readonly answer: AnswerView | null;
@@ -188,8 +188,8 @@ export function BoundPanel({
               </p>
               <SqlBlock sql={plan.counting === null ? plan.verdictSql : plan.outerSql} />
             </div>
-            {/* The grid's own probe. It writes no literal at all — every fragment of it is a range
-                sliced out of the query — which is worth being able to check by eye. */}
+            {/* The grid's own probe. It writes no literal at all - every fragment of it is a range
+                sliced out of the query - which is worth being able to check by eye. */}
             {grid && (
               <div className="min-w-0">
                 <p className="mb-1 text-muted-foreground text-xs">
@@ -214,7 +214,7 @@ export function BoundPanel({
  * What happened for the bound row, in the vocabulary of its own predicate kind.
  *
  * A grid answers in driving rows, IN answers in membership, a scalar answers in one comparison, and
- * EXISTS answers in rows — four different sentences because they are four different questions, and
+ * EXISTS answers in rows - four different sentences because they are four different questions, and
  * the shared one they used to have was only ever right about the last of them.
  */
 function rowSentence(args: {
@@ -241,7 +241,7 @@ function boundPairs(plan: BoundPlan, row: BoundRow, cell: PickedCell): string[] 
 
 /**
  * A note under the sentences: not an error, and something a reader would otherwise blame on their
- * own query — a null that matches nothing, a count the dialect would not give, a set poisoned by a
+ * own query - a null that matches nothing, a count the dialect would not give, a set poisoned by a
  * null, the promise a scalar subquery makes.
  *
  * `alarm` is for the one of them that is about a result being wrong rather than missing. Null text

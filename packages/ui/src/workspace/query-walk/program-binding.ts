@@ -2,12 +2,12 @@
 //
 // This is the property the whole program hangs on, and the one place it is allowed to be uncertain.
 // `SubqueryPredicate.correlated` reports only QUALIFIED references, because `course_id` with no
-// table in front of it cannot be resolved without a catalogue — so an empty list means "no PROVABLE
+// table in front of it cannot be resolved without a catalogue - so an empty list means "no PROVABLE
 // correlation", never "uncorrelated". Promoting such a subquery to a standalone section would run
 // it once and print a value that is true of no row, which is why the uncertainty is carried as
 // `Binding.certain` rather than flattened here.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   bareName,
   countingRewrite,
@@ -33,7 +33,7 @@ import { predicateLabel } from "./section-labels";
 /**
  * How a subquery predicate runs, or null when it should stay inline with no section at all.
  *
- * A correlated scalar subquery that `countingRewrite` refuses — an aggregate, a GROUP BY, a LIMIT —
+ * A correlated scalar subquery that `countingRewrite` refuses - an aggregate, a GROUP BY, a LIMIT -
  * has nothing a per-row probe could usefully ask: it returns one row whatever the outer row is, and
  * counting its "matches" would be a lie. A section for it could only ever show a query it cannot
  * run, so the predicate is left where it is, recorded as inline rather than dropped.
@@ -77,8 +77,8 @@ export function predicateBinding(
  * The same two answers a predicate gets, with one escape hatch fewer: there is no "leave it inline"
  * here, because a number on screen that no chapter accounts for is the whole thing this is fixing.
  *
- * A correlated one is bound even though nothing can probe it yet — `boundPlan` refuses it and the
- * chapter holds with a note — because the alternative is to call it standalone and run it once,
+ * A correlated one is bound even though nothing can probe it yet - `boundPlan` refuses it and the
+ * chapter holds with a note - because the alternative is to call it standalone and run it once,
  * which prints a value that is true of no row. `certain` carries the other half of that caution:
  * see `isCertainlyUncorrelated`, which is asked to read the select list here because a select-list
  * subquery is all value, and a bare name in the list that secretly belongs to the outer row changes
@@ -109,7 +109,7 @@ export function projectionBinding(
  * The same question for a body that may be a SET OPERATION.
  *
  * `parseTokens` refuses a chain of SELECTs, so `parsed` arrives `unsupported` and the check below
- * would call it uncertain on principle — which is how `where ID in (select … intersect select …)`
+ * would call it uncertain on principle - which is how `where ID in (select … intersect select …)`
  * came to wear "could not rule out that this depends on the outer row" while plainly depending on
  * nothing. A chain is exactly as answerable as one SELECT: it is correlated only if some BRANCH is,
  * and every branch is an ordinary `ParsedSelect`.
@@ -140,13 +140,13 @@ function bodyIsCertainlyUncorrelated(
  *
  * Correlation enters through a FILTER: the WHERE, HAVING, JOIN ON/USING or GROUP BY of the subquery
  * is where an unqualified name that secretly belongs to the outer row changes which rows come back.
- * A subquery with no such clause — `select ID from takes` — has nowhere for one to hide, so it is
+ * A subquery with no such clause - `select ID from takes` - has nowhere for one to hide, so it is
  * certain even though `ID` is unqualified.
  *
- * The select list is scanned only when the VALUE is what the caller uses — a scalar predicate, or a
+ * The select list is scanned only when the VALUE is what the caller uses - a scalar predicate, or a
  * subquery in the select list, where an outward-bound name in the list changes the number that
  * lands on the row. For EXISTS the list is discarded outright, and for IN a list that bound outward
- * would compare the outer row to itself — a query nobody writes. That is a judgement call, and it is
+ * would compare the outer row to itself - a query nobody writes. That is a judgement call, and it is
  * the one place this can still say "certain" about something a catalogue would disagree with.
  *
  * A bare name found in one of those ranges is not the end of it: see `resolvesLocally`.
@@ -180,17 +180,17 @@ function isCertainlyUncorrelated(
  * Whether every bare name in a subquery is provably a column of the subquery's own source.
  *
  * The conservatism above exists because `course_id` with no table in front of it cannot be resolved
- * without a catalogue — and against a real table there is none to read, so it stays uncertain. But
+ * without a catalogue - and against a real table there is none to read, so it stays uncertain. But
  * when the source is a CTE the walk has a catalogue, and it is one the program itself built: the
  * CTE's output columns are its select list, which is text. `advises` inside
- * `select i_id from advisor_teaches where advises = …` is therefore not a maybe — it is the CTE's
+ * `select i_id from advisor_teaches where advises = …` is therefore not a maybe - it is the CTE's
  * own column, the subquery is uncorrelated, and wave 8's warning on it was simply false.
  *
  * Three things keep the conservatism where it is earned. The subquery must have exactly ONE source,
  * because with two the name could belong to either and knowing one catalogue settles nothing. That
  * source must be a CTE, because a plain table's columns are in the database and not in the query.
- * And the CTE's own list must NAME all of its columns — a `select *` inside it, or a set operation,
- * puts the answer back in the catalogue — with every bare name found among them; one that is not is
+ * And the CTE's own list must NAME all of its columns - a `select *` inside it, or a set operation,
+ * puts the answer back in the catalogue - with every bare name found among them; one that is not is
  * exactly the reference that might point outward, and it keeps the caveat for the whole subquery.
  */
 function resolvesLocally(bare: readonly string[], parsed: ParsedSelect, dialect: Dialect): boolean {
@@ -212,7 +212,7 @@ function resolvesLocally(bare: readonly string[], parsed: ParsedSelect, dialect:
  *
  * The test is on the WHOLE statement, prefix included, and that is the point: a section is refused
  * the moment a data-modifying CTE is spliced into it, not only when it IS one. The walk probes
- * every station of every section, and each of those probes carries the section's own WITH — so one
+ * every station of every section, and each of those probes carries the section's own WITH - so one
  * `delete … returning *` in a WITH list is a delete per probe, not a delete once.
  *
  * Postgres allows a data-modifying statement only in the WITH attached to the top-level statement,
@@ -228,7 +228,7 @@ export function carriesWrite(sql: string, dialect: Dialect): boolean {
 /**
  * Every column reference in `ranges` that nobody qualified, lower-cased and de-quoted.
  *
- * `CompositeIdentifier` is `s.ID` — already qualified, and wave 1's correlation check has had its
+ * `CompositeIdentifier` is `s.ID` - already qualified, and wave 1's correlation check has had its
  * say about it. A nested `(select …)` is skipped: it is its own scope and its own section, and what
  * it leaves unqualified is its own problem, not this one's.
  *
@@ -257,7 +257,7 @@ function scanBare(node: SyntaxNode, text: string, range: Range, out: string[]): 
       continue;
     }
     // The grammar calls `ID`, `name`, `year` and `value` keywords, because some dialect reserves
-    // them — but in a WHERE they are columns like any other, and skipping them was the difference
+    // them - but in a WHERE they are columns like any other, and skipping them was the difference
     // between "could not be ruled out" and a confident, wrong "uncorrelated" on half the queries
     // anyone writes against a schema that spells a key `ID`. A word that is SYNTAX in an expression
     // is skipped by name, and a word followed straight by `(` is a function call rather than a
@@ -283,7 +283,7 @@ function scanBare(node: SyntaxNode, text: string, range: Range, out: string[]): 
  * can run into, the frame vocabulary of an OVER clause, and the type names a cast can mention.
  *
  * Deliberately a list of SYNTAX and not a list of keywords. The grammar's keyword set includes
- * plenty of ordinary column names — that is the whole reason this exists — so a word is dropped
+ * plenty of ordinary column names - that is the whole reason this exists - so a word is dropped
  * here only when reading it as a column would be a mistake, and every word nobody thought of stays
  * a possible column. `first` and `last` are in no stop list for that reason: they are syntax only in
  * an ORDER BY, which is not a range this ever scans.

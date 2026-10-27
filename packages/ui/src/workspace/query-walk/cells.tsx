@@ -23,7 +23,7 @@ export function CellFrame({
    * The grid card is as wide as the widest thing in it, which is regularly the legend above rather
    * than the table, and columns that only ever measured themselves left the difference as dead
    * space down the right of every row. There `--w` is a basis and the columns grow past it. On the
-   * stage the slack falls OUTSIDE the columns instead — see `HeaderCell` in `stage.tsx` — because a
+   * stage the slack falls OUTSIDE the columns instead - see `HeaderCell` in `stage.tsx` - because a
    * lone right-aligned digit stretched to the card's edge reads as further from its label than it
    * is.
    */

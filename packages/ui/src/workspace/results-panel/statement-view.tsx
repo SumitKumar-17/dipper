@@ -1,4 +1,4 @@
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import * as React from "react";
 import { Tabs, TabsList, TabsTab } from "../../ui/tabs";
 import { ResultsGrid } from "../results-grid";
@@ -84,7 +84,7 @@ export function ResultBody({
     <div className="flex h-full min-h-0 flex-col">
       {statement.truncated && (
         <p className="shrink-0 border-border border-b bg-warning/8 px-2 py-1 text-warning-foreground text-xs">
-          Showing the first {statement.rowCount.toLocaleString()} rows — the result was cut at the
+          Showing the first {statement.rowCount.toLocaleString()} rows - the result was cut at the
           server&rsquo;s row limit.
         </p>
       )}

@@ -29,7 +29,7 @@ export function WirePath({
   animate: boolean;
   index: number;
   /** Hold the pulse where it is. Paused rather than removed, so the wire does not lose its phase
-   *  — and so a gesture neither starts nor ends with every pulse on screen jumping. */
+   *  - and so a gesture neither starts nor ends with every pulse on screen jumping. */
   paused: boolean;
   state: WireState;
   wire: Wire;

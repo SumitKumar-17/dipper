@@ -8,22 +8,22 @@ import { panWalk } from "./walk-phone";
 // Below md the phone cut's window instead, framed by walk-phone.ts; legacy.css works out its height.
 const walk: LegacySceneDef = {
   module: "walk",
-  tag: "perch-walk",
+  tag: "pipit-walk",
   reserve: (
     <>
       <div className="flex flex-col max-md:hidden">
         <div className="aspect-8/5" />
         <div className="h-13.75" />
       </div>
-      <div data-perch-walk-reserve="" className="md:hidden" />
+      <div data-pipit-walk-reserve="" className="md:hidden" />
     </>
   ),
   phone: { attribute: "variant", value: "phone", frame: panWalk },
 };
 const terminal: LegacySceneDef = {
   module: "terminal",
-  tag: "perch-terminal",
-  reserve: <div data-perch-terminal-reserve="" />,
+  tag: "pipit-terminal",
+  reserve: <div data-pipit-terminal-reserve="" />,
 };
 
 export const LegacyWalkScene = (props: SceneProps) => <LegacyScene def={walk} {...props} />;

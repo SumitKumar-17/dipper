@@ -4,7 +4,7 @@
 // crossed with the middle query's driving rows, so one statement fills the whole grid; nothing here
 // runs a query per cell, which for the relational-division query would be 65 of them.
 //
-// THE CELL PROBE is lazy, and fires only when a reader picks a cell — the same bargain the per-row
+// THE CELL PROBE is lazy, and fires only when a reader picks a cell - the same bargain the per-row
 // card already strikes for its rows. Most cells are never looked at, and the grid has already said
 // what each one answered; the probe is for the rows BEHIND that answer.
 //
@@ -12,7 +12,7 @@
 // the shape is a limit of the dialect, not a fault in the reader's query, and the per-row view it
 // falls back to is the one that shipped before this existed.
 
-import type { Cell, StatementResult } from "@perch/protocol";
+import type { Cell, StatementResult } from "@pipit/protocol";
 import * as React from "react";
 import { bindKey, bindKeyOf, cellParts, partsSql, sqlLiteral, type BoundRow } from "./bound";
 import type { SqlPart } from "./clauses";
@@ -74,7 +74,7 @@ export function useGridRun(
     };
   }, []);
 
-  // Keyed on the build, so opening a different section — or editing the query — starts clean rather
+  // Keyed on the build, so opening a different section - or editing the query - starts clean rather
   // than showing the last grid's cells under this one's headers.
   const [seen, setSeen] = React.useState(grid);
   if (seen !== grid) {
@@ -163,7 +163,7 @@ export function useGridRun(
  * The probe's rows read back as columns and cells.
  *
  * Columns come out in the order the probe returned them, which the ORDER BY makes the driving key's
- * own order, and a driving value that appears for one outer row appears for all of them — it is a
+ * own order, and a driving value that appears for one outer row appears for all of them - it is a
  * cross join, so the axis is the same for every row. `covered` counts the outer rows that arrived
  * WHOLE: the ORDER BY puts the bind key first exactly so a cap falls between rows, and the last row
  * of a truncated sample is the one that may be short.
@@ -214,14 +214,14 @@ function readGrid(
       order.push(key);
     }
     // Read the same way the verdict is: a driver that hands a boolean back as `1`, `t` or `true`
-    // has said the same thing, and a predicate that evaluated to unknown comes back null — which is
+    // has said the same thing, and a predicate that evaluated to unknown comes back null - which is
     // not true, and is exactly what a WHERE would make of it.
     byColumn.set(columnKey, truthy(raw[cellAt] ?? null));
   }
 
   // A truncated sample's LAST outer row is the one the cap may have cut in half. Showing four of a
   // student's five courses as if that were the whole row would put a wrong row-sum on screen, so a
-  // short last row is dropped — and one that happens to be whole is kept, because it is whole.
+  // short last row is dropped - and one that happens to be whole is kept, because it is whole.
   const last = order[order.length - 1];
   const short =
     sample.truncated && last !== undefined && (cells.get(last)?.size ?? 0) < columns.length;

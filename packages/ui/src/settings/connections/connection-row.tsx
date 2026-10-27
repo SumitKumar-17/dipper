@@ -1,4 +1,4 @@
-import type { ConnectionSummary } from "@perch/protocol";
+import type { ConnectionSummary } from "@pipit/protocol";
 import { CheckIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type * as React from "react";
@@ -93,7 +93,7 @@ export function ConnectionRow({
           <PencilIcon />
         </Button>
         {/* Removing a connection throws away a stored password, so it asks once. The second
-            click is on a button that has changed colour and label — not on the same target. */}
+            click is on a button that has changed colour and label - not on the same target. */}
         {confirming ? (
           <Button loading={removing} onClick={onConfirmRemove} size="xs" variant="destructive">
             Remove

@@ -2,11 +2,11 @@
 //
 // A server on a default port, in a container, or behind any auth method other than trust says
 // "password" and nothing else. That is not a reason to throw away everything discovery worked
-// out and hand back an empty seven-field form — the address is right, one or two things are
+// out and hand back an empty seven-field form - the address is right, one or two things are
 // missing. So the row that failed grows those fields, and keeps its place in the list.
 //
 // The login is one of them, because it is a guess. Nothing below this screen can know which role
-// a given install created — `postgres`, the OS user, whatever an image was started with — and
+// a given install created - `postgres`, the OS user, whatever an image was started with - and
 // Postgres reports an unknown role and a wrong password with the same sentence, on purpose, so
 // neither this code nor the person reading it can tell the two apart. A prompt that only takes a
 // password is therefore unanswerable whenever the guess was wrong: the correct password is
@@ -58,7 +58,7 @@ export function PasswordPrompt({
   const field = React.useRef<HTMLInputElement>(null);
 
   // The prompt appears because the user pressed Connect, so the caret belongs in the field they
-  // now have to fill in — the password, since the login usually already holds the right answer.
+  // now have to fill in - the password, since the login usually already holds the right answer.
   React.useEffect(() => field.current?.focus(), []);
 
   const submit = (): void => {
@@ -91,7 +91,7 @@ export function PasswordPrompt({
       <p className="flex items-center gap-1.5 text-muted-foreground text-xs">
         <KeyRoundIcon className="size-3 shrink-0" />
         {refused
-          ? "That login was refused — check the user as well as the password"
+          ? "That login was refused - check the user as well as the password"
           : "This server wants a user and password"}
       </p>
       <div className="flex items-center gap-2">

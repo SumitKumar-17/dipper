@@ -9,11 +9,11 @@
 // THE DEPARTURE. Everywhere else this module only ever splices the user's own ranges back together,
 // and `boundRowSql` below is the one place that writes something the user did not type: a literal,
 // over the range where a correlated reference was written. That is deliberate and it is the whole
-// point of the feature — `takes.ID = s.ID` becoming `takes.ID = '12345'` is what the database does
+// point of the feature - `takes.ID = s.ID` becoming `takes.ID = '12345'` is what the database does
 // per row, and seeing it is the lesson. It stays contained here: `outerProbeSql` splices only
 // ranges, and nothing else in the walk builds a literal.
 
-import type { Cell, Dialect, ResultColumn, StatementResult } from "@perch/protocol";
+import type { Cell, Dialect, ResultColumn, StatementResult } from "@pipit/protocol";
 import {
   canWidenSelectList,
   collapsesToOneRow,
@@ -72,7 +72,7 @@ export type BoundPlan = {
   /**
    * The expression the predicate compares, as the user wrote it: `s.dept_name`, `s.tot_cred`.
    *
-   * Null for EXISTS, which compares nothing — it asks only whether rows came back. For IN and for a
+   * Null for EXISTS, which compares nothing - it asks only whether rows came back. For IN and for a
    * scalar it is the left-hand side of the whole lesson, so the outer probe brings its value back
    * per row and the panel can pair the needle with the hay.
    */
@@ -87,7 +87,7 @@ type BoundBlocked = { readonly kind: "blocked"; readonly reason: string };
  *
  * The refusals are all honest limits rather than failures. The big one is NESTING: in the relational
  * division query the inner `not exists takes` is bound to a section that is itself bound, so there
- * is no table of outer rows to scrub through — its outer rows only exist once a row of ITS outer
+ * is no table of outer rows to scrub through - its outer rows only exist once a row of ITS outer
  * section has been picked. Binding two levels at once is a different feature; saying so is better
  * than showing a query that cannot run.
  */
@@ -172,7 +172,7 @@ export function boundPlan(program: Program, section: Section): BoundPlan | Bound
  * The outer query, every row of it, each carrying what the subquery said about it.
  *
  * Two splices do the work. The predicate is replaced by `true` where it sits in the WHERE or
- * HAVING, because the rows this view is about are exactly the ones the predicate THREW AWAY — in
+ * HAVING, because the rows this view is about are exactly the ones the predicate THREW AWAY - in
  * the relational-division query every student fails, so leaving the filter in place would probe an
  * empty table and teach nothing. And the select list grows three kinds of column: the correlated
  * values, so a row can be bound without asking the database a second time; the predicate itself as
@@ -181,7 +181,7 @@ export function boundPlan(program: Program, section: Section): BoundPlan | Bound
  *
  * The verdict is asked for separately rather than read off the count on purpose. `x in (select …)`
  * passes when x is among the values, which the NUMBER of rows the subquery returned says nothing
- * about — reading a membership test off a row count would be confidently wrong on every IN.
+ * about - reading a membership test off a row count would be confidently wrong on every IN.
  */
 function outerProbeSql(
   outer: ParsedSelect,
@@ -330,7 +330,7 @@ export const partsSql = (parts: readonly SqlPart[]): string =>
  * NULL is spelled `null` and NOT turned into an `IS NULL` test. Rewriting it would be a lie: the
  * database really does evaluate `takes.ID = null` to unknown and match nothing, and a walk that
  * quietly repaired the comparison would hide the exact reason an outer row with a null came back
- * empty. The view says so in words instead — see `BoundRow.nulls` and `boundNullSentence`.
+ * empty. The view says so in words instead - see `BoundRow.nulls` and `boundNullSentence`.
  *
  * Every other case is about not breaking the statement. A quote inside a string is doubled, which
  * is the one escape both dialects agree on; MySQL additionally treats a backslash as an escape
@@ -350,7 +350,7 @@ export function sqlLiteral(value: Cell, dialect: Dialect, column?: ResultColumn)
   if (typeof value === "number")
     return Number.isFinite(value) ? String(value) : quote(String(value), dialect);
   // A BIGINT or NUMERIC arrives as a STRING, because neither fits a JS number without losing
-  // digits. Quoting it would still compare equal — both dialects cast — but it would put
+  // digits. Quoting it would still compare equal - both dialects cast - but it would put
   // `year = '2009'` on screen for an integer column, and the whole point of this SQL is that it
   // reads like something a person would have written. The driver's own type name is what settles
   // it, and the shape check is there so a text column full of digits is never unquoted by mistake.
@@ -395,7 +395,7 @@ export type BoundRow = {
   readonly literals: ReadonlyMap<string, string>;
   /** Rows the subquery returned for this row, or null when no honest count could be asked for. */
   readonly matches: number | null;
-  /** The predicate itself, evaluated by the database for this row — never derived from the count. */
+  /** The predicate itself, evaluated by the database for this row - never derived from the count. */
   readonly pass: boolean;
   /** The correlated references that are null here, which is why the subquery can match nothing. */
   readonly nulls: readonly string[];
@@ -418,7 +418,7 @@ export const bindKey = (literals: readonly string[]): string => JSON.stringify(l
  * The key a bound row's cells are filed under: its bound values, spelled as SQL.
  *
  * `useGridRun` files every cell it fetches under this, and the grid scene and `terminus.ts` read
- * them back out by it, so all three have to spell it the same way — which is why it is one function
+ * them back out by it, so all three have to spell it the same way - which is why it is one function
  * rather than a convention. The values are `sqlLiteral`'s spelling everywhere, so the match is on
  * what the SQL would say rather than on how a driver happened to hand the value back.
  */
@@ -430,7 +430,7 @@ export function bindKeyOf(row: BoundRow): string {
  * The outer probe's rows, read back into what the view needs.
  *
  * A column is found by NAME rather than by position, because the walk's own columns are appended to
- * a select list that may be `*`: the position of `_perch_walk_n` then depends on how many columns
+ * a select list that may be `*`: the position of `_pipit_walk_n` then depends on how many columns
  * the user's tables happen to have, which is not something this can know.
  */
 export function boundRows(plan: BoundPlan, result: StatementResult): BoundRow[] {
@@ -461,7 +461,7 @@ export function boundRows(plan: BoundPlan, result: StatementResult): BoundRow[] 
       left,
       leftLiteral: leftAt < 0 ? null : sqlLiteral(left, plan.dialect, result.columns[leftAt]),
       matches: count === null || !Number.isFinite(count) ? null : count,
-      // A predicate that evaluates to NULL — `x not in (…)` over a column holding nulls — is not
+      // A predicate that evaluates to NULL - `x not in (…)` over a column holding nulls - is not
       // true, and a WHERE drops the row exactly as it drops a false one. So anything that is not
       // truthy is a fail, which is what the database did.
       pass: passAt >= 0 && truthy(row[passAt]),

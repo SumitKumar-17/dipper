@@ -5,7 +5,7 @@ import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // TanStack Start in SPA mode: `vite build` prerenders the shell once and emits `dist/client/`,
-// which scripts/postbuild.mjs copies into apps/server/ui/ — the directory the published `perch`
+// which scripts/postbuild.mjs copies into apps/server/ui/ - the directory the published `pipit`
 // package serves at `/`. Start's server half never runs; there are no server functions and no SSR.
 // See docs/architecture/monorepo.md, "How the frontend ships inside the server package".
 export default defineConfig({
@@ -24,7 +24,7 @@ export default defineConfig({
       prerender: {
         // `/x/index.html` rather than `/x.html`, which is what Next's `trailingSlash: true` bought
         // us: the bundle is mounted as plain static files, so a directory-style URL only resolves
-        // if the directory is real. Start defaults this on — pinned because the whole static mount
+        // if the directory is real. Start defaults this on - pinned because the whole static mount
         // depends on it.
         autoSubfolderIndex: true,
       },

@@ -25,17 +25,17 @@ const READING_LINE = 0.62;
  * would keep the bird, parked on the try window off the top of the view.
  */
 export function BirdDriverProvider({ children }: { children: ReactNode }) {
-  const { perch } = useTryWindow().target;
+  const { roost } = useTryWindow().target;
   const [driver, setDriver] = useState<BirdDriver>("landing");
   const now = useRef<BirdDriver>("landing");
   useEffect(() => {
-    const edge = perch.current;
+    const edge = roost.current;
     if (!edge) return;
     return onScrollFrame(() => {
       now.current = edge.getBoundingClientRect().top <= innerHeight * READING_LINE ? "route" : "landing";
       setDriver(now.current);
     }).stop;
-  }, [perch]);
+  }, [roost]);
   return (
     <DriverNowContext value={now}>
       <DriverContext value={driver}>{children}</DriverContext>

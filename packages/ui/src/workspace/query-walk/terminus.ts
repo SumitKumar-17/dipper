@@ -2,7 +2,7 @@
 //
 // The relational-division query returns nothing, and until this existed the walk ended on a blank
 // card: correct, and the least useful thing it could have said. The reason it is empty is not that
-// the query is wrong — it is that NOBODY has taken all five required courses, and one student is
+// the query is wrong - it is that NOBODY has taken all five required courses, and one student is
 // short of exactly one course. That fact is the whole lesson, it is already on screen one chapter
 // earlier as a column of counts, and it was being thrown away at the last station.
 //
@@ -11,7 +11,7 @@
 // It never probes. Every number here comes from a statement the walk had already sent: the bound
 // chapter's outer probe, which brings back one count per outer row; the grid's one probe, whose
 // cells name the values that were missing; and the per-row probes the ledger sends as playback
-// walks the rows. If a chapter has not run, there is no card — "already known" is the condition,
+// walks the rows. If a chapter has not run, there is no card - "already known" is the condition,
 // not an invitation to go and find out.
 //
 // It never claims a gradient it does not have. "Nearest" means something different under each
@@ -19,7 +19,7 @@
 // fails it with a count of zero, so there is no closest row, and ranking them would be a ranking of
 // nothing dressed as a finding. That case shows what the subquery would have needed instead.
 
-import type { Cell, Dialect, StatementResult } from "@perch/protocol";
+import type { Cell, Dialect, StatementResult } from "@pipit/protocol";
 import { formatCell } from "../results-grid";
 import { bindKeyOf, sqlLiteral, type BoundPlan, type BoundRow } from "./bound";
 import { conjuncts, spliceRanges, type Range, type SubqueryPredicateKind } from "./clauses";
@@ -60,7 +60,7 @@ export type BoundEvidence = {
    * The subquery's own rows, per outer row index, for the rows whose probe has landed.
    *
    * Sparse on purpose. The ledger probes a row when it binds one, so a reader who left the chapter
-   * early leaves gaps here — and a gap is a row with no measure rather than a reason to send a
+   * early leaves gaps here - and a gap is a row with no measure rather than a reason to send a
    * statement for it.
    */
   readonly answers: ReadonlyMap<number, StatementResult>;
@@ -299,7 +299,7 @@ function score(
       row,
       index,
       distance: best.distance,
-      gap: `${row.leftLiteral ?? String(left)} against ${literal} — off by ${trim(best.distance)}`,
+      gap: `${row.leftLiteral ?? String(left)} against ${literal} - off by ${trim(best.distance)}`,
     });
   }
   return out.length === 0 ? null : out;
@@ -320,7 +320,7 @@ function shortBy(found: BoundEvidence, row: BoundRow, count: number): string {
 }
 
 /** The driving rows this outer row's subquery returned, by the grid's own cells. Null when there is
- *  no grid, when its probe did not reach this row, or when it reached only part of it — a row with
+ *  no grid, when its probe did not reach this row, or when it reached only part of it - a row with
  *  four of its five cells would name four of five missing courses and look like a fifth was found. */
 function missingValues(found: BoundEvidence, row: BoundRow): string[] | null {
   const { grid, columns, cells } = found;
@@ -334,7 +334,7 @@ function missingValues(found: BoundEvidence, row: BoundRow): string[] | null {
  * What the subquery would have had to find for THIS row, for a kind with no gradient at all.
  *
  * The row's own values are spliced into the subquery's WHERE, which is the same substitution the
- * per-row card already shows and the same one the database made — so the column says `no takes with
+ * per-row card already shows and the same one the database made - so the column says `no takes with
  * t.ID = '00128' and t.grade = 'Z'` rather than a generic "it found nothing". That is the value
  * sought, named, and it costs no probe: the literals came back on the outer probe.
  *
@@ -369,7 +369,7 @@ function sought(found: BoundEvidence, row: BoundRow): string | null {
  * The fallback, for a WHERE with no bound chapter behind it.
  *
  * The measure is the number of the WHERE's own depth-zero conjuncts a row failed, which the row
- * test already brings back — `a and b and c` is three tests, and a row that failed one got further
+ * test already brings back - `a and b and c` is three tests, and a row that failed one got further
  * than a row that failed all three. A WHERE with a single conjunct has no such measure, and rather
  * than order the rows by nothing the card says only what emptied them.
  */

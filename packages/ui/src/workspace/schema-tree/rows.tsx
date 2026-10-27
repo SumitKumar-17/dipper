@@ -1,4 +1,4 @@
-import type { Column, Table } from "@perch/protocol";
+import type { Column, Table } from "@pipit/protocol";
 import { ChevronRightIcon, KeyIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useFade } from "../../lib/motion";
@@ -50,9 +50,9 @@ export function TableRows({
                   {table.kind === "materialized_view" && (
                     // A matview holds a snapshot, not the current answer.
                     <Badge
-                      aria-label="Materialized view — a snapshot until the next REFRESH"
+                      aria-label="Materialized view - a snapshot until the next REFRESH"
                       size="sm"
-                      title="Materialized view — a snapshot until the next REFRESH"
+                      title="Materialized view - a snapshot until the next REFRESH"
                       variant="secondary"
                     >
                       MAT

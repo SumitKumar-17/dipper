@@ -8,7 +8,7 @@ import { code, small } from "../../layout/type";
 const NOTES: Partial<Record<string, ReactNode>> = {
   darwin: (
     <>
-      On macOS, run <code className={code}>xattr -d com.apple.quarantine ./perch</code> once after a browser
+      On macOS, run <code className={code}>xattr -d com.apple.quarantine ./pipit</code> once after a browser
       download.
     </>
   ),

@@ -5,7 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // The schema tree comes straight out of the catalogs in three queries rather than one per table.

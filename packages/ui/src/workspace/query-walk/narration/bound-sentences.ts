@@ -1,11 +1,11 @@
 // A section that runs once per outer row has no station walk, so it has no station sentences. What
-// it has instead is one sentence about the section — what correlation means for it — and one about
+// it has instead is one sentence about the section - what correlation means for it - and one about
 // whichever outer row is currently bound, which changes as playback moves through them.
 //
 // IN and the scalar comparison both get a card of their own rather than the rows EXISTS shows, and
 // both get a sentence of their own for the same reason: what the subquery answered is a different
 // KIND of thing. IN answers whether a value is in a set. A scalar answers with one value, and has
-// two failure modes that no other predicate has — more than one row is an error, and no row at all
+// two failure modes that no other predicate has - more than one row is an error, and no row at all
 // is a null that makes the comparison unknown rather than false.
 
 import type { BoundPlan, BoundRow } from "../bound";
@@ -32,7 +32,7 @@ export function passRule(kind: SubqueryPredicateKind): string {
 /**
  * `s.ID = '12345'`: the substitutions this row's probe actually made, one per correlated column.
  *
- * The pairs rather than a sentence, because the two callers want different things from them — a
+ * The pairs rather than a sentence, because the two callers want different things from them - a
  * card title joins them, and a cell's sentence puts the grid column's own substitution alongside
  * them first. `bindingLine` is the joined form, for everywhere that just wants the phrase.
  */
@@ -51,7 +51,7 @@ export function bindingText(plan: BoundPlan, row: BoundRow): string {
  *
  * It says what the rows MEAN rather than repeating the binding, which the scrubber under the stage
  * is already showing: under `exists` they are what the predicate found, and under `not exists` they
- * are the evidence against the row — so an EMPTY card there is the good one, and a title that only
+ * are the evidence against the row - so an EMPTY card there is the good one, and a title that only
  * said `s.ID = '12345'` left the reader to work that out for themselves. IN and a scalar have cards
  * of their own with their own titles and never reach this.
  */
@@ -71,7 +71,7 @@ export function boundInnerTitle(plan: BoundPlan, row: BoundRow): string {
 export function boundSentence(plan: BoundPlan): string {
   const columns = list(plan.columns.map((column) => code(column.ref)));
   const named = columns === "" ? "a value from the row it sits inside" : columns;
-  return `Every row of ${plan.outer.label} hands this subquery its own ${named}, so it does not run once — it runs again for each of them, and the rows it comes back with change every time. ${code(plan.predicate.kind)} then passes the outer row only when the answer is ${passRule(plan.predicate.kind)}.`;
+  return `Every row of ${plan.outer.label} hands this subquery its own ${named}, so it does not run once - it runs again for each of them, and the rows it comes back with change every time. ${code(plan.predicate.kind)} then passes the outer row only when the answer is ${passRule(plan.predicate.kind)}.`;
 }
 
 /** What happened for the row currently bound: the values put in, the rows that came back, the verdict. */
@@ -94,7 +94,7 @@ export function boundRowSentence(plan: BoundPlan, row: BoundRow): string {
  * Both of these get a card of their own rather than the rows EXISTS shows, and both get a sentence
  * of their own for the same reason: what the subquery answered is a different KIND of thing. IN
  * answers whether a value is in a set. A scalar answers with one value, and has two failure modes
- * that no other predicate has — more than one row is an error, and no row at all is a null that
+ * that no other predicate has - more than one row is an error, and no row at all is a null that
  * makes the comparison unknown rather than false.
  */
 
@@ -124,7 +124,7 @@ export function scalarSentence(plan: BoundPlan, row: BoundRow, answer: AnswerVie
   const bound = bindingText(plan, row);
   const rule = `${code(plan.predicateText)} compares each row's ${code(answer.leftLabel)} against the one value the subquery returns.`;
   if (answer.many !== null) {
-    return `${rule} For ${code(bound)} it returned ${answer.many} rows, which is not a value at all — the database raises an error rather than choosing one of them.`;
+    return `${rule} For ${code(bound)} it returned ${answer.many} rows, which is not a value at all - the database raises an error rather than choosing one of them.`;
   }
   if (answer.missing) {
     return `${rule} For ${code(bound)} it returned no row, so the value is null, ${code(`${answer.left} ${answer.operator} null`)} is unknown rather than false, and the row is dropped exactly as a false one would be.`;
@@ -145,7 +145,7 @@ export function notInNullSentence(plan: BoundPlan, answer: AnswerView): string |
   // "this row" rather than "every row": the set a CORRELATED subquery returns is a different set
   // per outer row, so a null in one row's set says nothing about the next row's. The rule it
   // demonstrates is the same one, and it is the rule that costs people afternoons.
-  return `The subquery returns a null among its values, and ${code("not in")} compares against every value with ${code("=")}; a comparison to null is unknown, so nothing can be proved absent and this row fails whatever its value is. One null anywhere in the set is enough, and over a set that does not change per row that is every row at once — which is the reason ${code("not exists")} is usually what people mean.`;
+  return `The subquery returns a null among its values, and ${code("not in")} compares against every value with ${code("=")}; a comparison to null is unknown, so nothing can be proved absent and this row fails whatever its value is. One null anywhere in the set is enough, and over a set that does not change per row that is every row at once - which is the reason ${code("not exists")} is usually what people mean.`;
 }
 
 /** The promise a scalar subquery makes, and both ways of breaking it. Null for every other kind. */
@@ -166,7 +166,7 @@ export function boundNullSentence(refs: readonly string[]): string | null {
   if (refs.length === 0) return null;
   const named = list(refs.map(code));
   const plural = refs.length > 1;
-  return `${named} ${plural ? "are" : "is"} null on this row, so every comparison against ${plural ? "them" : "it"} is unknown rather than false and no row can match, however full the table is. ${code("= null")} is never true — not even against another null — which is why this answer is empty and why SQL has ${code("is null")} for the test people mean.`;
+  return `${named} ${plural ? "are" : "is"} null on this row, so every comparison against ${plural ? "them" : "it"} is unknown rather than false and no row can match, however full the table is. ${code("= null")} is never true - not even against another null - which is why this answer is empty and why SQL has ${code("is null")} for the test people mean.`;
 }
 
 /** Why there is no match count, when there is none. Null when the count came back. */
@@ -174,7 +174,7 @@ export function boundCountSentence(plan: BoundPlan): string | null {
   if (plan.counting !== null) return null;
   return `There is no match count beside these rows. ${
     plan.wrapped
-      ? "Counting a subquery of this shape means wrapping it in a derived table, and this database would not resolve the outer row through one — that is a limit of the dialect, not a fault in the query."
+      ? "Counting a subquery of this shape means wrapping it in a derived table, and this database would not resolve the outer row through one - that is a limit of the dialect, not a fault in the query."
       : "This subquery already collapses to a single row whatever matched, so counting it would say 1 for every outer row and mean nothing."
   } The verdict beside each row is ${code(plan.predicate.kind)} itself, asked of the database, so it still holds.`;
 }

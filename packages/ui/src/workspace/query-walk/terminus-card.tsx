@@ -1,7 +1,7 @@
 // The card under an empty result: the rows that came closest, and how far off each one was.
 //
-// It arrives SETTLED, and that is the whole design rule. Ordering by closeness is a view choice —
-// no ORDER BY produced it and the database never sorted anything — so nothing here staggers,
+// It arrives SETTLED, and that is the whole design rule. Ordering by closeness is a view choice -
+// no ORDER BY produced it and the database never sorted anything - so nothing here staggers,
 // flashes or slides into place. Every other card in the walk animates because something just
 // happened to its rows; animating this one would say a step ran when none did, which is the one
 // kind of lie this screen cannot afford. The only motion it has is the fade the whole card comes in
@@ -10,7 +10,7 @@
 // It reuses the stage's vocabulary rather than inventing one: the same fail mark WHERE stamps on a
 // row it threw away, the same monospaced cells, the same column widths.
 
-import type { Cell } from "@perch/protocol";
+import type { Cell } from "@pipit/protocol";
 import { motion } from "motion/react";
 import type * as React from "react";
 import { cn } from "../../lib/utils";

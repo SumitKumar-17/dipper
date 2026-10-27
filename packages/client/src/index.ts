@@ -1,17 +1,17 @@
 // The public surface. A frontend imports this and nothing else about the server.
 
-export { createClient, type PerchClient } from "./client";
+export { createClient, type PipitClient } from "./client";
 export {
   NETWORK,
   NOT_API,
-  PerchError,
+  PipitError,
   connectFailureCode,
   isNetworkError,
   isNotApiError,
-  isPerchError,
+  isPipitError,
   staleWrite,
   type ApiErrorBody,
-  type PerchErrorInit,
+  type PipitErrorInit,
   type StaleWriteBody,
 } from "./errors";
 export {
@@ -43,4 +43,4 @@ export type { FileContent, FilesApi, FileWritten, WriteInput } from "./files";
 export type { EventsApi } from "./events";
 
 // Re-exported so a consumer never needs a second import for the wire types.
-export type * from "@perch/protocol";
+export type * from "@pipit/protocol";

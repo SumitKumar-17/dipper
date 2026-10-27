@@ -1,4 +1,4 @@
-import type { QueryError, StatementResult } from "@perch/protocol";
+import type { QueryError, StatementResult } from "@pipit/protocol";
 import * as React from "react";
 import { Badge } from "../../ui/badge";
 import { type Run, runStatements } from "../types";

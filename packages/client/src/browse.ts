@@ -1,4 +1,4 @@
-import type { BrowseResult } from "@perch/protocol";
+import type { BrowseResult } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type BrowseOptions = CallOptions & {
@@ -8,7 +8,7 @@ export type BrowseOptions = CallOptions & {
 
 /**
  * Folders on the machine running the server, for the workspace picker. One route, so one callable
- * — the same shape as `discover`.
+ * - the same shape as `discover`.
  */
 export type BrowseApi = (opts?: BrowseOptions) => Promise<BrowseResult>;
 

@@ -3,9 +3,9 @@
 // This is the property the whole program hangs on: a subquery that names a column of the query
 // around it runs once per outer row, and one that does not runs once. Only QUALIFIED references are
 // reported, because `course_id` with no table in front of it cannot be resolved without a
-// catalogue — see the note at the top of `program.ts` for what is done with that uncertainty.
+// catalogue - see the note at the top of `program.ts` for what is done with that uncertainty.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   isSelectParens,
   normalizeRef,
@@ -31,7 +31,7 @@ function definedQualifiers(parsed: ParsedSelect | Unsupported): Set<string> {
 }
 
 /**
- * The references inside a subquery that name something it does not define — the outer query's rows.
+ * The references inside a subquery that name something it does not define - the outer query's rows.
  *
  * Only QUALIFIED references count. A bare `course_id` could belong to either query and there is no
  * catalogue here to settle it, so guessing would either invent a correlation or hide one; naming
@@ -49,7 +49,7 @@ export function correlatedIn(
 ): string[] {
   const out: string[] = [];
   // A set-operation body is refused by the SELECT slicer, and an `Unsupported` defines no
-  // qualifiers and skips no source ranges — so without the branches below, every `t.semester`
+  // qualifiers and skips no source ranges - so without the branches below, every `t.semester`
   // inside `select t.ID from takes t … intersect …` would look like a reference to the OUTER query
   // and the predicate would be classed as correlated. That is the expensive direction to be wrong
   // in: the subquery would be re-run once per outer row and described as depending on a row it has
@@ -65,7 +65,7 @@ export function correlatedIn(
 }
 
 /** A plain table source is written `schema.table alias`, whose `schema.table` is a qualified
- *  reference to nothing — skipping the source's own range keeps it out of the correlation list. */
+ *  reference to nothing - skipping the source's own range keeps it out of the correlation list. */
 function skipRanges(parsed: ParsedSelect | Unsupported): Range[] {
   if (parsed.kind !== "select") return [];
   return [parsed.first, ...parsed.joins.map((join) => join.source)]
@@ -112,7 +112,7 @@ function collectCorrelated(
  *
  * Scope is NOT re-checked, and there is one shape where that shows. A reference is only ever asked
  * for because the correlation check said it points outward, and it says that only when no scope in
- * the query defines the qualifier — so every occurrence of it normally means the same row. The
+ * the query defines the qualifier - so every occurrence of it normally means the same row. The
  * exception is a subquery nested inside this one that declares the very same alias: its own `s.ID`
  * is local, and this returns it alongside the outer ones. Re-deriving scope per occurrence would fix
  * it; it is not done here because an alias shadowing the outer query's alias, inside a subquery of a

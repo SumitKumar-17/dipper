@@ -22,8 +22,8 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-      - run: bun run --filter @perch/protocol typecheck
-      - run: bun run --filter @perch/client typecheck
-      - run: bun run --filter @perch/sql typecheck
-      - run: bun run --filter @perch/ui typecheck
-      - run: bun run --filter @perch/protocol check
+      - run: bun run --filter @pipit/protocol typecheck
+      - run: bun run --filter @pipit/client typecheck
+      - run: bun run --filter @pipit/sql typecheck
+      - run: bun run --filter @pipit/ui typecheck
+      - run: bun run --filter @pipit/protocol check

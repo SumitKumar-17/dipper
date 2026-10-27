@@ -17,7 +17,7 @@ import (
 	"runtime"
 	"strings"
 
-	"perch/fsx"
+	"pipit/fsx"
 )
 
 // maxAsset caps what a download may expand to. The binary is around 14 MB; the ceiling is here
@@ -32,7 +32,7 @@ func Apply(ctx context.Context, tag string, log func(string)) (string, error) {
 		log = func(string) {}
 	}
 	if !Supported() {
-		return "", fmt.Errorf("no release asset for %s — build from source, or see %s", Target(), ReleasesPage)
+		return "", fmt.Errorf("no release asset for %s - build from source, or see %s", Target(), ReleasesPage)
 	}
 
 	binaryPath, err := executablePath()
@@ -41,7 +41,7 @@ func Apply(ctx context.Context, tag string, log func(string)) (string, error) {
 	}
 
 	asset := assetName(tag)
-	base := os.Getenv("PERCH_DOWNLOAD_BASE")
+	base := os.Getenv("PIPIT_DOWNLOAD_BASE")
 	if base == "" {
 		base = releaseURL + "/" + tag
 	}
@@ -81,9 +81,9 @@ func Apply(ctx context.Context, tag string, log func(string)) (string, error) {
 func assetName(tag string) string {
 	version := strings.TrimPrefix(tag, "v")
 	if runtime.GOOS == "windows" {
-		return fmt.Sprintf("perch-%s-%s.exe", version, Target())
+		return fmt.Sprintf("pipit-%s-%s.exe", version, Target())
 	}
-	return fmt.Sprintf("perch-%s-%s.tar.gz", version, Target())
+	return fmt.Sprintf("pipit-%s-%s.tar.gz", version, Target())
 }
 
 func fetch(ctx context.Context, url string) ([]byte, error) {
@@ -121,7 +121,7 @@ func verify(data, sums []byte, asset string) error {
 	}
 	sum := sha256.Sum256(data)
 	if got := hex.EncodeToString(sum[:]); got != want {
-		return fmt.Errorf("checksum mismatch for %s (expected %s, got %s) — refusing to install", asset, want, got)
+		return fmt.Errorf("checksum mismatch for %s (expected %s, got %s) - refusing to install", asset, want, got)
 	}
 	return nil
 }
@@ -133,8 +133,8 @@ func extractBinary(archive []byte) ([]byte, error) {
 	}
 	defer gz.Close()
 
-	// The tarball is packed from a staging directory, so entries arrive as ./perch, ./LICENSE
-	// and ./README.md. The binary is the one named perch, wherever in the tree it sits.
+	// The tarball is packed from a staging directory, so entries arrive as ./pipit, ./LICENSE
+	// and ./README.md. The binary is the one named pipit, wherever in the tree it sits.
 	reader := tar.NewReader(gz)
 	for {
 		header, err := reader.Next()
@@ -144,12 +144,12 @@ func extractBinary(archive []byte) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		if header.Typeflag != tar.TypeReg || filepath.Base(header.Name) != "perch" {
+		if header.Typeflag != tar.TypeReg || filepath.Base(header.Name) != "pipit" {
 			continue
 		}
 		return io.ReadAll(io.LimitReader(reader, maxAsset))
 	}
-	return nil, errors.New("the archive did not contain a perch binary")
+	return nil, errors.New("the archive did not contain a pipit binary")
 }
 
 // executablePath follows symlinks so an update rewrites the real binary rather than turning a
@@ -170,7 +170,7 @@ func replace(binaryPath string, binary []byte) error {
 		return replaceWindows(binaryPath, binary)
 	}
 	// A rename over a running executable is fine on Unix: this process keeps the old inode
-	// until it exits, and the next `perch` is the new one.
+	// until it exits, and the next `pipit` is the new one.
 	if err := fsx.WriteAtomic(binaryPath, binary, 0o755); err != nil {
 		return writeError(binaryPath, err)
 	}
@@ -186,10 +186,10 @@ func replaceWindows(binaryPath string, binary []byte) error {
 		return writeError(binaryPath, err)
 	}
 	// Staged in the target directory and renamed into place: a write that dies halfway would
-	// otherwise leave a truncated perch.exe where the binary belongs.
+	// otherwise leave a truncated pipit.exe where the binary belongs.
 	if err := fsx.WriteAtomic(binaryPath, binary, 0o755); err != nil {
 		if restore := os.Rename(previous, binaryPath); restore != nil {
-			return fmt.Errorf("could not replace %s: %w — the previous binary is still at %s",
+			return fmt.Errorf("could not replace %s: %w - the previous binary is still at %s",
 				binaryPath, err, previous)
 		}
 		return writeError(binaryPath, err)
@@ -200,8 +200,8 @@ func replaceWindows(binaryPath string, binary []byte) error {
 
 func writeError(binaryPath string, err error) error {
 	if errors.Is(err, fs.ErrPermission) {
-		return fmt.Errorf("cannot write %s — re-run with sudo, or reinstall into a directory you own:\n"+
-			"  curl -fsSL https://raw.githubusercontent.com/%s/main/install.sh | PERCH_INSTALL_DIR=$HOME/.local/bin sh",
+		return fmt.Errorf("cannot write %s - re-run with sudo, or reinstall into a directory you own:\n"+
+			"  curl -fsSL https://raw.githubusercontent.com/%s/main/install.sh | PIPIT_INSTALL_DIR=$HOME/.local/bin sh",
 			filepath.Dir(binaryPath), repo)
 	}
 	return fmt.Errorf("could not replace %s: %w", binaryPath, err)

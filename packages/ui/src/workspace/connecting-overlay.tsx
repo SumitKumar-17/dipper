@@ -1,13 +1,13 @@
 // The handover screen, available to the running app. The first run gets it from `Onboarding`, which
 // returns it in place of itself; once the workspace is up there is nothing to return it instead of.
-// The events that deserve it invalidate everything on screen — changing connection, or changing
-// database — so covering the swap beats letting the panes repaint one at a time.
+// The events that deserve it invalidate everything on screen - changing connection, or changing
+// database - so covering the swap beats letting the panes repaint one at a time.
 //
 // `cover` takes the work rather than being a show/hide pair: with the promise in hand, "never leaves
 // early" and "never leaves late" are the same line of code. A failure still lifts the screen, since
 // the error belongs on the surface underneath.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { ConnectingScreen, SWITCH_MS, SWITCH_STAGES } from "../onboarding/connecting-screen";

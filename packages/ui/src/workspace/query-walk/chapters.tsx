@@ -1,5 +1,5 @@
 // The chapter strip: the program's sections in order, above the station rail that walks whichever
-// one is open. A section is a place in the query, not a detour — so this reads like a table of
+// one is open. A section is a place in the query, not a detour - so this reads like a table of
 // contents and every entry stays one click away, which is the whole reason the breadcrumb stack it
 // replaced could go.
 
@@ -23,7 +23,7 @@ export function Chapters({
   onJump: (index: number) => void;
   /**
    * The statement's top level is a set operation. The strip then shows the branches in the order
-   * they were WRITTEN, which is not the order they combine — see the caption below.
+   * they were WRITTEN, which is not the order they combine - see the caption below.
    */
   writtenOrder: boolean;
 }): React.ReactElement {
@@ -51,13 +51,13 @@ export function Chapters({
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                   onClick={() => onJump(i)}
-                  title={`${run.section.label} — ${note(run)}${why ? `. Note: ${why}.` : ""}`}
+                  title={`${run.section.label} - ${note(run)}${why ? `. Note: ${why}.` : ""}`}
                   type="button"
                 >
                   <Dot status={run.status} />
                   <span className="min-w-0 truncate font-mono">{run.section.label}</span>
                   {/* The strip is read left to right, and every OTHER chapter on it really does
-                      precede what reads it — a CTE, a derived table, an uncorrelated subquery. A
+                      precede what reads it - a CTE, a derived table, an uncorrelated subquery. A
                       per-row chapter does not: it is listed before the query that drives it the way
                       a footnote is printed before the page citing it. The dashed dot alone carries
                       too much of that, so the mark is said out loud here and explained under the
@@ -86,13 +86,13 @@ export function Chapters({
               {" "}
               · {active + 1} of {sections.length}
             </span>{" "}
-            — {describe(open, sections)}
+            - {describe(open, sections)}
           </motion.p>
         )}
       </AnimatePresence>
       {/* The companion to the mark on the pill. It stands whenever any chapter runs per row, rather
           than only when one is open, because the misreading it prevents happens while SCANNING the
-          strip — by the time a reader has opened the chapter, `describe` has already told them. */}
+          strip - by the time a reader has opened the chapter, `describe` has already told them. */}
       {sections.some((run) => runsPerRow(run.status)) && (
         <motion.p
           animate={{ opacity: 1 }}
@@ -103,7 +103,7 @@ export function Chapters({
           <RepeatIcon aria-hidden className="size-3 shrink-0" />
           <span>
             A chapter marked this way is listed before the query that drives it, but it runs once
-            for every row of that query — not before it.
+            for every row of that query - not before it.
           </span>
         </motion.p>
       )}
@@ -130,11 +130,11 @@ export function Chapters({
 
 /**
  * The mark in front of a chapter. Filled once the section has its rows, hollow while it waits, and
- * dashed when it does not run as one piece — the same vocabulary the station rail uses, so the two
+ * dashed when it does not run as one piece - the same vocabulary the station rail uses, so the two
  * rows of dots mean the same thing.
  *
  * A `per-row` section gets the dash in the accent colour rather than the muted one: it is dashed
- * because it has no single result, not because it is inert, and since wave 4 it really does run —
+ * because it has no single result, not because it is inert, and since wave 4 it really does run -
  * once for every row of the section it is bound to.
  */
 function Dot({ status }: { status: SectionStatus }): React.ReactElement {

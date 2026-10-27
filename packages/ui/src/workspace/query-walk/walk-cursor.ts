@@ -3,7 +3,7 @@
 // None of this is about rendering: it is arithmetic over the program's sections and the state of
 // each of their stations, and the only reason it used to live inside the player was that both of
 // its inputs did. As seven chained `useCallback`s it was also seventy lines of dependency arrays
-// that had to be right, over two values that change together — so the whole thing is rebuilt at
+// that had to be right, over two values that change together - so the whole thing is rebuilt at
 // once when they do, and nothing in between has a dependency to get wrong.
 
 import { phasesFor } from "./narration";

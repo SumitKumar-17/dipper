@@ -1,5 +1,5 @@
-// The sentences under an empty result. Each one has the same shape — what failed, and what the
-// nearest row would have needed — and each one is written from numbers the walk already had. They
+// The sentences under an empty result. Each one has the same shape - what failed, and what the
+// nearest row would have needed - and each one is written from numbers the walk already had. They
 // take plain arguments rather than the card, so `terminus.ts` can build the card by calling them
 // and neither file has to import the other's types.
 
@@ -59,7 +59,7 @@ export function nearMissSentence(args: {
  *
  * Every row that fails an `exists` fails it with a count of zero, so there is no nearest and saying
  * there is would be the one thing this card must never do. What is left that is true is what the
- * subquery would have had to find, so that is what the sentence says — and it says explicitly that
+ * subquery would have had to find, so that is what the sentence says - and it says explicitly that
  * the rows are not ranked, because three rows in a list look ranked whatever the header says.
  */
 export function noGradientSentence(args: {
@@ -74,7 +74,7 @@ export function noGradientSentence(args: {
   const wanted =
     kind === "not in"
       ? `Each of these rows has its value among the ones ${code(innerSource)} returned, and ${code("not in")} passes a row only when it has none of them.`
-      : `What it would have taken is a single row of ${code(innerSource)} — for the first of these, one with ${code(binding)}.`;
+      : `What it would have taken is a single row of ${code(innerSource)} - for the first of these, one with ${code(binding)}.`;
   return `No row of ${code(outerSource)} survives ${code(predicate)}, and every one of them failed it the same way: the subquery came back empty, so there is no nearest row and these three are not ranked. ${wanted}`;
 }
 

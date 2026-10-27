@@ -33,7 +33,7 @@ function Titlebar() {
   );
 }
 
-// On a phone the pane is about 290–400px wide, so a whole 600px crop comes out at half size. Each crop
+// On a phone the pane is about 290-400px wide, so a whole 600px crop comes out at half size. Each crop
 // zooms onto its focus: scaled about the origin that puts the focus in the middle, held to the crop's
 // edges so the window never shows past them.
 function focusOrigin({ x, y, zoom }: BoxItem["focus"]): string {

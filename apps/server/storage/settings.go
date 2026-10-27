@@ -3,7 +3,7 @@ package storage
 import (
 	"os"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 func DefaultSettings() protocol.Settings {
@@ -18,7 +18,7 @@ func DefaultSettings() protocol.Settings {
 		Completion:       protocol.CompletionSmart,
 		Onboarded:        false,
 		RecentWorkspaces: []string{},
-		// Queries, not results: perch has never kept a row on disk, and starting to without being
+		// Queries, not results: pipit has never kept a row on disk, and starting to without being
 		// asked would copy a database's contents somewhere the user did not choose.
 		HistoryMode:  protocol.HistoryQueries,
 		HistoryLimit: 500,
@@ -70,7 +70,7 @@ func SaveSettings(apply func(*protocol.Settings)) (protocol.Settings, error) {
 }
 
 // EnsureDefaultWorkspace runs once at server start. With no workspace the file API, the watcher
-// and the UI have nothing to point at, so perch creates ~/.perch/queries and adopts it as the
+// and the UI have nothing to point at, so pipit creates ~/.pipit/queries and adopts it as the
 // only root. The directory is made whether or not it is adopted: it is the one destination the
 // save dialog can always offer for an untitled query.
 func EnsureDefaultWorkspace() (protocol.Settings, error) {

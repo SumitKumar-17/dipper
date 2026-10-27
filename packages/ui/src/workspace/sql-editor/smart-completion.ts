@@ -4,7 +4,7 @@
 // every position, which is the same list whether you are three tables into a join or have not
 // written FROM yet. This source answers from `analyzeSql`: columns only for the tables actually in
 // scope, tables only where a table can go, and only the keywords that can legally follow. It is
-// installed through `override`, because that is the one way to suppress the language-data source —
+// installed through `override`, because that is the one way to suppress the language-data source -
 // a facet value cannot be removed once the language provides it.
 
 import {
@@ -14,7 +14,7 @@ import {
   type CompletionResult,
   type CompletionSource,
 } from "@codemirror/autocomplete";
-import type { Column, DatabaseSchema, Dialect, Schema, Settings, Table } from "@perch/protocol";
+import type { Column, DatabaseSchema, Dialect, Schema, Settings, Table } from "@pipit/protocol";
 import { analyzeSql, type SqlClause, type SqlContext, type TableRef } from "./sql-context";
 import { statementAtCursor } from "./statements";
 
@@ -75,7 +75,7 @@ const FUNCTIONS = [
 type Options = {
   schema: DatabaseSchema | undefined;
   dialect: Dialect;
-  /** Reuse `defaultSchemaName` from ./completion.ts — the schema whose tables need no prefix. */
+  /** Reuse `defaultSchemaName` from ./completion.ts - the schema whose tables need no prefix. */
   defaultSchema: string | undefined;
   keywordCase: Settings["keywordCase"];
 };
@@ -85,7 +85,7 @@ export function smartCompletionSource(options: Options): CompletionSource {
     const word = context.matchBefore(/[\w$]*/);
     if (!word) return null;
     // An empty match means the cursor is not inside a word. Typing `.` should still open the
-    // popup — that is the whole point of a qualifier — but a bare space should not.
+    // popup - that is the whole point of a qualifier - but a bare space should not.
     const afterDot = context.state.sliceDoc(Math.max(0, word.from - 1), word.from) === ".";
     if (word.from === word.to && !context.explicit && !afterDot) return null;
 
@@ -158,7 +158,7 @@ function columnCompletion(column: Column, label: string, detail: string, boost: 
  * matching `na` inside `s.name` costs -700 for not starting at the front, against a ±99 boost
  * range. Scored on `s.name` the qualified form could never outrank the bare one however it was
  * boosted. Scoring on `name` and showing `s.name` makes the two forms tie on the match, which is
- * what lets `boost` order them — and it is the truthful comparison anyway, since the column name
+ * what lets `boost` order them - and it is the truthful comparison anyway, since the column name
  * is what you are typing.
  */
 function qualifiedColumn(column: Column, prefix: string, detail: string): Completion {
@@ -174,7 +174,7 @@ function qualifiedColumn(column: Column, prefix: string, detail: string): Comple
 
 /**
  * Where the typed text sits in a `displayLabel`. CodeMirror hands back ranges into `label`, and
- * anything with a `displayLabel` renders no highlight at all unless this puts them back — the
+ * anything with a `displayLabel` renders no highlight at all unless this puts them back - the
  * prefix and its dot are the whole offset.
  */
 function shiftMatch(completion: Completion, matched?: readonly number[]): readonly number[] {
@@ -206,7 +206,7 @@ function columnOptions(analysis: SqlContext, options: Options): Completion[] {
       const table = resolveRef(ref, options);
       return table ? bareColumns(table, BOOST.column) : [];
     }
-    // `public.users.|` — a table nobody put in FROM yet, but still a real one.
+    // `public.users.|` - a table nobody put in FROM yet, but still a real one.
     if (path.length >= 2) {
       const qualified = resolveRef(
         { schema: path[path.length - 2], table: analysis.qualifier },
@@ -219,7 +219,7 @@ function columnOptions(analysis: SqlContext, options: Options): Completion[] {
     return entry ? entry.tables.map((table) => tableCompletion(table, table.name, BOOST.table)) : [];
   }
 
-  // No FROM clause written yet means no columns — deliberately, not as a fallback. Offering the
+  // No FROM clause written yet means no columns - deliberately, not as a fallback. Offering the
   // whole database here is what makes the plain dictionary source unreadable.
   if (refs.length === 0) return [];
 
@@ -233,7 +233,7 @@ function columnOptions(analysis: SqlContext, options: Options): Completion[] {
   }
 
   // A name carried by two of the joined tables is ambiguous, and inserting it bare would produce a
-  // query the server rejects — so it is offered qualified only.
+  // query the server rejects - so it is offered qualified only.
   const occurrences = new Map<string, number>();
   for (const entry of scope) {
     for (const column of entry.table.columns) {
@@ -284,7 +284,7 @@ function tableKey(schemaName: string, tableName: string): string {
   return `${schemaName.toLowerCase()}.${tableName.toLowerCase()}`;
 }
 
-/** Tables a foreign key already links to something in scope — the ones a JOIN is reaching for. */
+/** Tables a foreign key already links to something in scope - the ones a JOIN is reaching for. */
 function relatedTables(analysis: SqlContext, options: Options): Set<string> {
   const related = new Set<string>();
   const schema = options.schema;

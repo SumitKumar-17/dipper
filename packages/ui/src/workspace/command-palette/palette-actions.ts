@@ -1,7 +1,7 @@
 // The commands the palette ships with, and the keys that also reach them.
 //
 // A hook rather than a constant, because every action closes over something from the workspace
-// contract — but it takes exactly what it uses, so the dependency list is the six things that
+// contract - but it takes exactly what it uses, so the dependency list is the six things that
 // actually change rather than the twenty the palette happens to destructure.
 
 import {

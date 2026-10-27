@@ -1,6 +1,6 @@
-// The Query Walk scene: the real walk from @perch/ui, in the app's window, over a clause rail that
-// follows it and seeks it. This is the light half — the window and the rail paint with the page,
-// space reserved — and the walk itself arrives from walk/scene.tsx once the window is near.
+// The Query Walk scene: the real walk from @pipit/ui, in the app's window, over a clause rail that
+// follows it and seeks it. This is the light half - the window and the rail paint with the page,
+// space reserved - and the walk itself arrives from walk/scene.tsx once the window is near.
 
 import * as React from "react";
 import { SceneBoundary } from "../scene-boundary";

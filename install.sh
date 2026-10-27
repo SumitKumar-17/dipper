@@ -1,18 +1,18 @@
 #!/bin/sh
-# Installs the latest perch release.
+# Installs the latest pipit release.
 #
-#   curl -fsSL https://raw.githubusercontent.com/Sahil1337/perch/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/pipit/main/install.sh | sh
 #
 # Environment:
-#   PERCH_VERSION        install this tag instead of the latest (e.g. vX.Y.Z)
-#   PERCH_INSTALL_DIR    install here instead of the first writable default
-#   PERCH_DOWNLOAD_BASE  fetch assets from here instead of GitHub (testing, mirrors)
-#   PERCH_NO_MODIFY_PATH leave the shell profile alone and just print the line to add
+#   PIPIT_VERSION        install this tag instead of the latest (e.g. vX.Y.Z)
+#   PIPIT_INSTALL_DIR    install here instead of the first writable default
+#   PIPIT_DOWNLOAD_BASE  fetch assets from here instead of GitHub (testing, mirrors)
+#   PIPIT_NO_MODIFY_PATH leave the shell profile alone and just print the line to add
 set -eu
 
-REPO="Sahil1337/perch"
-BIN="perch"
-MARKER="# added by the perch installer"
+REPO="SumitKumar-17/pipit"
+BIN="pipit"
+MARKER="# added by the pipit installer"
 OS=""
 
 say() { printf '%s\n' "$*"; }
@@ -40,7 +40,7 @@ detect_target() {
     Darwin) os=darwin ;;
     Linux) os=linux ;;
     MINGW* | MSYS* | CYGWIN*)
-      err "Windows is not supported by this script — download perch-<version>-windows-amd64.exe from https://github.com/$REPO/releases/latest" ;;
+      err "Windows is not supported by this script - download pipit-<version>-windows-amd64.exe from https://github.com/$REPO/releases/latest" ;;
     *) err "unsupported operating system: $os" ;;
   esac
   case "$arch" in
@@ -55,14 +55,14 @@ latest_tag() {
   # Parsed with sed rather than jq, which is not installed everywhere.
   tag=$(fetch "https://api.github.com/repos/$REPO/releases/latest" \
     | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1)
-  [ -n "$tag" ] || err "could not find a published release for $REPO — a draft release is not visible here; publish it, or set PERCH_VERSION"
+  [ -n "$tag" ] || err "could not find a published release for $REPO - a draft release is not visible here; publish it, or set PIPIT_VERSION"
   printf '%s\n' "$tag"
 }
 
 # The first writable candidate wins; ~/.local/bin is created if that is where we land.
 choose_dir() {
-  if [ -n "${PERCH_INSTALL_DIR:-}" ]; then
-    printf '%s\n' "$PERCH_INSTALL_DIR"
+  if [ -n "${PIPIT_INSTALL_DIR:-}" ]; then
+    printf '%s\n' "$PIPIT_INSTALL_DIR"
     return
   fi
   for dir in /usr/local/bin "$HOME/.local/bin"; do
@@ -82,12 +82,12 @@ verify_checksum() {
   elif command -v shasum >/dev/null 2>&1; then
     checker="shasum -a 256 -c"
   else
-    say "  ! neither sha256sum nor shasum found — skipping checksum verification"
+    say "  ! neither sha256sum nor shasum found - skipping checksum verification"
     return 0
   fi
   # checksums.txt lists every asset; check only the one we downloaded.
   if ! grep " [ *]\{0,1\}$archive\$" "$sums" | $checker - >/dev/null 2>&1; then
-    err "checksum mismatch for $archive — refusing to install"
+    err "checksum mismatch for $archive - refusing to install"
   fi
   say "  checksum ok"
 }
@@ -123,7 +123,7 @@ profile_path() {
   esac
 }
 
-# Nothing here can fix the terminal that is already open — its PATH was read before we ran — so
+# Nothing here can fix the terminal that is already open - its PATH was read before we ran - so
 # the profile gets the line and this shell gets one to paste.
 setup_path() {
   dir=$1
@@ -138,7 +138,7 @@ setup_path() {
   case "$dir" in "$HOME"/*) ref="\$HOME/${dir#"$HOME"/}" ;; esac
   line=$(path_line "$ref")
   rc=$(profile_path)
-  [ -z "${PERCH_NO_MODIFY_PATH:-}" ] || rc=""
+  [ -z "${PIPIT_NO_MODIFY_PATH:-}" ] || rc=""
 
   if [ -n "$rc" ]; then
     if [ -f "$rc" ] && grep -qF "$ref" "$rc"; then
@@ -170,12 +170,12 @@ setup_path() {
 main() {
   target=$(detect_target)
   OS=${target%-*}
-  tag=${PERCH_VERSION:-$(latest_tag)}
+  tag=${PIPIT_VERSION:-$(latest_tag)}
   version=${tag#v}
   archive="$BIN-$version-$target.tar.gz"
-  base=${PERCH_DOWNLOAD_BASE:-"https://github.com/$REPO/releases/download/$tag"}
+  base=${PIPIT_DOWNLOAD_BASE:-"https://github.com/$REPO/releases/download/$tag"}
 
-  say "perch $tag ($target)"
+  say "pipit $tag ($target)"
 
   tmp=$(mktemp -d)
   trap 'rm -rf "$tmp"' EXIT INT TERM
@@ -186,7 +186,7 @@ main() {
   if fetch_to "$base/checksums.txt" "$tmp/checksums.txt" 2>/dev/null; then
     (cd "$tmp" && verify_checksum "$archive" checksums.txt)
   else
-    say "  ! no checksums.txt in this release — skipping verification"
+    say "  ! no checksums.txt in this release - skipping verification"
   fi
 
   tar -xzf "$tmp/$archive" -C "$tmp"
@@ -196,7 +196,7 @@ main() {
   dir=$(choose_dir)
   mkdir -p "$dir" 2>/dev/null || err "cannot create $dir"
   if [ ! -w "$dir" ]; then
-    err "$dir is not writable — re-run with PERCH_INSTALL_DIR=\$HOME/.local/bin, or use sudo"
+    err "$dir is not writable - re-run with PIPIT_INSTALL_DIR=\$HOME/.local/bin, or use sudo"
   fi
   mv "$tmp/$BIN" "$dir/$BIN"
 

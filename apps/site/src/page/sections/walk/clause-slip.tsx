@@ -11,14 +11,14 @@ export type ClauseSlipProps = {
   tilt: SlipTilt;
   /** A hair off the column, as the landing's kept slips sit. */
   shift: string;
-  perchRef?: Ref<HTMLElement>;
+  roostRef?: Ref<HTMLElement>;
 };
 
 /**
  * One clause on its own slip: the clause at the left, the rows that survive it at the right. Under
  * lg only the rail's label fits; from lg the clause is printed as written.
  */
-export function ClauseSlip({ clause, from, tilt, shift, perchRef }: ClauseSlipProps) {
+export function ClauseSlip({ clause, from, tilt, shift, roostRef }: ClauseSlipProps) {
   return (
     <Slip
       data-clause=""
@@ -28,7 +28,7 @@ export function ClauseSlip({ clause, from, tilt, shift, perchRef }: ClauseSlipPr
         shift,
       )}
     >
-      {perchRef ? <span ref={perchRef} className="absolute inset-0" /> : null}
+      {roostRef ? <span ref={roostRef} className="absolute inset-0" /> : null}
       <span className="w-16 shrink-0">{clause.label}</span>
       <span className="truncate text-paper-muted max-lg:hidden">{clause.text}</span>
       <span className="ml-auto flex shrink-0 gap-1">

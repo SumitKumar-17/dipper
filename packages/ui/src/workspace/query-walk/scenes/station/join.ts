@@ -1,7 +1,7 @@
 // JOIN: the two sides lit on their keys, then the paired rows with the unmatched ones marked, then
 // the joined table on its own.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import type { KeyPair } from "../../clauses";
 import { sourceTitle } from "../../steps";
 import { colsOf, findColumn, positional, rowsOf, visibleIndices, withHl } from "../columns";

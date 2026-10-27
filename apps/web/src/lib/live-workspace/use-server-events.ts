@@ -1,11 +1,11 @@
-import type { PerchClient } from "@perch/client";
-import type { ServerEvent } from "@perch/protocol";
+import type { PipitClient } from "@pipit/client";
+import type { ServerEvent } from "@pipit/protocol";
 import * as React from "react";
 import { RECONNECT_MAX_MS, RECONNECT_MIN_MS, sleep } from "./helpers";
 import { useAbortable } from "./use-async-resource";
 
 export function useServerEvents(
-  getClient: () => PerchClient,
+  getClient: () => PipitClient,
   enabled: boolean,
   onEvent: (event: ServerEvent) => void,
 ): void {
@@ -25,7 +25,7 @@ export function useServerEvents(
             handler.current(event);
           }
         } catch {
-          /* the stream dropped — a restarted server, a sleeping laptop, a proxy timeout */
+          /* the stream dropped - a restarted server, a sleeping laptop, a proxy timeout */
         }
         if (signal.aborted) return;
         await sleep(delay, signal);

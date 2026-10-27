@@ -85,8 +85,8 @@ function Bucket({
                 transition={{ layout: t.spring, default: t.fade }}
               >
                 {/* A bucket's members are the same columns over and over, so they have to sit in
-                    the same places over and over. Laid out by content — first column left, last
-                    column shoved to the far edge — a long value moved that member's middle column
+                    the same places over and over. Laid out by content - first column left, last
+                    column shoved to the far edge - a long value moved that member's middle column
                     and nothing else's, and three rows of one column read as three unrelated lines.
                     Each column takes the share of the row its measured width asks for, out of the
                     same `Col` the stage sizes its cards from, and they shrink in proportion when

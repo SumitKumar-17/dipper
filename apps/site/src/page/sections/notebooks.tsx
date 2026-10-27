@@ -4,7 +4,7 @@ import { Stage, StagePiece } from "../layout/stage";
 import { code } from "../layout/type";
 import { NotebookPiece } from "./notebooks/piece";
 
-export function NotebookSection({ perchRef, onSceneDone }: FeatureSectionProps) {
+export function NotebookSection({ roostRef, onSceneDone }: FeatureSectionProps) {
   return (
     <Section id="notebooks" labelledBy="notebooks-title" stage>
       <Stage
@@ -16,7 +16,7 @@ export function NotebookSection({ perchRef, onSceneDone }: FeatureSectionProps) 
         }
         below={
           <StagePiece>
-            <NotebookPiece perchRef={perchRef} />
+            <NotebookPiece roostRef={roostRef} />
           </StagePiece>
         }
         scene={(held) => <NotebookScene paused={held} onDone={onSceneDone} />}

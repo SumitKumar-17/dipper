@@ -70,7 +70,7 @@ export function DialogPopup({
   ...props
 }: DialogPrimitive.Popup.Props & {
   /**
-   * `sm` is for a dialog that asks one question — a filename, a confirmation. The default width
+   * `sm` is for a dialog that asks one question - a filename, a confirmation. The default width
    * and radius are sized for a panel of settings, and at that size a two-field form reads as a
    * page rather than a prompt.
    */

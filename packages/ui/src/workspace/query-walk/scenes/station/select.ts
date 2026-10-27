@@ -1,8 +1,8 @@
 // SELECT: the earlier rows narrowed to the columns the list keeps, then the output columns in the
-// list's own order, each carrying the key of the row it came from so nothing re-enters — and, when
+// list's own order, each carrying the key of the row it came from so nothing re-enters - and, when
 // the list holds a CASE, one more column saying which of its branches each row took.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { branchColumn, caseExpressions } from "../../steps";
 import {
   colsOf,
@@ -59,8 +59,8 @@ export function selectScene(ctx: SceneContext): Scene {
      * is hashed over `prevVisible`, not over what is shown), so these are the same rows throughout
      * and only the columns move.
      *
-     * It also fixes the case that had no picture at all. When the list keeps NOTHING — `count(*)`,
-     * an aggregate, any list of pure expressions — nothing maps back, the survivors are none, and
+     * It also fixes the case that had no picture at all. When the list keeps NOTHING - `count(*)`,
+     * an aggregate, any list of pure expressions - nothing maps back, the survivors are none, and
      * narrowing to none drew a card with a title, a row count and no columns whatsoever: a blank
      * rectangle claiming ten rows. Now it says what is true, which is that all of them are going.
      */
@@ -112,7 +112,7 @@ export function selectScene(ctx: SceneContext): Scene {
  * The branch each row took, as one more column beside the answer the CASE already shows.
  *
  * The branch probe is a second run of the same unordered query, so its rows are matched back to
- * the output's by what is in them rather than by position — two runs of one query are not promised
+ * the output's by what is in them rather than by position - two runs of one query are not promised
  * to come back in the same order, and a row wearing another row's branch would be a lie told
  * confidently. Identical rows queue up behind their shared hash and are handed out in turn.
  */

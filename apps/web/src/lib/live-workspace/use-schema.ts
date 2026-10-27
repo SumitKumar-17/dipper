@@ -1,6 +1,6 @@
-import type { PerchClient } from "@perch/client";
-import type { DatabaseSchema } from "@perch/protocol";
-import { asyncError, asyncIdle, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@perch/ui";
+import type { PipitClient } from "@pipit/client";
+import type { DatabaseSchema } from "@pipit/protocol";
+import { asyncError, asyncIdle, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@pipit/ui";
 import * as React from "react";
 import { aborted, messageOf } from "./helpers";
 
@@ -12,7 +12,7 @@ export type SchemaApi = {
 };
 
 export function useSchema(
-  getClient: () => PerchClient,
+  getClient: () => PipitClient,
   enabled: boolean,
   connectionId: string | null,
   database: string | null,

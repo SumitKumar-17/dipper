@@ -1,4 +1,4 @@
-// Where the cards were left, per connection, database and mode — the two modes produce cards of
+// Where the cards were left, per connection, database and mode - the two modes produce cards of
 // different heights, so a layout made in one would overlap in the other. Read when the view opens
 // and written after every drag; absence, a private window or a full store all just mean the auto
 // layout. A per-viewer convenience, so localStorage is the right home: see use-panels in the app.
@@ -12,7 +12,7 @@ export function storageKey(
   keysOnly: boolean,
 ): string | null {
   if (!connectionId || !database) return null;
-  return `perch:diagram:${connectionId}:${database}:${keysOnly ? "keys" : "all"}`;
+  return `pipit:diagram:${connectionId}:${database}:${keysOnly ? "keys" : "all"}`;
 }
 
 export function readPositions(key: string | null): Map<string, Point> | null {

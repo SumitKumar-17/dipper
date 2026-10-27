@@ -1,7 +1,7 @@
 import type { Point } from "../../../shared/math";
 import { type BirdPose, birdPose } from "./bird/cell-bird";
 import type { FlightRoom } from "./bird/flight-room";
-import { type Extent, type Frames, PERCHED_FEET } from "./bird/frames";
+import { type Extent, type Frames, ROOSTED_FEET } from "./bird/frames";
 import { GhostFlight } from "./bird/ghost-flight";
 import { INTRO_END, INTRO_PACE, IntroFlight } from "./bird/intro-flight";
 
@@ -12,11 +12,11 @@ const FIRST_GHOST = [7, 5] as const;
 const NEXT_GHOST = [14, 8] as const;
 
 export type TimelineHooks = {
-  /** Writes the perch on the headline, in viewport px; false before the headline is laid out. */
-  perch(out: Point): boolean;
+  /** Writes the roost on the headline, in viewport px; false before the headline is laid out. */
+  roost(out: Point): boolean;
   /** True once the porcelain bird can take over. */
   birdReady(): boolean;
-  /** Hand the cell bird over to the porcelain one: place it on the perch. */
+  /** Hand the cell bird over to the porcelain one: place it on the roost. */
   resolve(): void;
   /** Turn the porcelain bird's head toward a point. */
   look(point: Point): void;
@@ -42,20 +42,20 @@ export class Timeline {
   private nextGhost = 0;
   private readonly intro: IntroFlight;
   private readonly crossing: GhostFlight;
-  private readonly perched: BirdPose;
-  private readonly perch: Point = { x: 0, y: 0 };
+  private readonly roosted: BirdPose;
+  private readonly roost: Point = { x: 0, y: 0 };
   private readonly ring: Point = { x: 0, y: 0 };
 
   constructor(
     frames: Frames,
     flying: Extent,
-    perchedExtent: Extent,
+    roostedExtent: Extent,
     private readonly hooks: TimelineHooks,
     private readonly random: () => number,
   ) {
-    this.intro = new IntroFlight(frames, flying, perchedExtent);
+    this.intro = new IntroFlight(frames, flying, roostedExtent);
     this.crossing = new GhostFlight(frames, flying);
-    this.perched = birdPose(frames, true);
+    this.roosted = birdPose(frames, true);
   }
 
   get settled(): boolean {
@@ -77,21 +77,21 @@ export class Timeline {
   }
 
   step(dt: number, now: number, room: FlightRoom, quiet: boolean) {
-    const hasPerch = this.hooks.perch(this.perch);
+    const hasRoost = this.hooks.roost(this.roost);
     this.main = null;
     if (this.stage === "intro") {
       this.introTime += dt * INTRO_PACE;
-      if (hasPerch) this.main = this.intro.at(this.introTime, dt, room, this.perch);
+      if (hasRoost) this.main = this.intro.at(this.introTime, dt, room, this.roost);
       if (this.introTime >= INTRO_END) this.stage = "landed";
     } else if (this.stage === "landed") {
-      if (this.hooks.birdReady()) this.hatch(now, room, hasPerch);
-      else if (hasPerch) this.main = this.standing(room, 0.9 + 0.1 * Math.sin(now * 3), 1);
+      if (this.hooks.birdReady()) this.hatch(now, room, hasRoost);
+      else if (hasRoost) this.main = this.standing(room, 0.9 + 0.1 * Math.sin(now * 3), 1);
     }
     if (this.stage === "hatching") {
       const age = now - this.hatchedAt;
       // A flash a little wider than the porcelain bird, so it shows around it as it fades in.
       const v = age < 0.12 ? 1 : Math.max(0, 1 - (age - 0.12) / 0.7) ** 1.4;
-      if (hasPerch && v > 0) this.main = this.standing(room, v, 1 + 0.18 * Math.min(1, age / 0.25));
+      if (hasRoost && v > 0) this.main = this.standing(room, v, 1 + 0.18 * Math.min(1, age / 0.25));
       if (age > HATCH) {
         this.stage = "settled";
         this.nextGhost = now + FIRST_GHOST[0] + this.random() * FIRST_GHOST[1];
@@ -106,25 +106,25 @@ export class Timeline {
     if (wasCrossing && !this.crossing.active) this.nextGhost = now + NEXT_GHOST[0] + this.random() * NEXT_GHOST[1];
   }
 
-  private hatch(now: number, room: FlightRoom, hasPerch: boolean) {
+  private hatch(now: number, room: FlightRoom, hasRoost: boolean) {
     this.hooks.resolve();
     this.stage = "hatching";
     this.hatchedAt = now;
-    if (!hasPerch) return;
-    this.ring.x = this.perch.x;
-    this.ring.y = this.perch.y - room.perchedScale * 0.3;
+    if (!hasRoost) return;
+    this.ring.x = this.roost.x;
+    this.ring.y = this.roost.y - room.roostedScale * 0.3;
     this.hooks.arrive(this.ring);
   }
 
-  /** The cell bird on the perch at the porcelain bird's size, times `grow`. */
+  /** The cell bird on the roost at the porcelain bird's size, times `grow`. */
   private standing(room: FlightRoom, intensity: number, grow: number): BirdPose {
-    const pose = this.perched;
-    const s = room.perchedScale * grow;
-    pose.x = this.perch.x + PERCHED_FEET.x * s;
-    pose.y = this.perch.y - PERCHED_FEET.y * s;
+    const pose = this.roosted;
+    const s = room.roostedScale * grow;
+    pose.x = this.roost.x + ROOSTED_FEET.x * s;
+    pose.y = this.roost.y - ROOSTED_FEET.y * s;
     pose.scale = s;
     pose.flip = -1;
-    pose.perch = 1;
+    pose.roost = 1;
     pose.intensity = intensity;
     pose.dir = -1;
     return pose;

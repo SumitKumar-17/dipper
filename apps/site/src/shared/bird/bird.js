@@ -1,5 +1,5 @@
 /**
- * Perch's bird: a low-poly 3D songbird that perches on page elements and flies between them.
+ * Pipit's bird: a low-poly 3D songbird that roosts on page elements and flies between them.
  *
  * three.js comes from npm through ./three.js, which names only the classes the bird uses, so the
  * bundler splits a chunk of just those and fetches it on the first createBird():
@@ -11,7 +11,7 @@
  * createBird(options) -> Promise<Bird>
  *   look           "porcelain" (faceted, lit) | "line" (the mark's line drawing in 3D). Default "porcelain".
  *   palette        porcelain: { body, wing, beak, eye }. Default: light porcelain, for dark pages.
- *                  line: { fill, stroke, strokeWidth? } — fill is the page background; strokeWidth
+ *                  line: { fill, stroke, strokeWidth? } - fill is the page background; strokeWidth
  *                  is in CSS px. Default: { fill: "#0a0a0a", stroke: "#f5f5f5" }.
  *   size           Bird length (tail to beak) in CSS px. Default 64.
  *   followPointer  Now and then turn the head toward the pointer. Default false.
@@ -21,14 +21,14 @@
  *   debug          Adds bird.debug (pause, step, pose, state, stats) for the lab page.
  *
  * Bird
- *   perchOn(el, { at = 0.8, facing = "auto", offsetY = 0, via = [], pace = 1 }) -> Promise
+ *   roostOn(el, { at = 0.8, facing = "auto", offsetY = 0, via = [], pace = 1 }) -> Promise
  *       Fly to el's top edge and land. `at` is 0..1 along that edge; `facing` is "left" | "right" |
  *       "auto" (towards the middle of the page); `offsetY` lowers the branch for rounded corners or
  *       borders. `via` is points to fly through on the way ({ el, x, y }: px from el's top-left,
  *       so the path scrolls with it; or { x, y } in viewport px); `pace` below 1 is lazier.
  *       Resolves on landing. Called again mid-flight it bends the path from the current position
  *       and speed; earlier promises resolve on that landing.
- *   appear(el, opts) -> Promise     Place the bird on a perch without flying, with a short fade-in.
+ *   appear(el, opts) -> Promise     Place the bird on a roost without flying, with a short fade-in.
  *   flyIn(el, opts) -> Promise      Enter from off-screen and land, for a page-load moment.
  *   guide([{ el, at, facing, offsetY, band }, ...]) -> stop()
  *       As the page scrolls, fly to the step whose element is nearest the viewport's centre band.
@@ -41,27 +41,27 @@
  *   hop(), flutter()                Small feedback moments.
  *   setLook(look, palette), setSize(px), setReducedMotion("auto" | true | false)
  *   on("land", fn(el)) / on("takeoff", fn(fromEl, toEl)) -> off()
- *       With the perch elements (fromEl is null when there was no perch). Also fired by
+ *       With the roost elements (fromEl is null when there was no roost). Also fired by
  *       reduced-motion crossfades; not by appear().
- *   perch                           Getter: { el, at, facing } of the current perch, or of the
- *                                   destination while flying; null before the first perch.
+ *   roost                           Getter: { el, at, facing } of the current roost, or of the
+ *                                   destination while flying; null before the first roost.
  *   position, flying, reducedMotion, size
  *                                   Getters: the feet in viewport px (null while hidden), whether it
  *                                   is taking off or in the air, whether it is keeping still, its length.
  *   destroy()
  *   renderer                        "webgl", or "svg" when WebGL is unavailable: the 2D mark,
- *                                   moved between perches by crossfading, with the same API.
+ *                                   moved between roosts by crossfading, with the same API.
  *
- * The bird stays glued to its perch as the page scrolls or the element moves; a perch that scrolls
+ * The bird stays glued to its roost as the page scrolls or the element moves; a roost that scrolls
  * away takes the bird with it. In flight it beats its wings climbing, glides descending, and on
- * the level flies in bursts. Under reduced motion there is no flight: perch changes crossfade and
+ * the level flies in bursts. Under reduced motion there is no flight: roost changes crossfade and
  * the idle bird only blinks and turns its head. roam.ts keeps it moving around a page.
  */
 
 const TAU = Math.PI * 2;
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-// PerchMark's own path data, for the fallback and as the reference the 3D model is built against.
+// PipitMark's own path data, for the fallback and as the reference the 3D model is built against.
 const MARK_BODY =
   "M20.5 8.2L18.3 7.2C17.8 5.3 15.5 4.4 14 5.6C13.2 6.2 12.4 6.5 11.6 7.2C10 8.6 9.6 10.85 7.9 12.2L3.95 15.3L5.55 17.35L9.3 14C10.3 15.6 13.8 18 16.2 15.6C17.6 14.2 18.4 12 18.3 10.5C18.2 9.6 18.4 9 18.6 8.9Z";
 const MARK_LEGS = "M11.4 17L11 20M14.6 17L14.2 20";
@@ -69,13 +69,13 @@ const MARK_LEGS = "M11.4 17L11 20M14.6 17L14.2 20";
 // The model is built in the mark's units (its 24-unit box), y up, facing +x, feet at the origin,
 // so the 3D bird in profile can be laid over the 2D mark and checked against it.
 const LENGTH = 16.55; // tail end to beak tip
-const PIVOT = 7.6; // centre of mass above the feet: flight rotates about it, perching about the feet
+const PIVOT = 7.6; // centre of mass above the feet: flight rotates about it, roosting about the feet
 const HIP = [0.5, 4.5]; // the body leans and crouches about this
 const NECK = [1.7, 11.0];
 const TAIL_ROOT = [-3.4, 7.15];
 const TAIL_DOWN = 0.66; // the mark's tail runs back and down at about 38 degrees
-const YAW_SIDE = 0.34; // perched three-quarter view: this far off pure profile, toward the viewer
-const YAW_FLY = 0.45; // in flight, turned a little more toward the viewer than when perched
+const YAW_SIDE = 0.34; // roosted three-quarter view: this far off pure profile, toward the viewer
+const YAW_FLY = 0.45; // in flight, turned a little more toward the viewer than when roosted
 const TAKEOFF = 0.17;
 const BAND = 0.3; // guide(): the centre share of the viewport a step must reach
 // The WebGL canvas's side, in bird lengths: room for the wings at full stretch with the body up to
@@ -139,8 +139,8 @@ export async function createBird(options = {}) {
   let mode = "hidden";
   let modeT = 0;
   let clock = 0;
-  let seat = null; // the perch the feet are on
-  let dest = null; // the perch it is flying to
+  let seat = null; // the roost the feet are on
+  let dest = null; // the roost it is flying to
   let flight = null;
   let fade = null;
   let ceiling = null; // flights keep below this element (a sticky nav)
@@ -179,7 +179,7 @@ export async function createBird(options = {}) {
   let costN = 0;
 
   const yawFor = (sign, off = YAW_SIDE) => (sign > 0 ? -off : -Math.PI + off);
-  // Perched, we look down on the bird a touch so its back and folded wings read (the line look
+  // Roosted, we look down on the bird a touch so its back and folded wings read (the line look
   // stays close to the mark's pure profile). In flight we look down across its back, so the two
   // wings beat out to either side of the body rather than across its front.
   const restView = () => (look === "line" ? 0.06 : 0.2);
@@ -188,9 +188,9 @@ export async function createBird(options = {}) {
     for (const fn of listeners[name]) fn(...args);
   };
 
-  function makePerch(el, o = {}) {
+  function makeRoost(el, o = {}) {
     if (!el || typeof el.getBoundingClientRect !== "function") {
-      throw new TypeError("bird: a perch needs an element");
+      throw new TypeError("bird: a roost needs an element");
     }
     return {
       el,
@@ -204,7 +204,7 @@ export async function createBird(options = {}) {
   }
 
   // Read every frame: scrolling, layout and moving elements all just move the branch.
-  function perchPoint(p, o) {
+  function roostPoint(p, o) {
     if (p.el.isConnected) {
       const r = p.el.getBoundingClientRect();
       if (r.width > 0 || r.height > 0) {
@@ -234,7 +234,7 @@ export async function createBird(options = {}) {
     return dir;
   }
 
-  const samePerch = (a, b) =>
+  const sameRoost = (a, b) =>
     a && b && a.el === b.el && Math.abs(a.at - b.at) < 1e-3 && a.offsetY === b.offsetY;
 
   function setMode(m) {
@@ -247,7 +247,7 @@ export async function createBird(options = {}) {
     for (const res of landers.splice(0)) res();
   }
 
-  function snapPerched() {
+  function snapRoosted() {
     for (const k of KEYS) {
       S[k].v = 0;
       S[k].d = 0;
@@ -263,8 +263,8 @@ export async function createBird(options = {}) {
     seat = p;
     dest = null;
     flight = null;
-    perchPoint(p, anchor);
-    snapPerched();
+    roostPoint(p, anchor);
+    snapRoosted();
     fade = { out: false, to: p, quiet: true };
     opacity = 0;
     setMode("fade");
@@ -289,7 +289,7 @@ export async function createBird(options = {}) {
   const viaSpeed = (length) => lerp(320, 680, smooth(200, 1800, length));
 
   // A flight is a chain of cubic Hermite legs: from where the bird left, through any `via` points,
-  // to the perch. Inner tangents are Catmull-Rom in time, so speed and heading run on through each
+  // to the roost. Inner tangents are Catmull-Rom in time, so speed and heading run on through each
   // point. Every point is read again each frame, so a path tied to the page scrolls with it.
   function viaPoint(w, o) {
     if (w.el && w.el.isConnected) {
@@ -306,7 +306,7 @@ export async function createBird(options = {}) {
   function resolvePath(fl) {
     const last = fl.P.length - 1;
     for (let i = 1; i < last; i++) viaPoint(fl.via[i - 1], fl.P[i]);
-    perchPoint(dest, fl.P[last]);
+    roostPoint(dest, fl.P[last]);
   }
 
   // f: 0 for a hop along the branch, 1 for a full flight. v0 is the velocity it leaves with.
@@ -333,12 +333,12 @@ export async function createBird(options = {}) {
   }
 
   function launch() {
-    const P1 = perchPoint(dest, tmp);
+    const P1 = roostPoint(dest, tmp);
     const d = Math.hypot(P1.x - anchor.x, P1.y - anchor.y);
     // Below about a body length it is a hop along the branch, not a flight.
     const f = dest.via.length ? 1 : smooth(size * 0.6, size * 2.5, d);
     const T_ = lerp(0.42, flightTime(d), f);
-    // A take-off is a jump: the bird leaves the perch already moving, up and toward where it is
+    // A take-off is a jump: the bird leaves the roost already moving, up and toward where it is
     // going first.
     const first = dest.via.length ? viaPoint(dest.via[0], { x: 0, y: 0 }) : P1;
     const dx = first.x - anchor.x;
@@ -356,7 +356,7 @@ export async function createBird(options = {}) {
 
   function retarget(p) {
     dest = p;
-    const P1 = perchPoint(p, tmp);
+    const P1 = roostPoint(p, tmp);
     const d = Math.hypot(P1.x - anchor.x, P1.y - anchor.y);
     const f = p.via.length ? 1 : Math.max(flight.f, smooth(size * 0.6, size * 2.5, d));
     // The new path starts where the bird is with the velocity it has, so nothing jumps: the
@@ -420,7 +420,7 @@ export async function createBird(options = {}) {
     seat = dest;
     dest = null;
     flight = null;
-    perchPoint(seat, anchor);
+    roostPoint(seat, anchor);
     vel.x = vel.y = 0;
     setMode("settle");
     // Landing facing the other way: turn round with a little hop rather than spinning in place.
@@ -531,7 +531,7 @@ export async function createBird(options = {}) {
     T.view = restView();
     let freq = 5;
 
-    if (mode !== "perched") {
+    if (mode !== "roosted") {
       // idle moments wait until the bird has been sitting a while, so a long flight does not
       // end in a hop, a flick and a ruffle all at once
       due.flick = Math.max(due.flick, clock + 1.5);
@@ -539,14 +539,14 @@ export async function createBird(options = {}) {
       due.ruffle = Math.max(due.ruffle, clock + 10);
     }
 
-    if (mode === "perched") {
-      perchPoint(seat, anchor);
+    if (mode === "roosted") {
+      roostPoint(seat, anchor);
       dir = faceSign(seat);
       T.yaw = yawFor(dir);
       idle();
     } else if (mode === "takeoff") {
-      perchPoint(seat, anchor);
-      const P1 = perchPoint(dest, tmp);
+      roostPoint(seat, anchor);
+      const P1 = roostPoint(dest, tmp);
       if (Math.abs(P1.x - anchor.x) > 8) dir = Math.sign(P1.x - anchor.x);
       T.yaw = yawFor(dir);
       W.yaw = 14;
@@ -556,7 +556,7 @@ export async function createBird(options = {}) {
       T.spread = 0.35;
       T.tailPitch = 0.35;
       T.headPitch = 0.12;
-      // no crouch when the page is carrying the perch up under the nav: straight off it
+      // no crouch when the page is carrying the roost up under the nav: straight off it
       const low = ceiling?.isConnected ? ceiling.getBoundingClientRect().bottom + size * 1.1 : -Infinity;
       if (modeT >= TAKEOFF || anchor.y < low) launch();
     } else if (mode === "flight") {
@@ -625,7 +625,7 @@ export async function createBird(options = {}) {
       T.headYaw = (Math.cos(S.yaw.v) > 0 ? -1 : 1) * 0.2 * f;
       if (fl.k === n - 1 && uk >= 1) touchdown();
     } else if (mode === "settle") {
-      perchPoint(seat, anchor);
+      roostPoint(seat, anchor);
       dir = faceSign(seat);
       T.yaw = yawFor(dir);
       W.planted = 22;
@@ -642,25 +642,25 @@ export async function createBird(options = {}) {
       W.dihedral = 12;
       W.amp = 18;
       W.pitch = 9;
-      if (modeT > 0.65) setMode("perched");
+      if (modeT > 0.65) setMode("roosted");
     } else if (mode === "fade") {
       if (fade.out) {
         opacity = Math.min(opacity, 1 - easeInOut(Math.min(1, modeT / 0.2)));
-        if (seat) perchPoint(seat, anchor);
+        if (seat) roostPoint(seat, anchor);
         if (modeT >= 0.2) {
           seat = fade.to;
           dest = null;
           flight = null;
-          perchPoint(seat, anchor);
-          snapPerched();
+          roostPoint(seat, anchor);
+          snapRoosted();
           fade.out = false;
           modeT = 0;
         }
       } else {
-        perchPoint(seat, anchor);
+        roostPoint(seat, anchor);
         opacity = easeInOut(Math.min(1, modeT / 0.26));
         if (modeT >= 0.26) {
-          setMode("perched");
+          setMode("roosted");
           arrive(!fade.quiet);
         }
       }
@@ -726,7 +726,7 @@ export async function createBird(options = {}) {
   }
 
   function actions() {
-    if (mode === "perched" || mode === "settle") {
+    if (mode === "roosted" || mode === "settle") {
       if (clock >= due.blink) {
         acts.blink = clock;
         due.blink = clock + 2.5 + rand() * 3.5;
@@ -780,7 +780,7 @@ export async function createBird(options = {}) {
   let dirty = true;
   let skipped = 0;
   // A canvas that is not drawn to keeps showing its last frame, so a bird that has not moved (an
-  // off-screen perch, or reduced motion between blinks) costs nothing; one that is only breathing
+  // off-screen roost, or reduced motion between blinks) costs nothing; one that is only breathing
   // is drawn at a third of the frame rate, which a slow swell of a few percent does not show.
   function draw() {
     const m = size * 2;
@@ -889,7 +889,7 @@ export async function createBird(options = {}) {
       const s = pick();
       if (s && s !== current) {
         current = s;
-        perchOn(s.el, s);
+        roostOn(s.el, s);
       }
     };
     // Checked once a frame while the page scrolls, and acted on at once: the bird sets off with the
@@ -910,8 +910,8 @@ export async function createBird(options = {}) {
     return stopGuide;
   }
 
-  function perchOn(el, o) {
-    const p = makePerch(el, o);
+  function roostOn(el, o) {
+    const p = makeRoost(el, o);
     return new Promise((res) => {
       landers.push(res);
       if (mode === "hidden") return appearAt(p);
@@ -922,7 +922,7 @@ export async function createBird(options = {}) {
         dest = p;
         return;
       }
-      if (samePerch(p, seat)) {
+      if (sameRoost(p, seat)) {
         seat = p;
         arrive(false);
         return;
@@ -933,8 +933,8 @@ export async function createBird(options = {}) {
   }
 
   function flyIn(el, o) {
-    if (mode !== "hidden") return perchOn(el, o);
-    const p = makePerch(el, o);
+    if (mode !== "hidden") return roostOn(el, o);
+    const p = makeRoost(el, o);
     if (reduced || !stage.canFly) {
       return new Promise((res) => {
         landers.push(res);
@@ -943,7 +943,7 @@ export async function createBird(options = {}) {
     }
     return new Promise((res) => {
       landers.push(res);
-      const P1 = perchPoint(p, tmp);
+      const P1 = roostPoint(p, tmp);
       anchor.x = P1.x;
       // Arrive already facing the way it will sit, so it lands without turning round.
       const sign = faceSign(p);
@@ -975,7 +975,7 @@ export async function createBird(options = {}) {
 
   const bird = {
     renderer: stage.kind,
-    get perch() {
+    get roost() {
       const p = dest || (mode === "fade" ? fade.to : null) || seat;
       return p ? { el: p.el, at: p.at, facing: p.facing } : null;
     },
@@ -994,11 +994,11 @@ export async function createBird(options = {}) {
     setCeiling(el) {
       ceiling = el && typeof el.getBoundingClientRect === "function" ? el : null;
     },
-    perchOn,
+    roostOn,
     flyIn,
     guide,
     appear(el, o) {
-      const p = makePerch(el, o);
+      const p = makeRoost(el, o);
       return new Promise((res) => {
         landers.push(res);
         if (mode === "hidden") appearAt(p);
@@ -1012,7 +1012,7 @@ export async function createBird(options = {}) {
       following = !!on;
     },
     hop() {
-      if (reduced || (mode !== "perched" && mode !== "settle")) return;
+      if (reduced || (mode !== "roosted" && mode !== "settle")) return;
       acts.hop = clock;
       acts.hopScale = 1;
     },
@@ -1022,7 +1022,7 @@ export async function createBird(options = {}) {
         return;
       }
       // in the air it is a quick burst of beats
-      if (mode === "perched" || mode === "settle" || mode === "flight") acts.flutter = clock;
+      if (mode === "roosted" || mode === "settle" || mode === "flight") acts.flutter = clock;
     },
     setLook(next, pal) {
       look = next === "line" ? "line" : "porcelain";
@@ -1176,7 +1176,7 @@ async function createGLView(container, zIndex) {
       // The box stays put while the body is well inside it, and moves only when the bird nears its
       // edge, re-centred a little ahead of where it is going: each move restyles the canvas and
       // re-layers the page on the main thread, so a flight moves it every few frames and a bird on
-      // its perch not at all. Snapped to device pixels; the camera looks at exactly that box, so
+      // its roost not at all. Snapped to device pixels; the camera looks at exactly that box, so
       // the bird keeps its sub-pixel position inside it.
       const cx = rig.root.position.x;
       const cy = -rig.root.position.y;
@@ -1450,7 +1450,7 @@ function toeGeometry(THREE) {
 
 // The line look's outline is an inverted hull: the same mesh drawn again, back faces only,
 // pushed out along its normals by the stroke width. Wherever the fill is in front it hides the
-// hull, so only a band around the silhouette shows — and where head, beak and body overlap their
+// hull, so only a band around the silhouette shows - and where head, beak and body overlap their
 // hulls hide each other, which leaves one outline around the whole bird, as the mark has.
 // The camera's depth range, which the outline's depth bias below is expressed in.
 const NEAR = 1;
@@ -1701,7 +1701,7 @@ function buildRig(THREE) {
     }
 
     // Legs are solved, not posed: each runs from its hip (wherever the body has crouched or
-    // leant to) to its foot, which is on the branch when perched and tucked under the body in flight.
+    // leant to) to its foot, which is on the branch when roosted and tucked under the body in flight.
     body.updateMatrix();
     torso.updateMatrix();
     m.multiplyMatrices(body.matrix, torso.matrix);

@@ -1,19 +1,19 @@
-import { PerchLogo } from "@perch/ui";
+import { PipitLogo } from "@pipit/ui";
 import { Link } from "@tanstack/react-router";
 import type * as React from "react";
 
 /**
  * The 404, mounted as the root route's `notFoundComponent`. It matters more here than in a typical
- * app: the build is static and served by the `perch` server with an SPA fallback, so every stale
+ * app: the build is static and served by the `pipit` server with an SPA fallback, so every stale
  * bookmark and mistyped deep link is handed this same bundle and lands here. It stays deliberately
- * plain — no chrome that implies a working connection.
+ * plain - no chrome that implies a working connection.
  */
 export function NotFound(): React.ReactElement {
   return (
     <main className="flex h-svh flex-col items-center justify-center gap-6 px-6 text-center">
       {/* The one piece of chrome this screen gets. A bookmark that lands here should still be able
           to tell what it landed on, and the logo says that without implying a live connection. */}
-      <PerchLogo />
+      <PipitLogo />
 
       <div className="flex flex-col gap-2">
         <p className="font-mono text-muted-foreground text-sm">404</p>

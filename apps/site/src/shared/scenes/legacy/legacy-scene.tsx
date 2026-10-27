@@ -12,7 +12,7 @@ type LegacyElement = HTMLElement & {
 export type LegacySceneDef = {
   /** The module under public/legacy/js/ that defines the element. */
   module: "walk" | "terminal";
-  tag: "perch-walk" | "perch-terminal";
+  tag: "pipit-walk" | "pipit-terminal";
   /** Holds the element's final height from first paint, so nothing moves when it mounts. */
   reserve: ReactNode;
   /**

@@ -21,7 +21,7 @@ import { ErrorText } from "./error-text";
 import { StatusDot, dotStatusOf } from "./status-dot";
 
 /**
- * Which server, and which database on it — the one control that changes the meaning of every other
+ * Which server, and which database on it - the one control that changes the meaning of every other
  * surface, so it sits in the topbar rather than behind a settings screen.
  *
  * One menu, not two: picking a connection is almost always followed by picking a database, and two
@@ -56,7 +56,7 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
 
       {/* Each section is one group, and each label lives *inside* the group it names. Base UI
           enforces that: `Menu.GroupLabel` reads its group's context to label it, and a label with
-          no group above it threw — which took the whole page down the moment this menu opened. */}
+          no group above it threw - which took the whole page down the moment this menu opened. */}
       <DropdownMenuContent align="start" className="w-72" sideOffset={6}>
         <DropdownMenuGroup>
           <DropdownMenuLabel>
@@ -161,7 +161,7 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
   );
 }
 
-/** A refetch is in flight over data already on screen — quiet on purpose. */
+/** A refetch is in flight over data already on screen - quiet on purpose. */
 function RefreshingHint(): React.ReactElement {
   return <Spinner aria-label="Refreshing" className="size-3" />;
 }

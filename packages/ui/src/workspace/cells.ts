@@ -1,6 +1,6 @@
 // Notebook cells.
 //
-// A notebook is a plain .sql file — there is no second format and nothing new on the wire. How it
+// A notebook is a plain .sql file - there is no second format and nothing new on the wire. How it
 // divides into cells depends on the file itself:
 //
 //   no `-- %%` in the file  →  every statement is a cell, using the same splitter the server runs,
@@ -12,7 +12,7 @@
 //
 // The file stays valid SQL either way: it runs in psql and opens in any editor.
 
-import { splitStatements } from "@perch/sql";
+import { splitStatements } from "@pipit/sql";
 
 /** Written at the start of its own line. Everything after it on that line is ignored. */
 const CELL_MARKER = "-- %%";
@@ -37,7 +37,7 @@ function cellMode(source: string): CellMode {
   return MARKER_LINE.test(source) ? "markers" : "statements";
 }
 
-/** FNV-1a, 32-bit. Not cryptographic — it only has to change when the text does. */
+/** FNV-1a, 32-bit. Not cryptographic - it only has to change when the text does. */
 function hash(text: string): string {
   let h = 0x811c9dc5;
   for (let i = 0; i < text.length; i++) {
@@ -100,7 +100,7 @@ export function deleteCell(source: string, cell: Cell): string {
 
 /**
  * The file with an empty cell appended: a new `-- %%` in marker mode, a blank line in statement mode.
- * This writes the separator, not a cell — `parseCells` drops a whitespace-only span, so the empty
+ * This writes the separator, not a cell - `parseCells` drops a whitespace-only span, so the empty
  * card that goes with it is the notebook's business until what is typed parses as a cell.
  */
 export function appendCell(source: string): string {

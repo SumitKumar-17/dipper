@@ -1,4 +1,4 @@
-import type { Cell, ResultColumn } from "@perch/protocol";
+import type { Cell, ResultColumn } from "@pipit/protocol";
 import * as React from "react";
 import { ROW_HEIGHT } from "./grid-sizing";
 

@@ -1,9 +1,9 @@
 // The SQL editor, on CodeMirror 6. A plain textarea cannot put a squiggle on the character the
-// server blamed, complete a column name, or answer "which statement is my cursor in" — the gesture
+// server blamed, complete a column name, or answer "which statement is my cursor in" - the gesture
 // this app is used through.
 //
 // Two rules shape everything below. The EditorView is created once per document and never recreated
-// for a setting change — dialect, schema and gutter swap through Compartments, since rebuilding the
+// for a setting change - dialect, schema and gutter swap through Compartments, since rebuilding the
 // view drops the cursor, scroll position and undo history. And nothing hardcodes a colour:
 // highlighting maps to theme-token classes and the chrome reads `var(--color-*)`.
 
@@ -12,8 +12,8 @@ import { sql } from "@codemirror/lang-sql";
 import { setDiagnostics, type Diagnostic } from "@codemirror/lint";
 import type { Extension } from "@codemirror/state";
 import { highlightActiveLineGutter, lineNumbers, type EditorView } from "@codemirror/view";
-import type { CompletionMode, Dialect, Settings } from "@perch/protocol";
-import { splitStatements } from "@perch/sql";
+import type { CompletionMode, Dialect, Settings } from "@pipit/protocol";
+import { splitStatements } from "@pipit/sql";
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import {
@@ -56,7 +56,7 @@ export function SqlEditor({
 }: {
   /** Reads and writes the contract's buffer for this file. Required unless `value` is given. */
   fileId?: string;
-  /** Controlled mode, for text that is not a file — a notebook cell, a palette scratch buffer. */
+  /** Controlled mode, for text that is not a file - a notebook cell, a palette scratch buffer. */
   value?: string;
   /** Controlled mode: the next text on every edit, instead of `editBuffer(fileId, …)`. */
   onChange?: (value: string) => void;
@@ -85,7 +85,7 @@ export function SqlEditor({
   const completionMode: CompletionMode = asyncData(settings)?.completion ?? "smart";
 
   /* The view reads its callbacks through a ref, so a new closure on every render never costs a
-     reconfiguration — and the keymap built at creation stays correct forever. */
+     reconfiguration - and the keymap built at creation stays correct forever. */
   const bridge = React.useRef<EditorBridge>({
     applyChange: () => {},
     dialect,
@@ -94,7 +94,7 @@ export function SqlEditor({
     setCursor: () => {},
   });
   /* Refilled after the commit rather than in render: React may discard a render, and the keymap
-     holds this ref for the life of the view — a callback from UI that never shipped would keep
+     holds this ref for the life of the view - a callback from UI that never shipped would keep
      firing. */
   React.useEffect(() => {
     bridge.current = {

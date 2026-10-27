@@ -1,7 +1,7 @@
 // A password field with a reveal toggle.
 //
 // Typing a password blind into a form that then answers "authentication failed" leaves two
-// explanations — the wrong password, or a typo in the right one — and no way to tell them apart.
+// explanations - the wrong password, or a typo in the right one - and no way to tell them apart.
 // The eye settles it before the round trip. It starts hidden and reverts on every remount, so
 // nothing is revealed that the person did not just ask to see.
 
@@ -15,7 +15,7 @@ export function PasswordInput({
   className,
   ...props
 }: Omit<InputProps, "className" | "type"> & {
-  /** On the group, which is what draws the border — the field inside it is unstyled. */
+  /** On the group, which is what draws the border - the field inside it is unstyled. */
   className?: string;
 }): React.ReactElement {
   const [revealed, setRevealed] = React.useState(false);

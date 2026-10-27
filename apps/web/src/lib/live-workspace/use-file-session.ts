@@ -1,11 +1,11 @@
 // Which files were open last time, so a reload lands you back in your work rather than in an empty
 // window. Per-machine session state, like panel geometry and for the same reason: which tabs this
 // browser had open is a property of this machine, not of the workspace on disk, and a second
-// machine opening the same `~/.perch` should keep its own window. So localStorage, not the server.
+// machine opening the same `~/.pipit` should keep its own window. So localStorage, not the server.
 //
-// Its own key rather than a corner of `perch.panels.v1`, because the layout cannot be trusted to
+// Its own key rather than a corner of `pipit.panels.v1`, because the layout cannot be trusted to
 // carry the record: pane ids are path-derived, but the grid reconciles its tree against the buffers
-// that exist, and at boot none do — the `buffer:file:…` panes are pruned and the pruned tree is
+// that exist, and at boot none do - the `buffer:file:…` panes are pruned and the pruned tree is
 // written straight back. The layout erases the evidence within a frame of load. This key is written
 // only once the restore has settled, so it survives that.
 //
@@ -13,17 +13,17 @@
 // content into localStorage is a different feature with different risks, so scratches are not
 // restored and their tabs do not come back.
 //
-// A remembered file that no longer opens — deleted, renamed, permissions — is skipped, and the
+// A remembered file that no longer opens - deleted, renamed, permissions - is skipped, and the
 // others still open. `openFile` reports each failure into the Files tab's error line, which is
 // last-write-wins, so N missing files cost one line rather than N; this hook writes the line that
 // lands last, naming all of them at once instead of whichever happened to fail late.
 
-import { readJson, writeRaw } from "@perch/ui";
+import { readJson, writeRaw } from "@pipit/ui";
 import * as React from "react";
 import { fileName } from "./helpers";
 import type { BuffersApi } from "./use-buffers";
 
-const STORAGE_KEY = "perch.session.v1";
+const STORAGE_KEY = "pipit.session.v1";
 
 type FileSession = {
   /** Open file buffers' paths, in tab order. Never a scratch: those have no path to remember. */
@@ -63,7 +63,7 @@ export function useFileSession(
 ): {
   /**
    * True from the first render until the remembered files are open. The grid prunes panes for
-   * buffers that do not exist yet, so the layout must not be persisted while this is true — see
+   * buffers that do not exist yet, so the layout must not be persisted while this is true - see
    * where it is used in `live-workspace.ts`. False for the whole session when nothing is
    * remembered, which is what keeps a first run on exactly the default path.
    */
@@ -72,7 +72,7 @@ export function useFileSession(
   const { buffers, activeBufferId } = workspace;
 
   // Read once, at mount, rather than through an external store: the record is consumed exactly
-  // once and never rendered, so there is nothing for a later write — here or in another tab — to
+  // once and never rendered, so there is nothing for a later write - here or in another tab - to
   // change. It has to be in hand this early because the grid's first write-back comes from a child
   // effect, which runs before any effect of this hook could have raised the gate.
   const [remembered] = React.useState(readSession);
@@ -99,7 +99,7 @@ export function useFileSession(
     // One at a time, in the order they were in: buffers are appended as they arrive, so opening
     // them in parallel would shuffle the tab strip into whatever order the reads finished in.
     // The outcome is kept as it goes, because `await openFile(…)` resolves before React has
-    // committed the tab — reading it back off `buffers` would need another render to be true.
+    // committed the tab - reading it back off `buffers` would need another render to be true.
     const open = async (): Promise<{
       opened: ReadonlySet<string>;
       missing: readonly string[];
@@ -123,7 +123,7 @@ export function useFileSession(
 
     void open().then(({ opened, missing, target }) => {
       // Focus is the user's before it is ours: if what has focus now is a tab this restore did not
-      // open — a scratch, or a file they picked while it was in flight — theirs stands. Anything the
+      // open - a scratch, or a file they picked while it was in flight - theirs stands. Anything the
       // restore itself focused, which is whichever file it opened last, does not outrank the
       // remembered one.
       const active = latest.current.activeBufferId;

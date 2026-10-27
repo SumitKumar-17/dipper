@@ -1,4 +1,4 @@
-import type { ConnectionSummary, DiscoveredServer } from "@perch/protocol";
+import type { ConnectionSummary, DiscoveredServer } from "@pipit/protocol";
 import { DIALECT_DEFAULTS } from "./dialect-mark";
 
 /**
@@ -7,7 +7,7 @@ import { DIALECT_DEFAULTS } from "./dialect-mark";
  * The old scheme was `<dialect>-local` for every row, and it collided with itself in both of the
  * ways that matter: a machine running two Postgres servers could only ever save the first, and a
  * first attempt that failed saved the record its own retry then tripped over. The server answers a
- * duplicate name with a 409, which the screen reported as "that connection did not answer" — the
+ * duplicate name with a 409, which the screen reported as "that connection did not answer" - the
  * one thing that had not happened.
  */
 export function suggestedName(

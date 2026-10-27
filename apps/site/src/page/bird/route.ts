@@ -3,21 +3,21 @@ import type { RoamEdge, RoamZone } from "../../shared/bird";
 
 export type RouteStep = {
   ref: RefObject<HTMLElement | null>;
-  /** 0..1 along the perch's width. */
+  /** 0..1 along the roost's width. */
   at: number;
-  /** The share of the bird's moves in this zone that end back on this perch. */
+  /** The share of the bird's moves in this zone that end back on this roost. */
   homing?: number;
 };
 
 // Text the bird must never stand in front of: the page's own, and the print on a piece's slips.
 // Text inside a marked product window is the product's, and the bird may fly across it.
 const TEXT = "h1, h2, h3, p, li, dt, dd, figcaption, [data-slip]";
-const WINDOW = "[data-perch-frame]";
+const WINDOW = "[data-pipit-frame]";
 const PIECE = "[data-section-piece]";
 
-/** The section a perch belongs to: its heading, its product window, the text to keep off. */
-export function sectionOf(perch: HTMLElement): HTMLElement {
-  return perch.closest<HTMLElement>("section, footer") ?? perch.parentElement ?? perch;
+/** The section a roost belongs to: its heading, its product window, the text to keep off. */
+export function sectionOf(roost: HTMLElement): HTMLElement {
+  return roost.closest<HTMLElement>("section, footer") ?? roost.parentElement ?? roost;
 }
 
 /**
@@ -64,7 +64,7 @@ function headingEdge(heading: HTMLElement): RoamEdge | null {
  * piece), on its heading's cap line, `at` measured along the heading's first line.
  */
 function homeOf(el: HTMLElement, section: HTMLElement, at: number): RoamEdge & { at: number } {
-  const heading = el.hasAttribute("data-section-perch") ? section.querySelector<HTMLElement>("h1, h2") : null;
+  const heading = el.hasAttribute("data-section-roost") ? section.querySelector<HTMLElement>("h1, h2") : null;
   const edge = heading && headingEdge(heading);
   if (!edge) return { el, at, from: 0.03, to: 0.97 };
   const { from = 0, to = 1 } = edge;
@@ -93,7 +93,7 @@ export function zoneFor({ el, at, homing }: Omit<RouteStep, "ref"> & { el: HTMLE
         if (!frame?.contains(text)) yield* lineRects(text);
       }
       // A piece's print comes and goes as it loops, and a slip may unfold under a bird that landed
-      // beside it, so below the perch's top edge the whole piece is kept clear, not just what shows
+      // beside it, so below the roost's top edge the whole piece is kept clear, not just what shows
       // now. Above that edge is the headroom the bird stands in on its piece.
       const piece = el.closest(PIECE);
       if (piece) {

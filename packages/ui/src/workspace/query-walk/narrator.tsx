@@ -1,7 +1,7 @@
 // The side of the walk that reads. Top to bottom it is one thought: which station this is, how far
 // through it the playback has got, what the station does, and what it did to the row count. The
-// reference material — the user's query, the statements the walk actually sent, and the prose the
-// user wrote around the query — is not narration, so it sits in tabs at the foot where it can be
+// reference material - the user's query, the statements the walk actually sent, and the prose the
+// user wrote around the query - is not narration, so it sits in tabs at the foot where it can be
 // ignored. "Your query" is the default of the three because it is the one anyone reads.
 //
 // The panes are components of their own (`query-pane.tsx`, `notes-panel.tsx`): each is now a real
@@ -9,7 +9,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRightIcon } from "lucide-react";
-import type { SqlComment } from "@perch/sql";
+import type { SqlComment } from "@pipit/sql";
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "../../ui/tabs";
@@ -59,7 +59,7 @@ export function Narrator({
 }: {
   /** The section's own text: what ran, and the query pane's fallback when it cannot be placed. */
   sql: string;
-  /** The statement as written, comments already stripped — what "Your query" shows. */
+  /** The statement as written, comments already stripped - what "Your query" shows. */
   root: string;
   /** The open chapter, or null when the walk has none to place in `root`. */
   section: Section | null;
@@ -89,7 +89,7 @@ export function Narrator({
   const empty = (queries.length === 0 && tab === "ran") || (notes === 0 && tab === "notes");
   const active = empty ? "query" : tab;
   // Where this station is in the text the comments were cut out of, so a remark written on that
-  // clause can be found. Null when the chapter does not map — see `query-pane.tsx`.
+  // clause can be found. Null when the chapter does not map - see `query-pane.tsx`.
   const here = stationRange(section, station);
   return (
     <NarratorShell>

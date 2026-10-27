@@ -4,7 +4,7 @@ import { useWorkspace } from "../context";
 
 /**
  * Opening and closing workspace folders. Shared by the three places that do it: the empty state,
- * the panel header, and the close button on each open folder — so opening the wrong folder is not
+ * the panel header, and the close button on each open folder - so opening the wrong folder is not
  * a one-way door out to a trash icon in Settings.
  */
 export function useFolders(): {
@@ -42,7 +42,7 @@ export function useFolders(): {
       },
       [roots, write],
     ),
-    // Closing stops perch reading the folder; the path stays under Recent.
+    // Closing stops pipit reading the folder; the path stays under Recent.
     close: React.useCallback(
       async (folder: string) =>
         write(

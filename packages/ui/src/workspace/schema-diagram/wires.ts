@@ -26,7 +26,7 @@ export function wireBounds(wire: Wire): Rect {
 }
 
 /**
- * Wires are orthogonal — out of the card, along, down, along, in — with the vertical leg in the
+ * Wires are orthogonal - out of the card, along, down, along, in - with the vertical leg in the
  * channel next to the referenced card. Wires that share a channel get their own lane in it, so a
  * key that five tables point at reads as five parallel legs meeting at the row rather than five
  * curves piling onto one point. A curve looked friendlier on one wire and became a tangle on six.

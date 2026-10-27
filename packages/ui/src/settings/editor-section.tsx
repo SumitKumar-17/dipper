@@ -2,7 +2,7 @@
 // formatter writes, and "Keyword case" alone does not say formatting is an explicit action rather
 // than something that happens as you type.
 
-import type { CompletionMode, Settings } from "@perch/protocol";
+import type { CompletionMode, Settings } from "@pipit/protocol";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { useFade } from "../lib/motion";
@@ -73,7 +73,7 @@ export function EditorSection({
       </SettingRow>
 
       <SettingRow
-        description="How the formatter writes keywords. Formatting is an explicit action — ⇧⌥F, or Format from the editor's context menu."
+        description="How the formatter writes keywords. Formatting is an explicit action - ⇧⌥F, or Format from the editor's context menu."
         title="Keyword case"
       >
         <Select

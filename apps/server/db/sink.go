@@ -3,7 +3,7 @@ package db
 import (
 	"time"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // Sink is everything one statement produces, on its way to the client. A dialect pushes columns,
@@ -49,7 +49,7 @@ func (s *Sink) OnStop(fn func()) { s.stop = fn }
 
 func (s *Sink) Truncated() bool { return s.truncated }
 
-// RowCount is the rows kept so far — a cursor uses it, with MaxRows, to size its next read.
+// RowCount is the rows kept so far - a cursor uses it, with MaxRows, to size its next read.
 func (s *Sink) RowCount() int { return len(s.rows) }
 
 func (s *Sink) MaxRows() int { return s.maxRows }

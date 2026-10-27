@@ -2,7 +2,7 @@
 //
 // MOTION. There is one rule here and everything obeys it: motion means "this row's state changed
 // because a test just ran". So during playback's first pass a row's cells arrive left to right, then
-// its row-sum ticks up from zero, then its verdict mark lands — in that order, because the verdict
+// its row-sum ticks up from zero, then its verdict mark lands - in that order, because the verdict
 // arriving AFTER the sum is the causation the reader is meant to see. A row that has not been tested
 // yet shows nothing at all, and a settled grid arrives with everything on it and nothing moving.
 // Cells never animate between positions: if the rows re-sort, whole rows move and cells go with them.
@@ -32,8 +32,8 @@ type GridPicker = (row: number, column: string) => void;
 /**
  * How a cell reports a click.
  *
- * Through a context rather than a prop because the grid reaches the screen as a SCENE — the stage
- * takes one of those and knows nothing about per-row sections — and threading a callback through
+ * Through a context rather than a prop because the grid reaches the screen as a SCENE - the stage
+ * takes one of those and knows nothing about per-row sections - and threading a callback through
  * the stage for the one scene kind that needs it would put it on every station's render path.
  */
 export const GridPickContext = React.createContext<GridPicker>(() => undefined);
@@ -53,7 +53,7 @@ export function GridCard({ grid }: { readonly grid: GridView }): React.ReactElem
       </WalkCardHeader>
 
       {/* Above the rows rather than under them: the card is often taller than the stage, and a
-          legend at the foot is the first thing to be scrolled out of sight — which is the one part
+          legend at the foot is the first thing to be scrolled out of sight - which is the one part
           of this card that cannot be guessed from looking at it. */}
       <ul className="flex max-w-prose flex-col gap-1 border-b bg-muted/30 px-2.5 py-2 text-muted-foreground text-xs leading-relaxed">
         {grid.legend.map((line) => (
@@ -88,7 +88,7 @@ export function GridCard({ grid }: { readonly grid: GridView }): React.ReactElem
  * The two lines over the rows: the driving query's name spanning its columns, then the labels.
  *
  * `--w` is a FLOOR here, not a width. This card is as wide as the widest thing in it, which is
- * regularly the legend above rather than the table — a paragraph of prose over four short columns —
+ * regularly the legend above rather than the table - a paragraph of prose over four short columns -
  * and columns that only ever measured themselves left the difference as dead space down the right of
  * every row. They share that slack instead, so the count column ends where the card ends. The gutter
  * and the two pinned columns at the right edge are not part of the bargain: they are the same width
@@ -118,12 +118,12 @@ function Header({
  * The driving query's name, spanning its columns.
  *
  * A header of bare course codes says nothing about where the codes came from. Every line of this
- * card — this one, the labels under it, and each row — is the same list of flex items in the same
+ * card - this one, the labels under it, and each row - is the same list of flex items in the same
  * order, so the three of them cannot drift apart. That takes more care here than anywhere else,
  * because this line is one element standing over many: the band grows by as many shares as it
  * covers columns, which is exactly what those columns take between them, so its edges stay on
  * theirs however much slack there is to share. The two spacers at the end are the fold marker and
- * the count, which this line has nothing to put in but must still leave room for — without them it
+ * the count, which this line has nothing to put in but must still leave room for - without them it
  * would have 128px more slack to hand out than the line below, and every column would sit right of
  * its own label.
  */
@@ -301,7 +301,7 @@ function GridRow({
 /**
  * The mark that says what the row's cells added up to for the predicate.
  *
- * `delay` is null when the row is settled — it arrived with everything already decided, and
+ * `delay` is null when the row is settled - it arrived with everything already decided, and
  * springing the mark in would perform a test that did not just happen. When it is a number, it is
  * how long after the row's own cells the verdict lands, which is the causation the card exists to
  * show: the sum first, then what it means.
@@ -340,7 +340,7 @@ function RowSum({
   return (
     <div className="flex h-7 w-20 shrink-0 items-center justify-end bg-info/10 px-2 font-mono text-info-foreground text-xs tabular-nums">
       {pending || returned === null ? (
-        <span className="text-muted-foreground">{pending ? "" : "—"}</span>
+        <span className="text-muted-foreground">{pending ? "" : "-"}</span>
       ) : (
         <motion.span
           animate={{ opacity: 1 }}

@@ -14,9 +14,9 @@ export type DownloadButtonProps = {
 export function DownloadButton({ className }: DownloadButtonProps) {
   const { os, mobile, primary, releasesUrl, version } = useRelease();
   const label = mobile
-    ? "Get Perch for macOS, Linux or Windows"
+    ? "Get Pipit for macOS, Linux or Windows"
     : os === "unknown"
-      ? "Download Perch"
+      ? "Download Pipit"
       : `Download for ${OS_NAMES[os]}`;
   const href = !mobile && primary ? primary.url : releasesUrl;
   const title = primary && !mobile ? `${version} · ${primary.label} · ${primary.sizeLabel}` : undefined;

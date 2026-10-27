@@ -1,5 +1,5 @@
-// "Found on this machine". perch never bundles a database; it looks for the one you already have —
-// on a default port, installed as a service, in a container, or on PATH — which turns the worst
+// "Found on this machine". pipit never bundles a database; it looks for the one you already have -
+// on a default port, installed as a service, in a container, or on PATH - which turns the worst
 // moment of a first run, a blank form asking for a host and port, into a row with a button on it.
 //
 // The scan is the async thing, so it carries the states: skeletons while it runs, an error with a
@@ -7,7 +7,7 @@
 // accept a password, and that is not a reason to leave: the row that was refused grows a password
 // field. Only a failure a password cannot fix falls back to the form.
 
-import type { DiscoveredServer, DiscoveryResult, DiscoverySource } from "@perch/protocol";
+import type { DiscoveredServer, DiscoveryResult, DiscoverySource } from "@pipit/protocol";
 import { RefreshCwIcon, SearchXIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
 import { messageOf } from "../lib/errors";
@@ -38,7 +38,7 @@ import { PasswordPrompt, type PasswordChallenge } from "./password-prompt";
 export type DiscoveredInput = Omit<ConnectionInput, "name">;
 
 /**
- * A starting point, from a server already there. No password — none was discovered, and inventing
+ * A starting point, from a server already there. No password - none was discovered, and inventing
  * one only moves the failure.
  *
  * The login comes out of `suggestedUrl` rather than being assumed, because the server knows things
@@ -69,7 +69,7 @@ function connectionInputFromServer(server: DiscoveredServer, osUser: string): Di
   };
 }
 
-/** Service beats container beats binary beats "something answered" — the most specific wins. */
+/** Service beats container beats binary beats "something answered" - the most specific wins. */
 const SOURCE_RANK: Record<DiscoverySource, number> = {
   brew: 0,
   systemd: 1,
@@ -106,7 +106,7 @@ export type DiscoveredServersProps = {
    * prompt is answered.
    */
   onSelect: (input: DiscoveredInput, server: DiscoveredServer, password?: string) => void;
-  /** `serverKey` of the row currently being connected, if any — it shows the spinner. */
+  /** `serverKey` of the row currently being connected, if any - it shows the spinner. */
   pending?: string | null;
   /** The row whose server asked for a password, if any, and what to say about it. */
   challenge?: PasswordChallenge | null;
@@ -204,7 +204,7 @@ export function DiscoveredServers({
 
       {/* The commonest first run that goes nowhere: no database on this machine at all. Saying
           what was actually looked for turns "nothing found" from a dead end into a thing the
-          reader can check — the ports are the answer to "did it even look?". */}
+          reader can check - the ports are the answer to "did it even look?". */}
       {!first && error === null && servers.length === 0 && (
         <Empty variant="outlined">
           <EmptyHeader>

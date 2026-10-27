@@ -1,16 +1,16 @@
 // What the app is instead of a workspace when there is no server to be a workspace against.
 //
-// Everything below this gate assumes its data is real — the schema tree, the connection picker,
+// Everything below this gate assumes its data is real - the schema tree, the connection picker,
 // the results grid. Mounting them against a server that is not answering produces eleven panels
 // each rendering its own copy of the same failure, which is a lot of screen spent saying one
 // thing badly. So the shell renders this instead, and it says the one thing once.
 //
-// There is only one failure to say: nothing is listening. The server has no auth — loopback is the
-// boundary — so a reachable server is a usable one, and the fix is always the same command.
+// There is only one failure to say: nothing is listening. The server has no auth - loopback is the
+// boundary - so a reachable server is a usable one, and the fix is always the same command.
 
 import { motion } from "motion/react";
 import * as React from "react";
-import { PerchBadge, PerchLogo } from "../brand/logo";
+import { PipitBadge, PipitLogo } from "../brand/logo";
 import { useFade, useSpring } from "../lib/motion";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -35,7 +35,7 @@ function Centered({ children }: { children: React.ReactNode }): React.ReactEleme
 
 /**
  * The gate itself. Rendered by the shell whenever `server.status` is anything but `ready`, and
- * never alongside the workspace — the workspace is not mounted at all while this is up.
+ * never alongside the workspace - the workspace is not mounted at all while this is up.
  */
 export function ServerGate(): React.ReactElement {
   const { server } = useWorkspace();
@@ -64,7 +64,7 @@ export function ServerGate(): React.ReactElement {
           initial={{ opacity: 0 }}
           transition={{ ...fade, delay: 0.25 }}
         >
-          <PerchLogo />
+          <PipitLogo />
           <Spinner className="size-4" />
         </motion.div>
       </Centered>
@@ -80,7 +80,7 @@ export function ServerGate(): React.ReactElement {
         role="alert"
         transition={spring}
       >
-        <PerchBadge />
+        <PipitBadge />
         <Unreachable
           onRetry={() => {
             setRetried(true);
@@ -110,7 +110,7 @@ function Unreachable({
           Can&rsquo;t reach the server at <span className="break-all font-mono text-sm">{url}</span>
         </h1>
         <p className="text-muted-foreground text-sm">
-          Start it from a terminal: <Code>perch</Code>
+          Start it from a terminal: <Code>pipit</Code>
         </p>
       </header>
       {/* The provider is probing the whole time this is up, so the button is a courtesy for

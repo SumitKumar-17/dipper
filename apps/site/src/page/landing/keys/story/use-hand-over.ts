@@ -103,12 +103,12 @@ export function useHandOver(rig: Rig, { stage, target, bird, settled, cut, play 
         }
       }
 
-      const perch = target.perch.current;
-      if (!bird || !perch || !settled) return;
+      const roost = target.roost.current;
+      if (!bird || !roost || !settled) return;
       if (p > LEAVE_AT && !rig.handedOver.current) {
         rig.handedOver.current = true;
         rig.sculpture.current?.setOccupied(null);
-        void bird.perchOn(perch, { at: 0.86, facing: "left" });
+        void bird.roostOn(roost, { at: 0.86, facing: "left" });
       } else if (p < RETURN_AT && rig.handedOver.current) {
         rig.handedOver.current = false;
         const scene = play();

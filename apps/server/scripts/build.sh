@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Builds the perch binary with the web UI embedded.
+# Builds the pipit binary with the web UI embedded.
 #
-#   scripts/build.sh          this machine          -> dist/perch
-#   scripts/build.sh --all    every release target  -> dist/perch-<os>-<arch>
+#   scripts/build.sh          this machine          -> dist/pipit
+#   scripts/build.sh --all    every release target  -> dist/pipit-<os>-<arch>
 #
-# The UI comes from apps/server/ui, which `bun run --filter @perch/web build` writes. Building
+# The UI comes from apps/server/ui, which `bun run --filter @pipit/web build` writes. Building
 # without it produces a working API that serves a "UI is not built" notice at /.
 set -euo pipefail
 
@@ -29,8 +29,8 @@ if [ -d "$UI_SRC" ] && [ -f "$UI_SRC/index.html" ]; then
   cp -R "$UI_SRC/." "$UI_DEST/"
   echo "ui: $(find "$UI_DEST" -type f ! -name .gitkeep | wc -l | tr -d ' ') file(s) from apps/server/ui"
 else
-  echo "ui: none found at apps/server/ui — building an API-only binary"
-  echo "    run 'bun run --filter @perch/web build' first to embed the UI"
+  echo "ui: none found at apps/server/ui - building an API-only binary"
+  echo "    run 'bun run --filter @pipit/web build' first to embed the UI"
 fi
 
 build() { # build <goos> <goarch> <output>
@@ -45,14 +45,14 @@ if [ "${1:-}" = "--all" ]; then
   # CGO is off and every dependency is pure Go, so one machine produces every target.
   printf '%s\n' "darwin arm64" "darwin amd64" "linux amd64" "linux arm64" "windows amd64" |
     while read -r goos goarch; do
-      out="dist/perch-$goos-$goarch"
+      out="dist/pipit-$goos-$goarch"
       [ "$goos" = windows ] && out="$out.exe"
       build "$goos" "$goarch" "$out"
       size "$out"
     done
 else
-  build "$(go env GOOS)" "$(go env GOARCH)" dist/perch
-  size dist/perch
+  build "$(go env GOOS)" "$(go env GOARCH)" dist/pipit
+  size dist/pipit
 fi
 
-echo "perch v$VERSION"
+echo "pipit v$VERSION"

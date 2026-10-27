@@ -2,7 +2,7 @@
 //
 // The per-row ledger shows a count beside each outer row, and the count has to come from the
 // database rather than from anything the walk worked out. That means rewriting the subquery into
-// one that counts — and refusing, rather than guessing, whenever the rewrite would change what is
+// one that counts - and refusing, rather than guessing, whenever the rewrite would change what is
 // being counted.
 
 import type {
@@ -46,8 +46,8 @@ const AGGREGATES = new Set([
  *
  * Replacing the inner query's own select list with `count(*)` in place leaves any correlation to
  * the outer row exactly where it was, and because it is done by splicing the user's ranges the
- * FROM and WHERE are still their text. This is the portable shape — it asks nothing of the dialect
- * beyond `count(*)` — so it is the first choice everywhere.
+ * FROM and WHERE are still their text. This is the portable shape - it asks nothing of the dialect
+ * beyond `count(*)` - so it is the first choice everywhere.
  *
  * Returns null rather than something subtly wrong when the count would not mean "matching rows".
  * `countingWrap` covers those shapes instead; only when it is refused too does the caller fall
@@ -84,7 +84,7 @@ const WRAP_ALIAS = `${WALK_PREFIX}wrap`;
  * cannot splice (DISTINCT, GROUP BY / HAVING, LIMIT / OFFSET, an already-aggregating list).
  *
  * Postgres resolves an outer reference through the derived table, so a correlated subquery still
- * counts per outer row — verified against PostgreSQL 18. MySQL needs LATERAL for that and will
+ * counts per outer row - verified against PostgreSQL 18. MySQL needs LATERAL for that and will
  * reject it, so a caller must treat a failure here as "fall back to a boolean" rather than as a
  * bug in the user's query.
  *
@@ -110,7 +110,7 @@ function isAggregateCall(item: string): boolean {
  * Whether the subquery already collapses to exactly one row, whatever matched.
  *
  * This is the shape `countingWrap` is a trap for: it wraps the body untouched, so counting an
- * aggregate that returns one row returns 1 for every outer row — a number that looks like a match
+ * aggregate that returns one row returns 1 for every outer row - a number that looks like a match
  * count, is not one, and cannot be told apart from a real single match once it is on screen. A
  * caller must ask this before trusting a wrapped count and show no count at all when it is true.
  * GROUP BY is deliberately not included: it returns one row PER GROUP, so counting those rows
@@ -125,7 +125,7 @@ export function collapsesToOneRow(predicate: SubqueryPredicate): boolean {
 /**
  * Whether a subquery's select list can be widened to `*` for a probe.
  *
- * EXISTS throws the select list away — `select 1` and `select *` are the same question to it — so
+ * EXISTS throws the select list away - `select 1` and `select *` are the same question to it - so
  * showing the columns instead of a column of `1`s costs nothing and is the difference between "one
  * row came back" and "CS-319 came back". For IN and for a scalar comparison the list is the VALUE
  * being compared, so it stays exactly as written. GROUP BY, HAVING, DISTINCT and a WINDOW clause

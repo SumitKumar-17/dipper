@@ -1,4 +1,4 @@
-// perch — a tiny local SQL client. See README.md for usage.
+// pipit - a tiny local SQL client. See README.md for usage.
 package main
 
 import (
@@ -16,20 +16,20 @@ import (
 	"syscall"
 	"time"
 
-	"perch/server"
-	"perch/storage"
-	"perch/update"
+	"pipit/server"
+	"pipit/storage"
+	"pipit/update"
 )
 
-// Set by the linker from apps/server/package.json, the one place the version lives — see
+// Set by the linker from apps/server/package.json, the one place the version lives - see
 // scripts/build.sh. Deliberately not a number here: a literal would be a second copy, free to
 // disagree with the first. A build without the flag says "dev", which names no release at all
 // rather than claiming the wrong one.
 var Version = "dev"
 
-const help = `perch v%s — a tiny local SQL client
+const help = `pipit v%s - a tiny local SQL client
 
-usage: perch [command] [options]
+usage: pipit [command] [options]
 
 commands:
   serve                 start the local server and open the UI (default command)
@@ -37,7 +37,7 @@ commands:
   status                show whether the server is running
   update                install the latest release over this binary
 
-Run "perch <command> --help" for command-specific options. "perch --version" prints the version.
+Run "pipit <command> --help" for command-specific options. "pipit --version" prints the version.
 `
 
 func main() {
@@ -101,16 +101,16 @@ func cmdServe(args []string) error {
 	flags.Var(&dirs, "dir", "add a workspace directory (repeatable, persisted)")
 	flags.Var(&origins, "allow-origin", "let a UI dev server on another origin call the API (repeatable, dev only)")
 	flags.Usage = func() {
-		fmt.Print(`usage: perch [serve] [--port 4600] [--host 127.0.0.1] [--no-open] [--dir <path>]... [--ui <dir>]
+		fmt.Print(`usage: pipit [serve] [--port 4600] [--host 127.0.0.1] [--no-open] [--dir <path>]... [--ui <dir>]
 
 Starts the local server (default command when no other command is given). If a live server is
-already running (per ~/.perch/server.json), prints/opens its URL instead of starting another.
+already running (per ~/.pipit/server.json), prints/opens its URL instead of starting another.
 
   --port <n>     port to listen on (default 4600)
   --host <host>  host to bind (default 127.0.0.1)
   --no-open      don't open the browser
   --dir <path>   add a workspace directory the file API may read/write (repeatable, persisted;
-                 ~/.perch/queries is always there)
+                 ~/.pipit/queries is always there)
   --ui <dir>     serve a built UI from this directory instead of the embedded one
   --allow-origin <origin>  let a UI dev server on another origin call the API (repeatable, dev only)
 `)
@@ -122,7 +122,7 @@ already running (per ~/.perch/server.json), prints/opens its URL instead of star
 
 	if existing, _ := storage.ReadServerInfo(); existing != nil {
 		if healthy(existing.URL) {
-			fmt.Printf("perch already running (pid %d) → %s\n", existing.PID, existing.URL)
+			fmt.Printf("pipit already running (pid %d) → %s\n", existing.PID, existing.URL)
 			if open {
 				openBrowser(existing.URL)
 			}
@@ -144,7 +144,7 @@ already running (per ~/.perch/server.json), prints/opens its URL instead of star
 		return err
 	}
 
-	fmt.Printf("perch v%s → %s\n", Version, running.URL)
+	fmt.Printf("pipit v%s → %s\n", Version, running.URL)
 	// There is no auth: binding past loopback publishes the API to whoever can route to it.
 	if !server.IsLoopback(*host) {
 		fmt.Printf("listening on %s: anyone who can reach this address can run queries\n", *host)
@@ -184,7 +184,7 @@ func resolveUIDir(flagValue string) string {
 func cmdStop(args []string) error {
 	flags := flag.NewFlagSet("stop", flag.ExitOnError)
 	flags.Usage = func() {
-		fmt.Print("usage: perch stop\n\nSends SIGTERM to the running server (per server.json) and clears it.\n")
+		fmt.Print("usage: pipit stop\n\nSends SIGTERM to the running server (per server.json) and clears it.\n")
 	}
 	if err := flags.Parse(args); err != nil {
 		return err
@@ -207,7 +207,7 @@ func cmdStatus(args []string) error {
 	flags := flag.NewFlagSet("status", flag.ExitOnError)
 	asJSON := flags.Bool("json", false, "print the server info as JSON")
 	flags.Usage = func() {
-		fmt.Print("usage: perch status [--json]\n\nPrints the running server info, or \"not running\".\n")
+		fmt.Print("usage: pipit status [--json]\n\nPrints the running server info, or \"not running\".\n")
 	}
 	if err := flags.Parse(args); err != nil {
 		return err
@@ -271,7 +271,7 @@ func cmdUpdate(args []string) error {
 	checkOnly := flags.Bool("check", false, "report whether a newer release exists, and install nothing")
 	pin := flags.String("version", "", "install this tag instead of the latest (e.g. vX.Y.Z)")
 	flags.Usage = func() {
-		fmt.Print(`usage: perch update [--check] [--version <tag>]
+		fmt.Print(`usage: pipit update [--check] [--version <tag>]
 
 Downloads the latest release for this platform, verifies it against the release's checksums.txt,
 and replaces the running binary. A running server keeps the old version until it is restarted.
@@ -295,19 +295,19 @@ and replaces the running binary. A running server keeps the old version until it
 		}
 		tag = latest
 		if !update.IsNewer(tag, Version) {
-			fmt.Printf("perch v%s is the latest release\n", Version)
+			fmt.Printf("pipit v%s is the latest release\n", Version)
 			return nil
 		}
 		if *checkOnly {
-			fmt.Printf("%s is available (you have v%s)\n  run: perch update\n", tag, Version)
+			fmt.Printf("%s is available (you have v%s)\n  run: pipit update\n", tag, Version)
 			return nil
 		}
 	} else if *checkOnly {
-		fmt.Printf("%s is available (you have v%s)\n  run: perch update --version %s\n", tag, Version, tag)
+		fmt.Printf("%s is available (you have v%s)\n  run: pipit update --version %s\n", tag, Version, tag)
 		return nil
 	}
 
-	fmt.Printf("perch v%s → %s\n", Version, tag)
+	fmt.Printf("pipit v%s → %s\n", Version, tag)
 	path, err := update.Apply(ctx, tag, func(line string) { fmt.Printf("  %s\n", line) })
 	if err != nil {
 		return err
@@ -315,13 +315,13 @@ and replaces the running binary. A running server keeps the old version until it
 	fmt.Printf("  replaced %s\n", tilde(path))
 
 	if info, _ := storage.ReadServerInfo(); info != nil && healthy(info.URL) {
-		fmt.Printf("\nA server is still running the old version (pid %d). Restart it: perch stop && perch\n", info.PID)
+		fmt.Printf("\nA server is still running the old version (pid %d). Restart it: pipit stop && pipit\n", info.PID)
 	}
 	return nil
 }
 
 // noticeUpdate is the look serve takes for a newer release: one cached request a day, never
-// blocking the server it runs beside, and silent about anything that goes wrong — a machine
+// blocking the server it runs beside, and silent about anything that goes wrong - a machine
 // that cannot reach GitHub is not a problem the person running a SQL client has to hear about.
 func noticeUpdate() {
 	if update.Disabled() || !update.Supported() {
@@ -334,10 +334,10 @@ func noticeUpdate() {
 	if err != nil || !update.IsNewer(tag, Version) {
 		return
 	}
-	fmt.Printf("%s is available (you have v%s) — run: perch update\n", tag, Version)
+	fmt.Printf("%s is available (you have v%s) - run: pipit update\n", tag, Version)
 }
 
-// ~/.local/bin/perch rather than /Users/you/.local/bin/perch, matching what install.sh prints.
+// ~/.local/bin/pipit rather than /Users/you/.local/bin/pipit, matching what install.sh prints.
 func tilde(path string) string {
 	home, err := os.UserHomeDir()
 	if err != nil || home == "" || !strings.HasPrefix(path, home+string(os.PathSeparator)) {

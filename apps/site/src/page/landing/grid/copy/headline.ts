@@ -4,12 +4,12 @@ const FOOTHOLD: Record<string, number> = { "SQL.": 1, place: 1 };
 const SAME_LINE = 4;
 
 /** Where the bird stands: a fraction along a word's box, and its feet this far below the box's top. */
-export type HeadlinePerch = { el: HTMLElement; at: number; offsetY: number };
+export type HeadlineRoost = { el: HTMLElement; at: number; offsetY: number };
 
 export type Box = { left: number; top: number; right: number; bottom: number };
 
-/** The headline in viewport px: each line's inline box, each word's ink, and the bird's perch. */
-export type Headline = { lines: Box[]; ink: Box[]; perch: HeadlinePerch | null };
+/** The headline in viewport px: each line's inline box, each word's ink, and the bird's roost. */
+export type Headline = { lines: Box[]; ink: Box[]; roost: HeadlineRoost | null };
 
 let measurer: CanvasRenderingContext2D | null = null;
 
@@ -51,10 +51,10 @@ export function measureHeadline(title: HTMLElement): Headline {
       bottom: metrics ? baseline + metrics.actualBoundingBoxDescent : r.bottom,
     });
   }
-  return { lines, ink, perch: firstLineEnd ? perchOn(firstLineEnd, ctx) : null };
+  return { lines, ink, roost: firstLineEnd ? roostOn(firstLineEnd, ctx) : null };
 }
 
-function perchOn(el: HTMLElement, ctx: CanvasRenderingContext2D | null): HeadlinePerch {
+function roostOn(el: HTMLElement, ctx: CanvasRenderingContext2D | null): HeadlineRoost {
   const text = el.textContent ?? "";
   if (!ctx || !text) return { el, at: 0.5, offsetY: 0 };
   const index = FOOTHOLD[text] ?? Math.floor(text.length / 2);

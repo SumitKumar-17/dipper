@@ -6,8 +6,8 @@ export type TryWindow = {
   frame: RefObject<HTMLDivElement | null>;
   /** The app's results pane, once the app has mounted. */
   results: RefObject<HTMLElement | null>;
-  /** A line along the window's top edge: the bird's perch once the landing lets it go. */
-  perch: RefObject<HTMLDivElement | null>;
+  /** A line along the window's top edge: the bird's roost once the landing lets it go. */
+  roost: RefObject<HTMLDivElement | null>;
   /** The demo has run its query, so the results pane shows rows. */
   ran: boolean;
 };
@@ -24,7 +24,7 @@ export function TryWindowProvider({ children }: { children: ReactNode }) {
   const [refs] = useState(() => ({
     frame: createRef<HTMLDivElement>(),
     results: createRef<HTMLElement>(),
-    perch: createRef<HTMLDivElement>(),
+    roost: createRef<HTMLDivElement>(),
   }));
   const [ran, setRan] = useState(false);
   const value = useMemo(() => ({ target: { ...refs, ran }, markRan: () => setRan(true) }), [refs, ran]);

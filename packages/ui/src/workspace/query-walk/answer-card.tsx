@@ -3,11 +3,11 @@
 // IN is a MEMBERSHIP test, so its card is the set: the outer row's value on top, the values the
 // subquery returned below it, and the one they match lit in the same tint so the eye pairs the
 // needle with the hay without being told to. Drawn as a table it would read as rows to be scanned
-// down a column, which is the wrong question — the question is whether one value is in there at all.
+// down a column, which is the wrong question - the question is whether one value is in there at all.
 //
 // A scalar is ONE COMPARISON, so its card is that comparison laid out as it is written: value,
 // operator, value, verdict. The two ways it can go wrong are the two things people get bitten by
-// and neither is visible in a table of one cell — more than one row is an error the database
+// and neither is visible in a table of one cell - more than one row is an error the database
 // raises, and no row at all makes the value null and the comparison unknown rather than false.
 //
 // Motion here means one thing: the binding moved, so the values changed. The chips and the two
@@ -123,7 +123,7 @@ function Equation({
         <VerdictMark delayMs={0} settled verdict={view.verdict} />
       </div>
       {/* The two failure modes a table would hide. Both are about the promise a scalar subquery
-          makes — exactly one row — and both are the database's behaviour rather than an error here. */}
+          makes - exactly one row - and both are the database's behaviour rather than an error here. */}
       {view.many !== null && (
         <p className="rounded-md border border-destructive/30 bg-destructive/8 p-2 text-destructive-foreground text-xs leading-relaxed">
           The subquery came back with {view.many} rows. A scalar comparison is promised exactly one,

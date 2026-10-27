@@ -7,7 +7,7 @@ import type { RouteStep } from "./bird/route";
 import { useFlutter } from "./bird/use-flutter";
 import { useHop } from "./bird/use-hop";
 import { BIRD_SIZE } from "./bird/size";
-import { WhyPerch } from "./bird/why-perch/why-perch";
+import { WhyPipit } from "./bird/why-pipit/why-pipit";
 import { Landing } from "./landing/landing";
 import { Nav } from "./chrome/nav";
 import { BinarySection } from "./sections/binary";
@@ -46,13 +46,13 @@ function Page() {
   const [settled, setSettled] = useState(false);
   const settle = useCallback(() => setSettled(true), []);
 
-  // One perch per section, in page order: the home of the zone the bird roams while that section is
+  // One roost per section, in page order: the home of the zone the bird roams while that section is
   // read, once the landing has handed it over at the try window. From there its home is each
   // section's piece, as the keys were in the first view, and it comes back to it about every other
   // move; "Also in the box" has no piece, so there it stands on the heading. It ends its route on the
   // return key; on a phone, where the download section outruns the view, the footer's brand catches it.
   const route: RouteStep[] = [
-    { ref: target.perch, at: 0.84 },
+    { ref: target.roost, at: 0.84 },
     { ref: completion, at: 0.5, homing: PIECE_HOMING },
     { ref: walk, at: 0.5, homing: PIECE_HOMING },
     { ref: relations, at: 0.5, homing: PIECE_HOMING },
@@ -75,21 +75,21 @@ function Page() {
       <Sky />
       <Nav />
       <BirdRoute steps={route} />
-      <WhyPerch settled={settled} />
+      <WhyPipit settled={settled} />
       {/* The landing's slips flutter out past the page's edges; nothing may scroll sideways for them. */}
       <div className="overflow-x-clip">
         <main>
           <Landing onSettled={settle} />
           <TrySection settled={settled} />
-          <CompletionSection perchRef={completion} onSceneDone={hopCompletion} />
-          <WalkSection perchRef={walk} onSceneDone={hopWalk} />
-          <RelationsSection perchRef={relations} onSceneDone={hopRelations} />
-          <NotebookSection perchRef={notebook} onSceneDone={hopNotebook} />
-          <BoxSection perchRef={box} />
-          <BinarySection perchRef={binary} onSceneDone={hopBinary} />
-          <DownloadSection perchRef={download} onCopy={flutter} />
+          <CompletionSection roostRef={completion} onSceneDone={hopCompletion} />
+          <WalkSection roostRef={walk} onSceneDone={hopWalk} />
+          <RelationsSection roostRef={relations} onSceneDone={hopRelations} />
+          <NotebookSection roostRef={notebook} onSceneDone={hopNotebook} />
+          <BoxSection roostRef={box} />
+          <BinarySection roostRef={binary} onSceneDone={hopBinary} />
+          <DownloadSection roostRef={download} onCopy={flutter} />
         </main>
-        <Footer perchRef={footer} />
+        <Footer roostRef={footer} />
       </div>
     </>
   );

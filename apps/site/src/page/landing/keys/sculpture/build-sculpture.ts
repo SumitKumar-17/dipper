@@ -27,14 +27,14 @@ const LIGHT_OFFSET = new Vector3(-5, 8, 4.5);
 // The keys' soft contact shadows: how far past the key they spread, and how dark they are.
 const CONTACT = { spread: 1.3, opacity: 0.7 };
 // The bird's shadow on the key it stands on.
-const PERCH_SHADOW_OPACITY = 0.34;
+const ROOST_SHADOW_OPACITY = 0.34;
 
 /** The sculpture's scene, and what to free when it goes. */
 export type SculptureParts = {
   scene: Scene;
   keys: Map<KeyId, Key>;
   /** The bird's shadow, moved onto whichever key it stands on. */
-  perchShadow: Mesh;
+  roostShadow: Mesh;
   dispose: () => void;
 };
 
@@ -132,25 +132,25 @@ export function buildSculpture(colors: SculptureColors): SculptureParts {
     });
   }
 
-  const perchShadow = mesh(
+  const roostShadow = mesh(
     new PlaneGeometry(1, 1),
     new MeshBasicMaterial({
       color: new Color(colors.shadow),
       alphaMap: contact,
       transparent: true,
-      opacity: PERCH_SHADOW_OPACITY,
+      opacity: ROOST_SHADOW_OPACITY,
       depthWrite: false,
       polygonOffset: true,
       polygonOffsetFactor: -2,
     }),
   );
-  perchShadow.rotation.x = -Math.PI / 2;
-  perchShadow.visible = false;
+  roostShadow.rotation.x = -Math.PI / 2;
+  roostShadow.visible = false;
 
   return {
     scene,
     keys,
-    perchShadow,
+    roostShadow,
     dispose: () => {
       for (const g of geometries) g.dispose();
       for (const m of materials) m.dispose();

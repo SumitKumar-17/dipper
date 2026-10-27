@@ -1,9 +1,9 @@
 // The tabs open in the editor, and everything that can be true about whether their contents are on
-// disk. The rules themselves are in `buffers-reducer.ts`; this file is the I/O around them — every
+// disk. The rules themselves are in `buffers-reducer.ts`; this file is the I/O around them - every
 // action here is "call the server, then say what came back".
 
-import { isPerchError, staleWrite, type PerchClient } from "@perch/client";
-import type { Buffer, CursorPosition, SaveState } from "@perch/ui";
+import { isPipitError, staleWrite, type PipitClient } from "@pipit/client";
+import type { Buffer, CursorPosition, SaveState } from "@pipit/ui";
 import * as React from "react";
 import { buffersReducer, initialBuffersState, saveStateOf } from "./buffers-reducer";
 import { dirName, fileName, messageOf } from "./helpers";
@@ -54,7 +54,7 @@ export type BuffersApi = {
 };
 
 export function useBuffers(
-  getClient: () => PerchClient,
+  getClient: () => PipitClient,
   enabled: boolean,
   options: BuffersOptions,
 ): BuffersApi {
@@ -121,7 +121,7 @@ export function useBuffers(
    * `revision` changes on every buffers write, so a keystroke tears this effect down and starts the
    * delay over: the write lands once you stop typing, not `autosaveDelayMs` after the first
    * character. That debounce used to be a side effect of `commitSave` being rebuilt on every
-   * keystroke and appearing in this dependency list — which meant a routine "stabilise this
+   * keystroke and appearing in this dependency list - which meant a routine "stabilise this
    * callback" refactor would have silently turned autosave into fire-once-per-dirty-transition.
    * `commitSave` is now read through a ref precisely so its identity plays no part, and `revision`
    * is the thing this is keyed on, on purpose.
@@ -203,7 +203,7 @@ export function useBuffers(
           target = (await files.create(dirName(path), fileName(path))).path;
         } catch (error) {
           // Saving onto an existing file is a legitimate "save as"; anything else is not.
-          if (!isPerchError(error) || error.status !== 409) throw error;
+          if (!isPipitError(error) || error.status !== 409) throw error;
         }
         const written = await files.write({ path: target, content: buffer.content });
         const nextId = bufferIdFor(target);

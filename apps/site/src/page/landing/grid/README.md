@@ -20,7 +20,7 @@ a time:
   control. Nothing lights here, the bird included.
 - **The copy block**, padded: glints, ripples, scattered values, the wake, the pointer's light and
   the ghost keep out. Only the landing bird reaches in, as far as the top of the letter it stands on:
-  that is the porcelain bird's perch.
+  that is the porcelain bird's roost.
 
 The flights never cross the copy either: they keep to the bands above and below it
 (`flight-room.ts`), and the masks catch any edge. A soft veil, cut from the copy's lines, dims the
@@ -32,18 +32,18 @@ resting rows behind the words.
   Mono is ready (about 0.3 s), at about 17% ink, its rows already drifting up one every 3.4 s, like a
   result set still arriving. A header row (`id  species  count  behaviour  seen_at …`) sits under the
   nav; on a phone `id`, `species` and `count` are in view and the rest clips at the edge.
-- **0.3–2.7 s, the low pass:** a bird of cells crosses under the actions, left to right, as large as
+- **0.3-2.7 s, the low pass:** a bird of cells crosses under the actions, left to right, as large as
   that band allows (up to 62% of a phone's width per bird unit, a third of a tablet's). Cells under
   its silhouette go semibold and bright on a faint porcelain fill at quarter-row precision. It flaps
   and glides in bursts; behind it a few of the values it crossed jump a few px its way, scramble
   briefly and fall back into their cells. It leaves by the right edge.
-- **3.2–4.9 s, the approach:** it comes back round from the right in the room over the headline,
+- **3.2-4.9 s, the approach:** it comes back round from the right in the room over the headline,
   smaller, as big as that room allows and never under 1.4× the porcelain bird. It glides down onto
   the last word of the headline's first line (the l of "place"; "SQL." when the headline is one
   line, landscape), flaring with its wings up, tail fanned and legs reaching.
-- **4.9–5.7 s, the hatch:** standing there, it condenses with its feet fixed onto the porcelain
+- **4.9-5.7 s, the hatch:** standing there, it condenses with its feet fixed onto the porcelain
   bird's footprint, brightening, and the cells it leaves are drawn in toward its body.
-- **5.7–7.3 s:** the porcelain bird `appear`s on the same anchor, facing left. A flash of cells a
+- **5.7-7.3 s:** the porcelain bird `appear`s on the same anchor, facing left. A flash of cells a
   little wider than it fades around it, a ring of light spreads through the values from its feet,
   and it shakes the grid off with a `flutter`. Then the grid settles, and the window below may mount
   (`onSettled`; scrolling or 9 s does the same).
@@ -53,7 +53,7 @@ resting rows behind the words.
 - The rows drift; now and then a count or a minute changes in place with a brief glint.
 - **Pointer:** with a mouse, cells within about 110 px (150 px on a tablet) light softly. A tap or
   click on the grid sends a small ring out from that point, and the bird looks at it.
-- **Ghost:** 7–12 s after the intro, then every 14–22 s, a faint bird of cells crosses in the band
+- **Ghost:** 7-12 s after the intro, then every 14-22 s, a faint bird of cells crosses in the band
   above or below the copy, at about a third of the brightness, and the porcelain bird follows it with
   its head.
 
@@ -68,7 +68,7 @@ resting rows behind the words.
   the real rows show. On a phone the window's camera takes the pane out of view to frame the editor
   while the query is typed; the grid fades with it, and the pane comes back with its rows.
 - The loop stops once the grid is gone and starts again when you scroll back.
-- The porcelain bird is guided between two perches: the headline, then the window's top edge. The
+- The porcelain bird is guided between two roosts: the headline, then the window's top edge. The
   page's route takes it from there (`bird` goes null) and gives it back when you scroll up.
 
 ### Reduced motion
@@ -95,7 +95,7 @@ grid/
                        spline, porcelain-bird (the page's bird while the landing holds it)
   effects/             cell-light (light gathered per cell, painted once), glints, pointer-light,
                        ripple, wake, scatter
-  copy/                headline (its lines, ink and perch), copy-zone (the masks and the veil)
+  copy/                headline (its lines, ink and roost), copy-zone (the masks and the veil)
 ```
 
 Subfolders never import the files at the top; the top composes them. Shared maths is the page's

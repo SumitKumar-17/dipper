@@ -5,8 +5,8 @@ import { useWorkspace } from "../context";
 import { type Buffer } from "../types";
 
 /**
- * Someone else changed the file while you had unsaved edits. There is no safe automatic answer —
- * reloading discards yours, keeping yours discards theirs — so both are offered and neither is
+ * Someone else changed the file while you had unsaved edits. There is no safe automatic answer -
+ * reloading discards yours, keeping yours discards theirs - so both are offered and neither is
  * default. `resolveConflict` writes the choice and clears the flag.
  */
 export function ConflictBar({ buffer }: { buffer: Buffer }): React.ReactElement {

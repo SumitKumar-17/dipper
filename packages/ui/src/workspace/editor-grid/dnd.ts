@@ -1,5 +1,5 @@
 // The drop edge is measured from the pointer to each border rather than from edge-shaped
-// droppables, because rectangles cannot express "nearest border wins" at a corner — four 25% strips
+// droppables, because rectangles cannot express "nearest border wins" at a corner - four 25% strips
 // overlap there, and whichever is first in the collision list would take the drop.
 
 import { pointerWithin, type CollisionDetection, type DragMoveEvent } from "@dnd-kit/core";
@@ -37,7 +37,7 @@ export function resolveDrop(
     const group = findGroup(layout.root, data.groupId);
     if (!group) return null;
     const at = group.panes.indexOf(data.pane);
-    // Past the midpoint of a tab means after it — the same rule a text caret follows.
+    // Past the midpoint of a tab means after it - the same rule a text caret follows.
     const after = point ? point.x > over.rect.left + over.rect.width / 2 : false;
     return { groupId: data.groupId, edge: "center", index: Math.max(0, at) + (after ? 1 : 0) };
   }

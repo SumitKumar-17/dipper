@@ -1,7 +1,7 @@
 // The scrubber under a per-row section: one tick per outer row, the bound one raised.
 //
-// It is a slider rather than a strip of buttons because that is what it is — a single value being
-// dragged across a range — and because a slider is the one control a screen reader already knows how
+// It is a slider rather than a strip of buttons because that is what it is - a single value being
+// dragged across a range - and because a slider is the one control a screen reader already knows how
 // to announce a position in. Grabbing it is what pauses playback: the reader taking hold of the
 // timeline is unambiguous, so nothing has to be pressed twice.
 //
@@ -43,7 +43,7 @@ export function BoundScrubber({
 
   const grab = (event: React.PointerEvent<HTMLDivElement>): void => {
     onGrab();
-    // Pointer capture, so a drag that leaves the track vertically — which is most drags — keeps
+    // Pointer capture, so a drag that leaves the track vertically - which is most drags - keeps
     // steering it instead of stopping the moment the pointer crosses the edge.
     event.currentTarget.setPointerCapture(event.pointerId);
     bindAt(event.clientX);

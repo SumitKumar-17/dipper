@@ -9,12 +9,12 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 // Postgres reports each field's relation oid (0 for an expression) and attribute number but
 // never the names, so they are resolved with one query per statement and remembered for the
-// connection's lifetime — a repeated run then costs nothing. Best-effort throughout: a failed
+// connection's lifetime - a repeated run then costs nothing. Best-effort throughout: a failed
 // lookup only means columns without a source.
 type columnSourceCache struct {
 	mu sync.Mutex

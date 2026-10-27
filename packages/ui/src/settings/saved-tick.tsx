@@ -3,13 +3,13 @@
 // A preferences dialog whose controls do not take effect until you press something is a dialog
 // that lies to you twice: once while you look at a value that is not in force, and once when you
 // close it and lose the change. So every control here writes on interaction, and the only thing
-// left to design is the receipt — quiet enough to ignore, present enough that a failed write is
+// left to design is the receipt - quiet enough to ignore, present enough that a failed write is
 // never silent.
 //
 // Errors are sticky and success is not, which is the asymmetry that matters: a tick you missed
 // cost you nothing, an error you missed cost you the setting.
 
-import type { Settings } from "@perch/protocol";
+import type { Settings } from "@pipit/protocol";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
@@ -36,7 +36,7 @@ export function useSettingsWriter(): SettingsWriter {
   const [error, setError] = React.useState<string | null>(null);
 
   const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  // Only the newest write may report — two switches flipped in quick succession must not have the
+  // Only the newest write may report - two switches flipped in quick succession must not have the
   // first one's tick land after the second one's error.
   const seq = React.useRef(0);
 

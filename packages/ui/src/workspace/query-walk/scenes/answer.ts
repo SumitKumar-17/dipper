@@ -1,13 +1,13 @@
 // The right half of a per-row ledger, built per predicate kind.
 //
-// EXISTS, IN and a scalar comparison share a left half — the outer rows, their verdicts, the cursor
-// — because that half is the same question every time: which rows got through. They do not share a
+// EXISTS, IN and a scalar comparison share a left half - the outer rows, their verdicts, the cursor
+// - because that half is the same question every time: which rows got through. They do not share a
 // right half, because what the subquery ANSWERED is a different kind of thing in each case, and one
 // table for all three teaches the wrong lesson twice.
 //
 // EXISTS asks about PRESENCE, so its answer is rows and it stays an ordinary card; only the title
 // changes, to say what the rows mean rather than to repeat the binding the scrubber already shows.
-// IN asks about MEMBERSHIP, so its answer is a list of values with the needle lit in the hay — a
+// IN asks about MEMBERSHIP, so its answer is a list of values with the needle lit in the hay - a
 // table there invites the eye to read down a column when the question is whether one value is in
 // the set at all. A scalar asks about ONE COMPARISON, so its answer is that comparison: the outer
 // row's value, the operator as written, the value that came back.
@@ -15,7 +15,7 @@
 // Nothing here probes. Every value comes from the outer probe that runs once per section and the
 // per-row probe the ledger already sends for whichever row is bound.
 
-import type { Cell, StatementResult } from "@perch/protocol";
+import type { Cell, StatementResult } from "@pipit/protocol";
 import { formatCell } from "../../results-grid";
 import type { BoundPlan, BoundRow } from "../bound";
 import { sqlLiteral } from "../bound";
@@ -65,7 +65,7 @@ export function answerView(args: {
   }
 
   // A scalar. The subquery is promised exactly one row; both ways it can break that promise are
-  // facts the view has to state rather than smooth over — see `many` and `missing`.
+  // facts the view has to state rather than smooth over - see `many` and `missing`.
   const values = inner?.rows ?? [];
   const first = values[0];
   const value = first === undefined ? null : (first[0] ?? null);
@@ -90,7 +90,7 @@ export function answerView(args: {
  * The match is decided on the LITERAL rather than on the raw cell, for the same reason the grid
  * matches its rows that way: both sides are spelled by `sqlLiteral`, so what the eye compares and
  * what the SQL would compare are the same string. A null never counts as a match, because `= null`
- * is unknown and not true — which is exactly the trap the poison mark exists to name.
+ * is unknown and not true - which is exactly the trap the poison mark exists to name.
  */
 function chips(
   plan: BoundPlan,

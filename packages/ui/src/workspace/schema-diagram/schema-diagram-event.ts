@@ -1,4 +1,4 @@
-export const SCHEMA_DIAGRAM_EVENT = "perch:visualise";
+export const SCHEMA_DIAGRAM_EVENT = "pipit:visualise";
 
 export type SchemaDiagramEventDetail = {
   /** `schema.table` to select and centre on when the view opens. */
@@ -6,7 +6,7 @@ export type SchemaDiagramEventDetail = {
 };
 
 /**
- * Opens the relationship view from anywhere — the sidebar button, the palette — without the caller
+ * Opens the relationship view from anywhere - the sidebar button, the palette - without the caller
  * owning the dialog. `<SchemaDiagramDialog>` is mounted once in the shell and listens.
  */
 export function requestSchemaDiagram(focus?: string): void {

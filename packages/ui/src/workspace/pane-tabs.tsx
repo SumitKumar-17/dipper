@@ -7,7 +7,7 @@
 //
 // The drag listeners sit on the label button alone, so the close control stays clickable while its
 // tab is draggable. The insertion caret is a flex child spliced into the list at the index the drop
-// would use, rather than a bar positioned from measured tab rects —
+// would use, rather than a bar positioned from measured tab rects -
 // same appearance, no measurement, and it cannot drift out of step with the drop it is promising.
 
 import { PlusIcon, XIcon } from "lucide-react";
@@ -189,7 +189,7 @@ export function PaneLabel({ label }: { label: PaneLabelText }): React.ReactEleme
   return (
     <>
       <span className={cn("max-w-44 truncate", label.scratch && "italic")}>{label.name}</span>
-      {/* A scratch has no disk copy, so it is never "unsaved" — it is just not a file. Saying so
+      {/* A scratch has no disk copy, so it is never "unsaved" - it is just not a file. Saying so
           is more honest than a dot that implies work is at risk. */}
       {label.scratch && <span className="shrink-0 text-muted-foreground text-xs">scratch</span>}
       {label.dirty && (

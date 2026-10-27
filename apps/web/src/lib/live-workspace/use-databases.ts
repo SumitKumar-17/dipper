@@ -5,13 +5,13 @@
 // id rather than replaced wholesale, so a list that arrives after the user has moved on is
 // recognisably not about the connection now on screen.
 
-import type { PerchClient } from "@perch/client";
-import { asyncError, asyncIdle, asyncLoading, asyncReady, type Async } from "@perch/ui";
+import type { PipitClient } from "@pipit/client";
+import { asyncError, asyncIdle, asyncLoading, asyncReady, type Async } from "@pipit/ui";
 import * as React from "react";
 import { aborted, messageOf } from "./helpers";
 
 export function useDatabases(
-  getClient: () => PerchClient,
+  getClient: () => PipitClient,
   enabled: boolean,
   connectionId: string | null,
   /** What the connection summary already knows, when it has been dialled. */

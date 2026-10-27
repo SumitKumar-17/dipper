@@ -3,8 +3,8 @@
 // disagree about what a statement is.
 
 import type { Diagnostic } from "@codemirror/lint";
-import type { QueryError } from "@perch/protocol";
-import { splitStatements, type SplitStatement } from "@perch/sql";
+import type { QueryError } from "@pipit/protocol";
+import { splitStatements, type SplitStatement } from "@pipit/sql";
 
 /**
  * The statement the cursor is in, for Mod-Enter. Uses the same splitter the server runs. A cursor
@@ -34,7 +34,7 @@ function tokenEnd(doc: string, from: number): number {
  *
  * Two callers with the same arithmetic: the palette turning `cursor` into an offset for
  * `statementAtCursor`, and `queryErrorDiagnostic` turning a driver's reported line into a document
- * position. `from` is where line 1 starts — 0 for the document, a statement's offset for an error
+ * position. `from` is where line 1 starts - 0 for the document, a statement's offset for an error
  * reported against that statement.
  */
 export function offsetOfPosition(doc: string, line: number, col = 1, from = 0): number {

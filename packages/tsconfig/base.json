@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@perch/base",
+  "display": "@pipit/base",
   "compilerOptions": {
     "target": "ES2022",
     "strict": true,

@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
 )
 
 // A short list you scan beats a long one you read.
@@ -121,7 +121,7 @@ func checkRoots(roots []string) error {
 		if !filepath.IsAbs(root) {
 			return httpx.BadRequest("Workspace path must be absolute: " + root)
 		}
-		// perch's own queries folder is perch's to make. Refusing to open it because it is not
+		// pipit's own queries folder is pipit's to make. Refusing to open it because it is not
 		// there yet would be refusing to do the one thing that creates it.
 		if filepath.Clean(root) == filepath.Clean(storage.DefaultQueriesDir()) {
 			if err := os.MkdirAll(root, 0o700); err != nil {

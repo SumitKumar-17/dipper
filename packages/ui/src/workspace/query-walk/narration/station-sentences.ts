@@ -16,7 +16,7 @@ import { code, list } from "./prose";
  * A select-list subquery that became a chapter of its own: what it is called, and whether it ran
  * once for the whole query or once for every row.
  *
- * The SELECT station's own sentence is about columns being BORN — and one of these columns was not
+ * The SELECT station's own sentence is about columns being BORN - and one of these columns was not
  * born here at all, which is the one thing the station cannot say from the parse in front of it.
  */
 export type ProjectionNote = {
@@ -64,9 +64,9 @@ function resultSentence(walk: WalkData): string {
   const sql = code(walk.result?.body ?? walk.text);
   switch (walk.result?.kind) {
     case "values":
-      return `${sql} is a table written out by hand. Its rows are not read from anywhere — they are spelled in the query itself, which is why there is no FROM to start from and no WHERE to narrow. That is the whole step: the rows below exist the moment the statement runs, and whatever reads this section reads them like any other table's.`;
+      return `${sql} is a table written out by hand. Its rows are not read from anywhere - they are spelled in the query itself, which is why there is no FROM to start from and no WHERE to narrow. That is the whole step: the rows below exist the moment the statement runs, and whatever reads this section reads them like any other table's.`;
     case "no-from":
-      return `${sql} has no FROM, so there is no table for the clause order to act on. SELECT computes its expressions once and hands back exactly one row, and the stations this walk usually steps through — narrowing, gathering, sorting — all exist to do something to rows that are already there. With none to start from there is nothing for them to do, which is not a failure: it is what a SELECT without a FROM means.`;
+      return `${sql} has no FROM, so there is no table for the clause order to act on. SELECT computes its expressions once and hands back exactly one row, and the stations this walk usually steps through - narrowing, gathering, sorting - all exist to do something to rows that are already there. With none to start from there is nothing for them to do, which is not a failure: it is what a SELECT without a FROM means.`;
     case "writes":
       return `${sql} changes the database rather than reading it, so the walk shows it and never runs it.`;
     default:
@@ -110,7 +110,7 @@ export function sentenceFor(
   // A station that came with its own sentence is one nothing below could have written: the clause
   // vocabulary here describes what a SELECT does to rows, and a recursive CTE's three stations are
   // about three separate statements. It is checked before `result` because those three wear the
-  // `result` id — they show a rows card, they are just not result-ONLY sections.
+  // `result` id - they show a rows card, they are just not result-ONLY sections.
   if (station.sentence !== null) return station.sentence;
   if (station.id === "result") return resultSentence(walk);
   // Every station below reads clauses off the parse, and the only walk without one is the

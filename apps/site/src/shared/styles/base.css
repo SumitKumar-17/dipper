@@ -8,11 +8,11 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 
-/* The app's design system — tokens, the .dark palette, variants and keyframes — so the site and
+/* The app's design system - tokens, the .dark palette, variants and keyframes - so the site and
    the product it shows are drawn from one set of values. */
-@import "@perch/ui/styles.css";
+@import "@pipit/ui/styles.css";
 
-/* @perch/ui is a workspace symlink: without it here every class used only inside a packages/ui
+/* @pipit/ui is a workspace symlink: without it here every class used only inside a packages/ui
    component is dropped. */
 @source "../../../../../packages/ui/src";
 @source "../..";

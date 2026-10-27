@@ -1,4 +1,4 @@
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { DownloadIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
@@ -87,9 +87,9 @@ export function CellResult({
       )}
 
       <div
-        className="h-(--perch-cell-h) shrink-0 overflow-hidden"
+        className="h-(--pipit-cell-h) shrink-0 overflow-hidden"
         style={
-          { "--perch-cell-h": height === undefined ? "auto" : `${height}px` } as React.CSSProperties
+          { "--pipit-cell-h": height === undefined ? "auto" : `${height}px` } as React.CSSProperties
         }
       >
         <ResultBody
@@ -132,7 +132,7 @@ export function CellResult({
   );
 }
 
-/** How a run turned out, in one badge — in the card's header, so a cell needs no toolbar. */
+/** How a run turned out, in one badge - in the card's header, so a cell needs no toolbar. */
 export function CellOutcome({
   run,
   statement,

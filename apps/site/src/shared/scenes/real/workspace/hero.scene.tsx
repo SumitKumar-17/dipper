@@ -1,5 +1,5 @@
 // The hero: spring-migration.sql is open with its GROUP BY line still blank. The scene types it the
-// way the app is used — `gro`, accept `group by`; ` s.`, accept `common_name` — runs the statement
+// way the app is used - `gro`, accept `group by`; ` s.`, accept `common_name` - runs the statement
 // with ⌘↵ and holds on the 33 rows the database returned. Shown `usable`, it does that once and then
 // leaves the editor, the file and the results to the visitor. Its beats (0 `gro`, 1 ` s.`, 2 ⌘↵) are
 // what "Your turn" narrates beside the window.

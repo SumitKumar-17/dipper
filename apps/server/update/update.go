@@ -1,6 +1,6 @@
 // Package update replaces the running binary with a newer release. The asset names, the
 // download base and the checksums.txt layout it reads are the ones install.sh reads and
-// .github/workflows/release.yml writes — the three move together or `perch update` breaks for
+// .github/workflows/release.yml writes - the three move together or `pipit update` breaks for
 // everyone already running an older binary.
 package update
 
@@ -16,11 +16,11 @@ import (
 	"strings"
 	"time"
 
-	"perch/storage"
+	"pipit/storage"
 )
 
 const (
-	repo       = "Sahil1337/perch"
+	repo       = "SumitKumar-17/pipit"
 	latestAPI  = "https://api.github.com/repos/" + repo + "/releases/latest"
 	releaseURL = "https://github.com/" + repo + "/releases/download"
 	// ReleasesPage is where a platform without an asset has to go by hand.
@@ -37,7 +37,7 @@ var targets = map[string]bool{
 	"windows-amd64": true,
 }
 
-// PERCH_DOWNLOAD_BASE=file:///path/to/release points every fetch at a local directory, which is
+// PIPIT_DOWNLOAD_BASE=file:///path/to/release points every fetch at a local directory, which is
 // how the installer is tested; the transport has to speak file:// for that to work here too.
 var client = &http.Client{Transport: fileAwareTransport()}
 
@@ -83,8 +83,8 @@ func Latest(ctx context.Context) (string, error) {
 	return body.TagName, nil
 }
 
-// Check is Latest with a cache, for the background look `perch serve` takes: within ttl of the
-// last successful call it answers from ~/.perch/update.json and asks GitHub nothing.
+// Check is Latest with a cache, for the background look `pipit serve` takes: within ttl of the
+// last successful call it answers from ~/.pipit/update.json and asks GitHub nothing.
 func Check(ctx context.Context, ttl time.Duration) (string, error) {
 	if cached, err := storage.ReadUpdateCheck(); err == nil && cached != nil {
 		if at, err := time.Parse(time.RFC3339, cached.CheckedAt); err == nil && time.Since(at) < ttl {
@@ -99,15 +99,15 @@ func Check(ctx context.Context, ttl time.Duration) (string, error) {
 	return tag, nil
 }
 
-// Disabled reports the PERCH_NO_UPDATE_CHECK opt-out, for the check perch makes on its own.
-// An explicit `perch update` ignores it: the user asked.
-func Disabled() bool { return os.Getenv("PERCH_NO_UPDATE_CHECK") != "" }
+// Disabled reports the PIPIT_NO_UPDATE_CHECK opt-out, for the check pipit makes on its own.
+// An explicit `pipit update` ignores it: the user asked.
+func Disabled() bool { return os.Getenv("PIPIT_NO_UPDATE_CHECK") != "" }
 
 // IsNewer reports whether tag is a later version than the one this binary was built as.
 func IsNewer(tag, current string) bool { return Compare(tag, current) > 0 }
 
 // Compare orders two versions, with or without a leading v, by major.minor.patch. A prerelease
-// suffix sorts below the release it precedes, as semver says, and below nothing else — perch
+// suffix sorts below the release it precedes, as semver says, and below nothing else - pipit
 // does not ship them, so a careful answer costs three lines and a wrong one ships a downgrade.
 func Compare(a, b string) int {
 	aNum, aPre := parseVersion(a)

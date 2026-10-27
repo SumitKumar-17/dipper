@@ -14,7 +14,7 @@ export type BrowseResult = {
   path: string;
   /** One level up, or null at the top of the filesystem. */
   parent: string | null;
-  /** The user's home directory — the sensible place to start. */
+  /** The user's home directory - the sensible place to start. */
   home: string;
   /** Sub-directories only, name-sorted. Files are irrelevant when picking a folder. */
   entries: BrowseEntry[];

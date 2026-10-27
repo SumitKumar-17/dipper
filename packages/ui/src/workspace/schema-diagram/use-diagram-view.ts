@@ -50,13 +50,13 @@ export function useDiagramView({
   const [viewportSize, setViewportSize] = React.useState({ width: 0, height: 0 });
 
   /*
-   * A pointer emits moves faster than the screen refreshes — a trackpad runs to 120Hz — and every
+   * A pointer emits moves faster than the screen refreshes - a trackpad runs to 120Hz - and every
    * one of them used to be a React render of every card and every wire. Two things fix that.
    *
    * `schedule` coalesces: the LATEST piece of work runs, once, on the next frame. And a PAN never
    * reaches React at all while the gesture is live, because nothing about the picture depends on
    * where it is panned to except the transform itself, which is written straight to the node. The
-   * final value is committed on release, which is when `visible` — and so which wires pulse — is
+   * final value is committed on release, which is when `visible` - and so which wires pulse - is
    * worth recomputing. A card drag still goes through state: the wires have to follow the card.
    */
   const frame = React.useRef<number | null>(null);

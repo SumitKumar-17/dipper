@@ -1,15 +1,15 @@
 // The picture the connecting screen stands on: a socket drawing itself, then carrying a stream of
 // packets while the stages beside it tick off. Split out from the screen because it is a complete,
-// self-contained visual — like `connection-beam.tsx` — that never touches the screen's own timing
+// self-contained visual - like `connection-beam.tsx` - that never touches the screen's own timing
 // state.
 //
 // Motion is all SVG: the wire draws itself with `pathLength` and the packets ride it with
 // `offsetPath`, so they follow the curve rather than being tweened across a straight line.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import { motion } from "motion/react";
 import type React from "react";
-import { PerchMark } from "../brand/logo";
+import { PipitMark } from "../brand/logo";
 import { cn } from "../lib/utils";
 import { DialectMark } from "./dialect-mark";
 
@@ -48,7 +48,7 @@ export function Wire({
           transition={{ duration: reduced ? 0 : 0.9, ease: "easeInOut" }}
         />
 
-        {/* And again in the accent, chasing the first — the line "filling" after it is drawn. */}
+        {/* And again in the accent, chasing the first - the line "filling" after it is drawn. */}
         <motion.path
           animate={{ pathLength: 1, opacity: 1 }}
           className="stroke-primary"
@@ -59,7 +59,7 @@ export function Wire({
           transition={{ duration: reduced ? 0 : 1.4, delay: reduced ? 0 : 0.5, ease: "easeInOut" }}
         />
 
-        {/* Packets, riding the same curve the wire is drawn from — three of them, staggered, so
+        {/* Packets, riding the same curve the wire is drawn from - three of them, staggered, so
             it reads as carrying a stream rather than ferrying one dot back and forth.
 
             SMIL rather than `offsetPath`: following a path is exactly what `animateMotion` is for,
@@ -91,7 +91,7 @@ export function Wire({
       {/* The two ends sit over the drawing rather than inside it, so they are real DOM and keep
           the app's own card styling instead of being redrawn as SVG rectangles. */}
       <Node className="left-0">
-        <PerchMark className="size-6" />
+        <PipitMark className="size-6" />
       </Node>
       <Node className="right-0" pulsing={!reduced}>
         <DialectMark className="size-6" dialect={dialect} />

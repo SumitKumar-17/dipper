@@ -5,7 +5,7 @@
 // it means what the user wrote. A newline goes before anything appended: a `-- comment` at the end
 // of a clause would otherwise swallow the `limit` that follows it.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import {
   conjuncts,
   type ParsedSelect,
@@ -91,7 +91,7 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
       // ones that come back with nothing on the right.
       //
       // `NATURAL` has to survive the rewrite. It is part of the join's keyword run, so replacing
-      // that run outright leaves `left join t` with no condition at all — which is a syntax error,
+      // that run outright leaves `left join t` with no condition at all - which is a syntax error,
       // not a wider join, and the probe came back empty every time.
       const spelled = join.natural ? "natural left join" : "left join";
       const pairs = `select *\n${text.slice(parsed.fromKeyword.from, join.keyword.from)}${spelled}${text.slice(join.keyword.to, join.range.to)}`;
@@ -126,8 +126,8 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
         ? parts.map((part, index) => `, (${slice(part)}) as ${conjunctColumn(index)}`)
         : [];
     // One boolean per value of each `IN (…)` list, on the same widened statement. `x in (a, b)` is
-    // one verdict but three facts, and the two that the pass/fail throws away — WHICH value matched,
-    // and whether the left side was null and so matched nothing it could have — are the two the
+    // one verdict but three facts, and the two that the pass/fail throws away - WHICH value matched,
+    // and whether the left side was null and so matched nothing it could have - are the two the
     // predicate is actually about. The null test is asked separately because `x = a` is null rather
     // than false when `x` is, so the value columns alone cannot tell "matched nothing" from "had
     // nothing to match with".
@@ -244,7 +244,7 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
 
   /* WINDOW: the rows HAVING left, each one given the window function's value.
    *
-   * It sits here because a window function sees the rows grouping already settled — which is the
+   * It sits here because a window function sees the rows grouping already settled - which is the
    * whole reason ORDER BY may sort by one and WHERE cannot mention one at all. The partition
    * expressions ride along as key columns so the scene can gather the rows into panes without
    * re-deriving them, and the function itself is computed a second time under a name the walk
@@ -288,7 +288,7 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
     const branches = caseExpressions(parsed)[0];
     if (branches) {
       // Every WHEN spliced out as its own boolean column. The CASE alone only ever shows its
-      // answer, so without these there is no way to say which branch produced it — and the first
+      // answer, so without these there is no way to say which branch produced it - and the first
       // true one wins, which only reads as a rule once the others can be seen failing.
       const tests = branches.branches.map(
         (branch, index) => `(${branch.when}) as ${branchColumn(index)}`,

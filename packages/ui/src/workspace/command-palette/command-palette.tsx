@@ -1,6 +1,6 @@
 // The command palette: ⌘K, and everything reachable from it.
 //
-// Every group draws from `asyncData` — the last value that loaded, whatever the status — because a
+// Every group draws from `asyncData` - the last value that loaded, whatever the status - because a
 // palette that renders nothing until the schema arrives feels broken on the first ⌘K. A group with
 // nothing in it is dropped rather than shown empty.
 //

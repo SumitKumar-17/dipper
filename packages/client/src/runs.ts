@@ -1,4 +1,4 @@
-import type { RunRecord } from "@perch/protocol";
+import type { RunRecord } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type ExportOptions = {
@@ -17,7 +17,7 @@ export type RunsApi = {
 
 export function runsApi(http: Transport): RunsApi {
   return {
-    // Newest first, and without result rows — the rows come from get().
+    // Newest first, and without result rows - the rows come from get().
     list: (opts) => http.json<RunRecord[]>("/api/runs", { signal: opts?.signal }),
 
     get: (id, opts) =>

@@ -13,11 +13,11 @@ import {
   writeRaw,
   type EditorLayout,
   sanitizeLayout,
-} from "@perch/ui";
-import type { PanelState } from "@perch/ui";
+} from "@pipit/ui";
+import type { PanelState } from "@pipit/ui";
 import * as React from "react";
 
-const STORAGE_KEY = "perch.panels.v1";
+const STORAGE_KEY = "pipit.panels.v1";
 
 /**
  * The grid a first-run user gets: queries above, results below. Every id is spelled out rather than

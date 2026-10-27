@@ -1,7 +1,7 @@
 // Assembling a scene out of cards: the two constructors every station builder reaches for, and the
 // width cap that runs over whatever they return.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { colsOf, positional, rowsOf, visibleIndices } from "./columns";
 import type { Col, Row, Scene, TableView } from "./types";
 
@@ -36,8 +36,8 @@ export const plain = (
  * the rows under them.
  *
  * `plain` is the same three lines plus a `TableView` round them, and is what a SETTLED card wants.
- * This one is for the card a station shows BEFORE its own rows land — the rows it is about to test,
- * sort or cut — which needs the pieces rather than the finished view, because the verdicts and the
+ * This one is for the card a station shows BEFORE its own rows land - the rows it is about to test,
+ * sort or cut - which needs the pieces rather than the finished view, because the verdicts and the
  * highlights are then written onto them one row at a time.
  */
 export function snapshot(
@@ -54,15 +54,15 @@ const MAX_COLS = 8;
 
 /**
  * A card wider than this is unreadable and shoves the next one off the stage, so it keeps the
- * columns the station is actually about — a join key, a sort key, the ones a WHERE names, all of
- * which arrive already lit — and then the leftmost of the rest, in the query's own order.
+ * columns the station is actually about - a join key, a sort key, the ones a WHERE names, all of
+ * which arrive already lit - and then the leftmost of the rest, in the query's own order.
  */
 export function capCols(view: TableView): TableView {
   // One folded column is not worth the marker that replaces it.
   if (view.cols.length <= MAX_COLS + 1) return view;
   /**
-   * What the cap keeps first: the columns the station is about — a join key, a sort key, the ones a
-   * WHERE names, all of which arrive already lit — then ordinary columns, and a column already known
+   * What the cap keeps first: the columns the station is about - a join key, a sort key, the ones a
+   * WHERE names, all of which arrive already lit - then ordinary columns, and a column already known
    * to be on its way out last of all. Folding a survivor away to make room for one that is about to
    * be dropped would hide the only part of the card that outlives this station.
    */

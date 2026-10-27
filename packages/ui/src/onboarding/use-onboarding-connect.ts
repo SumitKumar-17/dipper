@@ -3,7 +3,7 @@ import type {
   ConnectionSummary,
   Dialect,
   DiscoveredServer,
-} from "@perch/protocol";
+} from "@pipit/protocol";
 import * as React from "react";
 import { failureCodeOf, isPasswordFailure, messageOf } from "../lib/errors";
 import { useWorkspace } from "../workspace/context";
@@ -30,7 +30,7 @@ export type ConnectPhase =
  *
  * Remounted on a pick rather than fed through props: the form owns its fields, and an effect
  * pushing values into them would fight whatever the user had typed. Kept out of `ConnectPhase`
- * because it outlives the failure that produced it — the form stays open and filled in while the
+ * because it outlives the failure that produced it - the form stays open and filled in while the
  * user tries something else.
  */
 export type Prefill = { input: ConnectionInput; seq: number };
@@ -72,7 +72,7 @@ export function useOnboardingConnect(): {
     server: DiscoveredServer,
     password?: string,
   ) => Promise<void>;
-  /** Drops the password prompt without dialling — the row goes back to a Connect button. */
+  /** Drops the password prompt without dialling - the row goes back to a Connect button. */
   dismissChallenge: () => void;
 } {
   const { connections, addConnection, updateConnection, connect } = useWorkspace();
@@ -120,7 +120,7 @@ export function useOnboardingConnect(): {
   /**
    * The discovery fast path: save what was found, dial it, and go.
    *
-   * A server already on disk is reused rather than saved again — pressing Connect twice on the
+   * A server already on disk is reused rather than saved again - pressing Connect twice on the
    * same row is a retry, not a request for a second copy, and the name collision that made was
    * the commonest way this screen failed.
    *

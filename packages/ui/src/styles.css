@@ -6,7 +6,7 @@
 
 @theme {
   /* Desktop density: tree rows, table cells and tab strips are the bulk of the screen, so the two
-     small steps are 13/11 rather than the web's 14/12. Redefining them beats inventing token names —
+     small steps are 13/11 rather than the web's 14/12. Redefining them beats inventing token names -
      `text-sm` and `text-xs` stay ordinary classes and every usage moves together. `text-base` and
      up are untouched. */
   --text-sm: 0.8125rem;
@@ -259,7 +259,7 @@
      white page, and under `color-scheme: dark` it lands as a flat slab that fights the surface it
      is on and dims the text it is meant to pick out. The tint is the editor's selection formula
      exactly (`sql-editor/theme.ts`), so dragging across a card and dragging across SQL are the
-     same colour. Translucent on purpose — the ink underneath keeps its own colour, which is what
+     same colour. Translucent on purpose - the ink underneath keeps its own colour, which is what
      lets a red error line or a lit cell stay itself while selected. */
   ::selection {
     background-color: color-mix(in oklab, var(--color-info) 30%, transparent);
@@ -357,7 +357,7 @@
 /* What the palette cannot reach: scrollbars, form controls, the canvas behind an overscroll and
    the browser's own default colours. Declaring the scheme is what keeps those native surfaces from
    staying light under a dark app (and the reverse). Paired with the .dark class, never with
-   prefers-color-scheme — the theme is a setting here, not the OS's opinion. */
+   prefers-color-scheme - the theme is a setting here, not the OS's opinion. */
 :root {
   color-scheme: light;
 }

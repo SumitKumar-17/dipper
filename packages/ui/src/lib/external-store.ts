@@ -7,7 +7,7 @@
 // re-renders every subscriber when the value changes.
 //
 // `getSnapshot` must return a referentially stable value while nothing has changed, or React
-// re-renders forever — so the snapshot is cached and only recomputed when the store says it is
+// re-renders forever - so the snapshot is cached and only recomputed when the store says it is
 // dirty.
 
 export type ExternalStore<T> = {

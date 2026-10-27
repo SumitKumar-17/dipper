@@ -6,8 +6,8 @@
 // string or comment is its own node, so a `where` inside a string literal never matches.
 //
 // The slicer is a family of modules now; this is the path they are read through, and it carries
-// only what the rest of the walk asks for. The parser toolkit under them — the tree, its depth-zero
-// tokens, the small predicates that read them — stays behind `clause-tokens.ts`, because a caller
+// only what the rest of the walk asks for. The parser toolkit under them - the tree, its depth-zero
+// tokens, the small predicates that read them - stays behind `clause-tokens.ts`, because a caller
 // that needs one of those is doing parsing rather than reading a parse.
 //
 // - `clause-types.ts`     what a sliced statement IS

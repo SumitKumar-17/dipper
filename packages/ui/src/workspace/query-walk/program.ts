@@ -3,7 +3,7 @@
 // A section is a named intermediate result with its own full station walk: a CTE, a derived table, a
 // subquery predicate, a branch of a set operation, or the statement itself. They are emitted
 // depth-first, so a section always lands after everything it reads and the chapter strip can be read
-// top to bottom. Nothing is a detour any more — a later section REFERENCES an earlier one by name
+// top to bottom. Nothing is a detour any more - a later section REFERENCES an earlier one by name
 // instead of recomputing it.
 //
 // CORRELATION is the property that decides everything. A subquery that does not depend on the outer
@@ -12,7 +12,7 @@
 //
 // The trap: `SubqueryPredicate.correlated` only reports QUALIFIED references, because `course_id`
 // with no table in front of it cannot be resolved without a catalogue. So an empty list means "no
-// PROVABLE correlation", never "uncorrelated" — promoting such a subquery to a standalone section
+// PROVABLE correlation", never "uncorrelated" - promoting such a subquery to a standalone section
 // would run it once and show a confidently wrong result. That uncertainty is not flattened here: it
 // is carried as `Binding.certain`, for a later wave to settle by probing.
 //
@@ -21,14 +21,14 @@
 // a probe built from it needs nothing prepended. `prefix` records what was spliced on.
 //
 // That synthesis is also why every section has to carry a way BACK. What a section runs is not what
-// the reader wrote — it has a WITH prefix the walk invented on the front and a body trimmed at both
-// ends — so a chapter shown as "your query" is a statement nobody typed, and nothing built from a
+// the reader wrote - it has a WITH prefix the walk invented on the front and a body trimmed at both
+// ends - so a chapter shown as "your query" is a statement nobody typed, and nothing built from a
 // section's own ranges can be pointed at the query on screen. `source`, `rootMap` and `uses` are the
 // return path, and they are cheap because the body IS a verbatim slice of `Program.text`: one
 // subtraction maps any offset in it back, and mapping a child's body through its parent's mapping at
 // build time makes it compose to any depth.
 //
-// Where the body is NOT a verbatim slice the mapping is null rather than approximate — see
+// Where the body is NOT a verbatim slice the mapping is null rather than approximate - see
 // `Section.rootMap`. A highlight in the wrong place reads as a fact about the query and is believed;
 // a missing one reads as a missing feature. The UI's fallback for a null is to show the statement
 // with nothing lit up.

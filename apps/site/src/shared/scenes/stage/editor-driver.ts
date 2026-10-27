@@ -63,9 +63,9 @@ export function houseTooltips(view: EditorView, parent: HTMLElement, space: () =
 const scripted = new WeakMap<EditorView, Compartment>();
 
 /**
- * The editor as a script drives it. Its caret and focused styling are drawn without taking focus —
+ * The editor as a script drives it. Its caret and focused styling are drawn without taking focus -
  * a scene must never pull the page's focus into itself, or a visitor's Space and arrow keys would
- * type into it — and anything that would scroll the caret into view scrolls the editor alone: by
+ * type into it - and anything that would scroll the caret into view scrolls the editor alone: by
  * default CodeMirror scrolls every ancestor too, the page included, and a scene playing below the
  * fold must not move the page. Off again once a usable scene's visitor first focuses its app.
  */
@@ -142,7 +142,7 @@ export async function typeText(view: EditorView, text: string, clock: Clock): Pr
 
 /**
  * A key through the editor's own keymap: `Enter` accepts a completion, `Mod-Enter` runs the
- * statement, `Ctrl-Space` asks for completion — the bindings SqlEditor installed, not a copy.
+ * statement, `Ctrl-Space` asks for completion - the bindings SqlEditor installed, not a copy.
  */
 export function pressKey(view: EditorView, key: "Enter" | "ArrowDown" | "ArrowUp" | "Escape" | "Mod-Enter" | "Ctrl-Space"): boolean {
   const init: KeyboardEventInit = { bubbles: true, cancelable: true };
@@ -175,7 +175,7 @@ export function completionLabels(view: EditorView): string[] {
 /**
  * Walks the selection down to the option `want` picks, one arrow press at a time like a person
  * reading the list, then accepts it with Enter. Returns the option, or null when the popup did not
- * offer one — the scene then knows the app answered differently and does not pretend otherwise.
+ * offer one - the scene then knows the app answered differently and does not pretend otherwise.
  */
 export async function pickCompletion(
   view: EditorView,

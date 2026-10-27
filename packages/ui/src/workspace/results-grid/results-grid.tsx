@@ -1,4 +1,4 @@
-// The result grid, windowed from the start — a design constraint, not an optimisation, since
+// The result grid, windowed from the start - a design constraint, not an optimisation, since
 // retrofitting windowing onto a table is what breaks sticky headers. Two consequences:
 //
 //   Not a <table>. A windowed table body must be absolutely positioned, which destroys the layout
@@ -8,7 +8,7 @@
 //   Column widths are computed, not measured. The sizing lives in `grid-sizing.ts`, which explains
 //   why.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useReducedMotion } from "motion/react";
 import * as React from "react";
@@ -26,7 +26,7 @@ export function ResultsGrid({
   /**
    * Fade the rows in, staggered, when the result lands. Off by default: a pane is a standing surface
    * you scroll, so arrival fades would fire every time the window refills. A notebook cell is the
-   * opposite — the result arrives under the query that asked for it.
+   * opposite - the result arrives under the query that asked for it.
    */
   animateRows?: boolean;
   className?: string;
@@ -57,7 +57,7 @@ export function ResultsGrid({
 
   // A first-paint flourish, not a scroll effect: only the window rendered on the frame the result
   // appeared animates, or the grid shimmers every time you drag it. The decision has to land on the
-  // same frame as the rows it applies to, so it is computed here and stored on the way past — as
+  // same frame as the rows it applies to, so it is computed here and stored on the way past - as
   // state rather than a ref, because state React throws away with a discarded render goes with it.
   const [stagger, setStagger] = React.useState<{
     result: StatementResult;
@@ -81,12 +81,12 @@ export function ResultsGrid({
       ref={scrollRef}
       role="grid"
       // One track list, computed from the data, so header and rows cannot drift apart.
-      style={{ "--perch-grid-cols": template } as React.CSSProperties}
+      style={{ "--pipit-grid-cols": template } as React.CSSProperties}
       tabIndex={selected ? -1 : 0}
     >
       <div className="w-max min-w-full">
         <div className="sticky top-0 z-10 bg-muted" role="rowgroup">
-          <div aria-rowindex={1} className="grid grid-cols-(--perch-grid-cols)" role="row">
+          <div aria-rowindex={1} className="grid grid-cols-(--pipit-grid-cols)" role="row">
             {columns.map((column, index) => (
               <div
                 aria-colindex={index + 1}
@@ -107,16 +107,16 @@ export function ResultsGrid({
         </div>
 
         <div
-          className="relative h-(--perch-grid-height)"
+          className="relative h-(--pipit-grid-height)"
           role="rowgroup"
           style={
-            { "--perch-grid-height": `${virtualizer.getTotalSize()}px` } as React.CSSProperties
+            { "--pipit-grid-height": `${virtualizer.getTotalSize()}px` } as React.CSSProperties
           }
         >
           {/* One transform for the whole window: the rendered rows are always contiguous. */}
           <div
-            className="absolute top-0 left-0 w-full translate-y-(--perch-grid-offset)"
-            style={{ "--perch-grid-offset": `${offset}px` } as React.CSSProperties}
+            className="absolute top-0 left-0 w-full translate-y-(--pipit-grid-offset)"
+            style={{ "--pipit-grid-offset": `${offset}px` } as React.CSSProperties}
           >
             {items.map((item) => (
               <GridRow

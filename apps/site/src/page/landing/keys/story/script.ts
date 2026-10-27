@@ -45,7 +45,7 @@ export async function hop(
     const from = bird.position?.x ?? 0;
     const to = centre(el).x;
     sculpture.setOccupied(null);
-    await bird.perchOn(el, { at: 0.5, facing: to >= from ? "right" : "left", pace: options.pace ?? 2 });
+    await bird.roostOn(el, { at: 0.5, facing: to >= from ? "right" : "left", pace: options.pace ?? 2 });
   } else await run.wait(260);
   run.check();
   if (flies) sculpture.setOccupied(id);
@@ -116,7 +116,7 @@ export async function intro(stage: Stage, run: Run) {
     const a = centre(tab);
     const b = centre(ret);
     sculpture.setOccupied(null);
-    await bird.perchOn(ret, {
+    await bird.roostOn(ret, {
       at: 0.5,
       facing: "right",
       pace: 3,

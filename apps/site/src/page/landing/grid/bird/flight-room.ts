@@ -16,8 +16,8 @@ export type FlightRoom = {
   copyBottom: number;
   /** Px per bird unit at full flight size, before a band fits it. */
   flightScale: number;
-  /** Px per bird unit once perched, which is the porcelain bird's size. */
-  perchedScale: number;
+  /** Px per bird unit once roosted, which is the porcelain bird's size. */
+  roostedScale: number;
 };
 
 export const flightRoom = (): FlightRoom => ({
@@ -27,7 +27,7 @@ export const flightRoom = (): FlightRoom => ({
   copyTop: 0,
   copyBottom: 0,
   flightScale: 1,
-  perchedScale: 1,
+  roostedScale: 1,
 });
 
 /** A horizontal band to fly in: its top and bottom, the bird's scale in it, and its origin's y. */

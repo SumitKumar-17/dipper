@@ -8,11 +8,11 @@ import (
 	"path/filepath"
 	"sync"
 
-	"perch/fsx"
+	"pipit/fsx"
 )
 
-// Store is one small JSON document under perch home. It binds the filename, what a missing file
-// reads as, and the mode it must be written with — connections.json holds passwords, so 0600 is
+// Store is one small JSON document under pipit home. It binds the filename, what a missing file
+// reads as, and the mode it must be written with - connections.json holds passwords, so 0600 is
 // a property of the file rather than something each writer remembers.
 type Store[T any] struct {
 	name     string
@@ -64,7 +64,7 @@ func (s *Store[T]) Write(value T) error {
 	return fsx.WriteAtomic(filepath.Join(dir, s.name), append(body, '\n'), s.mode)
 }
 
-// Remove deletes the document. Unlike a read it does not create perch home first.
+// Remove deletes the document. Unlike a read it does not create pipit home first.
 func (s *Store[T]) Remove() error {
 	err := os.Remove(ConfigFile(s.name))
 	if errors.Is(err, fs.ErrNotExist) {

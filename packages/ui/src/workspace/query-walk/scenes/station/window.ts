@@ -3,8 +3,8 @@
 //
 // The panes borrow GROUP BY's buckets, because a pane is exactly a bucket that never squashes:
 // same gathering, same header carrying the key, and `squash` left false for good so every row
-// stays on screen. That is the whole lesson — GROUP BY collapses a bucket to one row, a window
-// function leaves all of them standing — and it is told by the one difference between the scenes
+// stays on screen. That is the whole lesson - GROUP BY collapses a bucket to one row, a window
+// function leaves all of them standing - and it is told by the one difference between the scenes
 // rather than by a sentence.
 
 import { formatCell } from "../../../results-grid";
@@ -44,7 +44,7 @@ export function windowScene(ctx: SceneContext): Scene {
   const rows = rowsOf(sample, cols, shown, "m:", visible);
 
   // A bucket is too narrow for the whole row and its header already carries the partition key, so
-  // what a member shows is who the row is and then the column the frame walks — the pair that
+  // what a member shows is who the row is and then the column the frame walks - the pair that
   // makes a pane's order legible. A function with no ORDER BY has no such column, and the next
   // one along stands in rather than leaving the value sitting next to a bare name.
   const colAt = (index: number | null): Col[] =>
@@ -53,7 +53,7 @@ export function windowScene(ctx: SceneContext): Scene {
     ? findColumn(sample, visible, fn.order[0].replace(DIRECTIONS, ""), tableOf)
     : null;
   // A partition key the user also selected is already the bucket's header, and printing it again
-  // on every member of a pane it defines says nothing — unless it is all the row has.
+  // on every member of a pane it defines says nothing - unless it is all the row has.
   const paneCols = new Set(
     fn.partition.flatMap((key) => {
       const found = findColumn(sample, visible, key, tableOf);

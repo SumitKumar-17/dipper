@@ -11,7 +11,7 @@
 // the row that is actually bound, as it becomes bound, sends exactly the ones that get looked at,
 // and the cache means scrubbing back over rows already seen costs nothing.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import * as React from "react";
 import { boundRows, boundRowSql, type BoundPlan, type BoundRow } from "./bound";
 import { messageOf, only, type QueryOutcome } from "./probe-outcome";
@@ -29,7 +29,7 @@ type BoundRun = {
   readonly bind: (index: number) => void;
   /** The subquery's own rows for the bound row, once its probe has landed. */
   readonly inner: QueryOutcome | undefined;
-  /** The statement that produced them, literals and all — this is the SQL worth reading. */
+  /** The statement that produced them, literals and all - this is the SQL worth reading. */
   readonly innerSql: string | null;
   /**
    * Every row probe that has landed, by outer row index.
@@ -54,7 +54,7 @@ export function useBoundRun(plan: BoundPlan, probe: Probe): BoundRun {
     };
   }, []);
 
-  // Keyed on the plan, so opening a different bound section — or editing the query — starts clean
+  // Keyed on the plan, so opening a different bound section - or editing the query - starts clean
   // rather than showing the previous section's rows under this one's labels.
   const [seen, setSeen] = React.useState(plan);
   if (seen !== plan) {

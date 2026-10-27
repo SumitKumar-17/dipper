@@ -2,12 +2,12 @@
 // works before this answers: it points at the releases page, which is also where everything falls
 // back to if the API is down, rate-limited or slow. Detection only sharpens a link that works.
 
-const REPO = "Sahil1337/perch";
+const REPO = "SumitKumar-17/pipit";
 const API = `https://api.github.com/repos/${REPO}/releases/latest`;
 export const REPO_URL = `https://github.com/${REPO}`;
 export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 export const INSTALL_COMMAND = `curl -fsSL https://raw.githubusercontent.com/${REPO}/main/install.sh | sh`;
-const CACHE_KEY = "perch:release";
+const CACHE_KEY = "pipit:release";
 const TIMEOUT_MS = 6000;
 
 export type OS = "darwin" | "linux" | "windows" | "unknown";
@@ -146,7 +146,7 @@ const megabytes = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
 
 function assetFor(release: RawRelease, os: Exclude<OS, "unknown">, arch: Arch): Asset | undefined {
   const version = release.tag.replace(/^v/, "");
-  const name = os === "windows" ? `perch-${version}-windows-amd64.exe` : `perch-${version}-${os}-${arch}.tar.gz`;
+  const name = os === "windows" ? `pipit-${version}-windows-amd64.exe` : `pipit-${version}-${os}-${arch}.tar.gz`;
   const found = release.assets.find((a) => a.name === name);
   if (!found) return undefined;
   return {

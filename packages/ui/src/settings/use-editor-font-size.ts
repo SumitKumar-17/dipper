@@ -1,7 +1,7 @@
 // Editor font size.
 //
-// Not a server setting. `Settings` is the server's configuration — what it will read, write and
-// run — and how large the type is on this screen is none of its business: the same account on a
+// Not a server setting. `Settings` is the server's configuration - what it will read, write and
+// run - and how large the type is on this screen is none of its business: the same account on a
 // laptop and on a 27" display wants two different answers. So it lives in localStorage, shared
 // through a tiny store so the Settings dialog and the editor cannot disagree about it.
 
@@ -9,7 +9,7 @@ import * as React from "react";
 import { createExternalStore } from "../lib/external-store";
 import { readRaw, writeRaw } from "../lib/storage";
 
-const KEY = "perch.editor.fontSize";
+const KEY = "pipit.editor.fontSize";
 
 /** Matches the workspace's 13px body. Anything outside the range is a typo or a bad restore. */
 export const EDITOR_FONT_SIZES: readonly number[] = [11, 12, 13, 14, 16, 18];

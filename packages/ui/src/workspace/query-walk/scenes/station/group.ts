@@ -1,7 +1,7 @@
 // GROUP BY: the rows before grouping with the key columns lit, then those same rows gathered into
 // buckets, then the buckets squashed down to the one row each becomes.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { formatCell } from "../../../results-grid";
 import { WALK_PREFIX } from "../../steps";
 import {

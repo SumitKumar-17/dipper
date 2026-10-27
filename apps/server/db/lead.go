@@ -7,8 +7,8 @@ import (
 
 // stripLeadingNoise drops leading whitespace, comments and open parens, returning the script
 // from the first character that could begin a keyword. Both dialects classify a statement from
-// its text — Postgres to decide whether to open a cursor, MySQL to invent the command tag it
-// never receives — and both look past the same noise. Returns "" for a script that is nothing
+// its text - Postgres to decide whether to open a cursor, MySQL to invent the command tag it
+// never receives - and both look past the same noise. Returns "" for a script that is nothing
 // but noise, or an unterminated comment.
 func stripLeadingNoise(sql string) string {
 	i := 0

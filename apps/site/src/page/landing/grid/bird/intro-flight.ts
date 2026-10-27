@@ -1,7 +1,7 @@
 import { clamp, easeInOutCubic, type Point, smoothstep } from "../../../../shared/math";
 import { type BirdPose, birdPose } from "./cell-bird";
 import { band, fitBand, type FlightRoom } from "./flight-room";
-import { type Extent, FLAP_FRAMES, type Frames, PERCHED_FEET } from "./frames";
+import { type Extent, FLAP_FRAMES, type Frames, ROOSTED_FEET } from "./frames";
 import { spline, waypoints } from "./spline";
 
 /** The choreography's times, in its own seconds; it plays INTRO_PACE times faster. */
@@ -17,7 +17,7 @@ const OFF = 4;
 /**
  * The cell bird's entrance. It crosses low, in the room under the copy, flapping and gliding in
  * bursts, and leaves by the right edge. It comes back round from the right, smaller, in the room
- * over the headline, and glides down onto the perch, flaring with its wings up and legs reaching.
+ * over the headline, and glides down onto the roost, flaring with its wings up and legs reaching.
  * Standing there, it condenses, feet fixed, onto the porcelain bird's footprint.
  */
 export class IntroFlight {
@@ -32,22 +32,22 @@ export class IntroFlight {
   private flipMix = 1;
   private glideMix = 0;
   private phase = 0;
-  /** What the passes were last laid out for: the room's size, the copy's extent and the perch. */
+  /** What the passes were last laid out for: the room's size, the copy's extent and the roost. */
   private readonly plannedFor = new Float64Array(6).fill(NaN);
 
   constructor(
     private readonly frames: Frames,
     private readonly flying: Extent,
-    private readonly perched: Extent,
+    private readonly roosted: Extent,
   ) {
     this.pose = birdPose(frames, true);
   }
 
   /** The pose at choreography time t, or null while the bird is out of view between its passes. */
-  at(t: number, dt: number, room: FlightRoom, perch: Point): BirdPose | null {
-    this.plan(room, perch);
+  at(t: number, dt: number, room: FlightRoom, roost: Point): BirdPose | null {
+    this.plan(room, roost);
     const pose = this.pose;
-    if (t >= LAND_AT) return this.condense(t, room, perch);
+    if (t >= LAND_AT) return this.condense(t, room, roost);
     if (t > LOW_END && t < APPROACH_START) {
       // Round the corner, unseen: it comes back facing left.
       this.flipMix = -1;
@@ -58,7 +58,7 @@ export class IntroFlight {
     const speed = Math.hypot(this.vel.x, this.vel.y);
     const final = smoothstep(4.4, 4.8, t);
     const flare = smoothstep(4.75, 5.1, t) * (1 - smoothstep(5.2, LAND_AT, t));
-    const perching = smoothstep(5.2, LAND_AT, t);
+    const roosting = smoothstep(5.2, LAND_AT, t);
 
     // Facing follows the horizontal speed; the swap is quick, thinning for a moment like a bank.
     const facing = Math.abs(this.vel.x) > 0.2 * speed ? Math.sign(this.vel.x) : this.flipMix > 0 ? 1 : -1;
@@ -81,13 +81,13 @@ export class IntroFlight {
     pose.scale = approaching ? this.landingScale : this.lowBand.scale;
     pose.flip = flip;
     pose.angle =
-      clamp(Math.atan2(this.vel.y, Math.abs(this.vel.x) + 1e-3) * 0.55, -0.6, 0.6) * Math.sign(flip) * (1 - flare) * (1 - perching);
+      clamp(Math.atan2(this.vel.y, Math.abs(this.vel.x) + 1e-3) * 0.55, -0.6, 0.6) * Math.sign(flip) * (1 - flare) * (1 - roosting);
     pose.a = this.frames.flap[i0] ?? this.frames.glide;
     pose.b = this.frames.flap[(i0 + 1) % FLAP_FRAMES] ?? this.frames.glide;
     pose.ab = f - Math.floor(f);
-    pose.glide = this.glideMix * (1 - flare) * (1 - perching);
-    pose.flare = flare * (1 - perching);
-    pose.perch = perching;
+    pose.glide = this.glideMix * (1 - flare) * (1 - roosting);
+    pose.flare = flare * (1 - roosting);
+    pose.roost = roosting;
     pose.intensity = 1;
     pose.wake = approaching ? 0.5 * (1 - final) : 1;
     pose.dir = Math.sign(this.vel.x) || -1;
@@ -96,24 +96,24 @@ export class IntroFlight {
   }
 
   /** On the headline: it stands at landing size, then shrinks onto the porcelain bird's footprint, brightening. */
-  private condense(t: number, room: FlightRoom, perch: Point): BirdPose {
+  private condense(t: number, room: FlightRoom, roost: Point): BirdPose {
     const pose = this.pose;
     const k = easeInOutCubic(smoothstep(LAND_AT + 0.12, INTRO_END, t));
-    const s = this.landingScale + (room.perchedScale - this.landingScale) * k;
-    pose.x = perch.x + PERCHED_FEET.x * s;
-    pose.y = perch.y - PERCHED_FEET.y * s;
+    const s = this.landingScale + (room.roostedScale - this.landingScale) * k;
+    pose.x = roost.x + ROOSTED_FEET.x * s;
+    pose.y = roost.y - ROOSTED_FEET.y * s;
     // Drawn in toward its body, not its feet: the feet are on the headline.
     this.pull.x = pose.x;
     this.pull.y = pose.y;
     pose.scale = s;
     pose.flip = -1;
     pose.angle = 0;
-    pose.a = this.frames.perch;
-    pose.b = this.frames.perch;
+    pose.a = this.frames.roost;
+    pose.b = this.frames.roost;
     pose.ab = 0;
     pose.glide = 0;
     pose.flare = 0;
-    pose.perch = 1;
+    pose.roost = 1;
     pose.intensity = 0.95 + 0.45 * k;
     pose.wake = k > 0 ? 0.9 : 0;
     pose.dir = -1;
@@ -121,31 +121,31 @@ export class IntroFlight {
     return pose;
   }
 
-  /** Lays the two passes out for this room and perch; again only when either has moved. */
-  private plan(room: FlightRoom, perch: Point) {
+  /** Lays the two passes out for this room and roost; again only when either has moved. */
+  private plan(room: FlightRoom, roost: Point) {
     const last = this.plannedFor;
     if (
       last[0] === room.width &&
       last[1] === room.height &&
       last[2] === Math.round(room.copyTop) &&
       last[3] === Math.round(room.copyBottom) &&
-      last[4] === Math.round(perch.x) &&
-      last[5] === Math.round(perch.y)
+      last[4] === Math.round(roost.x) &&
+      last[5] === Math.round(roost.y)
     )
       return;
     last[0] = room.width;
     last[1] = room.height;
     last[2] = Math.round(room.copyTop);
     last[3] = Math.round(room.copyBottom);
-    last[4] = Math.round(perch.x);
-    last[5] = Math.round(perch.y);
+    last[4] = Math.round(roost.x);
+    last[5] = Math.round(roost.y);
     const { width: W, body } = room;
-    const feetY = PERCHED_FEET.y;
+    const feetY = ROOSTED_FEET.y;
     const fly = this.flying;
 
     // As big as the room over the headline allows, and never smaller than the porcelain bird.
-    const roomAbove = (perch.y - body - 6) / (feetY - this.perched.top);
-    const s2 = clamp(roomAbove, room.perchedScale * 1.4, room.flightScale * 0.62);
+    const roomAbove = (roost.y - body - 6) / (feetY - this.roosted.top);
+    const s2 = clamp(roomAbove, room.roostedScale * 1.4, room.flightScale * 0.62);
     this.landingScale = s2;
 
     const low = this.lowBand;
@@ -162,8 +162,8 @@ export class IntroFlight {
     set(points[3], LOW_END, W - fly.left * s1 + OFF, low.y - low.slack * 0.8);
 
     // Facing left, the silhouette is mirrored: its right edge is the field's left one.
-    const endX = perch.x + PERCHED_FEET.x * s2;
-    const endY = perch.y - feetY * s2;
+    const endX = roost.x + ROOSTED_FEET.x * s2;
+    const endY = roost.y - feetY * s2;
     // On the way in it keeps its body over the headline's line box, and its head under the header
     // where it can; where the room cannot hold it, the header covers its head rather than it the words.
     const lowest = room.copyTop - fly.bottom * s2;

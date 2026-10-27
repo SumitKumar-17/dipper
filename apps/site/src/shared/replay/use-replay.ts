@@ -1,4 +1,4 @@
-import type { WorkspaceApi } from "@perch/ui";
+import type { WorkspaceApi } from "@pipit/ui";
 import * as React from "react";
 import { createReplayWorkspace } from "./store";
 import type { ReplayInput, ReplayWorkspace } from "./types";

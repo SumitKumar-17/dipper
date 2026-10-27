@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"perch/db"
-	"perch/httpx"
-	"perch/protocol"
-	"perch/storage"
+	"pipit/db"
+	"pipit/httpx"
+	"pipit/protocol"
+	"pipit/storage"
 )
 
 type StartRunInput struct {
@@ -163,7 +163,7 @@ func (r *Runner) StartRun(ctx context.Context, input StartRunInput, emit func(pr
 // means off: no header, no rows, nothing to trim.
 //
 // Settings are read per run rather than cached because turning history off has to take effect on
-// the next run, not on the next restart — and a run is not a hot path.
+// the next run, not on the next restart - and a run is not a hot path.
 func recordHistory(record protocol.RunRecord) {
 	settings, err := storage.GetSettings()
 	if err != nil || settings.HistoryMode == protocol.HistoryOff {

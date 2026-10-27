@@ -3,7 +3,7 @@
 // prefers-reduced-motion.
 //
 // Why the walk is slower than the app it sits in: the rest of the workspace is OPERATED, and there
-// a fast transition is a courtesy — nobody studies the results sheet sliding, they wait for it. The
+// a fast transition is a courtesy - nobody studies the results sheet sliding, they wait for it. The
 // walk is WATCHED. Its animation is the explanation, not the packaging: a row arriving, a value
 // being tested, a column folding away are each a claim about what the database did, and a claim
 // that resolves in 220ms has been asserted rather than shown. So the gestures below run roughly
@@ -25,7 +25,7 @@ const WALK_FADE_S = 0.38;
 /**
  * The walk's spring: the workspace's, slackened.
  *
- * Same shape, longer travel — stiffness down from 320 so a row takes a beat to cross the card
+ * Same shape, longer travel - stiffness down from 320 so a row takes a beat to cross the card
  * instead of snapping to its new place. The damping ratio (27/2√190 ≈ 0.98) is deliberately just
  * under 1: enough to kill overshoot, because a wobble on a row that has just been kept or dropped
  * reads as uncertainty about the verdict, and there is none.
@@ -103,7 +103,7 @@ const STAGGER_WINDOW_S = 0.55;
  * A flat per-item delay reads well on five rows and falls apart on twenty-five: at 75ms each, the
  * last row of a full sample would wait 1.8s to start, and the phase it belongs to is 900ms long.
  * Past `STAGGER_WINDOW_S` the stagger compresses to fit rather than running long, so the gesture
- * keeps its shape — first row first, last row last — at every sample size.
+ * keeps its shape - first row first, last row last - at every sample size.
  */
 export function staggerDelay(index: number, count: number, per: number): number {
   const spread = Math.max(1, count - 1);
@@ -115,7 +115,7 @@ export const SpeedContext = createContext(1);
 export const useSpeed = (): number => useContext(SpeedContext);
 
 /**
- * Whether the station on stage moves its rows rather than rebuilding them — a filter's survivors
+ * Whether the station on stage moves its rows rather than rebuilding them - a filter's survivors
  * sliding up, a sort re-ordering the card, a cut dropping the tail. Only then is a row on the new
  * card the same row as one on the old, and only then is there a move worth animating.
  *

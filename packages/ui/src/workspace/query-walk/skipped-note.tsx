@@ -33,7 +33,7 @@ export function SkippedNote({ parts }: { parts: readonly SkippedPart[] }): React
             <li className="min-w-0" key={`${part.label}:${i}`}>
               <p className="text-xs">
                 <span className="font-mono">{part.label}</span>
-                <span className="text-muted-foreground"> — {why(part)}</span>
+                <span className="text-muted-foreground"> - {why(part)}</span>
               </p>
               <p className="mt-0.5 text-muted-foreground text-xs leading-5">{part.reason}</p>
               <pre className="mt-1 whitespace-pre-wrap rounded-md bg-muted p-2 font-mono text-xs leading-5">

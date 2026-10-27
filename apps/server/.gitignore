@@ -3,7 +3,7 @@ dist/
 release/
 
 # The frontend bundle copied in by scripts/build.sh. The directory itself is committed (with
-# only .gitkeep) because //go:embed needs it to exist in a clean checkout — which is also why
+# only .gitkeep) because //go:embed needs it to exist in a clean checkout - which is also why
 # it is not called "dist": the root .gitignore excludes every dist/, and git will not descend
 # into an excluded directory to re-include a file inside it.
 webui/static/*

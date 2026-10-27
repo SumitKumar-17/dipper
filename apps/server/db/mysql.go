@@ -15,7 +15,7 @@ import (
 
 	mysqldriver "github.com/go-sql-driver/mysql"
 
-	"perch/protocol"
+	"pipit/protocol"
 )
 
 type mysqlDriver struct {

@@ -1,18 +1,18 @@
 {
-  "name": "perch-monorepo",
+  "name": "pipit-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "Monorepo for perch: the `perch` server/CLI, the web UI, and the packages they share.",
+  "description": "Monorepo for pipit: the `pipit` server/CLI, the web UI, and the packages they share.",
   "type": "module",
   "license": "MIT",
-  "author": "Sahil1337 (https://github.com/Sahil1337)",
-  "homepage": "https://github.com/Sahil1337/perch#readme",
+  "author": "SumitKumar-17 (https://github.com/SumitKumar-17)",
+  "homepage": "https://github.com/SumitKumar-17/pipit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sahil1337/perch.git"
+    "url": "git+https://github.com/SumitKumar-17/pipit.git"
   },
   "bugs": {
-    "url": "https://github.com/Sahil1337/perch/issues"
+    "url": "https://github.com/SumitKumar-17/pipit/issues"
   },
   "packageManager": "bun@1.3.14",
   "engines": {
@@ -25,17 +25,17 @@
   ],
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "dev:server": "turbo run dev --filter=perch",
-    "dev:ui": "turbo run dev --filter=@perch/web",
+    "dev:server": "turbo run dev --filter=pipit",
+    "dev:ui": "turbo run dev --filter=@pipit/web",
     "dev:site": "bun --cwd=apps/site run dev",
-    "build": "bun run --filter @perch/web build && bun run --filter perch build",
+    "build": "bun run --filter @pipit/web build && bun run --filter pipit build",
     "build:site": "bun --cwd=apps/site run build",
-    "start": "turbo run start --filter=perch",
+    "start": "turbo run start --filter=pipit",
     "start:site": "bun --cwd=apps/site run build && bun --cwd=apps/site run preview",
     "typecheck": "bun run --filter '*' typecheck",
-    "lint": "eslint apps/web/src apps/web/vite.config.ts apps/site/src packages/ui/src && bun run --filter perch lint",
-    "smoke": "bun run --filter perch smoke",
-    "perch": "perch",
+    "lint": "eslint apps/web/src apps/web/vite.config.ts apps/site/src packages/ui/src && bun run --filter pipit lint",
+    "smoke": "bun run --filter pipit smoke",
+    "pipit": "pipit",
     "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/server/dist apps/server/ui apps/server/webui/static apps/web/dist .turbo apps/*/.turbo"
   },
   "devDependencies": {

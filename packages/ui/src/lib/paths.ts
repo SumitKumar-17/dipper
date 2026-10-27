@@ -1,8 +1,8 @@
 // Path handling, in one place.
 //
-// Every path in perch is a path the *server* opens, and the server runs on Windows too, so a path
-// may arrive with either separator. A path is never rewritten — it goes back to the server
-// verbatim — only split for display. Spreading that rule across call sites is how a Windows path
+// Every path in pipit is a path the *server* opens, and the server runs on Windows too, so a path
+// may arrive with either separator. A path is never rewritten - it goes back to the server
+// verbatim - only split for display. Spreading that rule across call sites is how a Windows path
 // bug survives, so it is written once here.
 
 /** Server paths are native, so a Windows server sends backslashes. Split on both. */

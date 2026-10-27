@@ -45,8 +45,8 @@ export class GridScene {
   readonly dock = dock();
   private readonly ctx: CanvasRenderingContext2D | null;
   private readonly frames: Frames;
-  /** The perched bird's length in its own units: the porcelain bird's length maps onto it. */
-  private readonly perchedLength: number;
+  /** The roosted bird's length in its own units: the porcelain bird's length maps onto it. */
+  private readonly roostedLength: number;
   private readonly random = seededRandom(7);
   private readonly table = new LiveTable();
   private readonly atlas = new GlyphAtlas();
@@ -81,15 +81,15 @@ export class GridScene {
     this.ctx = canvas.getContext("2d");
     this.frames = bakeFrames();
     const flying = extentOf([...this.frames.flap, this.frames.glide]);
-    const perched = extentOf([this.frames.perch]);
-    this.perchedLength = perched.right - perched.left;
+    const roosted = extentOf([this.frames.roost]);
+    this.roostedLength = roosted.right - roosted.left;
     this.resting = new RestingGrid(this.table, this.atlas);
     this.light = new CellLight(this.zone);
     this.scatter = new Scatter(this.table, this.zone, this.random);
     this.wake = new Wake(this.random);
     this.ripples = new Ripple(this.random);
     this.glints = new Glints(this.table, this.resting, this.random);
-    this.timeline = new Timeline(this.frames, flying, perched, { ...hooks, arrive: (point) => this.arrive(point) }, this.random);
+    this.timeline = new Timeline(this.frames, flying, roosted, { ...hooks, arrive: (point) => this.arrive(point) }, this.random);
   }
 
   get settled(): boolean {
@@ -111,7 +111,7 @@ export class GridScene {
     const cells = (layout.rows + 2) * layout.cols;
     const ring = layout.slots * layout.cols;
     this.room.flightScale = flightScale(layout.width);
-    this.room.perchedScale = this.hooks.birdLength() / this.perchedLength;
+    this.room.roostedScale = this.hooks.birdLength() / this.roostedLength;
     this.zone.resize(cells);
     this.light.resize(cells);
     this.scatter.resize(ring);

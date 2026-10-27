@@ -1,16 +1,16 @@
 // The only picture in the app: a client on your machine, and your database over there. The screen
-// underneath asks for a host and a port because perch neither is a database nor ships one, so the
+// underneath asks for a host and a port because pipit neither is a database nor ships one, so the
 // picture has to make "two things, joined" the obvious reading before the form is read at all.
 //
-// Drawn, not branded — see `dialect-mark.tsx` for why perch ships no vendor logos.
+// Drawn, not branded - see `dialect-mark.tsx` for why pipit ships no vendor logos.
 //
-// The beam travels perch → database, the direction the connection is made in, and only while there
+// The beam travels pipit → database, the direction the connection is made in, and only while there
 // is nothing to report. Once a server is found the link goes solid, agreeing with the row below it.
 
-import type { Dialect } from "@perch/protocol";
+import type { Dialect } from "@pipit/protocol";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type React from "react";
-import { PerchMark } from "../brand/logo";
+import { PipitMark } from "../brand/logo";
 import { cn } from "../lib/utils";
 import { DIALECT_LABEL, DialectMark } from "./dialect-mark";
 import { useSpring } from "../lib/motion";
@@ -34,16 +34,16 @@ export function ConnectionBeam({
 
   return (
     <div
-      aria-label={`Perch, connecting to ${DIALECT_LABEL[target]}`}
+      aria-label={`Pipit, connecting to ${DIALECT_LABEL[target]}`}
       className={cn("flex items-start justify-center gap-3", className)}
       role="img"
     >
-      <Node label="Perch">
-        <PerchMark />
+      <Node label="Pipit">
+        <PipitMark />
       </Node>
 
       {/* The wire. A hairline the pulse runs along, so the motion is the only thing that moves.
-          The pulse runs whether or not a server has been found — a live link that sits perfectly
+          The pulse runs whether or not a server has been found - a live link that sits perfectly
           still reads as a broken image, which is what a solid white bar was doing here. Finding
           one lights the wire underneath instead, so the state shows without stopping the motion. */}
       <div
@@ -77,7 +77,7 @@ export function ConnectionBeam({
 /**
  * One end of the link: the mark in a card, named underneath. With a `swapKey` the contents ride out
  * upwards and the replacement arrives from below, clipped by the card, so the card is the fixed
- * thing and its contents are what changed — rather than two marks dissolving into one smear. The
+ * thing and its contents are what changed - rather than two marks dissolving into one smear. The
  * label travels with it: "Postgres" under a MySQL mark for 200ms is worse than either.
  */
 function Node({
@@ -86,7 +86,7 @@ function Node({
   children,
 }: {
   label: string;
-  /** Identity of the contents. Omitted for an end that never changes, like perch's own. */
+  /** Identity of the contents. Omitted for an end that never changes, like pipit's own. */
   swapKey?: string;
   children: React.ReactNode;
 }): React.ReactElement {

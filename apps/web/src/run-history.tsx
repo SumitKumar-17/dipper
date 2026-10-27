@@ -4,14 +4,14 @@
 //
 // Grouped by day, because that is how people look for a query they have lost: not "the 43rd row
 // down" but "sometime yesterday". Days collapse so a long history can be skimmed at the level of
-// days first — and the count stays visible on a collapsed day, which is the only thing you can
+// days first - and the count stays visible on a collapsed day, which is the only thing you can
 // still learn about it without opening it.
 //
 // Scoped to a folder, because the other way people look for a lost query is "the one I ran on that
-// project" — and a machine with four checkouts open over a year has one history in which none of
+// project" - and a machine with four checkouts open over a year has one history in which none of
 // them can be found.
 
-import type { HistoryScope } from "@perch/protocol";
+import type { HistoryScope } from "@pipit/protocol";
 import {
   Badge,
   Button,
@@ -25,7 +25,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-  PerchMark,
+  PipitMark,
   Select,
   SelectItem,
   SelectPopup,
@@ -36,7 +36,7 @@ import {
   requestSettings,
   useWorkspace,
   type Run,
-} from "@perch/ui";
+} from "@pipit/ui";
 import { ChevronRightIcon } from "lucide-react";
 import * as React from "react";
 
@@ -50,7 +50,7 @@ const SCOPES: Readonly<Record<HistoryScope, string>> = {
   global: "No folder",
 };
 
-/** Local midnight for the day `iso` falls in — the key runs are bucketed by. */
+/** Local midnight for the day `iso` falls in - the key runs are bucketed by. */
 function dayKey(iso: string): string {
   const date = new Date(iso);
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()).toISOString();
@@ -113,7 +113,7 @@ function Outcome({ run }: { run: Run }): React.ReactElement {
  * not valid markup, and hover-revealed actions would have to push the SQL aside to make room for
  * something wanted once in fifty rows.
  *
- * "Run again" runs against whatever connection is selected now, not the one it ran on — a past run
+ * "Run again" runs against whatever connection is selected now, not the one it ran on - a past run
  * is a query you want to repeat, and switching connections underneath someone is the more
  * surprising of the two readings.
  */
@@ -192,7 +192,7 @@ export function RunHistory(): React.ReactElement {
           <EmptyMedia variant="icon">
             {/* The mark, muted: the colour belongs to the span, because the mark owns its own. */}
             <span className="text-muted-foreground">
-              <PerchMark className="size-4.5" />
+              <PipitMark className="size-4.5" />
             </span>
           </EmptyMedia>
           <EmptyTitle>Nothing is recorded</EmptyTitle>

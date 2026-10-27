@@ -51,10 +51,10 @@ export function useGridScene(parts: GridSceneParts) {
     let live = true;
     let settled = false;
     let frameId = 0;
-    // The perch's feet in page px, measured with the headline, so a frame reads no layout for it.
-    let perchX = 0;
-    let perchY = 0;
-    let hasPerch = false;
+    // The roost's feet in page px, measured with the headline, so a frame reads no layout for it.
+    let roostX = 0;
+    let roostY = 0;
+    let hasRoost = false;
 
     const settle = () => {
       if (settled) return;
@@ -66,13 +66,13 @@ export function useGridScene(parts: GridSceneParts) {
       const title = copy.title.current;
       if (!scene || !title) return;
       const headline = measureHeadline(title);
-      porcelain.setPerch(headline.perch);
-      const perch = headline.perch;
-      hasPerch = perch !== null;
-      if (perch) {
-        const r = perch.el.getBoundingClientRect();
-        perchX = r.left + perch.at * r.width;
-        perchY = r.top + perch.offsetY + scrollY;
+      porcelain.setRoost(headline.roost);
+      const roost = headline.roost;
+      hasRoost = roost !== null;
+      if (roost) {
+        const r = roost.el.getBoundingClientRect();
+        roostX = r.left + roost.at * r.width;
+        roostY = r.top + roost.offsetY + scrollY;
       }
       scene.measureCopy(copy, headline);
     };
@@ -87,10 +87,10 @@ export function useGridScene(parts: GridSceneParts) {
     };
 
     const hooks: SceneHooks = {
-      perch(out: Point) {
-        out.x = perchX;
-        out.y = perchY - scrollY;
-        return hasPerch;
+      roost(out: Point) {
+        out.x = roostX;
+        out.y = roostY - scrollY;
+        return hasRoost;
       },
       birdReady: () => porcelain.ready,
       resolve: () => porcelain.release(),
@@ -126,7 +126,7 @@ export function useGridScene(parts: GridSceneParts) {
     const reflow = new ResizeObserver(measure);
     const fallback = setTimeout(settle, SETTLE_ANYWAY_MS);
 
-    // The grid's own face, and the headline's: the bird's perch is measured on the headline's
+    // The grid's own face, and the headline's: the bird's roost is measured on the headline's
     // final wrap, so a placed bird never has to move when the font arrives.
     const fonts = Promise.all([
       document.fonts.load('400 13px "Geist Mono Variable"'),

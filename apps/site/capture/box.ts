@@ -16,18 +16,18 @@ import { dirname, join, resolve } from "node:path";
 const REPO = resolve(import.meta.dir, "../../..");
 const OUT = join(REPO, "apps/site/public/img");
 const QUERIES = join(import.meta.dir, "queries");
-const PERCH = join(REPO, "apps/server/dist/perch");
+const PIPIT = join(REPO, "apps/server/dist/pipit");
 const CHROME = process.env.CHROME ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = Number(process.env.BOX_PORT ?? 4695);
 const CDP_PORT = Number(process.env.BOX_CDP_PORT ?? 9317);
 const TMP = process.env.BOX_TMP ?? tmpdir();
-const REF = process.env.BOX_REF ?? join(TMP, "perch-box-reference");
+const REF = process.env.BOX_REF ?? join(TMP, "pipit-box-reference");
 const ONLY = process.env.BOX_ONLY?.split(",");
 const PG = {
   host: process.env.PGHOST ?? "127.0.0.1",
   port: Number(process.env.PGPORT ?? 5432),
   user: process.env.PGUSER ?? userInfo().username,
-  database: process.env.CAPTURE_DB ?? "perch_site_demo",
+  database: process.env.CAPTURE_DB ?? "pipit_site_demo",
 };
 const WIDTH = 1440;
 const HEIGHT = 900;
@@ -99,7 +99,7 @@ async function json(path: string, init?: RequestInit) {
 }
 
 mkdirSync(REF, { recursive: true });
-const profile = mkdtempSync(join(TMP, "perch-box-chrome-"));
+const profile = mkdtempSync(join(TMP, "pipit-box-chrome-"));
 temporary.push(profile);
 const chrome = Bun.spawn(
   [CHROME, "--headless=new", `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${profile}`,
@@ -268,15 +268,15 @@ try {
 
   // A scene runs against its own server and an empty browser origin.
   async function withApp(name: string, opts: { connect: boolean }, body: () => Promise<void>) {
-    const dir = mkdtempSync(join(TMP, `perch-box-${name}-`));
+    const dir = mkdtempSync(join(TMP, `pipit-box-${name}-`));
     temporary.push(dir);
     const home = join(dir, "home");
     const workspace = join(dir, "birdwatch");
     for (const path of [home, workspace]) mkdirSync(path, { recursive: true });
     for (const file of COPIED) copyFileSync(join(QUERIES, file), join(workspace, file));
     for (const [file, sql] of Object.entries(FILES)) writeFileSync(join(workspace, file), sql);
-    const perch = Bun.spawn([PERCH, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
-      env: { ...process.env, PERCH_HOME: home },
+    const pipit = Bun.spawn([PIPIT, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
+      env: { ...process.env, PIPIT_HOME: home },
       stdout: "ignore",
       stderr: "inherit",
     });
@@ -292,8 +292,8 @@ try {
       await sleep(800);
       await body();
     } finally {
-      perch.kill();
-      await perch.exited;
+      pipit.kill();
+      await pipit.exited;
     }
   }
 
@@ -446,7 +446,7 @@ async function cdp() {
   async function rects(selector: string): Promise<Rect[]> {
     return evaluate<Rect[]>(`[...document.querySelectorAll(${JSON.stringify(selector)})].filter(e => e.checkVisibility({ visibilityProperty: true })).map(e => e.getBoundingClientRect()).filter(r => r.width > 0).map(r => ({ x: r.x, y: r.y, width: r.width, height: r.height }))`);
   }
-  // Lines `from`–`to` of the visible editor as drawn, from the gutter's left edge to the longest line.
+  // Lines `from`-`to` of the visible editor as drawn, from the gutter's left edge to the longest line.
   async function textRect(from: number, to: number, tries = 10): Promise<Rect> {
     // A view that just swapped documents can be a frame behind its state; ask again.
     for (let i = 1; ; i++) {

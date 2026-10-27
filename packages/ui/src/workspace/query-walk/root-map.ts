@@ -2,7 +2,7 @@
 //
 // A section's text is not the reader's: it has a WITH prefix the walk invented on the front and a
 // body trimmed at both ends. So every offset a chapter wants to point at has to be mapped, and a
-// mapping that cannot be proved is null rather than approximate — `program.ts`'s header says why.
+// mapping that cannot be proved is null rather than approximate - `program.ts`'s header says why.
 // A highlight in the wrong place reads as a fact about the query and is believed; a missing one
 // reads as a missing feature.
 
@@ -18,7 +18,7 @@ const sameRange = (a: Range, b: Range): boolean => a.from === b.from && a.to ===
  * not a verbatim slice of it.
  *
  * Null for two different reasons, and a caller can treat them the same way. The section may have no
- * mapping at all — see `Section.rootMap` — or the offset may fall inside the WITH prefix the walk
+ * mapping at all - see `Section.rootMap` - or the offset may fall inside the WITH prefix the walk
  * spliced on, which is the walk's own text and has nowhere honest to land in the reader's. Either
  * way there is no root offset, and the UI shows the statement with nothing lit rather than guessing.
  */
@@ -50,7 +50,7 @@ function rootOffset(map: RootMap | null, length: number, offset: number): number
  *
  * The comparison at the end is not doubt about the arithmetic. `compose` MERGES a body that declares
  * a WITH of its own into the prefix, which moves and rewrites the very text being placed, and from
- * here that is invisible — the composed string looks like any other. Either the root really does
+ * here that is invisible - the composed string looks like any other. Either the root really does
  * spell what this section runs or the mapping is a lie, so it is checked and dropped rather than
  * shipped. The cost is one string compare per section.
  */
@@ -95,7 +95,7 @@ export function placeSpan(
  * It is a pass and not part of construction because a use is a fact about some other section: `from
  * chain` is written in the query that reads it, and that query is built after the CTE it reads.
  * Resolution goes through `sectionForSource`, so a name is credited to the section that this
- * particular query actually reads under it — a CTE shadowed by a nearer one of the same name never
+ * particular query actually reads under it - a CTE shadowed by a nearer one of the same name never
  * collects the other's uses.
  *
  * A reference inside a spliced prefix maps to null and drops out on its own, which is what keeps the
@@ -134,8 +134,8 @@ export function withUses(program: Program): Section[] {
  * `chain c` narrowed to `chain`.
  *
  * A `SourceRef` range covers the source as written, alias and all, and highlighting the alias would
- * claim the name is longer than it is. The name is the first token — a CTE reference cannot be
- * schema-qualified, since a CTE lives in no schema — and its quotes are part of it, so a quoted name
+ * claim the name is longer than it is. The name is the first token - a CTE reference cannot be
+ * schema-qualified, since a CTE lives in no schema - and its quotes are part of it, so a quoted name
  * with a space in it is matched whole rather than cut at the space.
  */
 function nameRange(text: string, source: SourceRef): Range {

@@ -1,12 +1,12 @@
 // The two cards a per-row section shows: every row of the outer query on the left, and the rows the
 // subquery came back with for the one currently bound on the right.
 //
-// It is not a station, so it is not in `buildScene`'s switch — a bound section has no clauses to
+// It is not a station, so it is not in `buildScene`'s switch - a bound section has no clauses to
 // step through, and what moves here is which OUTER row is bound rather than which clause has run.
 // It still speaks the stage's own vocabulary: the pass/fail mark WHERE uses for a row test is the
-// same mark here, because it means the same thing — this row got through, that one did not.
+// same mark here, because it means the same thing - this row got through, that one did not.
 
-import type { Cell, StatementResult } from "@perch/protocol";
+import type { Cell, StatementResult } from "@pipit/protocol";
 import type { BoundPlan, BoundRow } from "../bound";
 import { answerView } from "./answer";
 import { colsOf, positional, visibleIndices, widthFor } from "./columns";
@@ -74,8 +74,8 @@ export function boundScene(args: {
     settled: true,
   };
 
-  // The right half, per kind. IN and a scalar get a card of their own — a value list and an
-  // equation — and everything else keeps the rows, which is what presence looks like.
+  // The right half, per kind. IN and a scalar get a card of their own - a value list and an
+  // equation - and everything else keeps the rows, which is what presence looks like.
   const answer = answerView({ plan, row: rows[current] ?? null, inner, error: innerError });
   return {
     kind: "tables",

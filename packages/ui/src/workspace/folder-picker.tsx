@@ -1,15 +1,15 @@
 // Picking a workspace folder by looking at the machine, rather than typing a path from memory.
 //
-// The obvious control — a native folder dialog — is not available to us. `showDirectoryPicker()`
-// returns a handle scoped to the browser sandbox, not a path, and every path in perch is a path
+// The obvious control - a native folder dialog - is not available to us. `showDirectoryPicker()`
+// returns a handle scoped to the browser sandbox, not a path, and every path in pipit is a path
 // the *server* opens. So the picker is a thin filesystem browser over `GET /api/browse`: folders
 // only, one level at a time, starting at home.
 //
 // Typing is still there for the people who know exactly where they are going, and Recent is still
 // the fastest route back to yesterday's folder. This exists because neither helps the case that
-// matters most — the first run, on a machine whose layout perch cannot guess.
+// matters most - the first run, on a machine whose layout pipit cannot guess.
 
-import type { BrowseResult } from "@perch/protocol";
+import type { BrowseResult } from "@pipit/protocol";
 import { ChevronRightIcon, CornerLeftUpIcon, FolderIcon, HouseIcon } from "lucide-react";
 import * as React from "react";
 import { messageOf } from "../lib/errors";
@@ -90,7 +90,7 @@ export function FolderPicker({
         <DialogHeader>
           <DialogTitle>Open a folder</DialogTitle>
           <DialogDescription>
-            Perch reads and writes .sql files inside the folders you open. Pick one, or open its
+            Pipit reads and writes .sql files inside the folders you open. Pick one, or open its
             parent to see everything at once.
           </DialogDescription>
         </DialogHeader>

@@ -15,7 +15,7 @@ export type BirdPalette = PorcelainPalette | LinePalette;
  */
 export type ViaPoint = { el?: Element; x: number; y: number };
 
-export type PerchOptions = {
+export type RoostOptions = {
   /** 0..1 along the element's top edge. Default 0.8. */
   at?: number;
   /** Default "auto": towards the middle of the page. */
@@ -28,7 +28,7 @@ export type PerchOptions = {
   pace?: number;
 };
 
-export type GuideStep = PerchOptions & {
+export type GuideStep = RoostOptions & {
   el: Element;
   /** 0..1, default 0.3: how much of the viewport, centred, counts as this step's band. */
   band?: number;
@@ -49,13 +49,13 @@ export type BirdOptions = {
   seed?: number;
 };
 
-export type BirdPerch = { el: Element; at: number; facing: BirdFacing };
+export type BirdRoost = { el: Element; at: number; facing: BirdFacing };
 
 export interface Bird {
   /** "svg" when WebGL is unavailable: the 2D mark, moved by crossfading, same API. */
   readonly renderer: "webgl" | "svg";
-  /** The current perch, or the destination while flying; null before the first perch. */
-  readonly perch: BirdPerch | null;
+  /** The current roost, or the destination while flying; null before the first roost. */
+  readonly roost: BirdRoost | null;
   /** Where the feet are, in viewport px; null before the bird has appeared. */
   readonly position: { x: number; y: number } | null;
   /** Taking off or in the air. */
@@ -67,11 +67,11 @@ export interface Bird {
   /** Flights stay below this element's bottom edge, a sticky nav for one; null lifts the limit. */
   setCeiling(el: Element | null): void;
   /** Fly to el's top edge and land; resolves on landing. Mid-flight it bends the path. */
-  perchOn(el: Element, options?: PerchOptions): Promise<void>;
-  /** Place on a perch without flying, with a short fade-in. */
-  appear(el: Element, options?: PerchOptions): Promise<void>;
+  roostOn(el: Element, options?: RoostOptions): Promise<void>;
+  /** Place on a roost without flying, with a short fade-in. */
+  appear(el: Element, options?: RoostOptions): Promise<void>;
   /** Enter from off-screen and land, for a page-load moment. */
-  flyIn(el: Element, options?: PerchOptions): Promise<void>;
+  flyIn(el: Element, options?: RoostOptions): Promise<void>;
   /** As the page scrolls, fly at once to the step nearest the viewport's centre band. Returns stop(). */
   guide(steps: GuideStep[] | null): () => void;
   /** Turn the head toward a viewport point for a moment. */

@@ -1,4 +1,4 @@
-// @perch/protocol is consumed as raw .ts source by both a NodeNext build (apps/server) and a
+// @pipit/protocol is consumed as raw .ts source by both a NodeNext build (apps/server) and a
 // bundler (apps/web). That only works because every export is a type: TypeScript erases the
 // imports entirely, so the contract never reaches a runtime bundle and needs no build step.
 // One runtime value (a const, an enum, a function) would silently break that. This guards it.
@@ -23,9 +23,9 @@ for (const entry of readdirSync(srcDir, { withFileTypes: true, recursive: true }
 
 if (offenders.length > 0) {
   console.error(
-    "@perch/protocol must export types only. Runtime exports found:\n  " + offenders.join("\n  "),
+    "@pipit/protocol must export types only. Runtime exports found:\n  " + offenders.join("\n  "),
   );
-  console.error("\nMove the value into the package that owns it (apps/server, or @perch/client).");
+  console.error("\nMove the value into the package that owns it (apps/server, or @pipit/client).");
   process.exit(1);
 }
-console.log(`@perch/protocol: types-only check passed`);
+console.log(`@pipit/protocol: types-only check passed`);

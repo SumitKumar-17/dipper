@@ -33,15 +33,15 @@ on resize.
   light from the upper left, soft shadows. The sculpture is drawn before the first paint.
 - **~0.9 s.** The bird appears on **J** (it starts on screen rather than flying in), gives a little
   hop, and J goes down: `j`.
-- **0.9–2.2 s.** Quick hops along the back row, **O I N**: `join`. Then down to the space bar, a
+- **0.9-2.2 s.** Quick hops along the back row, **O I N**: `join`. Then down to the space bar, a
   look along the middle row, **S** and **P**: `join sp` by 3.6 s. Each landing presses its key; the
   key the bird stands on holds a hair lower, with the bird's soft shadow on it.
-- **3.7 s.** Perch's completion menu opens under the caret, in the app's own style: `▦ species`
+- **3.7 s.** Pipit's completion menu opens under the caret, in the app's own style: `▦ species`
   `table · ~51 rows` selected, `▨ species_totals` `view`. The bird glances at it.
 - **~4.3 s.** It hops back onto the wide **tab** key: `species s` completes, the menu closes, and
   `on s.id = g.species_id` writes itself from the foreign key, in the info blue with a
   `◇ foreign key · sightings.species_id → species.id` note, then settles to ink.
-- **~5.3–6.4 s (the crazy moment).** It looks at return, crouches, flutters, and makes one long
+- **~5.3-6.4 s (the crazy moment).** It looks at return, crouches, flutters, and makes one long
   jump across the sculpture onto the giant **return** key. The stomp drives return to the bottom, a
   ripple runs out through the other keys, and all 33 result rows burst out of return as paper
   slips. The kept ones fly to the stack under the query; the rest are thrown high, rock, and drift
@@ -51,7 +51,7 @@ on resize.
 
 ### Idle loop
 The bird stands on return, breathing; now and then it preens and turns its head toward the pointer.
-Every 8–14 s it hops to a neighbouring key, which dips under its weight; nothing types. The
+Every 8-14 s it hops to a neighbouring key, which dips under its weight; nothing types. The
 sculpture draws only while a key moves. Once settled, the visitor's own presses of J O I N S P,
 tab, space or return send the bird to that key, and the key goes down. Nothing reacts while a text
 field, a link or a button has focus, and default actions are never prevented.
@@ -85,8 +85,8 @@ keys/
   keys.css           the scene light and keyframes, imported by page.css
   sculpture/         the three.js sculpture
     use-sculpture.ts   lays the scene out and draws the sculpture, on mount and resize
-    sculpture.ts       renderer, camera and draw loop; press, ripple, perch, fold
-    build-sculpture.ts the scene: lights, floor, keycaps, contact and perch shadows
+    sculpture.ts       renderer, camera and draw loop; press, ripple, roost, fold
+    build-sculpture.ts the scene: lights, floor, keycaps, contact and roost shadows
     key-motion.ts      each key's spring, and the hand-over's fold
     view.ts            the fixed view and the camera fit; the sculpture's aspect
     keycap.ts          the faceted keycap geometry

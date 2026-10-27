@@ -10,7 +10,7 @@ import { TableTile } from "./tile";
  * tile dragged into line with its threads following, then the focus that dims what it doesn't touch.
  * The bird rides the dragged tile.
  */
-export function RelationsPiece({ perchRef }: { perchRef: Ref<HTMLElement> }) {
+export function RelationsPiece({ roostRef }: { roostRef: Ref<HTMLElement> }) {
   const ref = useRef<HTMLDivElement>(null);
   useLoop(ref, relationsLoop);
   return (
@@ -18,7 +18,7 @@ export function RelationsPiece({ perchRef }: { perchRef: Ref<HTMLElement> }) {
       <div className="@container relative h-44 w-72 shrink-0 lg:h-66 lg:w-108">
         <Threads />
         {TILES.map((tile) => (
-          <TableTile key={tile.table} tile={tile} topRef={tile.table === DRAGGED ? perchRef : undefined} />
+          <TableTile key={tile.table} tile={tile} topRef={tile.table === DRAGGED ? roostRef : undefined} />
         ))}
       </div>
     </div>

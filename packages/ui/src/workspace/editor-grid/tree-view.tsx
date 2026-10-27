@@ -27,7 +27,7 @@ function BranchView({ branch }: { branch: PaneBranch }): React.ReactElement {
     <Group
       className="h-full w-full"
       id={branch.id}
-      // A `Layout` is keyed by panel id, not ordered, so it is read back through the children —
+      // A `Layout` is keyed by panel id, not ordered, so it is read back through the children -
       // which also keeps it correct after a drop reorders them.
       onLayoutChanged={(layout: Layout) =>
         resize(
@@ -100,12 +100,12 @@ function GroupView({ group }: { group: PaneGroup }): React.ReactElement {
         {/* Every pane in the group stays mounted; only the active one is visible.
 
             Rendering just the active pane meant a tab switch unmounted an editor and mounted
-            another, and `PaneBody` keys `SqlEditor` by buffer id — so each switch tore down a
+            another, and `PaneBody` keys `SqlEditor` by buffer id - so each switch tore down a
             CodeMirror instance and built a fresh one. That is the flash, and it took the cursor
             and the scroll position with it, which is the part people notice second.
 
             `invisible` rather than `hidden` on purpose: `visibility: hidden` keeps the element's
-            box, so CodeMirror stays measured and has nothing to re-measure when it comes back —
+            box, so CodeMirror stays measured and has nothing to re-measure when it comes back -
             `display: none` would collapse it to zero and hand back a mis-sized editor on the next
             switch. It also drops the subtree out of the tab order and stops pointer events, so a
             hidden pane cannot be reached by accident. */}
@@ -129,9 +129,9 @@ function GroupView({ group }: { group: PaneGroup }): React.ReactElement {
 }
 
 /**
- * An empty pane offers the thing you would do next. Naming ⌘P instead would assume a workspace —
+ * An empty pane offers the thing you would do next. Naming ⌘P instead would assume a workspace -
  * with no folder open there are no files to find. An untitled query assumes nothing, which is why
- * perch is useful a second after connecting.
+ * pipit is useful a second after connecting.
  */
 function EmptyGroup(): React.ReactElement {
   const { newScratch } = useWorkspace();

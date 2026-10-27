@@ -42,7 +42,7 @@ export function note(run: SectionRun): string {
 /**
  * What the open section IS, in the query the user wrote.
  *
- * The station rail below says FROM, JOIN, WHERE — but a CTE's FROM and the final query's FROM look
+ * The station rail below says FROM, JOIN, WHERE - but a CTE's FROM and the final query's FROM look
  * identical on it, and the SQL in the narrator is the section's own text with its WITH prefix
  * already spliced away. So without this line there is nothing on screen that answers "am I looking
  * at the CTE or at the query that reads it", which is the first thing anyone asks.
@@ -79,7 +79,7 @@ export function describe(run: SectionRun, sections: readonly SectionRun[]): stri
     case "predicate": {
       // Where the third piece of SQL went. A predicate this section swallowed has no chapter of its
       // own, and a reader who can see it in the query and not on the strip is owed the sentence that
-      // says it did not vanish — it is the cells.
+      // says it did not vanish - it is the cells.
       const swallowed = run.section.absorbed;
       const cells =
         swallowed.length === 0
@@ -93,7 +93,7 @@ export function describe(run: SectionRun, sections: readonly SectionRun[]): stri
       // Correlation decides the whole sentence, because it decides what the reader is looking at: one
       // number repeated down the column, or a different number on every row.
       return outer
-        ? `a subquery in the SELECT list, so it is a column of ${outer} rather than a filter on it — and it runs once for every row of ${outer}, landing a different value on each.`
+        ? `a subquery in the SELECT list, so it is a column of ${outer} rather than a filter on it - and it runs once for every row of ${outer}, landing a different value on each.`
         : "a subquery in the SELECT list. Nothing in it depends on the outer row, so it is computed once, before the rows are projected, and the same value lands on every one of them.";
     case "branch":
       return `branch ${origin.index + 1} of the set operation.`;

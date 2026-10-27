@@ -13,13 +13,13 @@ const SKELETON_ROWS = 5;
 
 /**
  * An open folder with no .sql files in it. The panel has already said "empty" by being empty, so the
- * only thing worth offering is the other way out — a different folder — centred, where the eye is.
+ * only thing worth offering is the other way out - a different folder - centred, where the eye is.
  */
 export function EmptyWorkspace({ onOpen }: { onOpen: () => void }): React.ReactElement {
   return (
     <div className="flex h-full flex-col items-center justify-center p-4">
       {/* Outline, not ghost: a ghost button is a label until you hover it, which is fine in a
-          toolbar full of other controls and useless as the only thing on an empty panel — the one
+          toolbar full of other controls and useless as the only thing on an empty panel - the one
           affordance here has to look pressable before it is pointed at. */}
       <Button onClick={onOpen} size="sm" variant="outline">
         <FolderOpenIcon />
@@ -33,8 +33,8 @@ export function EmptyWorkspace({ onOpen }: { onOpen: () => void }): React.ReactE
  * What the Files panel is when no folder is open: an offer to open one, not a pointer at Settings.
  *
  * Recent folders are listed because the common case is reopening the one you had. The path field is
- * free-form because the server owns the filesystem — a browser cannot show a directory picker for
- * it — so anything typed is checked there (absolute, exists, is a directory) and the refusal shown
+ * free-form because the server owns the filesystem - a browser cannot show a directory picker for
+ * it - so anything typed is checked there (absolute, exists, is a directory) and the refusal shown
  * here. Queries need none of this: "New query" below opens a buffer that never touches disk.
  */
 export function OpenFolder(): React.ReactElement {
@@ -55,7 +55,7 @@ export function OpenFolder(): React.ReactElement {
   return (
     <div className="flex flex-col gap-3 px-2 py-3">
       <p className="text-muted-foreground text-xs">
-        No folder open. Open one to browse and save <code>.sql</code> files — or just start an
+        No folder open. Open one to browse and save <code>.sql</code> files - or just start an
         untitled query below.
       </p>
 

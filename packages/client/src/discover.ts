@@ -1,4 +1,4 @@
-import type { DiscoveryResult } from "@perch/protocol";
+import type { DiscoveryResult } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type DiscoverOptions = CallOptions & {
@@ -8,7 +8,7 @@ export type DiscoverOptions = CallOptions & {
 
 /**
  * The database servers already on the user's machine. A single callable rather than an object
- * of routes, because there is only the one route — same shape as `events`.
+ * of routes, because there is only the one route - same shape as `events`.
  */
 export type DiscoverApi = (opts?: DiscoverOptions) => Promise<DiscoveryResult>;
 

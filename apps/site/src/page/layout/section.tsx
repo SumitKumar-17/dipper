@@ -2,7 +2,7 @@ import type { ReactNode, Ref } from "react";
 import { cn } from "../../shared/cn";
 import { Reveal } from "../../shared/motion";
 import { Container } from "./container";
-import { Perch } from "./perch";
+import { Roost } from "./roost";
 import { body, heading } from "./type";
 
 // The section anatomies below the hero. A feature section is a stage (layout/stage.tsx), from lg one
@@ -39,8 +39,8 @@ export type SectionProps = {
   id: string;
   /** The id of the section's H2. */
   labelledBy: string;
-  /** For a section with no piece: a line that stands for its heading, which the bird perches on. */
-  perchRef?: Ref<HTMLDivElement>;
+  /** For a section with no piece: a line that stands for its heading, which the bird roosts on. */
+  roostRef?: Ref<HTMLDivElement>;
   /** First light's dawn rises behind this section (a.css keeps a still version for reduced motion). */
   dawn?: boolean;
   /**
@@ -52,7 +52,7 @@ export type SectionProps = {
   children: ReactNode;
 };
 
-export function Section({ id, labelledBy, perchRef, dawn, stage, className, children }: SectionProps) {
+export function Section({ id, labelledBy, roostRef, dawn, stage, className, children }: SectionProps) {
   return (
     <section
       id={id}
@@ -66,7 +66,7 @@ export function Section({ id, labelledBy, perchRef, dawn, stage, className, chil
     >
       <Container>
         <div className={cn("relative pt-8", stage ? "lg:pt-0" : "lg:pt-12")}>
-          {perchRef ? <Perch ref={perchRef} section /> : null}
+          {roostRef ? <Roost ref={roostRef} section /> : null}
           {children}
         </div>
       </Container>
@@ -74,9 +74,9 @@ export function Section({ id, labelledBy, perchRef, dawn, stage, className, chil
   );
 }
 
-/** A feature section's wiring: the bird's perch on its piece, and a hop when its scene finishes. */
+/** A feature section's wiring: the bird's roost on its piece, and a hop when its scene finishes. */
 export type FeatureSectionProps = {
-  perchRef: Ref<HTMLElement>;
+  roostRef: Ref<HTMLElement>;
   /** The scene finished a beat: the bird hops, if it is standing in this section. */
   onSceneDone: () => void;
 };

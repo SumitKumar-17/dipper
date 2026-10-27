@@ -1,11 +1,11 @@
 // Whether the welcome flow has anything to say.
 //
 // Two conditions have to agree. The first is factual: with no connection there is nothing to show
-// but a setup screen. The second is consent — someone who has been through this (or skipped it)
+// but a setup screen. The second is consent - someone who has been through this (or skipped it)
 // never sees it again, even after deleting every connection, because re-running onboarding at
 // someone mid-cleanup is an interruption, not help.
 //
-// That consent is `settings.onboarded`, so it lives in ~/.perch/settings.json rather than in
+// That consent is `settings.onboarded`, so it lives in ~/.pipit/settings.json rather than in
 // localStorage: onboarding is a property of the installation, not of one browser profile.
 
 import * as React from "react";
@@ -46,10 +46,10 @@ export function useMarkOnboarded(): () => void {
 }
 
 /** Dispatch on `window` to reopen the setup screen over the workspace. */
-const CONNECT_SETUP_EVENT = "perch:connect-setup";
+const CONNECT_SETUP_EVENT = "pipit:connect-setup";
 
 /**
- * The way back to the setup screen — what the connection picker's "Connect a database…" calls.
+ * The way back to the setup screen - what the connection picker's "Connect a database…" calls.
  *
  * An event, not a settings write. Clearing `onboarded` to reopen the screen said something false
  * about the installation (this one has seen the welcome flow) and left it saying so on disk if the
@@ -70,8 +70,8 @@ export function useOnboardingFlow(): { readonly open: boolean; readonly done: ()
   const [finished, setFinished] = React.useState(false);
 
   // Latched, because the derived value only ever starts the flow. State rather than a ref: the
-  // latch has to be visible on the render that first needed it — hence `needed ||` below rather
-  // than an effect, which would leave a frame with the flow needed and nothing mounted — and a
+  // latch has to be visible on the render that first needed it - hence `needed ||` below rather
+  // than an effect, which would leave a frame with the flow needed and nothing mounted - and a
   // render React discards must not be able to latch a flow the user never saw.
   const [started, setStarted] = React.useState(false);
   if (needed && !started) setStarted(true);

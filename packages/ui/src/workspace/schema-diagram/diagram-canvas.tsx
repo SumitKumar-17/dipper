@@ -59,8 +59,8 @@ export function DiagramCanvas({
       className="absolute top-0 left-0 origin-top-left translate-x-(--pan-x) translate-y-(--pan-y) scale-(--zoom)"
       ref={view.canvasRef}
       /* `livePan` rather than `view.pan`: a pan gesture writes the transform straight to this
-         node and tells React on release, so a render that happens in between — a hover, a
-         card drag — must agree with what is already on screen instead of snapping it back. */
+         node and tells React on release, so a render that happens in between - a hover, a
+         card drag - must agree with what is already on screen instead of snapping it back. */
       style={
         {
           "--pan-x": `${(view.livePan.current ?? view.pan).x}px`,
@@ -70,7 +70,7 @@ export function DiagramCanvas({
       }
     >
       {/* Its own compositing layer. The pulses animate `stroke-dashoffset`, which is a paint,
-          not a transform, so every frame re-rasters whatever shares a layer with them —
+          not a transform, so every frame re-rasters whatever shares a layer with them -
           promoting the wires keeps that off the cards, which are the expensive thing to
           raster and never move while a pulse travels. */}
       <svg

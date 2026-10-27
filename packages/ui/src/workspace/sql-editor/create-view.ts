@@ -31,7 +31,7 @@ import { formatNotice } from "./format-notice";
 import { statementAtCursor } from "./statements";
 import { cellHeight, editorThemeBase, paneHeight, sqlHighlighting } from "./theme";
 
-// Compartments hold no state of their own — they are keys into a state's configuration — so one
+// Compartments hold no state of their own - they are keys into a state's configuration - so one
 // set at module scope serves every mounted editor without them interfering.
 export const languageConf = new Compartment();
 export const gutterConf = new Compartment();

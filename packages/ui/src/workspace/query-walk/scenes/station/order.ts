@@ -1,7 +1,7 @@
 // ORDER BY: the same rows before and after the sort, with the sort keys lit and arrowed, so the
 // only thing that moves is the rows.
 
-import type { StatementResult } from "@perch/protocol";
+import type { StatementResult } from "@pipit/protocol";
 import { colsOf, findColumn, positional, rowsOf, visibleIndices } from "../columns";
 import type { SceneContext } from "../context";
 import { EMPTY, type Col, type Scene } from "../types";

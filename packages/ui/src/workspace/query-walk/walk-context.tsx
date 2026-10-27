@@ -2,7 +2,7 @@
 // way to ask the database something.
 //
 // A context for the reason `walk-motion.ts` gives for its own: `probe` was drilled through five
-// levels — the dialog, the player, a bound section, a bound walk, its hooks — for a value that is
+// levels - the dialog, the player, a bound section, a bound walk, its hooks - for a value that is
 // fixed for as long as the dialog is open, and `program` through three. Neither is a decision any
 // component in between was making, and both were in the signature of every one of them.
 

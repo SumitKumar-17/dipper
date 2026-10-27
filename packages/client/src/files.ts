@@ -1,4 +1,4 @@
-import type { FileEntry } from "@perch/protocol";
+import type { FileEntry } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type FileContent = { path: string; content: string; modifiedAt: string };
@@ -9,7 +9,7 @@ export type WriteInput = {
   content: string;
   /**
    * The `modifiedAt` the content was read at. When it no longer matches disk the write is
-   * refused with a 409 — call `staleWrite(err)` to get the current file back out of the error.
+   * refused with a 409 - call `staleWrite(err)` to get the current file back out of the error.
    */
   ifModifiedAt?: string;
 };

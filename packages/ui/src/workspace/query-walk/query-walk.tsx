@@ -1,15 +1,15 @@
-// The query walk: one statement read as a PROGRAM of sections — a CTE, a derived table, a subquery
-// predicate, a branch of a set operation, the statement itself — each animated through its logical
+// The query walk: one statement read as a PROGRAM of sections - a CTE, a derived table, a subquery
+// predicate, a branch of a set operation, the statement itself - each animated through its logical
 // stations with the real rows and counts the connected database gives back.
 //
 // Sections replaced the breadcrumb stack that used to live here. A crumb was a detour: walking into
 // a CTE threw the outer query away, carried nothing over, and had to be navigated back out of. A
-// section is a chapter instead — every one of them is on the strip at the top, already computed, one
+// section is a chapter instead - every one of them is on the strip at the top, already computed, one
 // click away, and playback runs straight through the lot in dependency order.
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
-import { stripComments, type SqlComment } from "@perch/sql";
+import { stripComments, type SqlComment } from "@pipit/sql";
 import * as React from "react";
 import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";

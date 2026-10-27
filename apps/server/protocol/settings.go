@@ -15,7 +15,7 @@ const (
 	KeywordLower    KeywordCase = "lower"
 )
 
-// What the editor offers as you type. `basic` is the plain dictionary — every keyword and every
+// What the editor offers as you type. `basic` is the plain dictionary - every keyword and every
 // object in the schema, everywhere. `smart` reads the statement around the cursor and narrows
 // columns to the tables it actually joins, which is what makes the list worth reading.
 type CompletionMode string
@@ -30,8 +30,8 @@ func (m CompletionMode) Valid() bool {
 	return m == CompletionOff || m == CompletionBasic || m == CompletionSmart
 }
 
-// How much of a run survives it. `queries` is what perch has always kept — the shape of a run and
-// its counts, never a row — and stays the default: turning on row storage without being asked
+// How much of a run survives it. `queries` is what pipit has always kept - the shape of a run and
+// its counts, never a row - and stays the default: turning on row storage without being asked
 // would put a database's contents in a second place on disk that nobody chose.
 type HistoryMode string
 
@@ -48,8 +48,8 @@ func (m HistoryMode) Valid() bool {
 // KeepsRows is the one question the run path asks of the mode.
 func (m HistoryMode) KeepsRows() bool { return m == HistoryResults }
 
-// What the history store currently holds. `Bytes` is what perch has stored; `FileBytes` is what
-// the file takes up, which is larger and does not shrink when runs are dropped — bbolt reuses the
+// What the history store currently holds. `Bytes` is what pipit has stored; `FileBytes` is what
+// the file takes up, which is larger and does not shrink when runs are dropped - bbolt reuses the
 // pages it frees rather than returning them, so the file plateaus instead of growing.
 type HistoryStats struct {
 	Runs      int   `json:"runs"`

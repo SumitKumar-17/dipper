@@ -1,5 +1,5 @@
 // The scenes every prototype imports. Each name points at the legacy custom element until its
-// real @perch/ui version is verified, then at that one; the props never change, so a swap here is
+// real @pipit/ui version is verified, then at that one; the props never change, so a swap here is
 // the only edit it takes.
 //
 // Every scene is animation only: it plays while in view, takes no pointer or key and has no tab
@@ -19,12 +19,12 @@ export const HeroScene: FC<SceneProps> = RealHeroScene;
 /** JOINs written with foreign-key completion, ON offered from the FK. */
 export const CompletionScene: FC<SceneProps> = RealCompletionScene;
 /** Query Walk, with its clause rail. */
-// The real walk (./real/walk) works, but @perch/ui folds the rows WHERE drops by animating their
+// The real walk (./real/walk) works, but @pipit/ui folds the rows WHERE drops by animating their
 // height, which scores about 0.11 layout shift at desktop width. Legacy until that fold is a transform.
 export const WalkScene: FC<SceneProps> = LegacyWalkScene;
 /** The Relationship View, touring the tables a sighting touches. */
 export const RelationsScene: FC<SceneProps> = RealRelationsScene;
 /** A .sql notebook of `-- %%` cells, run one after another. */
 export const NotebookScene: FC<SceneProps> = RealNotebookScene;
-/** curl | sh, then `perch`, then the browser it opens. */
+/** curl | sh, then `pipit`, then the browser it opens. */
 export const TerminalScene: FC<SceneProps> = LegacyTerminalScene;

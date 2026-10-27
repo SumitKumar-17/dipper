@@ -1,10 +1,10 @@
 // What came back from one probe, and the two readings of it every caller needs.
 //
 // `useProgram`, `useBoundRun` and `useGridRun` all send SQL and all have to answer the same two
-// questions about what came back — what went wrong, and what the one statement returned — so the
+// questions about what came back - what went wrong, and what the one statement returned - so the
 // answers live here rather than three times over.
 
-import type { RunRecord, StatementResult } from "@perch/protocol";
+import type { RunRecord, StatementResult } from "@pipit/protocol";
 
 export type QueryOutcome =
   | { readonly ok: true; readonly result: StatementResult }

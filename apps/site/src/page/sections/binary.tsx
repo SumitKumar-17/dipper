@@ -3,12 +3,12 @@ import { type FeatureSectionProps, Section, SectionHeading, SectionScene } from 
 import { code } from "../layout/type";
 import { BinaryPiece } from "./binary/piece";
 
-export function BinarySection({ perchRef, onSceneDone }: FeatureSectionProps) {
+export function BinarySection({ roostRef, onSceneDone }: FeatureSectionProps) {
   return (
     <Section id="one-binary" labelledBy="binary-title">
       <SectionHeading
         id="binary-title"
-        piece={<BinaryPiece perchRef={perchRef} />}
+        piece={<BinaryPiece roostRef={roostRef} />}
         title={
           <>
             <span className="block">One binary.</span> <span className="block">Nothing else to install.</span>
@@ -16,7 +16,7 @@ export function BinarySection({ perchRef, onSceneDone }: FeatureSectionProps) {
         }
       >
         A single 14&nbsp;MB executable with the interface built in. It runs on your machine and keeps everything it
-        writes in <code className={code}>~/.perch</code>. Queries stay plain .sql files.
+        writes in <code className={code}>~/.pipit</code>. Queries stay plain .sql files.
       </SectionHeading>
       {/* A terminal is a smaller window than the app: at full width it would sit mostly empty while
           the command is typed. */}

@@ -9,7 +9,7 @@ const LEAVE_MS = 400;
 const QUIET_MS = 250;
 const SCROLL_PX = 4;
 
-export type WhyPerchState = {
+export type WhyPipitState = {
   /** Where the bird stood when the slip opened; null while it is closed. */
   anchor: Anchor | null;
   slip: RefObject<HTMLDivElement | null>;
@@ -18,10 +18,10 @@ export type WhyPerchState = {
 /**
  * The easter egg's trigger. The bird's overlay never takes the pointer, so this hit-tests the
  * bird's own box against the pointer, and only once the pointer is within a couple of bird lengths
- * of it. A mouse resting on a perched, idle bird opens the slip, as does a tap on it; the bird turns
+ * of it. A mouse resting on a roosted, idle bird opens the slip, as does a tap on it; the bird turns
  * to the pointer, hops, and is held on its branch until the slip closes.
  */
-export function useWhyPerch(settled: boolean): WhyPerchState {
+export function useWhyPipit(settled: boolean): WhyPipitState {
   const bird = useBird();
   const slip = useRef<HTMLDivElement>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
@@ -44,7 +44,7 @@ export function useWhyPerch(settled: boolean): WhyPerchState {
     let release: (() => void) | null = null;
     const root = document.documentElement;
 
-    // Perched, not held by anything else, the page at rest and no button down. A flight (the
+    // Roosted, not held by anything else, the page at rest and no button down. A flight (the
     // intro, the hand-over, a hop to another key) reads as `flying`; a hop in place moves no feet.
     const idle = () => !bird.flying && !isHeld(bird) && !pressed && performance.now() - scrolledAt > QUIET_MS;
 

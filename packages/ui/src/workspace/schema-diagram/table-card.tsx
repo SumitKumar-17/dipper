@@ -1,4 +1,4 @@
-import type { Column } from "@perch/protocol";
+import type { Column } from "@pipit/protocol";
 import {
   ChevronDownIcon,
   ChevronUpIcon,

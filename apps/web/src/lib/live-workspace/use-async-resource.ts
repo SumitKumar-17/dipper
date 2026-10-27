@@ -3,14 +3,14 @@
 // Three hooks were writing the same eight lines: mark the current value as refetching, await the
 // read, store it or store the failure with whatever was already on screen, and hang the whole thing
 // off an effect that aborts on teardown. The rule that made them identical is the one in
-// `types.ts` — a refetch never blanks a populated view — so it belongs in one place rather than
+// `types.ts` - a refetch never blanks a populated view - so it belongs in one place rather than
 // three, where a fourth surface could get it subtly wrong.
 //
 // Not every reader fits: `useConnections` and `useSchema` key their effects on more than `enabled`
 // (a connection id, a database, a refresh nonce), so they keep their own effects and reuse
 // `applyError` alone.
 
-import { asyncError, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@perch/ui";
+import { asyncError, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@pipit/ui";
 import * as React from "react";
 import { aborted, detached, messageOf } from "./helpers";
 
@@ -18,7 +18,7 @@ export type AsyncResource<T> = {
   readonly value: Async<T>;
   /** Re-reads without anything to await. For buttons, events and callbacks. */
   refresh: () => void;
-  /** The same read, awaitable — the shape the workspace contract asks for. */
+  /** The same read, awaitable - the shape the workspace contract asks for. */
   reload: () => Promise<void>;
   /** For a write that already has the new value, or a failure from outside the read. */
   set: React.Dispatch<React.SetStateAction<Async<T>>>;
@@ -68,7 +68,7 @@ export function applyError<T>(
 
 /**
  * Runs `work` with a signal while `enabled`, and aborts it on teardown. `work` must be a stable
- * callback — its identity is the effect's only other key, so whatever it closes over belongs in
+ * callback - its identity is the effect's only other key, so whatever it closes over belongs in
  * its own dependency list.
  */
 export function useAbortable(

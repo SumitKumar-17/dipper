@@ -1,12 +1,12 @@
-// The real Relationship View — `SchemaDiagram` from @perch/ui — drawn from the schema a real Perch
+// The real Relationship View - `SchemaDiagram` from @pipit/ui - drawn from the schema a real Pipit
 // read off the birdwatch database. Focus and fit are the app's own code; what this module adds is
 // only what a page needs around it: an entrance the first time the scene is in view, then a slow
 // tour of `sightings` on a loop, and the anchors a page needs to put things on the cards. It is
 // animation only: the window takes no pointer or key.
 
-import { asyncLoading, type WorkspaceApi, WorkspaceProvider } from "@perch/ui";
+import { asyncLoading, type WorkspaceApi, WorkspaceProvider } from "@pipit/ui";
 import * as React from "react";
-// Not exported by @perch/ui, which ships it only inside its modal dialog. The same file the package
+// Not exported by @pipit/ui, which ships it only inside its modal dialog. The same file the package
 // barrel resolves to, so it shares the barrel's WorkspaceProvider context.
 import { SchemaDiagram } from "../../../../../../../packages/ui/src/workspace/schema-diagram/schema-diagram";
 import { EASE_IN_OUT_CSS, EASE_OUT_CSS } from "../../../motion/easing";
@@ -196,7 +196,7 @@ export default function RelationsSceneInner({
     if (!api.connectionId || !api.database) return;
     for (const mode of ["all", "keys"]) {
       try {
-        localStorage.removeItem(`perch:diagram:${api.connectionId}:${api.database}:${mode}`);
+        localStorage.removeItem(`pipit:diagram:${api.connectionId}:${api.database}:${mode}`);
       } catch {
         // Storage can be off; then there is nothing remembered either.
       }

@@ -1,4 +1,4 @@
-import type { QueryOptions, RunEvent, RunRecord } from "@perch/protocol";
+import type { QueryOptions, RunEvent, RunRecord } from "@pipit/protocol";
 import type { CallOptions, Transport } from "./http";
 import { readNdjson } from "./ndjson";
 
@@ -12,7 +12,7 @@ export type RunInput = Partial<QueryOptions> & {
 
 export type QueryApi = {
   /**
-   * Streams the run as it happens. Failing SQL is *not* an HTTP error — it arrives as an `error`
+   * Streams the run as it happens. Failing SQL is *not* an HTTP error - it arrives as an `error`
    * event followed by `done`; only a bad request (unknown connection, empty sql) rejects.
    * Breaking out of the loop closes the body, which the server reads as a cancel.
    */

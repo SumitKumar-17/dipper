@@ -2,14 +2,14 @@
 //
 // Until this existed the screen said "correlated, so it has no one answer" and stopped there, which
 // is true and useless: the relational-division query returns no rows at all, so the final result
-// teaches nothing, and the only thing that explains it is the per-row view — Zhang is missing 3 of
+// teaches nothing, and the only thing that explains it is the per-row view - Zhang is missing 3 of
 // the 5 required courses, Shankar 1, Brandt all 5, and nobody is missing none. That is why the
 // answer is empty, and it is visible nowhere else in the walk.
 //
 // There are two pictures of that, and which one is right depends on the subquery. A plain
 // correlated predicate has one answer per outer row, so it is a LEDGER: outer rows on the left,
-// the bound row's own rows on the right. A DOUBLY correlated one — this subquery walks its own rows
-// and asks a third table about each of them — has one answer per PAIR of rows, so it is a GRID, and
+// the bound row's own rows on the right. A DOUBLY correlated one - this subquery walks its own rows
+// and asks a third table about each of them - has one answer per PAIR of rows, so it is a GRID, and
 // the loop stops being the picture. The grid is a specialisation of the ledger and never a
 // replacement that can fail: when it cannot be built, or its probe is refused, the ledger is what
 // shows, whole and without a word about it.
@@ -99,7 +99,7 @@ function BoundWalk({
   const { probe } = useWalk();
   const run = useBoundRun(plan, probe);
   const outcome = React.useMemo(() => boundGrid(plan), [plan]);
-  // The grid, and — when there is none — the sentence saying which clause ruled it out. The ledger
+  // The grid, and - when there is none - the sentence saying which clause ruled it out. The ledger
   // below is a complete picture either way; what the reason prevents is a reader reading the
   // difference between this chapter and the last one as the walk quietly giving up.
   const build = outcome.kind === "grid" ? outcome.grid : null;
@@ -119,12 +119,12 @@ function BoundWalk({
 
   // Whether the rows are ARRIVING or already here, decided once, when the chapter opens. Playback
   // walking in is a first pass and every row it reaches is a test the reader watches happen; a
-  // reader clicking the chapter is not a test, and the grid they land on has to be settled — marks
+  // reader clicking the chapter is not a test, and the grid they land on has to be settled - marks
   // present, nothing staggering, nothing flashing. Under reduced motion it is always the latter.
   const filling = React.useRef(playing && !t.reduced).current;
   // A high-water mark, so a reader who scrubs BACK does not watch the rows below them un-arrive:
-  // once a row has been reached it stays revealed. Raised during render rather than in an effect —
-  // the same shape `useEvidenceStore` and `useGridRun` use — because an effect runs after the paint,
+  // once a row has been reached it stays revealed. Raised during render rather than in an effect -
+  // the same shape `useEvidenceStore` and `useGridRun` use - because an effect runs after the paint,
   // which is one frame of the grid showing one row fewer than playback has already bound.
   const [reached, setReached] = React.useState(1);
   if (current + 1 > reached) setReached(current + 1);
@@ -133,8 +133,8 @@ function BoundWalk({
   const phases = React.useMemo(() => boundPhases(rows), [rows]);
   const title = row ? boundInnerTitle(plan, row) : plan.section.label;
 
-  // What this chapter measured, put on the shelf the terminus reads. Nothing is fetched for it —
-  // these are the same three results the view above is already drawing — and it is reported only
+  // What this chapter measured, put on the shelf the terminus reads. Nothing is fetched for it -
+  // these are the same three results the view above is already drawing - and it is reported only
   // once the outer probe has landed, because a ledger with no rows has measured nothing yet.
   const evidence = React.useMemo(
     (): BoundEvidence | null =>
@@ -181,7 +181,7 @@ function BoundWalk({
 
   const column = grid.columns.find((entry) => entry.key === grid.picked?.column) ?? null;
   const cell = grid.cell;
-  // The subquery's own rows for the bound outer row, and — once a cell is picked — the rows behind
+  // The subquery's own rows for the bound outer row, and - once a cell is picked - the rows behind
   // that one cell. Both are cards beside the grid, and the second only exists when it was asked for.
   const tables = React.useMemo(
     (): TableView[] => innerCards({ build, cell, column, inner, title }),
@@ -300,8 +300,8 @@ function BoundWalk({
             rows={rows}
           />
         )}
-        {/* Why this is a ledger and not a grid. It is not an error and nothing failed — the ledger
-            answers the question completely — so it is a quiet line rather than a red box. */}
+        {/* Why this is a ledger and not a grid. It is not an error and nothing failed - the ledger
+            answers the question completely - so it is a quiet line rather than a red box. */}
         {noGrid !== null && (
           <p className="shrink-0 rounded-md border border-dashed bg-muted/40 p-2 text-muted-foreground text-xs leading-5">
             Shown row by row rather than as a grid. {noGrid}
@@ -322,8 +322,8 @@ function BoundWalk({
  *
  * The one that matters is nesting. A subquery bound to a section that is ITSELF bound has no settled
  * table of outer rows to scrub: its outer rows only exist once a row of its parent has been picked.
- * Since the grid, that parent is usually a grid and the note points at it — a cell there is what
- * would bind this — and where there is no grid it says the plain thing instead. Either way saying so
+ * Since the grid, that parent is usually a grid and the note points at it - a cell there is what
+ * would bind this - and where there is no grid it says the plain thing instead. Either way saying so
  * is worth more than a two-level scrubber nobody could follow, and far more than binding one level
  * and leaving the reader to assume the other was handled.
  */
@@ -373,7 +373,7 @@ function useRowClock(args: {
 }
 
 /**
- * The subquery's own rows for the bound outer row, and — once a cell is picked — the rows behind
+ * The subquery's own rows for the bound outer row, and - once a cell is picked - the rows behind
  * that one cell.
  *
  * Both are cards beside the grid, and the second only exists when it was asked for.

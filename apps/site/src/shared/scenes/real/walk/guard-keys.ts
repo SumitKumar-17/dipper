@@ -3,7 +3,7 @@ let keysGuarded = false;
 
 /**
  * The Query Walk binds Space and the arrow keys on `window`, in the capture phase, for as long as
- * it is mounted — right for a modal dialog, wrong on a page, where Space scrolls. A press whose
+ * it is mounted - right for a modal dialog, wrong on a page, where Space scrolls. A press whose
  * target is outside every walk window is made to look like Alt+key to the walk's listener, the one
  * modifier it ignores, and is put back before the event goes any further than `window`.
  *

@@ -1,5 +1,5 @@
 {
-  "extends": "@perch/tsconfig/react.json",
+  "extends": "@pipit/tsconfig/react.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "types": ["vite/client"]
