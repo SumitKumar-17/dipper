@@ -11,6 +11,8 @@ type Dialect string
 const (
 	DialectPostgres Dialect = "postgres"
 	DialectMySQL    Dialect = "mysql"
+	// DialectSQLite connections have no server: Database is the path of the file.
+	DialectSQLite Dialect = "sqlite"
 )
 
 type Align string

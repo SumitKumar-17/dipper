@@ -1,4 +1,5 @@
-export type Dialect = "postgres" | "mysql";
+/** A "sqlite" connection has no server: `database` is the path of the file, host and port are unused. */
+export type Dialect = "postgres" | "mysql" | "sqlite";
 
 /** A tag so a production database cannot be mistaken for a test one. */
 export type ConnectionColor = "green" | "blue" | "amber" | "red";
