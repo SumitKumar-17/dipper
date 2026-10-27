@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 func DefaultPort(dialect protocol.Dialect) int {

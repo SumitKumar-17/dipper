@@ -1,4 +1,4 @@
-// Pipit's identity, in one place. Two surfaces were drawing their own bird before this file
+// Dipper's identity, in one place. Two surfaces were drawing their own bird before this file
 // existed - the onboarding beam and the server gate - and they did not agree, which is the
 // failure mode a logo exists to prevent.
 //
@@ -11,8 +11,8 @@ import type React from "react";
 import { cn } from "../lib/utils";
 
 /**
- * Pipit's own mark: a bird on a branch. A drawing, not a logo, and - on any screen with room for
- * it - never without the name beside it; see `PipitLogo`.
+ * Dipper's own mark: a bird on a branch. A drawing, not a logo, and - on any screen with room for
+ * it - never without the name beside it; see `DipperLogo`.
  *
  * Songbird proportions, drawn to survive being small: a head about 45% of the body, a short
  * conical beak, a folded-wing back and a narrow fanned tail. Same 24px box and 1.5 stroke as
@@ -21,7 +21,7 @@ import { cn } from "../lib/utils";
  * Every part is still distinguishable at 20px. At 16px it reduces to a recognisable bird on a
  * branch, and below that it stops working - use the filled tile in `apps/web/app/icon.svg`.
  */
-export function PipitMark({ className }: { className?: string } = {}): React.ReactElement {
+export function DipperMark({ className }: { className?: string } = {}): React.ReactElement {
   return (
     <svg
       aria-hidden
@@ -57,7 +57,7 @@ export function PipitMark({ className }: { className?: string } = {}): React.Rea
  * The mark in the rounded chip it wears when it is standing on its own - the server gate, the
  * empty states, anywhere the bird would otherwise float unanchored in the middle of a screen.
  */
-export function PipitBadge({ className }: { className?: string } = {}): React.ReactElement {
+export function DipperBadge({ className }: { className?: string } = {}): React.ReactElement {
   return (
     <span
       aria-hidden
@@ -66,28 +66,28 @@ export function PipitBadge({ className }: { className?: string } = {}): React.Re
         className,
       )}
     >
-      <PipitMark className="size-5" />
+      <DipperMark className="size-5" />
     </span>
   );
 }
 
 /**
- * Mark plus wordmark. The name is lowercase everywhere it is a command - `pipit` in a terminal,
- * `@pipit/*`, `~/.pipit` - and capitalised everywhere it is the product, which is here.
+ * Mark plus wordmark. The name is lowercase everywhere it is a command - `dipper` in a terminal,
+ * `@dipper/*`, `~/.dipper` - and capitalised everywhere it is the product, which is here.
  *
  * It carries the accessible name for both halves: the mark is `aria-hidden` and the word is text,
- * so a screen reader gets "Pipit" once rather than twice.
+ * so a screen reader gets "Dipper" once rather than twice.
  */
-export function PipitLogo({
+export function DipperLogo({
   className,
   markClassName,
 }: { className?: string; markClassName?: string } = {}): React.ReactElement {
   return (
     <span className={cn("flex items-center gap-2", className)}>
-      <PipitMark className={cn("size-5", markClassName)} />
+      <DipperMark className={cn("size-5", markClassName)} />
       {/* Tracked in: at this size the default spacing reads as letters rather than a word. */}
       <span className="font-medium text-base text-foreground leading-none tracking-tight">
-        Pipit
+        Dipper
       </span>
     </span>
   );

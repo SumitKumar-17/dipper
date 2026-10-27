@@ -9,7 +9,7 @@ import type { Range, SqlPart } from "./clause-types";
  * re-exports this one, because importing it the other way round would invert the layering -
  * `steps.ts` is what imports `clauses.ts`.
  */
-export const WALK_PREFIX = "_pipit_walk_";
+export const WALK_PREFIX = "_dipper_walk_";
 
 /** Rebuilds `statement` with each edit's range swapped for its replacement, everything between
  *  them kept exactly as the user typed it. An edit that overlaps one already applied is dropped,

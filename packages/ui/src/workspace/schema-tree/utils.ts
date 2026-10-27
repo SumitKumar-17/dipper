@@ -1,4 +1,4 @@
-import type { DatabaseSchema } from "@pipit/protocol";
+import type { DatabaseSchema } from "@dipper/protocol";
 import { EyeIcon, LayersIcon, Table2Icon } from "lucide-react";
 
 export { INDENT_BASE, INDENT_STEP, indent, toggle } from "../../lib/tree";

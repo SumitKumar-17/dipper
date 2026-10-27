@@ -1,4 +1,4 @@
-import type { Cell, StatementResult } from "@pipit/protocol";
+import type { Cell, StatementResult } from "@dipper/protocol";
 
 /**
  * One statement's rows as the server's CSV export writes them (apps/server/server/runs.go): a

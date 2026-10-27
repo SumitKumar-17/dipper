@@ -11,7 +11,7 @@
 // `dirty: content !== written`, so the buffers already carry that answer and the counter had
 // nothing left to decide.
 
-import type { Buffer, SaveState } from "@pipit/ui";
+import type { Buffer, SaveState } from "@dipper/ui";
 
 export type BuffersState = {
   readonly buffers: readonly Buffer[];

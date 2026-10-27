@@ -1,22 +1,22 @@
 # Changelog
 
-Notable changes to pipit. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+Notable changes to dipper. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and versions follow [semantic versioning](https://semver.org/).
 
 The section matching a release's version becomes that release's notes on GitHub - see
 [CONTRIBUTING.md](CONTRIBUTING.md#cutting-a-release).
 
-[0.2.0]: https://github.com/SumitKumar-17/pipit/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/SumitKumar-17/pipit/releases/tag/v0.1.0
+[0.2.0]: https://github.com/SumitKumar-17/dipper/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/SumitKumar-17/dipper/releases/tag/v0.1.0
 
 ## [0.2.0] - 2026-09-27
 
 ### Added
 
-- **`pipit update`** - Update Pipit to the latest release from the command line. The update is
+- **`dipper update`** - Update Dipper to the latest release from the command line. The update is
   verified using a checksum before installing. Use `--check` to only check for updates or
-  `--version <tag>` to install a specific version. `pipit serve` also checks for new releases
-  once a day. Set `PIPIT_NO_UPDATE_CHECK=1` to disable this.
+  `--version <tag>` to install a specific version. `dipper serve` also checks for new releases
+  once a day. Set `DIPPER_NO_UPDATE_CHECK=1` to disable this.
 
 - **Smarter autocomplete** - Autocomplete now understands the SQL you are writing. It suggests
   columns from the tables in your `FROM` and `JOIN` clauses and only shows suggestions that
@@ -36,7 +36,7 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Inline password prompts** - If a database asks for a password, the password field now
   appears directly on the connection you selected.
 
-- **Better run history** - Choose what Pipit saves for each run: nothing, the query, or the
+- **Better run history** - Choose what Dipper saves for each run: nothing, the query, or the
   query and its results. Saved results can be opened and exported again later.
 
 - **Folder-based history** - Filter history by the current folder, all folders, or runs that
@@ -51,7 +51,7 @@ The section matching a release's version becomes that release's notes on GitHub 
   missing or wrong password, unknown user or database, no server listening, or a TLS problem.
 
 - **Safer remote connections** - TLS is now enabled and verified by default for databases running
-  on another machine. If a connection URL includes `sslmode`, Pipit follows that setting.
+  on another machine. If a connection URL includes `sslmode`, Dipper follows that setting.
   Connections also time out instead of waiting forever.
 
 - **Better container connections** - Docker, Podman, and nerdctl connections now use the username
@@ -76,7 +76,7 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ## [0.1.0] - 2026-09-19
 
-First release. Pipit is a local SQL workspace for PostgreSQL and MySQL: one self-contained
+First release. Dipper is a local SQL workspace for PostgreSQL and MySQL: one self-contained
 binary, around 14 MB, with no runtime to install alongside it and no account or cloud service.
 
 ### Added
@@ -88,27 +88,27 @@ binary, around 14 MB, with no runtime to install alongside it and no account or 
 - **Query Walk** - a `SELECT` replayed stage by stage (`FROM` → `JOIN` → `WHERE` → `GROUP BY` →
   … → `LIMIT`), showing the rows your database returned at each step. Read-only.
 - **SQL notebooks** - any `.sql` file splits into independently runnable statements, each
-  keeping its own results, and stays valid SQL outside pipit.
+  keeping its own results, and stays valid SQL outside dipper.
 - **Workspace folders** - open a directory and edit the `.sql` files in place. External changes
   are detected, multiple folders can be open, and tabs are restored between sessions.
 - **Split panes**, a **virtualized result grid** with CSV and JSON export, **query history**
   that survives restarts, and a **command palette** over commands, files, connections,
   databases and tables.
 - **Server discovery** - finds PostgreSQL and MySQL already running on your machine through
-  open ports, binaries on `PATH`, Homebrew, systemd, Windows services and Docker. Pipit never
+  open ports, binaries on `PATH`, Homebrew, systemd, Windows services and Docker. Dipper never
   installs or bundles a database.
 
 ### Install
 
-`curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/pipit/main/install.sh | sh` on macOS and
+`curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/dipper/main/install.sh | sh` on macOS and
 Linux, or download the Windows `.exe` from the assets on this release.
-See the [README](https://github.com/SumitKumar-17/pipit#install).
+See the [README](https://github.com/SumitKumar-17/dipper#install).
 
 ### Known limitations
 
 - **The binaries are not signed.** Installing with the `curl` line above avoids this, because
   macOS only quarantines files a browser downloaded. If you download from this page instead,
   macOS will say the developer cannot be verified - clear it with
-  `xattr -d com.apple.quarantine ./pipit`. Windows shows a SmartScreen warning: **More info →
+  `xattr -d com.apple.quarantine ./dipper`. Windows shows a SmartScreen warning: **More info →
   Run anyway**.
 - Result rows are never written to history; only the shape, counts and timing are kept.

@@ -11,7 +11,7 @@ import {
   ConnectionPicker,
   EditorGrid,
   FilesList,
-  PipitMark,
+  DipperMark,
   QueryWalkDialog,
   ResizableSidebar,
   RunButton,
@@ -25,7 +25,7 @@ import {
   requestSaveQuery,
   useHotkey,
   useWorkspace,
-} from "@pipit/ui";
+} from "@dipper/ui";
 import { PanelLeftIcon, SettingsIcon } from "lucide-react";
 import * as React from "react";
 import { RunHistory } from "../../../../../web/src/run-history";
@@ -67,8 +67,8 @@ function Workspace({ active }: { active: boolean }): React.ReactElement {
         }
         start={
           <>
-            <span aria-label="Pipit" className="flex items-center pr-1 pl-0.5" role="img">
-              <PipitMark className="size-5" />
+            <span aria-label="Dipper" className="flex items-center pr-1 pl-0.5" role="img">
+              <DipperMark className="size-5" />
             </span>
             <div aria-hidden className="mr-0.5 h-4 w-px bg-border" />
             <button

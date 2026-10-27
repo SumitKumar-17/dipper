@@ -1,4 +1,4 @@
-import type { ConnectFailureCode } from "@pipit/protocol";
+import type { ConnectFailureCode } from "@dipper/protocol";
 
 // One error type for every failure that came back from the server, so a caller never has to
 // sniff a bare Error's message to find out what happened.
@@ -8,7 +8,7 @@ import type { ConnectFailureCode } from "@pipit/protocol";
  * share the `code` field with the server's own codes, so a caller branches on one thing.
  *
  * `NETWORK` - nothing answered: wrong port, server not started, DNS, a refused connection.
- * `NOT_API` - something answered, but it is not an pipit server: a dev server's 404 page,
+ * `NOT_API` - something answered, but it is not an dipper server: a dev server's 404 page,
  * a proxy, a captive portal. The distinction matters because the fix is different for each.
  */
 export const NETWORK = "network";
@@ -28,7 +28,7 @@ export type StaleWriteBody = {
   content?: string;
 };
 
-export type PipitErrorInit = {
+export type DipperErrorInit = {
   /** HTTP status, or 0 when the request never reached the server. */
   status: number;
   /** Method and path, e.g. `PUT /api/files/content`. */
@@ -40,14 +40,14 @@ export type PipitErrorInit = {
   cause?: unknown;
 };
 
-export class PipitError extends Error {
-  override readonly name = "PipitError";
+export class DipperError extends Error {
+  override readonly name = "DipperError";
   readonly status: number;
   readonly route: string;
   readonly code?: string;
   readonly body?: unknown;
 
-  constructor(message: string, init: PipitErrorInit) {
+  constructor(message: string, init: DipperErrorInit) {
     super(message, { cause: init.cause });
     this.status = init.status;
     this.route = init.route;
@@ -56,18 +56,18 @@ export class PipitError extends Error {
   }
 }
 
-export function isPipitError(err: unknown): err is PipitError {
-  return err instanceof PipitError;
+export function isDipperError(err: unknown): err is DipperError {
+  return err instanceof DipperError;
 }
 
 /** Nothing answered at all - as opposed to answering with a failure. */
 export function isNetworkError(err: unknown): boolean {
-  return isPipitError(err) && err.code === NETWORK;
+  return isDipperError(err) && err.code === NETWORK;
 }
 
 /** Something answered, but it is not this API. See {@link NOT_API}. */
 export function isNotApiError(err: unknown): boolean {
-  return isPipitError(err) && err.code === NOT_API;
+  return isDipperError(err) && err.code === NOT_API;
 }
 
 /**
@@ -75,7 +75,7 @@ export function isNotApiError(err: unknown): boolean {
  * server's view of the file. Anything else returns undefined.
  */
 export function staleWrite(err: unknown): StaleWriteBody | undefined {
-  if (!isPipitError(err) || err.status !== 409 || err.code !== "stale_write") return undefined;
+  if (!isDipperError(err) || err.status !== 409 || err.code !== "stale_write") return undefined;
   return err.body as StaleWriteBody;
 }
 
@@ -85,7 +85,7 @@ export function staleWrite(err: unknown): StaleWriteBody | undefined {
  * or a rejection this package raised itself.
  */
 export function connectFailureCode(err: unknown): ConnectFailureCode | undefined {
-  if (!isPipitError(err) || err.code === undefined) return undefined;
+  if (!isDipperError(err) || err.code === undefined) return undefined;
   return CONNECT_FAILURE_CODES.has(err.code) ? (err.code as ConnectFailureCode) : undefined;
 }
 

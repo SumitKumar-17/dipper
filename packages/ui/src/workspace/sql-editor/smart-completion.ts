@@ -14,7 +14,7 @@ import {
   type CompletionResult,
   type CompletionSource,
 } from "@codemirror/autocomplete";
-import type { Column, DatabaseSchema, Dialect, Schema, Settings, Table } from "@pipit/protocol";
+import type { Column, DatabaseSchema, Dialect, Schema, Settings, Table } from "@dipper/protocol";
 import { analyzeSql, type SqlClause, type SqlContext, type TableRef } from "./sql-context";
 import { statementAtCursor } from "./statements";
 

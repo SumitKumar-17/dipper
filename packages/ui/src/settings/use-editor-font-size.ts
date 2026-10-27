@@ -9,7 +9,7 @@ import * as React from "react";
 import { createExternalStore } from "../lib/external-store";
 import { readRaw, writeRaw } from "../lib/storage";
 
-const KEY = "pipit.editor.fontSize";
+const KEY = "dipper.editor.fontSize";
 
 /** Matches the workspace's 13px body. Anything outside the range is a typo or a bad restore. */
 export const EDITOR_FONT_SIZES: readonly number[] = [11, 12, 13, 14, 16, 18];

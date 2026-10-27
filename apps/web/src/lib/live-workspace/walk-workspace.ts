@@ -1,5 +1,5 @@
-import type { FilesApi } from "@pipit/client";
-import type { FileEntry } from "@pipit/protocol";
+import type { FilesApi } from "@dipper/client";
+import type { FileEntry } from "@dipper/protocol";
 import { dirName } from "./helpers";
 
 /** Directories the workspace walk will list before it stops. A guard, not a policy. */

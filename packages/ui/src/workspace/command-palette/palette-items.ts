@@ -6,7 +6,7 @@
 // function of its input and the "what should this row say" decisions sit together rather than
 // inside a 150-line `useMemo`.
 
-import type { ConnectionSummary, DatabaseSchema, Table } from "@pipit/protocol";
+import type { ConnectionSummary, DatabaseSchema, Table } from "@dipper/protocol";
 import type { LucideIcon } from "lucide-react";
 import { DatabaseIcon, EyeIcon, FileIcon, Table2Icon } from "lucide-react";
 import { plural } from "../../lib/format";

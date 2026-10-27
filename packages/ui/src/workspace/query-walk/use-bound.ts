@@ -11,7 +11,7 @@
 // the row that is actually bound, as it becomes bound, sends exactly the ones that get looked at,
 // and the cache means scrubbing back over rows already seen costs nothing.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import * as React from "react";
 import { boundRows, boundRowSql, type BoundPlan, type BoundRow } from "./bound";
 import { messageOf, only, type QueryOutcome } from "./probe-outcome";

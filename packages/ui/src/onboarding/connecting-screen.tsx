@@ -1,5 +1,5 @@
 // The moment between pressing Connect and seeing the workspace. Everything else unmounts, leaving
-// the app's one picture at full size: opening a database is the only ceremony pipit has - no
+// the app's one picture at full size: opening a database is the only ceremony dipper has - no
 // account, no import, no sync - so it is worth showing rather than hiding behind a spinner.
 //
 // The stages are real work in the order it happens: socket, handshake, introspection, then the
@@ -8,7 +8,7 @@
 // Motion is all SVG: the wire draws itself with `pathLength` and the packets ride it with
 // `offsetPath`, so they follow the curve rather than being tweened across a straight line.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import * as React from "react";

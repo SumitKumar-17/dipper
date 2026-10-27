@@ -4,15 +4,15 @@
 // connection whose summary changes underneath - edited in Settings, re-dialled onto a different
 // default - is followed rather than shadowed by a value bootstrapped once at startup.
 
-import type { PipitClient } from "@pipit/client";
-import type { ConnectionSummary } from "@pipit/protocol";
+import type { DipperClient } from "@dipper/client";
+import type { ConnectionSummary } from "@dipper/protocol";
 import {
   asyncData,
   asyncLoading,
   asyncReady,
   asyncRefreshing,
   type Async,
-} from "@pipit/ui";
+} from "@dipper/ui";
 import * as React from "react";
 import { upsertSummary, useConnectionCrud, type ConnectionCrud } from "./connection-crud";
 import { applyError, useAbortable } from "./use-async-resource";
@@ -27,7 +27,7 @@ export type ConnectionsState = ConnectionCrud & {
   selectDatabase: (database: string) => Promise<void>;
 };
 
-export function useConnections(getClient: () => PipitClient, enabled: boolean): ConnectionsState {
+export function useConnections(getClient: () => DipperClient, enabled: boolean): ConnectionsState {
   const [connections, setConnections] =
     React.useState<Async<readonly ConnectionSummary[]>>(asyncLoading);
   const [connectionId, setConnectionId] = React.useState<string | null>(null);

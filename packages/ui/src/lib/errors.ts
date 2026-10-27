@@ -1,4 +1,4 @@
-import type { ConnectFailureCode } from "@pipit/protocol";
+import type { ConnectFailureCode } from "@dipper/protocol";
 
 /**
  * The one place a thrown value becomes something a user can read.

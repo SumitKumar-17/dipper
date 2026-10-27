@@ -10,8 +10,8 @@ import (
 	"strings"
 	"syscall"
 
-	"pipit/httpx"
-	"pipit/protocol"
+	"dipper/httpx"
+	"dipper/protocol"
 )
 
 // Listing folders for the workspace picker. Deliberately not scoped to the configured

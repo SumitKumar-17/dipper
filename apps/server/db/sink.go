@@ -3,7 +3,7 @@ package db
 import (
 	"time"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // Sink is everything one statement produces, on its way to the client. A dialect pushes columns,

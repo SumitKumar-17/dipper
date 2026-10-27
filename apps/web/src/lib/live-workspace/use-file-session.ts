@@ -1,9 +1,9 @@
 // Which files were open last time, so a reload lands you back in your work rather than in an empty
 // window. Per-machine session state, like panel geometry and for the same reason: which tabs this
 // browser had open is a property of this machine, not of the workspace on disk, and a second
-// machine opening the same `~/.pipit` should keep its own window. So localStorage, not the server.
+// machine opening the same `~/.dipper` should keep its own window. So localStorage, not the server.
 //
-// Its own key rather than a corner of `pipit.panels.v1`, because the layout cannot be trusted to
+// Its own key rather than a corner of `dipper.panels.v1`, because the layout cannot be trusted to
 // carry the record: pane ids are path-derived, but the grid reconciles its tree against the buffers
 // that exist, and at boot none do - the `buffer:file:…` panes are pruned and the pruned tree is
 // written straight back. The layout erases the evidence within a frame of load. This key is written
@@ -18,12 +18,12 @@
 // last-write-wins, so N missing files cost one line rather than N; this hook writes the line that
 // lands last, naming all of them at once instead of whichever happened to fail late.
 
-import { readJson, writeRaw } from "@pipit/ui";
+import { readJson, writeRaw } from "@dipper/ui";
 import * as React from "react";
 import { fileName } from "./helpers";
 import type { BuffersApi } from "./use-buffers";
 
-const STORAGE_KEY = "pipit.session.v1";
+const STORAGE_KEY = "dipper.session.v1";
 
 type FileSession = {
   /** Open file buffers' paths, in tab order. Never a scratch: those have no path to remember. */

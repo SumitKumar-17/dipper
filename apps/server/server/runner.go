@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"pipit/db"
-	"pipit/httpx"
-	"pipit/protocol"
-	"pipit/storage"
+	"dipper/db"
+	"dipper/httpx"
+	"dipper/protocol"
+	"dipper/storage"
 )
 
 type StartRunInput struct {

@@ -9,7 +9,7 @@
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
-import { stripComments, type SqlComment } from "@pipit/sql";
+import { stripComments, type SqlComment } from "@dipper/sql";
 import * as React from "react";
 import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";

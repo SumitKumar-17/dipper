@@ -1,4 +1,4 @@
-// Records the real Pipit app for <pipit-workspace>: runs the built binary against the birdwatch
+// Records the real Dipper app for <dipper-workspace>: runs the built binary against the birdwatch
 // database, drives it in headless Chrome over the DevTools protocol, and writes what the element
 // replays - the app's CSS, each scene's markup and keystroke-by-keystroke states, and the query
 // results.
@@ -14,16 +14,16 @@ import { join, resolve } from "node:path";
 const REPO = resolve(import.meta.dir, "../../..");
 const ASSETS = join(REPO, "apps/site/public/legacy");
 const QUERIES = join(import.meta.dir, "queries");
-const PIPIT = join(REPO, "apps/server/dist/pipit");
+const DIPPER = join(REPO, "apps/server/dist/dipper");
 const CHROME = process.env.CHROME ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = Number(process.env.CAPTURE_PORT ?? 4691);
 const CDP_PORT = Number(process.env.CAPTURE_CDP_PORT ?? 9311);
-const REF = process.env.CAPTURE_REF ?? join(tmpdir(), "pipit-site-reference");
+const REF = process.env.CAPTURE_REF ?? join(tmpdir(), "dipper-site-reference");
 const PG = {
   host: process.env.PGHOST ?? "localhost",
   port: Number(process.env.PGPORT ?? 5432),
   user: process.env.PGUSER ?? userInfo().username,
-  database: process.env.CAPTURE_DB ?? "pipit_site_demo",
+  database: process.env.CAPTURE_DB ?? "dipper_site_demo",
 };
 
 // The app is captured at these sizes; the element renders each scene at exactly its size and
@@ -129,8 +129,8 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const api = `http://127.0.0.1:${PORT}`;
 const temporary: string[] = [];
 
-// Machine paths must never reach the site. Each scene's workspace reads as ~/birdwatch and pipit's
-// home as ~/.pipit, the way the app shows them on a normal install.
+// Machine paths must never reach the site. Each scene's workspace reads as ~/birdwatch and dipper's
+// home as ~/.dipper, the way the app shows them on a normal install.
 const replacements: [string, string][] = [];
 function scrub(text: string): string {
   for (const [from, to] of replacements) text = text.split(from).join(to);
@@ -156,7 +156,7 @@ async function json(path: string, init?: RequestInit) {
 }
 
 mkdirSync(REF, { recursive: true });
-const profile = mkdtempSync(join(tmpdir(), "pipit-capture-chrome-"));
+const profile = mkdtempSync(join(tmpdir(), "dipper-capture-chrome-"));
 temporary.push(profile);
 const chrome = Bun.spawn(
   [CHROME, "--headless=new", `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${profile}`,
@@ -263,7 +263,7 @@ try {
   // A scene runs against its own server and an empty browser origin: no history, no restored tabs,
   // no results left over from the scene before.
   async function withApp(name: string, height: number, body: () => Promise<void>) {
-    const dir = mkdtempSync(join(tmpdir(), `pipit-capture-${name}-`));
+    const dir = mkdtempSync(join(tmpdir(), `dipper-capture-${name}-`));
     temporary.push(dir);
     const home = join(dir, "home");
     const workspace = join(dir, "birdwatch");
@@ -271,11 +271,11 @@ try {
     for (const file of readdirSync(QUERIES)) {
       if (file !== NOTEBOOK.file) copyFileSync(join(QUERIES, file), join(workspace, file));
     }
-    for (const [path, shown] of [[workspace, "~/birdwatch"], [home, "~/.pipit"]] as const) {
+    for (const [path, shown] of [[workspace, "~/birdwatch"], [home, "~/.dipper"]] as const) {
       replacements.push([realpathSync(path), shown], [path, shown]);
     }
-    const pipit = Bun.spawn([PIPIT, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
-      env: { ...process.env, PIPIT_HOME: home },
+    const dipper = Bun.spawn([DIPPER, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
+      env: { ...process.env, DIPPER_HOME: home },
       stdout: "ignore",
       stderr: "inherit",
     });
@@ -300,8 +300,8 @@ try {
       // them; a scene only adds the rules for editors the others did not mount.
       for (const rule of css.runtime) if (!runtimeCss.includes(rule)) runtimeCss.push(rule);
     } finally {
-      pipit.kill();
-      await pipit.exited;
+      dipper.kill();
+      await dipper.exited;
     }
   }
 

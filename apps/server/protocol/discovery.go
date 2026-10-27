@@ -12,7 +12,7 @@ const (
 	SourceDocker  DiscoverySource = "docker"
 )
 
-// pipit never bundles a database; it looks for what is already installed or running.
+// dipper never bundles a database; it looks for what is already installed or running.
 type DiscoveredServer struct {
 	Dialect   Dialect           `json:"dialect"`
 	Host      string            `json:"host"`

@@ -16,7 +16,7 @@ export function BinarySection({ roostRef, onSceneDone }: FeatureSectionProps) {
         }
       >
         A single 14&nbsp;MB executable with the interface built in. It runs on your machine and keeps everything it
-        writes in <code className={code}>~/.pipit</code>. Queries stay plain .sql files.
+        writes in <code className={code}>~/.dipper</code>. Queries stay plain .sql files.
       </SectionHeading>
       {/* A terminal is a smaller window than the app: at full width it would sit mostly empty while
           the command is typed. */}

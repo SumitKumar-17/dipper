@@ -1,6 +1,6 @@
 # Server structure (`apps/server`)
 
-The server is a single Go module (`pipit`) that builds to one binary with the web UI inside it.
+The server is a single Go module (`dipper`) that builds to one binary with the web UI inside it.
 It has three direct dependencies - `pgx/v5`, `go-sql-driver/mysql`, `fsnotify` - and uses the
 standard library for everything else, including routing, CORS, SSE, NDJSON, CSV and the embed.
 
@@ -11,19 +11,19 @@ contract; this one is how the code behind it is arranged.
 
 ```
 apps/server/
-├── go.mod                    module pipit, Go 1.25
+├── go.mod                    module dipper, Go 1.25
 ├── main.go                   the CLI: serve (default), stop, status
-├── package.json              scripts only - turbo and `--filter pipit` reach the scripts
+├── package.json              scripts only - turbo and `--filter dipper` reach the scripts
 │                             through it; no npm dependencies
 ├── scripts/
 │   ├── build.sh              stages apps/server/ui into webui/static, then go build
 │   │                         (--all cross-compiles every release target)
 │   ├── dev.mjs               go run . serve, allow-listing the vite dev origin
 │   ├── build.bat             the Windows convenience copy of build.sh
-│   ├── smoke.sh              the end-to-end suite; drives ./dist/pipit
+│   ├── smoke.sh              the end-to-end suite; drives ./dist/dipper
 │   └── smoke-fixtures.sql    the tables smoke.sh expects
 │
-├── protocol/                 everything that crosses the wire; the Go half of @pipit/protocol
+├── protocol/                 everything that crosses the wire; the Go half of @dipper/protocol
 │   ├── protocol.go           Dialect, Align, ISOTime - and the three JSON rules that keep Go's
 │   │                         defaults from diverging from the TypeScript the UI parses
 │   ├── connection.go         ConnectionConfig (on disk) and ConnectionSummary (on the wire,
@@ -59,10 +59,10 @@ apps/server/
 │   ├── mysqlintrospect.go    the schema tree from information_schema
 │   └── url.go                postgres:// and mysql:// parsing, and the driver factory
 │
-├── storage/                  ~/.pipit: connections.json (0600), settings.json, history.db,
+├── storage/                  ~/.dipper: connections.json (0600), settings.json, history.db,
 │                             server.json, update.json, and the queries/ workspace made on
 │                             first run
-├── update/                   `pipit update`: the releases API, the checksum gate, and the
+├── update/                   `dipper update`: the releases API, the checksum gate, and the
 │                             rename over the running binary. Asset names are install.sh's
 ├── sqlscript/                statement splitting; mirrored by packages/sql/src/split.ts
 ├── discover/                 local database discovery: ports, binaries, docker, services
@@ -127,7 +127,7 @@ because `CGO_ENABLED=0` is what lets one machine build all five targets.
 ## The build
 
 `scripts/build.sh` empties `webui/static`, copies `apps/server/ui` (written by
-`@pipit/web`'s build) into it, and runs `go build -trimpath -ldflags="-s -w -X main.Version=…"`,
+`@dipper/web`'s build) into it, and runs `go build -trimpath -ldflags="-s -w -X main.Version=…"`,
 with the version read out of `apps/server/package.json` - the only place it is written down.
 Emptying first matters: asset filenames are hashed, so a stale file would never be overwritten
 and would ride into the binary alongside its replacement.

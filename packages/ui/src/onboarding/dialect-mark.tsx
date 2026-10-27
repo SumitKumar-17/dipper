@@ -5,7 +5,7 @@
 // differ enough to be told apart at 16px: Postgres gets the stacked drum, MySQL the sharded
 // one. The name always sits next to the mark - the shape is recognition, never identification.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import type React from "react";
 import { cn } from "../lib/utils";
 

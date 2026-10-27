@@ -4,7 +4,7 @@
 // separate reading of the same tokens rather than a case inside that one. Each branch, once cut
 // out, IS an ordinary SELECT and goes straight back through `parseTokens`.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   isSelectParens,
   isTailStart,

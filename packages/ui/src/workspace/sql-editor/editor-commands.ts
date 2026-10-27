@@ -4,7 +4,7 @@
 
 import { selectAll, toggleComment } from "@codemirror/commands";
 import type { EditorView } from "@codemirror/view";
-import type { Dialect, Settings } from "@pipit/protocol";
+import type { Dialect, Settings } from "@dipper/protocol";
 import * as React from "react";
 import { requestQueryWalk } from "../query-walk/query-walk-event";
 import type { CursorPosition } from "../types";

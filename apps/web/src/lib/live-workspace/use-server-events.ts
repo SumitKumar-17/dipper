@@ -1,11 +1,11 @@
-import type { PipitClient } from "@pipit/client";
-import type { ServerEvent } from "@pipit/protocol";
+import type { DipperClient } from "@dipper/client";
+import type { ServerEvent } from "@dipper/protocol";
 import * as React from "react";
 import { RECONNECT_MAX_MS, RECONNECT_MIN_MS, sleep } from "./helpers";
 import { useAbortable } from "./use-async-resource";
 
 export function useServerEvents(
-  getClient: () => PipitClient,
+  getClient: () => DipperClient,
   enabled: boolean,
   onEvent: (event: ServerEvent) => void,
 ): void {

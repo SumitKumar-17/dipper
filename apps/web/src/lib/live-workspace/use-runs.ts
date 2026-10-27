@@ -1,6 +1,6 @@
-import type { PipitClient } from "@pipit/client";
-import type { HistoryScope, HistoryStats, RunRecord, Settings } from "@pipit/protocol";
-import type { Run } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import type { HistoryScope, HistoryStats, RunRecord, Settings } from "@dipper/protocol";
+import type { Run } from "@dipper/ui";
 import * as React from "react";
 import { messageOf } from "./helpers";
 import { inScope } from "./run-scope";
@@ -46,7 +46,7 @@ export type RunsState = {
 };
 
 export function useRuns(
-  getClient: () => PipitClient,
+  getClient: () => DipperClient,
   enabled: boolean,
   options: RunsOptions,
 ): RunsState {

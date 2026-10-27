@@ -1,10 +1,10 @@
 /**
- * <pipit-walk> — Query Walk, recorded from the real app (site/capture/walk.ts), in the same window
- * chrome as <pipit-workspace>, over a clause rail that follows the recording. Animation only: it
+ * <dipper-walk> — Query Walk, recorded from the real app (site/capture/walk.ts), in the same window
+ * chrome as <dipper-workspace>, over a clause rail that follows the recording. Animation only: it
  * loops on its own and takes no pointer or key.
  *
  *   <script type="module" src="assets/js/walk.js"></script>
- *   <pipit-walk></pipit-walk>
+ *   <dipper-walk></dipper-walk>
  *
  * Attributes
  *   autoplay  On unless autoplay="false". Plays while at least 40% visible, pauses offscreen.
@@ -33,7 +33,7 @@ const asset = (path) => new URL(path, ASSETS).href;
 
 const RAIL = ["FROM", "JOIN", "WHERE", "GROUP BY", "HAVING", "WINDOW", "SELECT", "DISTINCT", "ORDER BY", "LIMIT"];
 // The app's coordinate space: the recording is 1280x760 CSS px under a 40px titlebar, the size
-// <pipit-workspace> replays, so both windows read at one scale on the page. The phone recording is
+// <dipper-workspace> replays, so both windows read at one scale on the page. The phone recording is
 // 470x1100 under the same titlebar; --app-w and --app-h on :host carry whichever is playing.
 const TITLEBAR = 40;
 const at = (px) => `calc(100cqw * ${px} / var(--app-w))`;
@@ -119,11 +119,11 @@ li.sep[data-passed] { color: color-mix(in oklch, var(--accent, oklch(68% 0.173 2
 function registerFonts() {
   const has = (family) => [...document.fonts].some((face) => face.family.replace(/"/g, "") === family);
   if (has("Geist Mono Variable") && has("Geist Variable")) return;
-  if (document.querySelector("style[data-pipit-walk-fonts]")) return;
+  if (document.querySelector("style[data-dipper-walk-fonts]")) return;
   const latin =
     "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD";
   const style = document.createElement("style");
-  style.dataset.pipitWalkFonts = "";
+  style.dataset.dipperWalkFonts = "";
   style.textContent = [["Geist Variable", "geist"], ["Geist Mono Variable", "geist-mono"]]
     .map(([family, file]) =>
       `@font-face{font-family:"${family}";font-style:normal;font-display:swap;font-weight:100 900;` +
@@ -138,7 +138,7 @@ const loadData = (name) => {
   return data.get(name);
 };
 
-class PipitWalk extends HTMLElement {
+class DipperWalk extends HTMLElement {
   static observedAttributes = ["paused", "autoplay"];
 
   #root;
@@ -238,7 +238,7 @@ class PipitWalk extends HTMLElement {
     const wrap = document.createElement("div");
     wrap.className = "wrap";
     wrap.innerHTML = `
-      <div class="window" role="group" aria-label="Pipit's Query Walk, recorded from the app">
+      <div class="window" role="group" aria-label="Dipper's Query Walk, recorded from the app">
         <div class="titlebar" inert>
           <div class="lights" aria-hidden="true"><span></span><span></span><span></span></div>
           <div class="address">127.0.0.1:4600</div>
@@ -296,7 +296,7 @@ class PipitWalk extends HTMLElement {
       // The video is inert, so what it shows is told by the window around it.
       this.#window.setAttribute(
         "aria-label",
-        `Pipit's Query Walk, recorded from the app, stepping through: ${walk.query.replace(/\s+/g, " ")}`,
+        `Dipper's Query Walk, recorded from the app, stepping through: ${walk.query.replace(/\s+/g, " ")}`,
       );
     } catch {
       this.#stages = [];
@@ -453,4 +453,4 @@ class PipitWalk extends HTMLElement {
   }
 }
 
-customElements.define("pipit-walk", PipitWalk);
+customElements.define("dipper-walk", DipperWalk);

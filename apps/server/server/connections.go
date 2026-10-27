@@ -3,10 +3,10 @@ package server
 import (
 	"net/http"
 
-	"pipit/db"
-	"pipit/httpx"
-	"pipit/protocol"
-	"pipit/storage"
+	"dipper/db"
+	"dipper/httpx"
+	"dipper/protocol"
+	"dipper/storage"
 )
 
 type connectionBody struct {

@@ -1,4 +1,4 @@
-import type { Row } from "@pipit/protocol";
+import type { Row } from "@dipper/protocol";
 import { recordedResult } from "../../../../shared/replay/fixtures";
 
 function table(name: string): Row[] {

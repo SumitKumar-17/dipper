@@ -1,4 +1,4 @@
-export const SCHEMA_DIAGRAM_EVENT = "pipit:visualise";
+export const SCHEMA_DIAGRAM_EVENT = "dipper:visualise";
 
 export type SchemaDiagramEventDetail = {
   /** `schema.table` to select and centre on when the view opens. */

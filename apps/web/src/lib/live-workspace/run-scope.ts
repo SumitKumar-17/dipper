@@ -2,17 +2,17 @@
 //
 // The same two rules the server holds (`storage.HistoryQuery.keep` and the `workspace` field on a
 // run), expressed again here because the History tab filters the runs it already has in memory
-// rather than re-asking for them. Like `@pipit/protocol` and `apps/server/protocol`, the pair is
+// rather than re-asking for them. Like `@dipper/protocol` and `apps/server/protocol`, the pair is
 // kept in step by hand: a change to one is a change to both.
 
-import type { HistoryScope, RunRecord } from "@pipit/protocol";
+import type { HistoryScope, RunRecord } from "@dipper/protocol";
 
 /**
  * The workspace root a query belongs to.
  *
  * Empty means global - a run that belongs to no folder. Three things land there: a scratch tab,
- * which has no path at all; a file under pipit's own `queries/` directory, which is the workspace
- * pipit makes for itself rather than one the user chose; and anything outside every root.
+ * which has no path at all; a file under dipper's own `queries/` directory, which is the workspace
+ * dipper makes for itself rather than one the user chose; and anything outside every root.
  */
 export function workspaceOf(
   path: string | null | undefined,

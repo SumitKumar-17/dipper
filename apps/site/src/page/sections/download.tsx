@@ -21,8 +21,8 @@ export function DownloadSection({ roostRef, onCopy }: DownloadProps) {
   const { releasesUrl } = useRelease();
   return (
     <Section id="download" labelledBy="get-title" dawn>
-      <SectionHeading id="get-title" title="Get Pipit." wide>
-        One command on macOS and Linux puts <code className={code}>pipit</code> on your PATH.
+      <SectionHeading id="get-title" title="Get Dipper." wide>
+        One command on macOS and Linux puts <code className={code}>dipper</code> on your PATH.
       </SectionHeading>
       {/* Under sm the lede can run to the key's end of the line, so the row drops a little further to
           leave the bird room to stand on the key. */}

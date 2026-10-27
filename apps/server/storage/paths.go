@@ -1,5 +1,5 @@
-// Package storage owns everything pipit keeps on disk. One directory holds all of it (default
-// ~/.pipit, override with PIPIT_HOME): connections.json (0600), settings.json, history.db,
+// Package storage owns everything dipper keeps on disk. One directory holds all of it (default
+// ~/.dipper, override with DIPPER_HOME): connections.json (0600), settings.json, history.db,
 // server.json, update.json, plus queries/, the workspace created on first run.
 package storage
 
@@ -20,14 +20,14 @@ const (
 )
 
 func ConfigDir() string {
-	if dir := os.Getenv("PIPIT_HOME"); dir != "" {
+	if dir := os.Getenv("DIPPER_HOME"); dir != "" {
 		return dir
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return ".pipit"
+		return ".dipper"
 	}
-	return filepath.Join(home, ".pipit")
+	return filepath.Join(home, ".dipper")
 }
 
 // DefaultQueriesDir is the workspace root created on first run, where .sql files live by default.

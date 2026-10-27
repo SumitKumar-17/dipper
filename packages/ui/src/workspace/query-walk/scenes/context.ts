@@ -2,7 +2,7 @@
 // counts either side of it, and what the station before it left on the stage. Built at the top of
 // `sceneAt` and handed to whichever builder the station id picks.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import type { ParsedSelect, SourceRef } from "../clauses";
 import { sourceTitle, type Station } from "../steps";
 import type { StationResult, WalkData } from "../use-walk";

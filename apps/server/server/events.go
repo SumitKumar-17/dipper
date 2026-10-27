@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"pipit/httpx"
-	"pipit/protocol"
+	"dipper/httpx"
+	"dipper/protocol"
 )
 
 // One long-lived SSE stream per UI, carrying file changes, finished runs and root changes.

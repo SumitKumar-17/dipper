@@ -3,8 +3,8 @@
 // disagree about what a statement is.
 
 import type { Diagnostic } from "@codemirror/lint";
-import type { QueryError } from "@pipit/protocol";
-import { splitStatements, type SplitStatement } from "@pipit/sql";
+import type { QueryError } from "@dipper/protocol";
+import { splitStatements, type SplitStatement } from "@dipper/sql";
 
 /**
  * The statement the cursor is in, for Mod-Enter. Uses the same splitter the server runs. A cursor

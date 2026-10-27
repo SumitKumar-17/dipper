@@ -2,9 +2,9 @@
 // document" action.
 //
 // This is frontend-only: unlike split.ts, apps/server has no need to format SQL, so there is no
-// server copy for `bun run --filter @pipit/sql check` to keep this in sync with.
+// server copy for `bun run --filter @dipper/sql check` to keep this in sync with.
 
-import type { Dialect, Settings } from "@pipit/protocol";
+import type { Dialect, Settings } from "@dipper/protocol";
 import { splitStatements } from "./split";
 
 export type FormatSqlResult = {
@@ -76,7 +76,7 @@ async function formatStatement(
       tabWidth: 2,
       sqlKeywordCase: options.keywordCase,
       // The plugin upper-cases literals and type names by default, which would rewrite `true` and
-      // `numeric` even when the author asked for `preserve`. Keyword case is the one setting pipit
+      // `numeric` even when the author asked for `preserve`. Keyword case is the one setting dipper
       // exposes, so everything case-related follows it.
       sqlLiteralCase: options.keywordCase,
       sqlTypeCase: options.keywordCase,

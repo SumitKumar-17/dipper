@@ -33,7 +33,7 @@
 // a missing one reads as a missing feature. The UI's fallback for a null is to show the statement
 // with nothing lit up.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   isSetOp,
   isUnsupported,

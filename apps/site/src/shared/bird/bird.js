@@ -1,5 +1,5 @@
 /**
- * Pipit's bird: a low-poly 3D songbird that roosts on page elements and flies between them.
+ * Dipper's bird: a low-poly 3D songbird that roosts on page elements and flies between them.
  *
  * three.js comes from npm through ./three.js, which names only the classes the bird uses, so the
  * bundler splits a chunk of just those and fetches it on the first createBird():
@@ -61,7 +61,7 @@
 const TAU = Math.PI * 2;
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-// PipitMark's own path data, for the fallback and as the reference the 3D model is built against.
+// DipperMark's own path data, for the fallback and as the reference the 3D model is built against.
 const MARK_BODY =
   "M20.5 8.2L18.3 7.2C17.8 5.3 15.5 4.4 14 5.6C13.2 6.2 12.4 6.5 11.6 7.2C10 8.6 9.6 10.85 7.9 12.2L3.95 15.3L5.55 17.35L9.3 14C10.3 15.6 13.8 18 16.2 15.6C17.6 14.2 18.4 12 18.3 10.5C18.2 9.6 18.4 9 18.6 8.9Z";
 const MARK_LEGS = "M11.4 17L11 20M14.6 17L14.2 20";

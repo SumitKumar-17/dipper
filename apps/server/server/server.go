@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	"pipit/discover"
-	"pipit/httpx"
-	"pipit/protocol"
-	"pipit/storage"
-	"pipit/watch"
+	"dipper/discover"
+	"dipper/httpx"
+	"dipper/protocol"
+	"dipper/storage"
+	"dipper/watch"
 )
 
 type Options struct {
@@ -139,13 +139,13 @@ func (s *Server) Close() {
 	s.bus.CloseAll()
 	s.pool.Shutdown()
 	// bbolt holds a file lock on history.db; a process that exits without releasing it makes the
-	// next `pipit serve` wait two seconds for nothing.
+	// next `dipper serve` wait two seconds for nothing.
 	_ = storage.CloseHistory()
 }
 
 func (s *Server) ServerInfo(pid int) protocol.ServerInfo {
 	return protocol.ServerInfo{
-		Name:       "pipit",
+		Name:       "dipper",
 		Version:    s.version,
 		PID:        pid,
 		URL:        s.url,

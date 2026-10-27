@@ -1,4 +1,4 @@
-import type { ConnectionSummary, DiscoveredServer } from "@pipit/protocol";
+import type { ConnectionSummary, DiscoveredServer } from "@dipper/protocol";
 import { DIALECT_DEFAULTS } from "./dialect-mark";
 
 /**

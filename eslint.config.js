@@ -1,4 +1,4 @@
-// ESLint config for the pipit monorepo: one config, every workspace, one ESLint 10.
+// ESLint config for the dipper monorepo: one config, every workspace, one ESLint 10.
 //
 // apps/web used to be the exception - eslint-config-next bundled an eslint-plugin-react that still
 // called the context.getFilename() ESLint 10 removed, so the app pinned ESLint 9 behind a nested
@@ -50,9 +50,9 @@ const designSystem = [
     plugins: { shadcn },
     settings: {
       shadcn: {
-        ui: "@pipit/ui",
+        ui: "@dipper/ui",
         // The app only ever reaches primitives by package name.
-        componentImports: ["^@pipit/ui(/|$)"],
+        componentImports: ["^@dipper/ui(/|$)"],
       },
     },
     rules: shadcnRules,
@@ -62,8 +62,8 @@ const designSystem = [
     plugins: { shadcn },
     settings: {
       shadcn: {
-        ui: "@pipit/ui",
-        componentImports: ["^@pipit/ui(/|$)"],
+        ui: "@dipper/ui",
+        componentImports: ["^@dipper/ui(/|$)"],
       },
     },
     rules: shadcnRules,
@@ -74,12 +74,12 @@ const designSystem = [
     plugins: { shadcn },
     settings: {
       shadcn: {
-        ui: "@pipit/ui",
-        // Apps import primitives as "@pipit/ui"; files inside the package reach them by relative
+        ui: "@dipper/ui",
+        // Apps import primitives as "@dipper/ui"; files inside the package reach them by relative
         // path, from one or two levels down. Without every pattern no-restyle silently matches
         // nothing here.
         componentImports: [
-          "^@pipit/ui(/|$)",
+          "^@dipper/ui(/|$)",
           "^\\.\\./\\.\\./ui(/|$)",
           "^\\.\\./ui(/|$)",
           "^\\./ui(/|$)",

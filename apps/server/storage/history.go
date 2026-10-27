@@ -39,7 +39,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 	bolterr "go.etcd.io/bbolt/errors"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 var (
@@ -73,7 +73,7 @@ func openHistory() (*bolt.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	// A lock that never clears would make pipit unstartable, and the second instance already
+	// A lock that never clears would make dipper unstartable, and the second instance already
 	// refuses to serve - so it waits briefly and then gives up rather than hanging.
 	db, err := bolt.Open(filepath.Join(dir, HistoryFile), 0o600, &bolt.Options{Timeout: 2 * time.Second})
 	if err != nil {
@@ -115,7 +115,7 @@ func runKey(record protocol.RunRecord) []byte {
 }
 
 // AppendRun records a finished run. `keepRows` writes the result rows alongside the header; without
-// it only the header is stored, which is what pipit has always done.
+// it only the header is stored, which is what dipper has always done.
 func AppendRun(record protocol.RunRecord, keepRows bool) error {
 	db, err := openHistory()
 	if err != nil {

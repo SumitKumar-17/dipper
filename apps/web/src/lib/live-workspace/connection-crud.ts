@@ -9,9 +9,9 @@
 // rejection meant every caller read a refused password as a success, played the handover
 // animation, and landed in the workspace pointed at whichever connection was already selected.
 
-import type { PipitClient } from "@pipit/client";
-import type { ConnectionSummary, DiscoveryResult } from "@pipit/protocol";
-import { asyncData, asyncError, asyncReady, type Async, type ConnectionInput, type ConnectionTest } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import type { ConnectionSummary, DiscoveryResult } from "@dipper/protocol";
+import { asyncData, asyncError, asyncReady, type Async, type ConnectionInput, type ConnectionTest } from "@dipper/ui";
 import * as React from "react";
 import { connectFailure, messageOf } from "./helpers";
 
@@ -35,7 +35,7 @@ export type ConnectionCrud = {
 };
 
 export function useConnectionCrud(
-  getClient: () => PipitClient,
+  getClient: () => DipperClient,
   setConnections: React.Dispatch<React.SetStateAction<Async<readonly ConnectionSummary[]>>>,
   selection: {
     connectionId: string | null;

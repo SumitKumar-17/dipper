@@ -1,6 +1,6 @@
 // Prototype A's whole type scale. Four sizes and mono, nothing else: every heading, paragraph and
 // caption on the page takes one of these, so the rhythm cannot drift section by section.
-// (@pipit/ui redefines text-sm to 13px for desktop density; the page's small size is that.)
+// (@dipper/ui redefines text-sm to 13px for desktop density; the page's small size is that.)
 
 /** The one display size: the H1. */
 export const display =

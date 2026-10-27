@@ -1,4 +1,4 @@
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import * as React from "react";
 import type { ConnectionInput } from "../../workspace/types";
 import { DIALECT_DEFAULTS } from "../dialect-mark";

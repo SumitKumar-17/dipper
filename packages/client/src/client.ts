@@ -1,5 +1,5 @@
-import type { ServerInfo } from "@pipit/protocol";
-import { NOT_API, PipitError } from "./errors";
+import type { ServerInfo } from "@dipper/protocol";
+import { NOT_API, DipperError } from "./errors";
 import { createTransport, type CallOptions, type ClientOptions, type Transport } from "./http";
 import { connectionsApi, type ConnectionsApi } from "./connections";
 import { browseApi, type BrowseApi } from "./browse";
@@ -11,7 +11,7 @@ import { settingsApi, type SettingsApi } from "./settings";
 import { filesApi, type FilesApi } from "./files";
 import { eventsApi, type EventsApi } from "./events";
 
-export type PipitClient = {
+export type DipperClient = {
   readonly baseUrl: string;
   /** Cheap liveness probe: "is the server up, and is it this server?" */
   health(opts?: CallOptions): Promise<ServerInfo>;
@@ -37,8 +37,8 @@ export type PipitClient = {
  */
 async function health(http: Transport, opts?: CallOptions): Promise<ServerInfo> {
   const info = await http.json<ServerInfo>("/api/health", { signal: opts?.signal });
-  if (info?.name !== "pipit") {
-    throw new PipitError("answered, but it is not an pipit server", {
+  if (info?.name !== "dipper") {
+    throw new DipperError("answered, but it is not an dipper server", {
       status: 200,
       route: "GET /api/health",
       code: NOT_API,
@@ -48,7 +48,7 @@ async function health(http: Transport, opts?: CallOptions): Promise<ServerInfo> 
   return info;
 }
 
-export function createClient(options: ClientOptions): PipitClient {
+export function createClient(options: ClientOptions): DipperClient {
   const http = createTransport(options);
   return {
     baseUrl: http.baseUrl,

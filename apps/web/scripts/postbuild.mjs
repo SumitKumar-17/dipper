@@ -1,4 +1,4 @@
-// Copies the built client into apps/server/ui/, which `pipit` packs and serves at `/`.
+// Copies the built client into apps/server/ui/, which `dipper` packs and serves at `/`.
 // Kept as a script rather than a shell one-liner so it behaves the same on Windows CI.
 //
 // `dist/client` is the client half of a TanStack Start build; `dist/server` is the server half,
@@ -22,4 +22,4 @@ if (!existsSync(path.join(out, "index.html"))) {
 
 rmSync(uiDir, { recursive: true, force: true });
 cpSync(out, uiDir, { recursive: true });
-console.log(`@pipit/web: built to ${path.relative(path.join(here, "..", "..", ".."), uiDir)}/`);
+console.log(`@dipper/web: built to ${path.relative(path.join(here, "..", "..", ".."), uiDir)}/`);

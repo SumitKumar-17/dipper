@@ -1,6 +1,6 @@
-import type { PipitClient } from "@pipit/client";
-import type { Settings } from "@pipit/protocol";
-import { asyncError, asyncReady, type Async } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import type { Settings } from "@dipper/protocol";
+import { asyncError, asyncReady, type Async } from "@dipper/ui";
 import * as React from "react";
 import { messageOf } from "./helpers";
 import { useAsyncResource } from "./use-async-resource";
@@ -11,7 +11,7 @@ export type SettingsState = {
   updateSettings: (patch: Partial<Settings>) => Promise<void>;
 };
 
-export function useSettings(getClient: () => PipitClient, enabled: boolean): SettingsState {
+export function useSettings(getClient: () => DipperClient, enabled: boolean): SettingsState {
   const read = React.useCallback(
     (signal: AbortSignal): Promise<Settings> => getClient().settings.get({ signal }),
     [getClient],

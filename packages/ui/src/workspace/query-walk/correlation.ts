@@ -5,7 +5,7 @@
 // reported, because `course_id` with no table in front of it cannot be resolved without a
 // catalogue - see the note at the top of `program.ts` for what is done with that uncertainty.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   isSelectParens,
   normalizeRef,

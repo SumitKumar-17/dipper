@@ -12,7 +12,7 @@ export type RouteStep = {
 // Text the bird must never stand in front of: the page's own, and the print on a piece's slips.
 // Text inside a marked product window is the product's, and the bird may fly across it.
 const TEXT = "h1, h2, h3, p, li, dt, dd, figcaption, [data-slip]";
-const WINDOW = "[data-pipit-frame]";
+const WINDOW = "[data-dipper-frame]";
 const PIECE = "[data-section-piece]";
 
 /** The section a roost belongs to: its heading, its product window, the text to keep off. */

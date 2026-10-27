@@ -4,7 +4,7 @@ import (
 	"sort"
 	"sync"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 const maxRuns = 50

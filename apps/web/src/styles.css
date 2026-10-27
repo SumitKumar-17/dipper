@@ -1,15 +1,15 @@
 @import "tailwindcss";
 @import "shadcn/tailwind.css";
 
-/* Self-hosted Geist, bundled with the app. Pipit runs on loopback on a machine that may have no
+/* Self-hosted Geist, bundled with the app. Dipper runs on loopback on a machine that may have no
    network at all, so a Google Fonts <link> would be a blank first paint waiting on a timeout. */
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 
 /* The design system - tokens, variants and keyframes - lives with the components it styles. */
-@import "@pipit/ui/styles.css";
+@import "@dipper/ui/styles.css";
 
-/* @pipit/ui is a workspace symlink, so Tailwind's automatic source detection does not reach it.
+/* @dipper/ui is a workspace symlink, so Tailwind's automatic source detection does not reach it.
    Without this, every class used only inside a packages/ui component is tree-shaken away. */
 @source "../../../packages/ui/src";
 

@@ -1,4 +1,4 @@
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import * as React from "react";
 import { Tabs, TabsList, TabsTab } from "../../ui/tabs";
 import { ResultsGrid } from "../results-grid";

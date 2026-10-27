@@ -1,9 +1,9 @@
 {
-  "name": "@pipit/web",
+  "name": "@dipper/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The SQL client UI. Static-exported into apps/server/ui/ and served by the pipit server at /.",
+  "description": "The SQL client UI. Static-exported into apps/server/ui/ and served by the dipper server at /.",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && node scripts/postbuild.mjs",
@@ -12,16 +12,16 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
-    "@pipit/client": "*",
-    "@pipit/protocol": "*",
-    "@pipit/ui": "*",
+    "@dipper/client": "*",
+    "@dipper/protocol": "*",
+    "@dipper/ui": "*",
     "@tanstack/react-router": "^1.170.44",
     "lucide-react": "^1.33.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@pipit/tsconfig": "*",
+    "@dipper/tsconfig": "*",
     "@shadcn/lint": "^0.1.0",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-start": "^1.169.2",

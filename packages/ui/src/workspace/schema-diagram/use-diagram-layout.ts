@@ -1,4 +1,4 @@
-import type { DatabaseSchema } from "@pipit/protocol";
+import type { DatabaseSchema } from "@dipper/protocol";
 import * as React from "react";
 import { CARD_W, GAP_X, GAP_Y, type Point, type Rect } from "./geometry";
 import { buildGraph, buildNode, type Graph, isWide, type Node, NO_TABLES } from "./graph";

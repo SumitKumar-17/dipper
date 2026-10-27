@@ -9,7 +9,7 @@
 // Errors are sticky and success is not, which is the asymmetry that matters: a tick you missed
 // cost you nothing, an error you missed cost you the setting.
 
-import type { Settings } from "@pipit/protocol";
+import type { Settings } from "@dipper/protocol";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";

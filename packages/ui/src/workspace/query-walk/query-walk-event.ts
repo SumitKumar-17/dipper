@@ -1,4 +1,4 @@
-export const QUERY_WALK_EVENT = "pipit:visualise-query";
+export const QUERY_WALK_EVENT = "dipper:visualise-query";
 
 export type QueryWalkEventDetail = {
   /** The statement to walk, as the user wrote it. */

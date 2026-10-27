@@ -1,7 +1,7 @@
 // The only module that knows how a request is shaped: base-URL joining, JSON parsing, and turning
-// a non-2xx reply into a PipitError. Every resource module below is just a list of routes over this.
+// a non-2xx reply into a DipperError. Every resource module below is just a list of routes over this.
 
-import { NETWORK, NOT_API, PipitError, type ApiErrorBody } from "./errors";
+import { NETWORK, NOT_API, DipperError, type ApiErrorBody } from "./errors";
 
 /**
  * Narrower than `typeof fetch` on purpose: we only ever pass a string URL, so a hand-written
@@ -56,7 +56,7 @@ export function joinUrl(baseUrl: string, path: string, query?: QueryParams): str
   return base + suffix + searchString(query);
 }
 
-/** An abort is the caller's own doing, so it propagates as-is rather than becoming a PipitError. */
+/** An abort is the caller's own doing, so it propagates as-is rather than becoming a DipperError. */
 function isAbort(err: unknown, signal?: AbortSignal): boolean {
   if (signal?.aborted) return true;
   return err instanceof Error && err.name === "AbortError";
@@ -73,7 +73,7 @@ function looksLikeHtml(response: Response, text: string): boolean {
   return /^\s*<(?:!doctype|html|\?xml)\b/i.test(text);
 }
 
-async function errorFor(response: Response, route: string): Promise<PipitError> {
+async function errorFor(response: Response, route: string): Promise<DipperError> {
   let text = "";
   try {
     text = await response.text();
@@ -97,7 +97,7 @@ async function errorFor(response: Response, route: string): Promise<PipitError> 
     message = text.trim().slice(0, 500);
   }
   if (!message) message = html ? `${status} (an HTML page, not this API)` : status;
-  return new PipitError(message, {
+  return new DipperError(message, {
     status: response.status,
     route,
     code: api?.error?.code ?? (html ? NOT_API : undefined),
@@ -127,7 +127,7 @@ export function createTransport(options: ClientOptions): Transport {
     } catch (err) {
       if (isAbort(err, opts.signal)) throw err;
       const message = err instanceof Error ? err.message : "the request failed";
-      throw new PipitError(message, { status: 0, route, code: NETWORK, cause: err });
+      throw new DipperError(message, { status: 0, route, code: NETWORK, cause: err });
     }
     if (!response.ok) throw await errorFor(response, route);
     return response;
@@ -140,7 +140,7 @@ export function createTransport(options: ClientOptions): Transport {
     try {
       return JSON.parse(text) as T;
     } catch (err) {
-      throw new PipitError("the reply was not JSON", {
+      throw new DipperError("the reply was not JSON", {
         status: response.status,
         route: `${opts.method ?? "GET"} ${path}`,
         code: NOT_API,

@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"pipit/httpx"
-	"pipit/protocol"
-	"pipit/storage"
+	"dipper/httpx"
+	"dipper/protocol"
+	"dipper/storage"
 )
 
 // A short list you scan beats a long one you read.
@@ -121,7 +121,7 @@ func checkRoots(roots []string) error {
 		if !filepath.IsAbs(root) {
 			return httpx.BadRequest("Workspace path must be absolute: " + root)
 		}
-		// pipit's own queries folder is pipit's to make. Refusing to open it because it is not
+		// dipper's own queries folder is dipper's to make. Refusing to open it because it is not
 		// there yet would be refusing to do the one thing that creates it.
 		if filepath.Clean(root) == filepath.Clean(storage.DefaultQueriesDir()) {
 			if err := os.MkdirAll(root, 0o700); err != nil {

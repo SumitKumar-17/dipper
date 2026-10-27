@@ -1,5 +1,5 @@
 {
-  "name": "@pipit/sql",
+  "name": "@dipper/sql",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -18,12 +18,12 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@pipit/protocol": "*",
+    "@dipper/protocol": "*",
     "prettier": "^3.9.7",
     "prettier-plugin-sql-cst": "^0.22.1"
   },
   "devDependencies": {
-    "@pipit/tsconfig": "*",
+    "@dipper/tsconfig": "*",
     "typescript": "^6.0.3"
   }
 }

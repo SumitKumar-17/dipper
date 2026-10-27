@@ -1,4 +1,4 @@
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import type * as React from "react";
 import { cn } from "../../lib/utils";
 import { DIALECT_LABEL, DialectMark } from "../dialect-mark";

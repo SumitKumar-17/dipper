@@ -9,7 +9,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRightIcon } from "lucide-react";
-import type { SqlComment } from "@pipit/sql";
+import type { SqlComment } from "@dipper/sql";
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "../../ui/tabs";

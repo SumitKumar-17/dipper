@@ -2,13 +2,13 @@
 //
 // Three questions, in the order they matter: whether runs are recorded at all, how much of each one
 // is kept, and how much of it is kept for how long. The middle one is the reason this pane exists -
-// storing result rows means a copy of what the database returned lives in ~/.pipit, and that is a
+// storing result rows means a copy of what the database returned lives in ~/.dipper, and that is a
 // decision rather than a default, so it is opt-in and says what it costs.
 //
 // The size is read when the pane opens and after a clear, not polled: it is a number you look at
 // when you came here to look at it.
 
-import type { HistoryMode, Settings } from "@pipit/protocol";
+import type { HistoryMode, Settings } from "@dipper/protocol";
 import { Trash2Icon } from "lucide-react";
 import * as React from "react";
 import { messageOf } from "../lib/errors";
@@ -103,7 +103,7 @@ export function HistorySection({
         <div className="flex flex-col gap-1">
           <span className="font-medium text-sm">What a run leaves behind</span>
           <span className="text-muted-foreground text-xs">
-            Kept in {"~/.pipit"}, readable only by you. Runs from the query walk are never recorded.
+            Kept in {"~/.dipper"}, readable only by you. Runs from the query walk are never recorded.
           </span>
         </div>
         <RadioGroup

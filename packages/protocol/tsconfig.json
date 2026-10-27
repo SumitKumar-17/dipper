@@ -1,5 +1,5 @@
 {
-  "extends": "@pipit/tsconfig/base.json",
+  "extends": "@dipper/tsconfig/base.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",

@@ -1,17 +1,17 @@
 // The public surface. A frontend imports this and nothing else about the server.
 
-export { createClient, type PipitClient } from "./client";
+export { createClient, type DipperClient } from "./client";
 export {
   NETWORK,
   NOT_API,
-  PipitError,
+  DipperError,
   connectFailureCode,
   isNetworkError,
   isNotApiError,
-  isPipitError,
+  isDipperError,
   staleWrite,
   type ApiErrorBody,
-  type PipitErrorInit,
+  type DipperErrorInit,
   type StaleWriteBody,
 } from "./errors";
 export {
@@ -43,4 +43,4 @@ export type { FileContent, FilesApi, FileWritten, WriteInput } from "./files";
 export type { EventsApi } from "./events";
 
 // Re-exported so a consumer never needs a second import for the wire types.
-export type * from "@pipit/protocol";
+export type * from "@dipper/protocol";

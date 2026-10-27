@@ -6,7 +6,7 @@
 // It still speaks the stage's own vocabulary: the pass/fail mark WHERE uses for a row test is the
 // same mark here, because it means the same thing - this row got through, that one did not.
 
-import type { Cell, StatementResult } from "@pipit/protocol";
+import type { Cell, StatementResult } from "@dipper/protocol";
 import type { BoundPlan, BoundRow } from "../bound";
 import { answerView } from "./answer";
 import { colsOf, positional, visibleIndices, widthFor } from "./columns";

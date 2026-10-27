@@ -12,8 +12,8 @@ import { sql } from "@codemirror/lang-sql";
 import { setDiagnostics, type Diagnostic } from "@codemirror/lint";
 import type { Extension } from "@codemirror/state";
 import { highlightActiveLineGutter, lineNumbers, type EditorView } from "@codemirror/view";
-import type { CompletionMode, Dialect, Settings } from "@pipit/protocol";
-import { splitStatements } from "@pipit/sql";
+import type { CompletionMode, Dialect, Settings } from "@dipper/protocol";
+import { splitStatements } from "@dipper/sql";
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import {

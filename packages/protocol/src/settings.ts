@@ -6,14 +6,14 @@
 export type CompletionMode = "off" | "basic" | "smart";
 
 /**
- * How much of a run survives it. `queries` is what pipit has always kept - the shape of a run and
+ * How much of a run survives it. `queries` is what dipper has always kept - the shape of a run and
  * its counts, never a row - and stays the default: turning on row storage without being asked
  * would put a database's contents in a second place on disk that nobody chose.
  */
 export type HistoryMode = "off" | "queries" | "results";
 
 /**
- * What the history store holds. `bytes` is what pipit has stored; `fileBytes` is what the file
+ * What the history store holds. `bytes` is what dipper has stored; `fileBytes` is what the file
  * takes up, which is larger and does not shrink when runs are dropped - the store reuses the pages
  * it frees rather than returning them, so the file plateaus instead of growing.
  */

@@ -8,7 +8,7 @@
 //   Column widths are computed, not measured. The sizing lives in `grid-sizing.ts`, which explains
 //   why.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useReducedMotion } from "motion/react";
 import * as React from "react";
@@ -81,12 +81,12 @@ export function ResultsGrid({
       ref={scrollRef}
       role="grid"
       // One track list, computed from the data, so header and rows cannot drift apart.
-      style={{ "--pipit-grid-cols": template } as React.CSSProperties}
+      style={{ "--dipper-grid-cols": template } as React.CSSProperties}
       tabIndex={selected ? -1 : 0}
     >
       <div className="w-max min-w-full">
         <div className="sticky top-0 z-10 bg-muted" role="rowgroup">
-          <div aria-rowindex={1} className="grid grid-cols-(--pipit-grid-cols)" role="row">
+          <div aria-rowindex={1} className="grid grid-cols-(--dipper-grid-cols)" role="row">
             {columns.map((column, index) => (
               <div
                 aria-colindex={index + 1}
@@ -107,16 +107,16 @@ export function ResultsGrid({
         </div>
 
         <div
-          className="relative h-(--pipit-grid-height)"
+          className="relative h-(--dipper-grid-height)"
           role="rowgroup"
           style={
-            { "--pipit-grid-height": `${virtualizer.getTotalSize()}px` } as React.CSSProperties
+            { "--dipper-grid-height": `${virtualizer.getTotalSize()}px` } as React.CSSProperties
           }
         >
           {/* One transform for the whole window: the rendered rows are always contiguous. */}
           <div
-            className="absolute top-0 left-0 w-full translate-y-(--pipit-grid-offset)"
-            style={{ "--pipit-grid-offset": `${offset}px` } as React.CSSProperties}
+            className="absolute top-0 left-0 w-full translate-y-(--dipper-grid-offset)"
+            style={{ "--dipper-grid-offset": `${offset}px` } as React.CSSProperties}
           >
             {items.map((item) => (
               <GridRow

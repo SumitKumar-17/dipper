@@ -1,4 +1,4 @@
-import type { HistoryScope, HistoryStats, RunRecord } from "@pipit/protocol";
+import type { HistoryScope, HistoryStats, RunRecord } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type HistoryOptions = CallOptions & {

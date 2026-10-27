@@ -5,7 +5,7 @@
 // `scan-predicates.ts` - and nothing here handles a set-operator chain, which `parse-setop.ts`
 // splits into branches before handing each one back to `parseTokens`.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   bareName,
   children,

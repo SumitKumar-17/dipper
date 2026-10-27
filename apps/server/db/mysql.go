@@ -15,7 +15,7 @@ import (
 
 	mysqldriver "github.com/go-sql-driver/mysql"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 type mysqlDriver struct {

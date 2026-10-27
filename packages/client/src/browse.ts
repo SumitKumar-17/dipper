@@ -1,4 +1,4 @@
-import type { BrowseResult } from "@pipit/protocol";
+import type { BrowseResult } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type BrowseOptions = CallOptions & {

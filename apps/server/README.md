@@ -1,6 +1,6 @@
-# Pipit - the server and CLI
+# Dipper - the server and CLI
 
-The [Pipit](../../README.md) binary: the `pipit` CLI, and the local server it starts.
+The [Dipper](../../README.md) binary: the `dipper` CLI, and the local server it starts.
 
 - **The CLI** starts, stops and inspects that server, and updates itself - four commands, no
   configuration.
@@ -10,31 +10,31 @@ The [Pipit](../../README.md) binary: the `pipit` CLI, and the local server it st
 The UI is a pure client of that API. It has no private channel into the server, so anything the
 app can do you can do with `curl`.
 
-[CLI](#cli) · [HTTP API](#http-api) · [Pipit home](#pipit-home) · [Security](#security) ·
+[CLI](#cli) · [HTTP API](#http-api) · [Dipper home](#dipper-home) · [Security](#security) ·
 [Building](#building) · [Inside the binary](#inside-the-binary)
 
 ## CLI
 
 ```sh
-pipit                       # start the server and open the UI - serve is the default command
-pipit serve --port 4600     # the same thing, on a port you pick
-pipit status                # is a server running, and where?
-pipit stop                  # stop it
-pipit update                # replace this binary with the latest release
+dipper                       # start the server and open the UI - serve is the default command
+dipper serve --port 4600     # the same thing, on a port you pick
+dipper status                # is a server running, and where?
+dipper stop                  # stop it
+dipper update                # replace this binary with the latest release
 ```
 
-Every command takes `--help`. `pipit --version` prints the version the binary was built with.
+Every command takes `--help`. `dipper --version` prints the version the binary was built with.
 
-### `pipit [serve]`
+### `dipper [serve]`
 
-Starts the server and opens the UI in your browser. It is the default command, so bare `pipit` is
-`pipit serve`. On start it prints where it landed:
+Starts the server and opens the UI in your browser. It is the default command, so bare `dipper` is
+`dipper serve`. On start it prints where it landed:
 
 ```
-pipit v0.2.0 → http://127.0.0.1:4600
+dipper v0.2.0 → http://127.0.0.1:4600
 ```
 
-If a server is already running - `~/.pipit/server.json` names one and it answers `/api/health` -
+If a server is already running - `~/.dipper/server.json` names one and it answers `/api/health` -
 `serve` prints and opens that URL instead of starting a second one. A `server.json` left behind by
 a crash is detected and cleared rather than believed.
 
@@ -43,19 +43,19 @@ a crash is detected and cleared rather than believed.
 | `--port <n>`              | `4600`      | Port to listen on.                                                                 |
 | `--host <addr>`           | `127.0.0.1` | Address to bind. Anything past loopback publishes the API - see [Security](#security). |
 | `--no-open`               | off         | Don't open a browser.                                                              |
-| `--dir <path>`            | -           | Add a workspace directory the file API may read and write. Repeatable, and persisted to settings; `~/.pipit/queries` is always there. |
+| `--dir <path>`            | -           | Add a workspace directory the file API may read and write. Repeatable, and persisted to settings; `~/.dipper/queries` is always there. |
 | `--ui <dir>`              | -           | Serve a built UI from this directory instead of the embedded one.                  |
 | `--allow-origin <origin>` | -           | Let a UI dev server on another origin call the API (plain CORS, no credentials). Repeatable, and meant for development. |
 
 Without `--ui`, a `ui/` directory sitting next to the binary still wins over the embedded bundle:
 whatever was copied in beside the executable is newer than whatever was compiled into it.
 
-### `pipit stop`
+### `dipper stop`
 
 Sends `SIGTERM` to the running server (the pid in `server.json`) and clears the file. Prints
 `not running` when there is no server, and says so when the file turned out to be stale.
 
-### `pipit status`
+### `dipper status`
 
 ```
 running · pid 51234 · http://127.0.0.1:4600 · started 2026-09-18T09:12:04Z
@@ -65,18 +65,18 @@ running · pid 51234 · http://127.0.0.1:4600 · started 2026-09-18T09:12:04Z
 real request to `/api/health`, not a look at `server.json`, so a server that died without cleaning
 up reports `not running` rather than a pid that no longer exists.
 
-### `pipit update`
+### `dipper update`
 
 ```
-pipit v0.1.0 → v0.2.0
-  downloading pipit-0.2.0-darwin-arm64.tar.gz
+dipper v0.1.0 → v0.2.0
+  downloading dipper-0.2.0-darwin-arm64.tar.gz
   checksum ok
-  replaced ~/.local/bin/pipit
+  replaced ~/.local/bin/dipper
 ```
 
 Downloads this platform's asset from the latest release, checks it against the release's
 `checksums.txt`, and renames it over the running binary - following a symlink first, so a linked
-install stays a link. Nothing under `~/.pipit` is touched. A running server is still the old
+install stays a link. Nothing under `~/.dipper` is touched. A running server is still the old
 version until it restarts, and `update` says so when it finds one.
 
 | Flag               | What it does                                                            |
@@ -85,26 +85,26 @@ version until it restarts, and `update` says so when it finds one.
 | `--version <tag>`  | Install this tag instead of the latest, including an older one.          |
 
 A download that cannot be verified is refused rather than installed - unlike a first install,
-this one overwrites a binary that already works. `PIPIT_DOWNLOAD_BASE` points the fetch somewhere
+this one overwrites a binary that already works. `DIPPER_DOWNLOAD_BASE` points the fetch somewhere
 other than GitHub, including a `file://` directory, which is how it is tested.
 
-`pipit serve` runs the same check in the background, at most once a day (remembered in
+`dipper serve` runs the same check in the background, at most once a day (remembered in
 `update.json`), and prints one line when a newer release exists. It never delays startup, never
-installs anything by itself, and stays quiet about every failure - `PIPIT_NO_UPDATE_CHECK=1`
-turns it off. An explicit `pipit update` ignores both the cache and the opt-out.
+installs anything by itself, and stays quiet about every failure - `DIPPER_NO_UPDATE_CHECK=1`
+turns it off. An explicit `dipper update` ignores both the cache and the opt-out.
 
-On Windows the running `.exe` cannot be deleted, so it is moved to `pipit.exe.old` and removed on
+On Windows the running `.exe` cannot be deleted, so it is moved to `dipper.exe.old` and removed on
 the next update.
 
 ## HTTP API
 
-Served by `pipit serve` at `http://127.0.0.1:<port>`. Routes are registered per group in
-[`server/`](server); the browser-side wrapper is [`@pipit/client`](../../packages/client), and
-every request and response shape is named by [`@pipit/protocol`](../../packages/protocol).
+Served by `dipper serve` at `http://127.0.0.1:<port>`. Routes are registered per group in
+[`server/`](server); the browser-side wrapper is [`@dipper/client`](../../packages/client), and
+every request and response shape is named by [`@dipper/protocol`](../../packages/protocol).
 
 | Area            | Routes                                                                        | What it covers                                                                                    |
 | --------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Health          | `GET /api/health`                                                             | Name, version, pid, URL, start time, pipit home. The liveness probe.                              |
+| Health          | `GET /api/health`                                                             | Name, version, pid, URL, start time, dipper home. The liveness probe.                              |
 | Events          | `GET /api/events`                                                             | One long-lived SSE stream per UI: file changes, finished runs, workspace-root changes.            |
 | Connections     | `GET POST /api/connections`, `PUT DELETE /api/connections/{id}`, `.../test`, `.../connect`, `.../disconnect`, `.../databases`, `.../schema` | Saved connections and their live status, round-trip tests, the pooled driver, and the schema tree (cached 30s; `?refresh=1` bypasses). |
 | Discovery       | `GET /api/discover`                                                           | PostgreSQL and MySQL servers already running on this machine.                                     |
@@ -117,12 +117,12 @@ Every failure is `{ "error": { "message": string, "code"?: string } }` with a fi
 **[`docs/api/http.md`](../../docs/api/http.md) is the full reference** - one row per route, with
 bodies, responses and the table of error codes.
 
-## Pipit home
+## Dipper home
 
-What the server reads and writes, all of it under `~/.pipit` (`PIPIT_HOME` relocates it):
+What the server reads and writes, all of it under `~/.dipper` (`DIPPER_HOME` relocates it):
 
 ```
-~/.pipit/
+~/.dipper/
   connections.json   saved connections, passwords included (mode 0600)
   settings.json      autosave, maxRows, workspaces, theme, …
   history.db         run history on bbolt - SQL, outcome, and result rows when recorded
@@ -144,15 +144,15 @@ tool that talks to your own databases and worth knowing exactly:
 
 ## Building
 
-A Go module (`pipit`) at `apps/server`: **Go 1.25+**, and no npm dependencies. `package.json`
-exists only so turbo and `bun run --filter pipit <script>` reach the scripts in
+A Go module (`dipper`) at `apps/server`: **Go 1.25+**, and no npm dependencies. `package.json`
+exists only so turbo and `bun run --filter dipper <script>` reach the scripts in
 [`scripts/`](scripts).
 
 ```sh
 # Build the UI first, or you get an API-only binary that says as much at /.
-bun run --filter @pipit/web build
-bun run --filter pipit build        # -> dist/pipit
-bun run --filter pipit build:all    # every release target, from this one machine
+bun run --filter @dipper/web build
+bun run --filter dipper build        # -> dist/dipper
+bun run --filter dipper build:all    # every release target, from this one machine
 ```
 
 `build:all` cross-compiles because `CGO_ENABLED=0` and every dependency is pure Go. There are
@@ -162,7 +162,7 @@ rest. Development setup is in [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
 ## Inside the binary
 
 `main.go` (the CLI) → `server/` (the HTTP API, one file per route group) → `db/` (the drivers),
-with `storage/` (everything under `~/.pipit`) shared, and `protocol/`, `httpx/`, `fsx/` and
+with `storage/` (everything under `~/.dipper`) shared, and `protocol/`, `httpx/`, `fsx/` and
 `sqlscript/` at the leaves. `db/` must not import `server/`: the HTTP error envelope belongs to
 the server, so drivers return plain errors and `server/pool.go` is the seam that turns them into
 answerable failures. The dialect-independent half of a driver is `db/driver.go` and `db/sink.go`.

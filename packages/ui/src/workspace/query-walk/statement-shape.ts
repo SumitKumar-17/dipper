@@ -1,6 +1,6 @@
 // What KIND of statement the text is, before anything tries to slice it into clauses.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import { statementTokens, TokenCursor } from "./clause-tokens";
 import type { Cte, Range } from "./clause-types";
 import { readWith } from "./parse-select";

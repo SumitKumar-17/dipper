@@ -11,7 +11,7 @@ import (
 	mysqldriver "github.com/go-sql-driver/mysql"
 	"github.com/jackc/pgx/v5/pgconn"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // A refused connection is the one failure a user is expected to fix, so it is the one failure

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"syscall"
 
-	"pipit/httpx"
-	"pipit/storage"
+	"dipper/httpx"
+	"dipper/storage"
 )
 
 const SQLExt = ".sql"

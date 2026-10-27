@@ -1,35 +1,35 @@
 # Capture
 
 The recording rig for the site's captured assets, made from the real app running against a real
-Postgres. None of it is deployed. `capture.ts` was written for `<pipit-workspace>`, which the real
-`@pipit/ui` scenes have replaced: of what it writes, only `fonts/` is still loaded (by the walk and
+Postgres. None of it is deployed. `capture.ts` was written for `<dipper-workspace>`, which the real
+`@dipper/ui` scenes have replaced: of what it writes, only `fonts/` is still loaded (by the walk and
 terminal scenes), so a re-run brings back `css/`, `markup/` and `data/*.json` files nothing reads.
 
 | File            | What it is                                                                       |
 | --------------- | -------------------------------------------------------------------------------- |
 | `birdwatch.sql` | The sample database: real species and places, invented observers, spring 2026.   |
 | `queries/`      | The three `.sql` files the window has open. `spring-migration.sql` is the hero.  |
-| `capture.ts`    | Runs the built `pipit`, drives it in headless Chrome, writes the assets.         |
+| `capture.ts`    | Runs the built `dipper`, drives it in headless Chrome, writes the assets.         |
 
 ## Re-recording
 
 You need the built binary, a local Postgres, Google Chrome and bun.
 
 ```sh
-createdb pipit_site_demo
-psql -d pipit_site_demo -f apps/site/capture/birdwatch.sql   # idempotent; rerun to reset the data
-bun run build                                            # apps/server/dist/pipit, with the current UI
+createdb dipper_site_demo
+psql -d dipper_site_demo -f apps/site/capture/birdwatch.sql   # idempotent; rerun to reset the data
+bun run build                                            # apps/server/dist/dipper, with the current UI
 bun apps/site/capture/capture.ts
 ```
 
-The script starts its own `pipit serve` on port 4691 with a throwaway `PIPIT_HOME` and workspace
-folder (both deleted when it exits, so `~/.pipit` is never touched), adds a `birdwatch` connection
+The script starts its own `dipper serve` on port 4691 with a throwaway `DIPPER_HOME` and workspace
+folder (both deleted when it exits, so `~/.dipper` is never touched), adds a `birdwatch` connection
 over the API, and drives a headless Chrome with its own throwaway profile.
 
 Environment, all optional: `PGHOST`, `PGPORT`, `PGUSER` (default: your login name) and
 `CAPTURE_DB` for the database; `CAPTURE_PORT` and `CAPTURE_CDP_PORT` for the two ports; `CHROME` for
 the browser binary; `CAPTURE_REF` for where reference screenshots and full DOM snapshots go
-(default `$TMPDIR/pipit-site-reference`).
+(default `$TMPDIR/dipper-site-reference`).
 
 ## What it writes
 
@@ -50,7 +50,7 @@ Into `apps/site/public/legacy/`:
 
 ## Query Walk
 
-`walk.ts` records the walk `<pipit-walk>` plays, from the same binary and database: it opens the
+`walk.ts` records the walk `<dipper-walk>` plays, from the same binary and database: it opens the
 walk on `walk.sql` and screencasts it at device scale 2. It writes `clips/walk.{mp4,webm,webp}`,
 `clips/walk-small.mp4` and `data/walk.json` (the clause times the rail follows).
 
@@ -68,14 +68,14 @@ WALK_WIDTH=470 WALK_HEIGHT=1100 WALK_NAME=walk-phone bun apps/site/capture/walk.
 ```
 
 That writes `clips/walk-phone.{mp4,webm,webp}` and `data/walk-phone.json`, and no small cut: at 940
-pixels wide the 2x clip is already a phone's size. `<pipit-walk variant="phone">` plays it. 1100 is
+pixels wide the 2x clip is already a phone's size. `<dipper-walk variant="phone">` plays it. 1100 is
 the shortest height at which nothing in the stacked walk scrolls. `WALK_SQL` takes another query
 file, and `WALK_PORT` and `WALK_CDP_PORT` move the two ports.
 
 ## Privacy
 
-Snapshots are scrubbed as they are taken: the throwaway workspace reads `~/birdwatch`, pipit's home
-reads `~/.pipit`, any `/Users/<name>` or `/home/<name>` becomes `~`, and your login name becomes
+Snapshots are scrubbed as they are taken: the throwaway workspace reads `~/birdwatch`, dipper's home
+reads `~/.dipper`, any `/Users/<name>` or `/home/<name>` becomes `~`, and your login name becomes
 `birder`. Grep before committing a fresh capture:
 
 ```sh
@@ -87,6 +87,6 @@ grep -rniE "$(whoami)|/Users/|/private/|/var/folders" apps/site/public
 Run the site and open its lab page, which mounts every scene:
 
 ```sh
-bun run --filter @pipit/site dev
+bun run --filter @dipper/site dev
 # http://localhost:5180/lab/
 ```

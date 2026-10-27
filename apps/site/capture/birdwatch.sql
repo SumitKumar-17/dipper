@@ -1,9 +1,9 @@
--- Birdwatch: a small, original birding dataset for the Pipit site recordings.
+-- Birdwatch: a small, original birding dataset for the Dipper site recordings.
 -- Real species and places, invented observers and checklists. Fixed dates (spring 2026), so every
 -- recording is reproducible. Idempotent: drops and recreates its own objects.
 --
---   createdb pipit_site_demo
---   psql -d pipit_site_demo -f apps/site/capture/birdwatch.sql
+--   createdb dipper_site_demo
+--   psql -d dipper_site_demo -f apps/site/capture/birdwatch.sql
 
 set client_min_messages = warning;
 
@@ -110,7 +110,7 @@ insert into families (name, latin_name) values
   ('Grassbirds', 'Locustellidae'),
   ('Chats & flycatchers', 'Muscicapidae'),
   ('Thrushes', 'Turdidae'),
-  ('Wagtails & pipits', 'Motacillidae'),
+  ('Wagtails & dippers', 'Motacillidae'),
   ('Gulls & terns', 'Laridae'),
   ('Auks', 'Alcidae'),
   ('Sandpipers', 'Scolopacidae'),

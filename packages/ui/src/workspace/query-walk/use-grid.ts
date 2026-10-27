@@ -12,7 +12,7 @@
 // the shape is a limit of the dialect, not a fault in the reader's query, and the per-row view it
 // falls back to is the one that shipped before this existed.
 
-import type { Cell, StatementResult } from "@pipit/protocol";
+import type { Cell, StatementResult } from "@dipper/protocol";
 import * as React from "react";
 import { bindKey, bindKeyOf, cellParts, partsSql, sqlLiteral, type BoundRow } from "./bound";
 import type { SqlPart } from "./clauses";

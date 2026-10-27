@@ -1,10 +1,10 @@
-// The recordings as typed data. Light, unlike ../index.ts: nothing here pulls in @pipit/ui (the
+// The recordings as typed data. Light, unlike ../index.ts: nothing here pulls in @dipper/ui (the
 // types are erased), so the page's own bundle can read the fixture.
-import type { Row, StatementResult } from "@pipit/protocol";
+import type { Row, StatementResult } from "@dipper/protocol";
 import type { Recording, ReplayFixtures } from "../types";
 import birdwatchJson from "./birdwatch.json";
 
-/** Recorded from a real Pipit on the birdwatch database by apps/site/scripts/record.ts. */
+/** Recorded from a real Dipper on the birdwatch database by apps/site/scripts/record.ts. */
 export const birdwatch = birdwatchJson as unknown as ReplayFixtures;
 
 /** A recorded file's content, as the workspace had it on disk. */

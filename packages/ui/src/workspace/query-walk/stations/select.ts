@@ -5,7 +5,7 @@
 // it means what the user wrote. A newline goes before anything appended: a `-- comment` at the end
 // of a clause would otherwise swallow the `limit` that follows it.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   conjuncts,
   type ParsedSelect,

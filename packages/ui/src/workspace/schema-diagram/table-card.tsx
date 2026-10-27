@@ -1,4 +1,4 @@
-import type { Column } from "@pipit/protocol";
+import type { Column } from "@dipper/protocol";
 import {
   ChevronDownIcon,
   ChevronUpIcon,

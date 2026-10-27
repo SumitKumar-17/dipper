@@ -4,7 +4,7 @@ import { lazyScene } from "../stage/lazy-scene";
 // the app at about 0.8 scale on a laptop rather than shrinking a desktop-sized one.
 const LAPTOP = { width: 1040, height: 720 };
 
-/** The workspace: the tail of a query typed with completion, run, results. Real @pipit/ui on replayed data. */
+/** The workspace: the tail of a query typed with completion, run, results. Real @dipper/ui on replayed data. */
 export const RealHeroScene = lazyScene(() => import("./workspace/hero.scene"), LAPTOP);
 
 /** Two JOINs written with completion: related tables ranked first, ON offered from the foreign key. */

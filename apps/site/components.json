@@ -13,10 +13,10 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@pipit/ui",
-    "utils": "@pipit/ui",
-    "ui": "@pipit/ui",
-    "lib": "@pipit/ui"
+    "components": "@dipper/ui",
+    "utils": "@dipper/ui",
+    "ui": "@dipper/ui",
+    "lib": "@dipper/ui"
   },
   "menuColor": "default",
   "menuAccent": "subtle"

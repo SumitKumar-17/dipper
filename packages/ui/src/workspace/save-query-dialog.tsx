@@ -1,5 +1,5 @@
 // Saving an untitled query. The question is *where*, and the answer depends on what is open: a
-// workspace folder is the obvious home, and the first one is preselected. With none open, pipit
+// workspace folder is the obvious home, and the first one is preselected. With none open, dipper
 // offers the folder it made for itself and opens that as a workspace on the way past, so the file
 // is visible in the Files panel rather than filed somewhere you cannot browse.
 //
@@ -20,7 +20,7 @@ import { ErrorText } from "./error-text";
 import { isScratch } from "./types";
 
 /** Dispatch on `window` to save the active buffer, asking where when it has never been saved. */
-const SAVE_QUERY_EVENT = "pipit:save";
+const SAVE_QUERY_EVENT = "dipper:save";
 
 /**
  * "Query 1" → "query-1": a name you would have typed, so most people press Enter. `.sql` is shown as
@@ -106,7 +106,7 @@ export function SaveQueryDialog(): React.ReactElement {
             <DialogDescription size="sm">
               {folders.length > 1
                 ? "Name it and pick a folder."
-                : "Name it - Pipit files the rest."}
+                : "Name it - Dipper files the rest."}
             </DialogDescription>
           </div>
         </div>
@@ -151,7 +151,7 @@ export function SaveQueryDialog(): React.ReactElement {
               </span>
               {only === ownFolder && (
                 <Badge size="sm" variant="secondary">
-                  Pipit
+                  Dipper
                 </Badge>
               )}
             </div>
@@ -169,7 +169,7 @@ export function SaveQueryDialog(): React.ReactElement {
                   <SelectItem key={option} value={option}>
                     <span className="truncate font-mono text-xs">{tilde(option)}</span>
                     {option === ownFolder && (
-                      <span className="shrink-0 text-muted-foreground text-xs">Pipit&rsquo;s</span>
+                      <span className="shrink-0 text-muted-foreground text-xs">Dipper&rsquo;s</span>
                     )}
                   </SelectItem>
                 ))}

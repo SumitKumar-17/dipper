@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // Proxies and browsers drop a stream that says nothing.

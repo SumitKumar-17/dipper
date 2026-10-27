@@ -1,12 +1,12 @@
-// Records the real Pipit for the landing page's replayed workspace. Runs the built binary against
+// Records the real Dipper for the landing page's replayed workspace. Runs the built binary against
 // the birdwatch database, makes exactly the requests the app makes for the scenes, and writes every
 // response the replay serves into src/shared/replay/fixtures/birdwatch.json.
 //
 //   bun apps/site/scripts/record.ts
 //
-// Needs apps/server/dist/pipit (built from main) and the pipit_site_demo database. The server runs
-// with a throwaway PIPIT_HOME and workspace, deleted on exit, so ~/.pipit is never read or written.
-// Everything written is scrubbed: the workspace reads ~/birdwatch, pipit's home ~/.pipit, the OS
+// Needs apps/server/dist/dipper (built from main) and the dipper_site_demo database. The server runs
+// with a throwaway DIPPER_HOME and workspace, deleted on exit, so ~/.dipper is never read or written.
+// Everything written is scrubbed: the workspace reads ~/birdwatch, dipper's home ~/.dipper, the OS
 // user `birder`. Grep the fixture before committing:
 //
 //   grep -niE "$(whoami)|/Users/|/home/|/private/|/var/folders|claude" apps/site/src/shared/replay/fixtures/*.json
@@ -18,7 +18,7 @@ import type { Recording, ReplayFixtures } from "../src/shared/replay/types";
 import { normaliseSql } from "../src/shared/replay/normalise";
 
 const REPO = resolve(import.meta.dir, "../../..");
-const PIPIT = join(REPO, "apps/server/dist/pipit");
+const DIPPER = join(REPO, "apps/server/dist/dipper");
 const OUT = join(import.meta.dir, "../src/shared/replay/fixtures/birdwatch.json");
 const PORT = Number(process.env.RECORD_PORT ?? 4696);
 const API = `http://127.0.0.1:${PORT}`;
@@ -26,7 +26,7 @@ const PG = {
   host: process.env.PGHOST ?? "localhost",
   port: Number(process.env.PGPORT ?? 5432),
   user: process.env.PGUSER ?? userInfo().username,
-  database: process.env.RECORD_DB ?? "pipit_site_demo",
+  database: process.env.RECORD_DB ?? "dipper_site_demo",
 };
 const CONNECTION = "birdwatch";
 // The address the site's window chrome shows, so the recorded server reads like a default install.
@@ -107,7 +107,7 @@ function cells(file: string): string[] {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const base = process.env.RECORD_TMP ?? tmpdir();
 mkdirSync(base, { recursive: true });
-const dir = mkdtempSync(join(base, "pipit-record-"));
+const dir = mkdtempSync(join(base, "dipper-record-"));
 const home = join(dir, "home");
 const workspace = join(dir, "birdwatch");
 mkdirSync(home);
@@ -118,8 +118,8 @@ for (const [name, content] of Object.entries(FILES)) writeFileSync(join(workspac
 const replacements: [string, string][] = [
   [realpathSync(workspace), "~/birdwatch"],
   [workspace, "~/birdwatch"],
-  [realpathSync(home), "~/.pipit"],
-  [home, "~/.pipit"],
+  [realpathSync(home), "~/.dipper"],
+  [home, "~/.dipper"],
 ].sort((a, b) => b[0]!.length - a[0]!.length) as [string, string][];
 
 function scrubText(text: string): string {
@@ -150,8 +150,8 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
   return (await response.json()) as T;
 }
 
-const pipit = Bun.spawn([PIPIT, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
-  env: { ...process.env, PIPIT_HOME: home },
+const dipper = Bun.spawn([DIPPER, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
+  env: { ...process.env, DIPPER_HOME: home },
   stdout: "ignore",
   stderr: "inherit",
 });
@@ -163,7 +163,7 @@ try {
     } catch {
       /* not listening yet */
     }
-    if (i > 100) throw new Error("pipit did not start");
+    if (i > 100) throw new Error("dipper did not start");
     await sleep(100);
   }
 
@@ -248,7 +248,7 @@ try {
   const fixtures: ReplayFixtures = {
     version: 1,
     recordedAt: new Date().toISOString(),
-    pipitVersion: health.version,
+    dipperVersion: health.version,
     server: { ...health, pid: 0, url: SHOWN_URL },
     connections: connections.map((c) => ({
       ...c,
@@ -276,7 +276,7 @@ try {
   const kb = (Bun.file(OUT).size / 1024).toFixed(1);
   console.log(`recorded ${recordings.length} runs, ${files.length} files into ${OUT} (${kb} KB)`);
 } finally {
-  pipit.kill();
-  await pipit.exited;
+  dipper.kill();
+  await dipper.exited;
   rmSync(dir, { recursive: true, force: true });
 }

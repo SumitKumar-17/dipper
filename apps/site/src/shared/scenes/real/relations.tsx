@@ -1,5 +1,5 @@
 // The real Relationship View scene. This module is light: the window and its reserved space paint
-// with the page, and the view itself - @pipit/ui and the recorded schema - loads once the scene
+// with the page, and the view itself - @dipper/ui and the recorded schema - loads once the scene
 // comes within a screen of the viewport.
 
 import * as React from "react";
@@ -32,7 +32,7 @@ export const RelationsScene: React.FC<SceneProps> = ({ className, autoplay = tru
         closeUp={closeUp}
         height={HEIGHT}
         held={!visible}
-        label="Pipit's Relationship View: the birdwatch schema's tables and the keys between them"
+        label="Dipper's Relationship View: the birdwatch schema's tables and the keys between them"
         width={WIDTH}
       >
         {(parts) =>

@@ -3,18 +3,18 @@
 // Nothing else is requested until it is `ready`, so eleven panels cannot each render their own copy
 // of the same failure.
 
-import type { PipitClient } from "@pipit/client";
-import type { ServerState, ServerStatus } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import type { ServerState, ServerStatus } from "@dipper/ui";
 import * as React from "react";
 import { serverBaseUrl } from "../server-client";
 import { aborted, RECONNECT_MAX_MS, RECONNECT_MIN_MS, sleep } from "./helpers";
 
 export function useServerGate(
-  getClient: () => PipitClient,
-  injected: PipitClient | undefined,
+  getClient: () => DipperClient,
+  injected: DipperClient | undefined,
 ): { server: ServerState; enabled: boolean } {
   const [status, setStatus] = React.useState<ServerStatus>("connecting");
-  /** From the health reply: pipit's own queries folder, for "save this untitled query". */
+  /** From the health reply: dipper's own queries folder, for "save this untitled query". */
   const [queriesDir, setQueriesDir] = React.useState<string | null>(null);
   /** Bumped by `retry()` to restart the probe loop from its shortest delay. */
   const [probeNonce, setProbeNonce] = React.useState(0);

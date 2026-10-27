@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="apps/web/public/icon.svg" alt="Pipit" width="72">
+<img src="apps/web/public/icon.svg" alt="Dipper" width="72">
 
-# Pipit
+# Dipper
 
 <p><strong>A lightweight SQL workspace for developers.</strong></p>
 
@@ -26,20 +26,20 @@ PostgreSQL · MySQL · Local-first · SQL notebooks
 <br>
 
 <p align="center">
-  <img src="docs/assets/demo.gif" alt="Writing a query in Pipit, running it, and reading the results" width="820">
+  <img src="docs/assets/demo.gif" alt="Writing a query in Dipper, running it, and reading the results" width="820">
 </p>
 
-## What is Pipit?
+## What is Dipper?
 
-Pipit is a lightweight SQL workspace for developers who spend their time **writing, exploring, and understanding SQL**.
+Dipper is a lightweight SQL workspace for developers who spend their time **writing, exploring, and understanding SQL**.
 
 It brings schema exploration, SQL editing, query execution, results, and database visualization into one focused workspace.
 
-Pipit works with PostgreSQL and MySQL - running on your machine, in a container, or hosted somewhere like Neon, Supabase, or RDS. Your SQL files stay on disk as normal `.sql` files, while Pipit provides the tools around them.
+Dipper works with PostgreSQL and MySQL - running on your machine, in a container, or hosted somewhere like Neon, Supabase, or RDS. Your SQL files stay on disk as normal `.sql` files, while Dipper provides the tools around them.
 
 **No account. No cloud service. No bundled database.**
 
-Pipit ships as a single self-contained binary - around 14 MB, with no runtime to install
+Dipper ships as a single self-contained binary - around 14 MB, with no runtime to install
 alongside it.
 
 ## Features
@@ -53,7 +53,7 @@ The schema sidebar shows tables, views, materialized views, columns, types, null
 Database errors are mapped back to the exact location in your query.
 
 <p align="center">
-  <img src="docs/assets/schema-editor.png" alt="Pipit schema tree and SQL editor" width="748">
+  <img src="docs/assets/schema-editor.png" alt="Dipper schema tree and SQL editor" width="748">
 </p>
 
 Run the statement under your cursor with <kbd>⌘</kbd><kbd>↵</kbd>, or the entire file with <kbd>⌘</kbd><kbd>⇧</kbd><kbd>↵</kbd>.
@@ -62,14 +62,14 @@ Run the statement under your cursor with <kbd>⌘</kbd><kbd>↵</kbd>, or the en
 
 ### Completion that reads your query
 
-Pipit suggests what can actually go where your cursor is, not everything in the database.
+Dipper suggests what can actually go where your cursor is, not everything in the database.
 
 Inside a `SELECT` it offers the columns of the tables you have joined so far - not every column in every table. Where a table can go, it offers tables, and after `JOIN` the ones related to what is already in the statement come first. Type `ON` and the join condition is offered already written, straight from the foreign key. Keywords are only suggested where they are legal, and rank below your own tables and columns, because the keyword you want is usually one you can already spell.
 
 It works on half-written SQL, which is the only kind that needs it.
 
 <p align="center">
-  <img src="docs/assets/completion.png" alt="Pipit suggesting a join and its ON clause" width="748">
+  <img src="docs/assets/completion.png" alt="Dipper suggesting a join and its ON clause" width="748">
 </p>
 
 ---
@@ -83,7 +83,7 @@ Relationship View turns foreign-key relationships into an interactive schema dia
 Click to focus on a table, drag to rearrange the layout, and zoom or pan around larger schemas.
 
 <p align="center">
-  <img src="docs/assets/relationship-view.png" alt="Pipit relationship view showing connected database tables" width="748">
+  <img src="docs/assets/relationship-view.png" alt="Dipper relationship view showing connected database tables" width="748">
 </p>
 
 Large tables automatically switch to a compact keys-only view, keeping the diagram readable.
@@ -101,12 +101,12 @@ FROM → JOIN → WHERE → GROUP BY → HAVING
 → WINDOW → SELECT → DISTINCT → ORDER BY → LIMIT
 ```
 
-At each stage, Pipit shows the rows returned by your database and explains what happened.
+At each stage, Dipper shows the rows returned by your database and explains what happened.
 
 This makes complex SQL easier to understand, debug, and explain - especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
 
 <p align="center">
-  <img src="docs/assets/query-walk.gif" alt="Pipit Query Walk visualizing SQL execution" width="748">
+  <img src="docs/assets/query-walk.gif" alt="Dipper Query Walk visualizing SQL execution" width="748">
 </p>
 
 The visualization is based on your actual SQL and database. Query Walk uses read-only executions and does not modify your data.
@@ -135,10 +135,10 @@ WHERE status = 'paid'
   AND created_at > now() - interval '7 days';
 ```
 
-The file remains valid SQL and can still be used outside Pipit.
+The file remains valid SQL and can still be used outside Dipper.
 
 <p align="center">
-  <img src="docs/assets/notebook.png" alt="Pipit SQL notebook" width="730">
+  <img src="docs/assets/notebook.png" alt="Dipper SQL notebook" width="730">
 </p>
 
 ---
@@ -157,7 +157,7 @@ There is no import step or proprietary project format.
 - Untitled queries can be saved into a workspace
 
 <p align="center">
-  <img src="docs/assets/open-folder.png" alt="Pipit folder picker for opening a workspace" width="748">
+  <img src="docs/assets/open-folder.png" alt="Dipper folder picker for opening a workspace" width="748">
 </p>
 
 ---
@@ -169,7 +169,7 @@ Compare queries and results side by side using a resizable pane layout.
 Drag tabs to any edge to create splits, move tabs between panes, and restore the layout when you return.
 
 <p align="center">
-  <img src="docs/assets/hero.png" alt="Pipit split-pane SQL workspace" width="780">
+  <img src="docs/assets/hero.png" alt="Dipper split-pane SQL workspace" width="780">
 </p>
 
 ---
@@ -188,7 +188,7 @@ Inspect query results in a fast, virtualized grid.
 - Server messages and notices
 
 <p align="center">
-  <img src="docs/assets/results.png" alt="Pipit query result grid" width="750">
+  <img src="docs/assets/results.png" alt="Dipper query result grid" width="750">
 </p>
 
 ---
@@ -206,18 +206,18 @@ Opening a query from history shows the SQL above its results. Right-click any en
 Old runs are dropped once you pass the limits you set, and **Clear history** empties the lot.
 
 <p align="center">
-  <img src="docs/assets/history.png" alt="Pipit query history" width="355">
+  <img src="docs/assets/history.png" alt="Dipper query history" width="355">
 </p>
 
 <p align="center">
-  <img src="docs/assets/history-settings.png" alt="Pipit history settings" width="748">
+  <img src="docs/assets/history-settings.png" alt="Dipper history settings" width="748">
 </p>
 
 ---
 
 ### Command palette
 
-Press <kbd>⌘</kbd><kbd>K</kbd> to search Pipit without leaving the keyboard.
+Press <kbd>⌘</kbd><kbd>K</kbd> to search Dipper without leaving the keyboard.
 
 Search across:
 
@@ -230,7 +230,7 @@ Search across:
 Switching connections or databases automatically updates the schema and editor context.
 
 <p align="center">
-  <img src="docs/assets/command-palette.png" alt="Pipit command palette" width="635">
+  <img src="docs/assets/command-palette.png" alt="Dipper command palette" width="635">
 </p>
 
 ## Install
@@ -238,10 +238,10 @@ Switching connections or databases automatically updates the schema and editor c
 ### macOS and Linux
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/pipit/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/dipper/main/install.sh | sh
 ```
 
-This fetches the latest release for your platform, verifies its checksum, and installs `pipit`
+This fetches the latest release for your platform, verifies its checksum, and installs `dipper`
 into `/usr/local/bin` if that is writable, or `~/.local/bin` otherwise.
 
 If it lands somewhere that is not on your `PATH`, the installer adds it to your shell profile
@@ -249,47 +249,47 @@ If it lands somewhere that is not on your `PATH`, the installer adds it to your 
 paste into the terminal you already have open. New terminals need nothing.
 
 ```sh
-pipit          # starts the server and opens the UI
-pipit status   # is it running, and where
-pipit stop     # stop it
-pipit update   # install the latest release over this one
+dipper          # starts the server and opens the UI
+dipper status   # is it running, and where
+dipper stop     # stop it
+dipper update   # install the latest release over this one
 ```
 
 | Variable                | What it does                                             |
 | ----------------------- | -------------------------------------------------------- |
-| `PIPIT_VERSION`         | install a specific tag, e.g. `vX.Y.Z`, instead of latest |
-| `PIPIT_INSTALL_DIR`     | install somewhere else, e.g. `~/bin`                     |
-| `PIPIT_NO_MODIFY_PATH`  | leave the shell profile alone and just print the line    |
-| `PIPIT_NO_UPDATE_CHECK` | don't look for a newer release on start                  |
+| `DIPPER_VERSION`         | install a specific tag, e.g. `vX.Y.Z`, instead of latest |
+| `DIPPER_INSTALL_DIR`     | install somewhere else, e.g. `~/bin`                     |
+| `DIPPER_NO_MODIFY_PATH`  | leave the shell profile alone and just print the line    |
+| `DIPPER_NO_UPDATE_CHECK` | don't look for a newer release on start                  |
 
 ### Updating
 
 ```sh
-pipit update           # download the latest release and replace this binary
-pipit update --check   # just say whether there is a newer one
+dipper update           # download the latest release and replace this binary
+dipper update --check   # just say whether there is a newer one
 ```
 
 `update` fetches the release for your platform, verifies it against the release's checksum, and
-replaces the binary in place - the same file `pipit` already runs from, wherever the installer
+replaces the binary in place - the same file `dipper` already runs from, wherever the installer
 put it. Nothing else on disk is touched: connections, settings and history stay where they are.
 
-A server that is already running keeps the old version until you restart it (`pipit stop`, then
-`pipit`), and `pipit update` says so when it finds one.
+A server that is already running keeps the old version until you restart it (`dipper stop`, then
+`dipper`), and `dipper update` says so when it finds one.
 
-`pipit serve` also looks for a newer release once a day, in the background, and prints a single
+`dipper serve` also looks for a newer release once a day, in the background, and prints a single
 line when there is one. It never blocks startup and never updates anything on its own; set
-`PIPIT_NO_UPDATE_CHECK=1` to turn the look off entirely.
+`DIPPER_NO_UPDATE_CHECK=1` to turn the look off entirely.
 
-`pipit update --version v0.1.0` installs that exact tag, which is how you go back a version.
+`dipper update --version v0.1.0` installs that exact tag, which is how you go back a version.
 
-On Windows, `pipit update` replaces the `.exe` you ran it from. Windows will not delete a file
-that is open, so the previous version is left beside it as `pipit.exe.old` and cleared on the
+On Windows, `dipper update` replaces the `.exe` you ran it from. Windows will not delete a file
+that is open, so the previous version is left beside it as `dipper.exe.old` and cleared on the
 next update - deleting it by hand is fine too.
 
 ### Windows
 
-Download `pipit-<version>-windows-amd64.exe` from the
-[releases page](https://github.com/SumitKumar-17/pipit/releases/latest) and run it. Windows shows a
+Download `dipper-<version>-windows-amd64.exe` from the
+[releases page](https://github.com/SumitKumar-17/dipper/releases/latest) and run it. Windows shows a
 SmartScreen warning the first time - choose **More info → Run anyway**.
 
 ### From source
@@ -298,23 +298,23 @@ Needs Go 1.25+ and Bun. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ### If macOS refuses to open it
 
-Pipit's binaries are not notarized yet. The `curl` install above avoids this entirely, because
+Dipper's binaries are not notarized yet. The `curl` install above avoids this entirely, because
 macOS only quarantines files a *browser* downloaded. If you took the binary from the releases
 page instead and macOS says the developer cannot be verified:
 
 ```sh
-xattr -d com.apple.quarantine ./pipit
+xattr -d com.apple.quarantine ./dipper
 ```
 
 ## Getting started
 
 On first launch, choose a workspace, connection, and database.
 
-Pipit finds the databases already on your machine - on their usual ports, installed through Homebrew or systemd, running as a Windows service, or in a Docker, Podman or nerdctl container - and offers to connect to each one. Containers are offered with the username they were set up with. If a database needs a password, Pipit asks for it there and then.
+Dipper finds the databases already on your machine - on their usual ports, installed through Homebrew or systemd, running as a Windows service, or in a Docker, Podman or nerdctl container - and offers to connect to each one. Containers are offered with the username they were set up with. If a database needs a password, Dipper asks for it there and then.
 
-For a database somewhere else, paste the connection string your provider gave you - Neon, Supabase, RDS, or anything else. Connections that leave your machine use TLS and their certificate is checked; if your connection string sets `sslmode`, Pipit uses that instead.
+For a database somewhere else, paste the connection string your provider gave you - Neon, Supabase, RDS, or anything else. Connections that leave your machine use TLS and their certificate is checked; if your connection string sets `sslmode`, Dipper uses that instead.
 
-Pipit never installs or bundles a database server.
+Dipper never installs or bundles a database server.
 
 ## Keyboard shortcuts
 
@@ -334,10 +334,10 @@ Use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd> on Windows and Linux.
 
 ## Local-first
 
-Pipit runs locally and keeps your workspace on your machine.
+Dipper runs locally and keeps your workspace on your machine.
 
 ```text
-~/.pipit/
+~/.dipper/
 ├── connections.json
 ├── settings.json
 ├── history.db
@@ -346,18 +346,18 @@ Pipit runs locally and keeps your workspace on your machine.
 └── queries/
 ```
 
-`PIPIT_HOME` can be used to relocate this directory.
+`DIPPER_HOME` can be used to relocate this directory.
 
-Pipit sends no telemetry and does not require a remote service for normal operation.
+Dipper sends no telemetry and does not require a remote service for normal operation.
 
 ## Contributing
 
-Pipit is a Bun workspace monorepo. The server and CLI are Go; the UI and the shared packages are
+Dipper is a Bun workspace monorepo. The server and CLI are Go; the UI and the shared packages are
 TypeScript.
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for development setup, project structure, scripts, and verification.
 
-Bug reports and feature requests: [GitHub Issues](https://github.com/SumitKumar-17/pipit/issues).
+Bug reports and feature requests: [GitHub Issues](https://github.com/SumitKumar-17/dipper/issues).
 
 ## License
 

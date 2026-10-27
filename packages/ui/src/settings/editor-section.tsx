@@ -2,7 +2,7 @@
 // formatter writes, and "Keyword case" alone does not say formatting is an explicit action rather
 // than something that happens as you type.
 
-import type { CompletionMode, Settings } from "@pipit/protocol";
+import type { CompletionMode, Settings } from "@dipper/protocol";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { useFade } from "../lib/motion";

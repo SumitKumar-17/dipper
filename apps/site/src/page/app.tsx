@@ -7,7 +7,7 @@ import type { RouteStep } from "./bird/route";
 import { useFlutter } from "./bird/use-flutter";
 import { useHop } from "./bird/use-hop";
 import { BIRD_SIZE } from "./bird/size";
-import { WhyPipit } from "./bird/why-pipit/why-pipit";
+import { WhyDipper } from "./bird/why-dipper/why-dipper";
 import { Landing } from "./landing/landing";
 import { Nav } from "./chrome/nav";
 import { BinarySection } from "./sections/binary";
@@ -75,7 +75,7 @@ function Page() {
       <Sky />
       <Nav />
       <BirdRoute steps={route} />
-      <WhyPipit settled={settled} />
+      <WhyDipper settled={settled} />
       {/* The landing's slips flutter out past the page's edges; nothing may scroll sideways for them. */}
       <div className="overflow-x-clip">
         <main>

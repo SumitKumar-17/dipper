@@ -5,7 +5,7 @@
 // straight into the first station of the next. There is nothing to navigate back out of.
 
 import { PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "lucide-react";
-import type { SqlComment } from "@pipit/sql";
+import type { SqlComment } from "@dipper/sql";
 import * as React from "react";
 import { Button } from "../../ui/button";
 import { Kbd } from "../../ui/kbd";

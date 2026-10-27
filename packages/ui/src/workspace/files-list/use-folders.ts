@@ -42,7 +42,7 @@ export function useFolders(): {
       },
       [roots, write],
     ),
-    // Closing stops pipit reading the folder; the path stays under Recent.
+    // Closing stops dipper reading the folder; the path stays under Recent.
     close: React.useCallback(
       async (folder: string) =>
         write(

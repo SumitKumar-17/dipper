@@ -1,22 +1,22 @@
 # HTTP API
 
-Everything the UI and the CLI can ask the server for. Served by `pipit serve`: the routes are
+Everything the UI and the CLI can ask the server for. Served by `dipper serve`: the routes are
 registered in [`apps/server/server/server.go`](../../apps/server/server/server.go) and
 implemented one group per file alongside it in
 [`apps/server/server/`](../../apps/server/server); the browser-side wrapper is
-[`@pipit/client`](../../packages/client).
+[`@dipper/client`](../../packages/client).
 
 All response and request shapes name types from
-[`@pipit/protocol`](../../packages/protocol/src) rather than restating their fields - the package
+[`@dipper/protocol`](../../packages/protocol/src) rather than restating their fields - the package
 is the contract, this page is the index. The server marshals the Go half of the same contract,
 [`apps/server/protocol`](../../apps/server/protocol); the two are kept in step by hand.
 
 ## Access
 
 There is no authentication. The server binds to `127.0.0.1`, so the boundary is the loopback
-interface: only processes on this machine can reach it. `pipit serve --host <addr>` past loopback
+interface: only processes on this machine can reach it. `dipper serve --host <addr>` past loopback
 publishes the API to anyone who can route to that address, and says so on startup.
-`pipit serve --allow-origin <origin>` additionally lets a UI dev server on another origin read the
+`dipper serve --allow-origin <origin>` additionally lets a UI dev server on another origin read the
 API from a browser (plain CORS, no credentials).
 
 ## Errors
@@ -43,7 +43,7 @@ the stale-write 409 returns the file as it is on disk now.
 
 | Method | Path          | Body | Response     | Purpose                                                                  |
 | ------ | ------------- | ---- | ------------ | ------------------------------------------------------------------------ |
-| GET    | `/api/health` | -    | `ServerInfo` | Name, version, pid, url, start time and pipit home - the liveness probe. |
+| GET    | `/api/health` | -    | `ServerInfo` | Name, version, pid, url, start time and dipper home - the liveness probe. |
 
 ## Events
 
@@ -147,5 +147,5 @@ client as an external file change.
 
 | Method | Path               | Response                                    | Purpose                                                                                                                      |
 | ------ | ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| GET    | `/*` (non-`/api/`) | static assets, SPA fallback to `index.html` | The built UI, when the server was given one (`pipit serve --ui <dir>`, or the `ui/` directory inside the installed package). |
+| GET    | `/*` (non-`/api/`) | static assets, SPA fallback to `index.html` | The built UI, when the server was given one (`dipper serve --ui <dir>`, or the `ui/` directory inside the installed package). |
 | GET    | `/`                | HTML                                        | When no UI bundle is installed: a placeholder page listing the API.                                                          |

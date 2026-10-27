@@ -1,8 +1,8 @@
-import { stripComments } from "@pipit/sql";
+import { stripComments } from "@dipper/sql";
 
 /**
  * The key a run is looked up by. Two texts the server would run identically map to the same key:
- * comments go (with `@pipit/sql`'s own scanner, so `'-- not a comment'` survives), whitespace runs
+ * comments go (with `@dipper/sql`'s own scanner, so `'-- not a comment'` survives), whitespace runs
  * collapse, trailing semicolons drop, and everything outside a quoted literal or identifier is
  * lower-cased. Quoted text is kept byte for byte - `'LC'` and `'lc'` are different queries.
  */

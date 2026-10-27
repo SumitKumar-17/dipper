@@ -15,7 +15,7 @@
 // Nothing here probes. Every value comes from the outer probe that runs once per section and the
 // per-row probe the ledger already sends for whichever row is bound.
 
-import type { Cell, StatementResult } from "@pipit/protocol";
+import type { Cell, StatementResult } from "@dipper/protocol";
 import { formatCell } from "../../results-grid";
 import type { BoundPlan, BoundRow } from "../bound";
 import { sqlLiteral } from "../bound";

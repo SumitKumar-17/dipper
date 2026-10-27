@@ -2,7 +2,7 @@
 // list's own order, each carrying the key of the row it came from so nothing re-enters - and, when
 // the list holds a CASE, one more column saying which of its branches each row took.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import { branchColumn, caseExpressions } from "../../steps";
 import {
   colsOf,

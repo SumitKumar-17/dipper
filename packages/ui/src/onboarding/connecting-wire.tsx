@@ -6,10 +6,10 @@
 // Motion is all SVG: the wire draws itself with `pathLength` and the packets ride it with
 // `offsetPath`, so they follow the curve rather than being tweened across a straight line.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import { motion } from "motion/react";
 import type React from "react";
-import { PipitMark } from "../brand/logo";
+import { DipperMark } from "../brand/logo";
 import { cn } from "../lib/utils";
 import { DialectMark } from "./dialect-mark";
 
@@ -91,7 +91,7 @@ export function Wire({
       {/* The two ends sit over the drawing rather than inside it, so they are real DOM and keep
           the app's own card styling instead of being redrawn as SVG rectangles. */}
       <Node className="left-0">
-        <PipitMark className="size-6" />
+        <DipperMark className="size-6" />
       </Node>
       <Node className="right-0" pulsing={!reduced}>
         <DialectMark className="size-6" dialect={dialect} />

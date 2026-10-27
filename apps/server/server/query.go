@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"pipit/httpx"
-	"pipit/protocol"
-	"pipit/storage"
+	"dipper/httpx"
+	"dipper/protocol"
+	"dipper/storage"
 )
 
 // How hard we chase a cancel for a client that disconnected mid-run.

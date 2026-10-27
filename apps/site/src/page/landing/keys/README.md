@@ -36,7 +36,7 @@ on resize.
 - **0.9-2.2 s.** Quick hops along the back row, **O I N**: `join`. Then down to the space bar, a
   look along the middle row, **S** and **P**: `join sp` by 3.6 s. Each landing presses its key; the
   key the bird stands on holds a hair lower, with the bird's soft shadow on it.
-- **3.7 s.** Pipit's completion menu opens under the caret, in the app's own style: `▦ species`
+- **3.7 s.** Dipper's completion menu opens under the caret, in the app's own style: `▦ species`
   `table · ~51 rows` selected, `▨ species_totals` `view`. The bird glances at it.
 - **~4.3 s.** It hops back onto the wide **tab** key: `species s` completes, the menu closes, and
   `on s.id = g.species_id` writes itself from the foreign key, in the info blue with a

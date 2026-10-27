@@ -8,7 +8,7 @@
 //
 // There is no Save button; see saved-tick.tsx for why, and for the receipt that replaces it.
 
-import type { Settings } from "@pipit/protocol";
+import type { Settings } from "@dipper/protocol";
 import {
   DatabaseIcon,
   FolderIcon,
@@ -49,7 +49,7 @@ const PANES = [
 export type SettingsPane = (typeof PANES)[number]["id"];
 
 /** Dispatch on `window` to open Settings, on a named pane when one is given. */
-export const SETTINGS_EVENT = "pipit:settings";
+export const SETTINGS_EVENT = "dipper:settings";
 
 /**
  * Open Settings from anywhere. A surface that explains a setting should be able to hand you the

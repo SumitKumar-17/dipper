@@ -1,6 +1,6 @@
 // The workspace shell: three panes, with the results sheet docked below the editor.
 //
-// Everything below is live, always: `useAppWorkspace` is @pipit/client against `pipit serve` and
+// Everything below is live, always: `useAppWorkspace` is @dipper/client against `dipper serve` and
 // there is no other provider. No fixture fallback - when the server is not answering the app says
 // so and stops, rather than filling the panes with data nobody asked for.
 
@@ -11,7 +11,7 @@ import {
   EditorGrid,
   FilesList,
   Onboarding,
-  PipitMark,
+  DipperMark,
   ResizableSidebar,
   RunButton,
   SaveIndicator,
@@ -30,7 +30,7 @@ import {
   SaveQueryDialog,
   SchemaDiagramDialog,
   useWorkspace,
-} from "@pipit/ui";
+} from "@dipper/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
@@ -104,8 +104,8 @@ function Workspace(): React.ReactElement {
             {/* The mark, not the wordmark: the topbar is the app you are already inside, so the
                 identity only has to be present, and the name would cost the connection picker the
                 width it needs for a long database name. */}
-            <span aria-label="Pipit" className="flex items-center pr-1 pl-0.5" role="img">
-              <PipitMark className="size-5" />
+            <span aria-label="Dipper" className="flex items-center pr-1 pl-0.5" role="img">
+              <DipperMark className="size-5" />
             </span>
             <div aria-hidden className="mr-0.5 h-4 w-px bg-border" />
             <button

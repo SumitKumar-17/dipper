@@ -1,7 +1,7 @@
 # Conventions
 
 **Read [AGENTS.md](AGENTS.md).** It is the canonical conventions file for this repo and applies
-in full to Claude Code: workspace and install rules, the `@pipit/protocol` types-only constraint,
+in full to Claude Code: workspace and install rules, the `@dipper/protocol` types-only constraint,
 the `apps/server` layering ESLint enforces, how to verify a change, and the project facts that
 trip agents up.
 

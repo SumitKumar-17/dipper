@@ -1,7 +1,7 @@
 // The shapes a scene is made of: what one card, one row and one bucket look like once the stage
 // has them. Types only, so every other file here can import them without pulling in a builder.
 
-import type { Cell } from "@pipit/protocol";
+import type { Cell } from "@dipper/protocol";
 import type { SourceRef } from "../clauses";
 import type { CellTone } from "../grid";
 

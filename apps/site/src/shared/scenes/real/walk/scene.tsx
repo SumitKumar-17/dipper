@@ -1,10 +1,10 @@
-// The heavy half of the Query Walk scene: the walk @pipit/ui ships, on probes recorded from a real
-// Pipit and Postgres, played by pressing its own controls the way a reader would. Imported only
+// The heavy half of the Query Walk scene: the walk @dipper/ui ships, on probes recorded from a real
+// Dipper and Postgres, played by pressing its own controls the way a reader would. Imported only
 // by walk.tsx, lazily, once the window comes near.
 
-import { WorkspaceProvider, type WorkspaceApi } from "@pipit/ui";
+import { WorkspaceProvider, type WorkspaceApi } from "@dipper/ui";
 import * as React from "react";
-// @pipit/ui exports only the modal dialog around the walk, which would lock the page's scroll. This
+// @dipper/ui exports only the modal dialog around the walk, which would lock the page's scroll. This
 // is the file its barrel resolves to, so the two share one copy of every React context.
 import { QueryWalk } from "../../../../../../../packages/ui/src/workspace/query-walk/query-walk";
 import { birdwatch, normaliseSql, type Recording, useReplayWorkspace } from "../../../replay";

@@ -22,8 +22,8 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-      - run: bun run --filter @pipit/protocol typecheck
-      - run: bun run --filter @pipit/client typecheck
-      - run: bun run --filter @pipit/sql typecheck
-      - run: bun run --filter @pipit/ui typecheck
-      - run: bun run --filter @pipit/protocol check
+      - run: bun run --filter @dipper/protocol typecheck
+      - run: bun run --filter @dipper/client typecheck
+      - run: bun run --filter @dipper/sql typecheck
+      - run: bun run --filter @dipper/ui typecheck
+      - run: bun run --filter @dipper/protocol check

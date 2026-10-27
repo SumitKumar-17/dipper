@@ -6,7 +6,7 @@
 // was counting, and a second way of arriving at it could only ever disagree with the first. The one
 // exception is a subquery no honest count could be asked for, where the cells are all there is.
 
-import type { Cell, StatementResult } from "@pipit/protocol";
+import type { Cell, StatementResult } from "@dipper/protocol";
 import { formatCell } from "../../results-grid";
 import { bindKeyOf, type BoundPlan, type BoundRow } from "../bound";
 import { cellFound, cellTone, MAX_DRIVE_COLS, type GridBuild } from "../grid";

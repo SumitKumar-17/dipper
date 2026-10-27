@@ -1,6 +1,6 @@
 import type { EditorView } from "@codemirror/view";
-import type { Dialect, Settings } from "@pipit/protocol";
-import { formatSql } from "@pipit/sql";
+import type { Dialect, Settings } from "@dipper/protocol";
+import { formatSql } from "@dipper/sql";
 import { showFormatNotice } from "./format-notice";
 
 /**
@@ -8,7 +8,7 @@ import { showFormatNotice } from "./format-notice";
  * `WorkspaceApi` method because formatting belongs to an editor instance, not to the workspace -
  * several panes can hold live editors at once, and the contract has no notion of a focused pane.
  */
-export const FORMAT_DOCUMENT_EVENT = "pipit:format";
+export const FORMAT_DOCUMENT_EVENT = "dipper:format";
 
 /** `FORMAT_DOCUMENT_EVENT`'s payload: which buffer should format itself. */
 export type FormatDocumentEventDetail = { bufferId: string };

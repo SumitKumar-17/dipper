@@ -1,6 +1,6 @@
-import type { PipitClient } from "@pipit/client";
-import type { DatabaseSchema } from "@pipit/protocol";
-import { asyncError, asyncIdle, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import type { DatabaseSchema } from "@dipper/protocol";
+import { asyncError, asyncIdle, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@dipper/ui";
 import * as React from "react";
 import { aborted, messageOf } from "./helpers";
 
@@ -12,7 +12,7 @@ export type SchemaApi = {
 };
 
 export function useSchema(
-  getClient: () => PipitClient,
+  getClient: () => DipperClient,
   enabled: boolean,
   connectionId: string | null,
   database: string | null,

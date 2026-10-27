@@ -131,7 +131,7 @@ function GroupView({ group }: { group: PaneGroup }): React.ReactElement {
 /**
  * An empty pane offers the thing you would do next. Naming ⌘P instead would assume a workspace -
  * with no folder open there are no files to find. An untitled query assumes nothing, which is why
- * pipit is useful a second after connecting.
+ * dipper is useful a second after connecting.
  */
 function EmptyGroup(): React.ReactElement {
   const { newScratch } = useWorkspace();

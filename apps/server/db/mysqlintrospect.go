@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // MySQL's "schema" and "database" are the same thing, so the tree always has exactly one schema:

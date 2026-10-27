@@ -1,4 +1,4 @@
-// Records what the landing page's Relationship View and Query Walk replay: runs the built pipit
+// Records what the landing page's Relationship View and Query Walk replay: runs the built dipper
 // against the birdwatch database, drives the real app in headless Chrome over the DevTools
 // protocol, and keeps every API exchange the two surfaces made. The walk is played to the end, then
 // stepped back and forth phase by phase and seeked from every rail station, so whatever a visitor can
@@ -6,10 +6,10 @@
 //
 //   bun apps/site/scripts/record-walk.ts
 //
-// Needs apps/server/dist/pipit (`bun run build`), the pipit_site_demo database loaded from
+// Needs apps/server/dist/dipper (`bun run build`), the dipper_site_demo database loaded from
 // apps/site/capture/birdwatch.sql, and Google Chrome. Environment, all optional: PGHOST, PGPORT, PGUSER,
 // RECORD_DB; RECORD_WALK_PORT and RECORD_WALK_CDP_PORT (default 4697 and 9322); CHROME; RECORD_TMP
-// for where the throwaway pipit home, workspace and browser profile go (removed on exit);
+// for where the throwaway dipper home, workspace and browser profile go (removed on exit);
 // RECORD_REF to also keep reference screenshots of the real app there.
 //
 // Writes src/shared/replay/fixtures/walk.json: every probe the walk sent, once each, as the replay's
@@ -19,14 +19,14 @@
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { hostname, tmpdir, userInfo } from "node:os";
 import { join, resolve } from "node:path";
-import type { RunRecord } from "@pipit/protocol";
+import type { RunRecord } from "@dipper/protocol";
 import { normaliseSql } from "../src/shared/replay/normalise";
 import type { Recording } from "../src/shared/replay/types";
 
 const SITE = resolve(import.meta.dir, "..");
 const REPO = resolve(SITE, "../..");
 const OUT = join(SITE, "src/shared/replay/fixtures");
-const PIPIT = join(REPO, "apps/server/dist/pipit");
+const DIPPER = join(REPO, "apps/server/dist/dipper");
 const CHROME = process.env.CHROME ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = Number(process.env.RECORD_WALK_PORT ?? 4697);
 const CDP_PORT = Number(process.env.RECORD_WALK_CDP_PORT ?? 9322);
@@ -35,7 +35,7 @@ const PG = {
   host: process.env.PGHOST ?? "localhost",
   port: Number(process.env.PGPORT ?? 5432),
   user: process.env.PGUSER ?? userInfo().username,
-  database: process.env.RECORD_DB ?? "pipit_site_demo",
+  database: process.env.RECORD_DB ?? "dipper_site_demo",
 };
 
 // The two scenes' app areas, the sizes the legacy scenes were captured at: the page draws each
@@ -53,7 +53,7 @@ having count(*) > 1
 order by migrants desc, family
 limit 4;`;
 
-const run = mkdtempSync(join(process.env.RECORD_TMP ?? tmpdir(), "pipit-record-walk-"));
+const run = mkdtempSync(join(process.env.RECORD_TMP ?? tmpdir(), "dipper-record-walk-"));
 const home = join(run, "home");
 const workspace = join(run, "birdwatch");
 const profile = join(run, "chrome");
@@ -65,7 +65,7 @@ const api = `http://127.0.0.1:${PORT}`;
 
 // Nothing from this machine may reach a fixture: its paths, its login, its name.
 const replacements: [string, string][] = [];
-for (const [path, shown] of [[workspace, "~/birdwatch"], [home, "~/.pipit"], [run, "~"]] as const) {
+for (const [path, shown] of [[workspace, "~/birdwatch"], [home, "~/.dipper"], [run, "~"]] as const) {
   replacements.push([realpathSync(path), shown], [path, shown]);
 }
 function scrub(text: string): string {
@@ -102,8 +102,8 @@ type Exchange = {
   done: boolean;
 };
 
-const pipit = Bun.spawn([PIPIT, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
-  env: { ...process.env, PIPIT_HOME: home },
+const dipper = Bun.spawn([DIPPER, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
+  env: { ...process.env, DIPPER_HOME: home },
   stdout: "ignore",
   stderr: "inherit",
 });
@@ -162,7 +162,7 @@ try {
   await sleep(800);
 
   // The Relationship View, opened the way the sidebar button opens it.
-  await page.evaluate(`window.dispatchEvent(new CustomEvent("pipit:visualise", { detail: {} }))`);
+  await page.evaluate(`window.dispatchEvent(new CustomEvent("dipper:visualise", { detail: {} }))`);
   await page.until(`document.querySelectorAll('[data-slot=dialog-popup] .w-64.rounded-lg').length >= 6`, 15000);
   await sleep(1500);
   if (REF) {
@@ -195,7 +195,7 @@ try {
       last = key;
     }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-current', 'aria-label'] });
   })()`);
-  await page.evaluate(`window.dispatchEvent(new CustomEvent("pipit:visualise-query", { detail: { sql: ${JSON.stringify(WALK_SQL)} } }))`);
+  await page.evaluate(`window.dispatchEvent(new CustomEvent("dipper:visualise-query", { detail: { sql: ${JSON.stringify(WALK_SQL)} } }))`);
   await page.until(`window.__marks.some((m) => m.play === 'Pause')`, 20000);
   const shot = new Set<string>();
   const deadline = Date.now() + 120_000;
@@ -279,8 +279,8 @@ try {
   console.log(`${recordings.length} probes → walk.json (${text.length} B)`);
 } finally {
   chrome.kill();
-  pipit.kill();
-  await Promise.all([chrome.exited, pipit.exited]);
+  dipper.kill();
+  await Promise.all([chrome.exited, dipper.exited]);
   rmSync(run, { recursive: true, force: true });
 }
 

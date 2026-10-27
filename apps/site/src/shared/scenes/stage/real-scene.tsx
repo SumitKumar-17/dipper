@@ -4,7 +4,7 @@
 
 import { closeCompletion } from "@codemirror/autocomplete";
 import { EditorView } from "@codemirror/view";
-import { RESULTS_PANE, WorkspaceProvider, type EditorLayout, type WorkspaceApi } from "@pipit/ui";
+import { RESULTS_PANE, WorkspaceProvider, type EditorLayout, type WorkspaceApi } from "@dipper/ui";
 import * as React from "react";
 import type { SceneAnchors } from "../types";
 import type { ReplayInput, ReplayWorkspace } from "../../replay/types";

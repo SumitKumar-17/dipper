@@ -5,7 +5,7 @@
 //
 // Async rendering follows the rule in types.ts: a populated tree is never replaced by a skeleton.
 
-import type { Table } from "@pipit/protocol";
+import type { Table } from "@dipper/protocol";
 import { LayersIcon, RefreshCwIcon, TriangleAlertIcon, WaypointsIcon } from "lucide-react";
 import * as React from "react";
 import { cn } from "../../lib/utils";

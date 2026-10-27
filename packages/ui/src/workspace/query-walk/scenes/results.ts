@@ -1,7 +1,7 @@
 // Reading the step results: pulling a sample, an error or a count out of what a station's queries
 // came back with, and the row counts a station starts from and leaves behind.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import type { KeyPair } from "../clauses";
 import { countId, sampleId, type Station } from "../steps";
 

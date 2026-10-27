@@ -7,8 +7,8 @@ import (
 	"path"
 	"strings"
 
-	"pipit/httpx"
-	"pipit/webui"
+	"dipper/httpx"
+	"dipper/webui"
 )
 
 // The non-/api surface: the built UI with an SPA fallback.
@@ -36,7 +36,7 @@ func (s *Server) registerUI() {
 				httpx.WriteNotFound(w, r.URL.Path)
 				return
 			}
-			http.Error(w, "pipit UI is not built. Run `bun run --filter @pipit/web build`, then restart pipit.", http.StatusServiceUnavailable)
+			http.Error(w, "dipper UI is not built. Run `bun run --filter @dipper/web build`, then restart dipper.", http.StatusServiceUnavailable)
 		})
 		return
 	}
@@ -66,7 +66,7 @@ func (s *Server) registerUI() {
 func serveIndex(w http.ResponseWriter, r *http.Request, files fs.FS) {
 	body, err := fs.ReadFile(files, "index.html")
 	if err != nil {
-		http.Error(w, "pipit UI is missing index.html", http.StatusServiceUnavailable)
+		http.Error(w, "dipper UI is missing index.html", http.StatusServiceUnavailable)
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

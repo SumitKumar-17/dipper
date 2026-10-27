@@ -1,4 +1,4 @@
-import type { QueryOptions, RunEvent, RunRecord } from "@pipit/protocol";
+import type { QueryOptions, RunEvent, RunRecord } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 import { readNdjson } from "./ndjson";
 

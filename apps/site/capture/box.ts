@@ -16,18 +16,18 @@ import { dirname, join, resolve } from "node:path";
 const REPO = resolve(import.meta.dir, "../../..");
 const OUT = join(REPO, "apps/site/public/img");
 const QUERIES = join(import.meta.dir, "queries");
-const PIPIT = join(REPO, "apps/server/dist/pipit");
+const DIPPER = join(REPO, "apps/server/dist/dipper");
 const CHROME = process.env.CHROME ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = Number(process.env.BOX_PORT ?? 4695);
 const CDP_PORT = Number(process.env.BOX_CDP_PORT ?? 9317);
 const TMP = process.env.BOX_TMP ?? tmpdir();
-const REF = process.env.BOX_REF ?? join(TMP, "pipit-box-reference");
+const REF = process.env.BOX_REF ?? join(TMP, "dipper-box-reference");
 const ONLY = process.env.BOX_ONLY?.split(",");
 const PG = {
   host: process.env.PGHOST ?? "127.0.0.1",
   port: Number(process.env.PGPORT ?? 5432),
   user: process.env.PGUSER ?? userInfo().username,
-  database: process.env.CAPTURE_DB ?? "pipit_site_demo",
+  database: process.env.CAPTURE_DB ?? "dipper_site_demo",
 };
 const WIDTH = 1440;
 const HEIGHT = 900;
@@ -99,7 +99,7 @@ async function json(path: string, init?: RequestInit) {
 }
 
 mkdirSync(REF, { recursive: true });
-const profile = mkdtempSync(join(TMP, "pipit-box-chrome-"));
+const profile = mkdtempSync(join(TMP, "dipper-box-chrome-"));
 temporary.push(profile);
 const chrome = Bun.spawn(
   [CHROME, "--headless=new", `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${profile}`,
@@ -268,15 +268,15 @@ try {
 
   // A scene runs against its own server and an empty browser origin.
   async function withApp(name: string, opts: { connect: boolean }, body: () => Promise<void>) {
-    const dir = mkdtempSync(join(TMP, `pipit-box-${name}-`));
+    const dir = mkdtempSync(join(TMP, `dipper-box-${name}-`));
     temporary.push(dir);
     const home = join(dir, "home");
     const workspace = join(dir, "birdwatch");
     for (const path of [home, workspace]) mkdirSync(path, { recursive: true });
     for (const file of COPIED) copyFileSync(join(QUERIES, file), join(workspace, file));
     for (const [file, sql] of Object.entries(FILES)) writeFileSync(join(workspace, file), sql);
-    const pipit = Bun.spawn([PIPIT, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
-      env: { ...process.env, PIPIT_HOME: home },
+    const dipper = Bun.spawn([DIPPER, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
+      env: { ...process.env, DIPPER_HOME: home },
       stdout: "ignore",
       stderr: "inherit",
     });
@@ -292,8 +292,8 @@ try {
       await sleep(800);
       await body();
     } finally {
-      pipit.kill();
-      await pipit.exited;
+      dipper.kill();
+      await dipper.exited;
     }
   }
 

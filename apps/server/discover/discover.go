@@ -1,5 +1,5 @@
 // Package discover looks for Postgres and MySQL servers already installed or running on this
-// machine. pipit never bundles a database; it offers to connect to what is already there.
+// machine. dipper never bundles a database; it offers to connect to what is already there.
 //
 // Every probe is best-effort and short-timeout: discovery never fails, it just finds less.
 package discover
@@ -19,7 +19,7 @@ import (
 	"sync"
 	"time"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // A UI that polls discovery should not shell out every time.
@@ -378,7 +378,7 @@ func containerCLI() (string, bool) {
 }
 
 // containerLogin reads the user and database the image was started with. The password is in the
-// same environment and is deliberately not read: pipit asks for it rather than lifting a secret
+// same environment and is deliberately not read: dipper asks for it rather than lifting a secret
 // out of a process and writing it to disk.
 func containerLogin(ctx context.Context, cli, id string, dialect protocol.Dialect) (user, database string) {
 	out, err := run(ctx, cli, "inspect", "--format", "{{range .Config.Env}}{{println .}}{{end}}", id)

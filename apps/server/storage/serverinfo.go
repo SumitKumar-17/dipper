@@ -1,8 +1,8 @@
 package storage
 
-import "pipit/protocol"
+import "dipper/protocol"
 
-// server.json is how `pipit status` and `pipit stop` find a running instance.
+// server.json is how `dipper status` and `dipper stop` find a running instance.
 var serverInfoStore = NewStore(ServerInfoFile, 0o600, func() *protocol.ServerInfo { return nil })
 
 func WriteServerInfo(info protocol.ServerInfo) error { return serverInfoStore.Write(&info) }

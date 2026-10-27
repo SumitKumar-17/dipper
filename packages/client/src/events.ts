@@ -1,4 +1,4 @@
-import type { ServerEvent } from "@pipit/protocol";
+import type { ServerEvent } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 import { readSse } from "./sse";
 

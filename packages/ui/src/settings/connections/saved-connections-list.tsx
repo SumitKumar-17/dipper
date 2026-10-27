@@ -1,4 +1,4 @@
-import type { ConnectionSummary } from "@pipit/protocol";
+import type { ConnectionSummary } from "@dipper/protocol";
 import type * as React from "react";
 import { Skeleton } from "../../ui/skeleton";
 import { ErrorText } from "../../workspace/error-text";

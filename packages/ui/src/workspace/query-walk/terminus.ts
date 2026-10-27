@@ -19,7 +19,7 @@
 // fails it with a count of zero, so there is no closest row, and ranking them would be a ranking of
 // nothing dressed as a finding. That case shows what the subquery would have needed instead.
 
-import type { Cell, Dialect, StatementResult } from "@pipit/protocol";
+import type { Cell, Dialect, StatementResult } from "@dipper/protocol";
 import { formatCell } from "../results-grid";
 import { bindKeyOf, sqlLiteral, type BoundPlan, type BoundRow } from "./bound";
 import { conjuncts, spliceRanges, type Range, type SubqueryPredicateKind } from "./clauses";

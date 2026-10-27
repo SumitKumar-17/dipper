@@ -9,9 +9,9 @@ import (
 	"strings"
 	"syscall"
 
-	"pipit/fsx"
-	"pipit/httpx"
-	"pipit/protocol"
+	"dipper/fsx"
+	"dipper/httpx"
+	"dipper/protocol"
 )
 
 // A 409 carries the file's current text back inline only while it is small enough to be cheap.

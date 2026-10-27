@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"pipit/protocol"
-	"pipit/sqlscript"
+	"dipper/protocol"
+	"dipper/sqlscript"
 )
 
 // Driver is the contract every dialect implements. Server-internal: nothing here crosses the

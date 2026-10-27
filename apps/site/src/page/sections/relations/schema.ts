@@ -6,7 +6,7 @@ export type ForeignKey = { from: string; to: string };
 const databases = Object.values(birdwatch.schemas);
 
 /**
- * The foreign keys between `tables`, as a real Pipit read them off the birdwatch database: the
+ * The foreign keys between `tables`, as a real Dipper read them off the birdwatch database: the
  * wires the Relationship View draws between those cards, in the order the schema lists them.
  */
 export function foreignKeysAmong(tables: readonly string[]): ForeignKey[] {

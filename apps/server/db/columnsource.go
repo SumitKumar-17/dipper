@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // Postgres reports each field's relation oid (0 for an expression) and attribute number but

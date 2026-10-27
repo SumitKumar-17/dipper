@@ -4,7 +4,7 @@
 // questions about what came back - what went wrong, and what the one statement returned - so the
 // answers live here rather than three times over.
 
-import type { RunRecord, StatementResult } from "@pipit/protocol";
+import type { RunRecord, StatementResult } from "@dipper/protocol";
 
 export type QueryOutcome =
   | { readonly ok: true; readonly result: StatementResult }

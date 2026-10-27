@@ -12,7 +12,7 @@ export function storageKey(
   keysOnly: boolean,
 ): string | null {
   if (!connectionId || !database) return null;
-  return `pipit:diagram:${connectionId}:${database}:${keysOnly ? "keys" : "all"}`;
+  return `dipper:diagram:${connectionId}:${database}:${keysOnly ? "keys" : "all"}`;
 }
 
 export function readPositions(key: string | null): Map<string, Point> | null {

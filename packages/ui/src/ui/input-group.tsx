@@ -1,8 +1,8 @@
 // Vendored primitive. Changed from upstream only by the import paths, the dropped Textarea half
-// (pipit has no primitive for it) and a `mono` variant on `InputGroupText` - the lint rule forbids
+// (dipper has no primitive for it) and a `mono` variant on `InputGroupText` - the lint rule forbids
 // restyling that from a call site. Otherwise diffable against the source.
 //
-// It works with pipit's own `Input` unmodified because that already carries `data-slot`
+// It works with dipper's own `Input` unmodified because that already carries `data-slot`
 // ("input-control" on the wrapper, "input" on the field) - which is exactly what the `has-*` and
 // `in-[…]` selectors below hook onto.
 

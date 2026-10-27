@@ -1,6 +1,6 @@
 // The first run.
 //
-// One screen, not a wizard: get pipit pointed at a database. Everything else the app can either
+// One screen, not a wizard: get dipper pointed at a database. Everything else the app can either
 // work out or ask for at the moment it matters - a folder is an empty Files panel offering to open
 // one, and the database is already named by the connection URL and switched from the topbar. The
 // connection is the one thing without which nothing works at all.
@@ -13,7 +13,7 @@
 //
 // This file owns what is on screen; the dialling itself is `use-onboarding-connect.ts`.
 
-import type { ConnectFailureCode, Dialect, DiscoveredServer } from "@pipit/protocol";
+import type { ConnectFailureCode, Dialect, DiscoveredServer } from "@dipper/protocol";
 import { ChevronRightIcon, LinkIcon, TriangleAlertIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import * as React from "react";
@@ -138,7 +138,7 @@ export function Onboarding({ onDone }: OnboardingProps): React.ReactElement {
             {!formOpen && (
               <Collapse key="lede">
                 <p className="text-balance text-muted-foreground text-sm">
-                  Pipit never bundles one - point it at a server you already have.
+                  Dipper never bundles one - point it at a server you already have.
                 </p>
               </Collapse>
             )}

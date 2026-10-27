@@ -37,7 +37,7 @@
 // Nothing here parses or emits anything - `program-build.ts` does that - so the documentation of a
 // field sits next to the field rather than next to whichever function happened to fill it in.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import type {
   Cte,
   ParsedSelect,

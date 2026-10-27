@@ -1,4 +1,4 @@
-import type { Column, Table } from "@pipit/protocol";
+import type { Column, Table } from "@dipper/protocol";
 import { ChevronRightIcon, KeyIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useFade } from "../../lib/motion";

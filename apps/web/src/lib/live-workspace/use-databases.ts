@@ -5,13 +5,13 @@
 // id rather than replaced wholesale, so a list that arrives after the user has moved on is
 // recognisably not about the connection now on screen.
 
-import type { PipitClient } from "@pipit/client";
-import { asyncError, asyncIdle, asyncLoading, asyncReady, type Async } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import { asyncError, asyncIdle, asyncLoading, asyncReady, type Async } from "@dipper/ui";
 import * as React from "react";
 import { aborted, messageOf } from "./helpers";
 
 export function useDatabases(
-  getClient: () => PipitClient,
+  getClient: () => DipperClient,
   enabled: boolean,
   connectionId: string | null,
   /** What the connection summary already knows, when it has been dialled. */

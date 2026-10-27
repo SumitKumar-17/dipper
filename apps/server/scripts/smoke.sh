@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# End-to-end smoke test against a local Postgres. Run `bun run --filter pipit build` first:
+# End-to-end smoke test against a local Postgres. Run `bun run --filter dipper build` first:
 # this drives the compiled binary, not the source. This is the only automated exercise of the CLI
 # and the HTTP API, so every step asserts its answer: a wrong status code or a missing field fails
 # the run. The CLI is serve/stop/status only, so everything else runs over the API.
-# Usage: bash scripts/smoke.sh   (override the database with PIPIT_SMOKE_PG=<url>)
+# Usage: bash scripts/smoke.sh   (override the database with DIPPER_SMOKE_PG=<url>)
 set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."
 
-export PIPIT_HOME="$(mktemp -d)"
-PG_URL="${PIPIT_SMOKE_PG:-postgres://postgres@localhost:5432/pipit_demo}"
+export DIPPER_HOME="$(mktemp -d)"
+PG_URL="${DIPPER_SMOKE_PG:-postgres://postgres@localhost:5432/dipper_demo}"
 PG_DB="${PG_URL##*/}"; PG_DB="${PG_DB%%\?*}"
-PORT="${PIPIT_SMOKE_PORT:-4699}"
-CLI="./dist/pipit"
+PORT="${DIPPER_SMOKE_PORT:-4699}"
+CLI="./dist/dipper"
 B="http://127.0.0.1:$PORT/api"
 FAILED=0
 SERVER_PID=""
@@ -30,16 +30,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "== CLI (pipit home: $PIPIT_HOME)"
+echo "== CLI (dipper home: $DIPPER_HOME)"
 expect "version prints a semver" "$($CLI --version | grep -cE '^[0-9]+\.[0-9]+\.[0-9]+$')" "1"
 
 echo "== server"
-$CLI serve --port "$PORT" --no-open --dir "$PWD" > "$PIPIT_HOME/serve.log" 2>&1 &
+$CLI serve --port "$PORT" --no-open --dir "$PWD" > "$DIPPER_HOME/serve.log" 2>&1 &
 SERVER_PID=$!
 for _ in $(seq 1 40); do curl -sf "$B/health" >/dev/null && break; sleep 0.5; done
 J="content-type: application/json"
 
-expect "health names the server" "$(curl -s "$B/health" | json 'j.name')" "pipit"
+expect "health names the server" "$(curl -s "$B/health" | json 'j.name')" "dipper"
 # Connections come from the API, so this is where the one the rest of the run uses is created.
 CREATED=$(curl -s -X POST -H "$J" -d "{\"name\":\"demo\",\"url\":\"$PG_URL\"}" "$B/connections")
 CID=$(echo "$CREATED" | json 'j.id')
@@ -59,11 +59,11 @@ expect "stream starts with 2 statements" "$(echo "$STREAM" | head -1 | json 'j.s
 expect "stream ends done" "$(echo "$STREAM" | tail -1 | json 'j.status')" "done"
 expect "stream carried 5 rows for statement 0" "$(echo "$STREAM" | grep '"type":"result"' | head -1 | json 'j.result.rowCount')" "5"
 expect "sync error carries the pg code" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select * from order o\"}" "$B/query/sync" | json 'j.status + ":" + j.error.code')" "error:42601"
-(curl -s -N -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select pg_sleep(10)\",\"runId\":\"r-cancel\"}" "$B/query" > "$PIPIT_HOME/cancel.out" &)
+(curl -s -N -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select pg_sleep(10)\",\"runId\":\"r-cancel\"}" "$B/query" > "$DIPPER_HOME/cancel.out" &)
 sleep 1
 expect "cancel is acknowledged" "$(curl -s -X POST "$B/runs/r-cancel/cancel" | json 'j.cancelled')" "true"
 sleep 1
-expect "cancelled run ends with status cancelled" "$(tail -1 "$PIPIT_HOME/cancel.out" | json 'j.status')" "cancelled"
+expect "cancelled run ends with status cancelled" "$(tail -1 "$DIPPER_HOME/cancel.out" | json 'j.status')" "cancelled"
 curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select id, total_cents from orders limit 3\",\"runId\":\"r-exp\"}" "$B/query/sync" >/dev/null
 expect "csv export header" "$(curl -s "$B/runs/r-exp/export?format=csv" | head -1 | tr -d '\r')" "id,total_cents"
 expect "csv export has 3 data rows" "$(curl -s "$B/runs/r-exp/export?format=csv" | tail -n +2 | grep -c .)" "3"

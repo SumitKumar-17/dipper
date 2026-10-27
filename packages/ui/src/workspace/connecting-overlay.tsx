@@ -7,7 +7,7 @@
 // early" and "never leaves late" are the same line of code. A failure still lifts the screen, since
 // the error belongs on the surface underneath.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { ConnectingScreen, SWITCH_MS, SWITCH_STAGES } from "../onboarding/connecting-screen";

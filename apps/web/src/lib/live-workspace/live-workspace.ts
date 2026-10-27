@@ -1,4 +1,4 @@
-// The implementation of WorkspaceApi, backed by `pipit serve` through @pipit/client. There is no
+// The implementation of WorkspaceApi, backed by `dipper serve` through @dipper/client. There is no
 // fixture provider and no offline mode, so everything any surface renders came off the wire.
 // Derived-not-stored is the rule throughout: schema staleness is computed from what loaded versus
 // what is wanted, never written into state by an effect.
@@ -12,9 +12,9 @@
 // schema, a save-as relists the workspace, a file event reaches whichever buffer holds it, and the
 // files a previous session left open are reopened once the server can answer for them.
 
-import type { PipitClient } from "@pipit/client";
-import type { BrowseResult, ServerEvent } from "@pipit/protocol";
-import { asyncData, type PanelState, type WorkspaceApi } from "@pipit/ui";
+import type { DipperClient } from "@dipper/client";
+import type { BrowseResult, ServerEvent } from "@dipper/protocol";
+import { asyncData, type PanelState, type WorkspaceApi } from "@dipper/ui";
 import * as React from "react";
 import { serverClient } from "../server-client";
 import { usePanels } from "../use-panels";
@@ -31,13 +31,13 @@ import { useWorkspaceFiles } from "./use-workspace-files";
 
 export type LiveWorkspaceOptions = {
   /** Injected by tests; the shared singleton otherwise. */
-  client?: PipitClient;
+  client?: DipperClient;
 };
 
 export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceApi {
   const { client: injected } = options;
   // Built on first use: it reads `window.location.origin`, absent when the export is prerendered.
-  const getClient = React.useCallback((): PipitClient => injected ?? serverClient(), [injected]);
+  const getClient = React.useCallback((): DipperClient => injected ?? serverClient(), [injected]);
 
   /** Every load and effect below is gated on this, so a gated app makes exactly one request. */
   const { server, enabled } = useServerGate(getClient, injected);

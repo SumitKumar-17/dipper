@@ -1,7 +1,7 @@
 # Contributing
 
 Thanks for taking a look. This is a Bun workspaces monorepo: one lockfile, one `node_modules`,
-and a single shipped artefact: the `pipit` binary. Everything else exists to keep what goes into
+and a single shipped artefact: the `dipper` binary. Everything else exists to keep what goes into
 it small and easy to change.
 
 Two toolchains, cleanly split. **The server is Go**; the UI and the shared packages are
@@ -24,15 +24,15 @@ bun run dev        # both halves: the UI on :5173, the API on a fresh port
 
 `dev` runs the server (`go run .`) and `vite dev` together through Turborepo, prefixing each line
 with the workspace it came from. The UI keeps Vite's usual :5173; the API takes a free port picked at
-startup, so it never argues with a real `pipit serve` you have running, or with a second clone.
+startup, so it never argues with a real `dipper serve` you have running, or with a second clone.
 Open the `dev UI` line:
 
 ```
-pipit:dev: pipit v0.2.0 → http://127.0.0.1:54716
-pipit:dev: dev UI      → http://localhost:5173/
-pipit:dev: dev UI      → http://127.0.0.1:5173/
-@pipit/web:dev:   VITE v8.3.0  ready in 430 ms
-@pipit/web:dev:   ➜  Local:   http://localhost:5173/
+dipper:dev: dipper v0.2.0 → http://127.0.0.1:54716
+dipper:dev: dev UI      → http://localhost:5173/
+dipper:dev: dev UI      → http://127.0.0.1:5173/
+@dipper/web:dev:   VITE v8.3.0  ready in 430 ms
+@dipper/web:dev:   ➜  Local:   http://localhost:5173/
 ```
 
 The UI and the API are on different origins in dev, so the browser only reaches the API because
@@ -41,24 +41,24 @@ port is pinned (`strictPort`) rather than left to walk to the next free one, bec
 allowed origins is fixed: a UI on some other port would fail in the browser, not in the terminal.
 
 Because the API port changes per run, a tab left open from a previous session points at a port
-that is gone - reload it from the fresh URL. To pin the port instead, set `PIPIT_DEV_PORT=4600`.
+that is gone - reload it from the fresh URL. To pin the port instead, set `DIPPER_DEV_PORT=4600`.
 
 `dev:server` and `dev:ui` run one half each, skipping the launcher; both then default to :4600 -
-the server's `--port ${PIPIT_DEV_PORT:-4600}` and `apps/web/.env.development` agree on that number
+the server's `--port ${DIPPER_DEV_PORT:-4600}` and `apps/web/.env.development` agree on that number
 so the halves still find each other. `vite dev` exits rather than pick another port if :5173 is
 taken, so stop any dev UI you already have running first.
 
 ## Repo map
 
 ```
-pipit/
-├─ apps/server/        the product: Go HTTP API + `pipit` CLI, compiled into the shipped binary
-├─ apps/web/           @pipit/web - the UI (TanStack Start, SPA mode), built into apps/server/ui/
-├─ packages/protocol/  @pipit/protocol - the wire contract. Types only, no build step.
-├─ packages/client/    @pipit/client - typed HTTP/NDJSON/SSE client over /api/*
-├─ packages/ui/        @pipit/ui - components + the workspace contract, shipped as raw .tsx
-├─ packages/sql/       @pipit/sql - statement splitter + formatter the frontend needs
-├─ packages/tsconfig/  @pipit/tsconfig - base / node / react presets
+dipper/
+├─ apps/server/        the product: Go HTTP API + `dipper` CLI, compiled into the shipped binary
+├─ apps/web/           @dipper/web - the UI (TanStack Start, SPA mode), built into apps/server/ui/
+├─ packages/protocol/  @dipper/protocol - the wire contract. Types only, no build step.
+├─ packages/client/    @dipper/client - typed HTTP/NDJSON/SSE client over /api/*
+├─ packages/ui/        @dipper/ui - components + the workspace contract, shipped as raw .tsx
+├─ packages/sql/       @dipper/sql - statement splitter + formatter the frontend needs
+├─ packages/tsconfig/  @dipper/tsconfig - base / node / react presets
 ├─ eslint.config.js    one ESLint config for the repo, every workspace                      
 ├─ turbo.json          Turborepo tasks: `dev:server`, `dev:ui` and `start`
 ├─ scripts/dev.mjs     `bun run dev`: picks the API's port, runs both halves, one log stream
@@ -72,22 +72,22 @@ workspace that does not define the script is skipped rather than failing the run
 
 | Script            | What it does                                                                      |
 | ----------------- | --------------------------------------------------------------------------------- |
-| `dev`             | both halves: `vite dev` on :5173 + `pipit serve` on a free port (scripts/dev.mjs) |
+| `dev`             | both halves: `vite dev` on :5173 + `dipper serve` on a free port (scripts/dev.mjs) |
 | `dev:server`      | just the server (`go run . serve --no-open` on :4600)                             |
 | `dev:ui`          | just the UI (`vite dev` on :5173, expects the API on :4600)                       |
 | `dev:site`        | the landing page alone (`vite dev` on :5180); `dev` never starts it               |
 | `start:site`      | builds the landing page and serves the build on :5180                             |
 | `build:site`      | builds the landing page into `apps/site/dist`                                     |
-| `build`           | `@pipit/web` then `pipit`, in that order - the binary embeds the web bundle       |
-| `start`           | runs the built app: `pipit serve` on :4600, serving the built UI and the API      |
+| `build`           | `@dipper/web` then `dipper`, in that order - the binary embeds the web bundle       |
+| `start`           | runs the built app: `dipper serve` on :4600, serving the built UI and the API      |
 | `typecheck`       | `tsc --noEmit` across the TypeScript workspaces; `go build ./...` for the server  |
 | `lint`            | one ESLint run over apps/web, apps/site and packages/ui, then `go vet`            |
 | `smoke`           | end-to-end smoke against a local Postgres; drives the built binary, so build first |
-| `pipit -- <args>` | runs the `pipit` binary from the server workspace (needs a build)                 |
+| `dipper -- <args>` | runs the `dipper` binary from the server workspace (needs a build)                 |
 | `clean`           | removes node_modules and all build output                                         |
 
-To target a single workspace, use `--filter`: `bun run --filter pipit typecheck`,
-`bun run --filter @pipit/web lint`, `bun run --filter @pipit/protocol check`.
+To target a single workspace, use `--filter`: `bun run --filter dipper typecheck`,
+`bun run --filter @dipper/web lint`, `bun run --filter @dipper/protocol check`.
 
 **The server needs Go 1.25+, and nothing else does.** `apps/server` is a Go module; its
 `package.json` holds scripts and no dependencies, so `bun install` never touches it. Its real
@@ -102,13 +102,13 @@ cd apps/server && gofmt -l . && go vet ./... && go build ./...
 ## Where things go
 
 - **A wire type** (anything the server sends or receives) → `packages/protocol`. Types only:
-  a runtime export there fails `bun run --filter @pipit/protocol check`, because the package is
+  a runtime export there fails `bun run --filter @dipper/protocol check`, because the package is
   consumed as raw `.ts` and is erased at compile time so the published package carries no scoped
   dependency. Add the Go counterpart in `apps/server/protocol` in the same change - the two
   halves of the contract are kept in step by hand. Server-internal types (the `Driver` interface,
   the pool's entry type) stay next to their implementation and never appear in either.
 - **Anything that calls the API from a browser** → `packages/client`. Frontends import
-  `@pipit/protocol` + `@pipit/client` and nothing else from the repo. Nothing depends on
+  `@dipper/protocol` + `@dipper/client` and nothing else from the repo. Nothing depends on
   `apps/server`.
 - **Server, driver or CLI logic** → `apps/server`, in Go. The direction is `main → server → db`
   with `storage/` shared; the rule that matters is that `db/` must not import `server/`, so
@@ -116,7 +116,7 @@ cd apps/server && gofmt -l . && go vet ./... && go build ./...
   [docs/architecture/server-structure.md](docs/architecture/server-structure.md).
 - **UI** → `apps/web` for anything app-shaped (routing, the provider that picks live data
   vs fixtures), `packages/ui` for anything a second surface could reuse. No component in
-  `packages/ui` may import `@pipit/client`; `apps/web/src/lib` is the only place that does.
+  `packages/ui` may import `@dipper/client`; `apps/web/src/lib` is the only place that does.
 
 The frontend does not ship separately: `apps/web` builds its static output into `apps/server/ui/`,
 `scripts/build.sh` stages that into `apps/server/webui/static/`, and `//go:embed` compiles it into
@@ -178,8 +178,8 @@ is what preserves the executable bit; a raw download needs a `chmod`), writes `c
 and opens a **draft** release for you to publish. Re-running against an existing tag re-uploads
 the assets rather than failing.
 
-Publishing is what makes a release exist for everyone else: `install.sh` and `pipit update` both
-read `releases/latest`, which does not see a draft. Until you publish, `pipit update` on an older
+Publishing is what makes a release exist for everyone else: `install.sh` and `dipper update` both
+read `releases/latest`, which does not see a draft. Until you publish, `dipper update` on an older
 binary reports the previous release as the newest one.
 
 The binaries are unsigned. Until there is an Apple Developer certificate and a Windows signing

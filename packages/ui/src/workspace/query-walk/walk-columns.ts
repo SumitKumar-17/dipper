@@ -5,7 +5,7 @@
 // name the user wrote. None of them is ever shown: the scene reads them off the result and drops
 // them before the card is drawn.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import { inLists, WALK_PREFIX, type InList, type ParsedSelect } from "./clauses";
 
 /** Rows a sample asks for. The server caps at the same number through `maxRows`. */

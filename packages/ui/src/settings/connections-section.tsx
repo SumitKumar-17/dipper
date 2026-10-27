@@ -8,7 +8,7 @@
 // This file owns only which of those is open. The list, the row and the two write actions live in
 // `connections/`.
 
-import type { ConnectionSummary } from "@pipit/protocol";
+import type { ConnectionSummary } from "@dipper/protocol";
 import { PlusIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";

@@ -8,7 +8,7 @@ import { tagRows } from "./tag-rows";
 import { Thread } from "./thread";
 
 /**
- * One binary: a porcelain bar glazed `pipit`, with a paper tag tied on that gives the release's
+ * One binary: a porcelain bar glazed `dipper`, with a paper tag tied on that gives the release's
  * version, this machine's platform and the real size of its build. The tag sways now and then.
  */
 export function BinaryPiece({ roostRef }: { roostRef: Ref<HTMLElement> }) {

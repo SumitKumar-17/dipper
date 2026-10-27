@@ -1,4 +1,4 @@
-import type { ConnectionConfig, ConnectionSummary, DatabaseSchema } from "@pipit/protocol";
+import type { ConnectionConfig, ConnectionSummary, DatabaseSchema } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 /**

@@ -1,4 +1,4 @@
-import type { ConnectionSummary, Dialect, DiscoveredServer } from "@pipit/protocol";
+import type { ConnectionSummary, Dialect, DiscoveredServer } from "@dipper/protocol";
 
 /**
  * Which dialect the screen is about. Reachable beats merely present - an installed but idle

@@ -15,7 +15,7 @@
 // Consecutive `--` lines are grouped into one paragraph, because that is how a multi-line prompt is
 // written; the group keeps the line number it started on, so the reader can find it in the editor.
 
-import type { SqlComment } from "@pipit/sql";
+import type { SqlComment } from "@dipper/sql";
 import type * as React from "react";
 import type { Range } from "./clauses";
 

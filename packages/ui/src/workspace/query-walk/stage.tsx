@@ -4,7 +4,7 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { ArrowDownIcon, ArrowUpIcon, CornerUpRightIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
-import type { Cell as CellValue } from "@pipit/protocol";
+import type { Cell as CellValue } from "@dipper/protocol";
 import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { ScrollArea } from "../../ui/scroll-area";

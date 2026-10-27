@@ -6,8 +6,8 @@ import type {
   RunRecord,
   ServerInfo,
   Settings,
-} from "@pipit/protocol";
-import type { ConnectionTest, PanelState, WorkspaceApi } from "@pipit/ui";
+} from "@dipper/protocol";
+import type { ConnectionTest, PanelState, WorkspaceApi } from "@dipper/ui";
 
 /** One `.sql` file as `GET /api/files/content` returned it, path already scrubbed. */
 export type FixtureFile = { path: string; content: string; modifiedAt: string };
@@ -26,7 +26,7 @@ export type Recording = {
 export type ReplayFixtures = {
   version: 1;
   recordedAt: string;
-  pipitVersion: string;
+  dipperVersion: string;
   server: ServerInfo;
   connections: ConnectionSummary[];
   /** By connection id. */

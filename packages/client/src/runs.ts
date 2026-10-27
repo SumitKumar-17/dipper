@@ -1,4 +1,4 @@
-import type { RunRecord } from "@pipit/protocol";
+import type { RunRecord } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type ExportOptions = {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgconn"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // Builtin OIDs worth naming; anything else is reported as oid:<n>.

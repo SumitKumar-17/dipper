@@ -12,7 +12,7 @@
     "record": {
       "id": "walk-1",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
+      "database": "dipper_site_demo",
       "sql": "select *\nfrom species s\nlimit 25;\nselect count(*)\nfrom species s",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.416Z",
@@ -360,7 +360,7 @@
     "record": {
       "id": "walk-2",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
+      "database": "dipper_site_demo",
       "sql": "select *\nfrom families f\nlimit 25;\nselect count(*)\nfrom families f",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.429Z",
@@ -447,7 +447,7 @@
             ],
             [
               10,
-              "Wagtails & pipits",
+              "Wagtails & dippers",
               "Motacillidae"
             ],
             [
@@ -560,11 +560,11 @@
     }
   },
   {
-    "key": "select * from species s join families f on f.id = s.family_id limit 25; select count(*) from ( select * from species s join families f on f.id = s.family_id ) as _pipit_walk_count; select * from species s left join families f on f.id = s.family_id limit 25",
+    "key": "select * from species s join families f on f.id = s.family_id limit 25; select count(*) from ( select * from species s join families f on f.id = s.family_id ) as _dipper_walk_count; select * from species s left join families f on f.id = s.family_id limit 25",
     "kind": "probe",
     "scene": "walk",
     "request": {
-      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\n) as _pipit_walk_count;\nselect *\nfrom species s\nleft join families f on f.id = s.family_id\nlimit 25",
+      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\n) as _dipper_walk_count;\nselect *\nfrom species s\nleft join families f on f.id = s.family_id\nlimit 25",
       "maxRows": 25,
       "readOnly": true,
       "record": false
@@ -572,8 +572,8 @@
     "record": {
       "id": "walk-3",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
-      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\n) as _pipit_walk_count;\nselect *\nfrom species s\nleft join families f on f.id = s.family_id\nlimit 25",
+      "database": "dipper_site_demo",
+      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\n) as _dipper_walk_count;\nselect *\nfrom species s\nleft join families f on f.id = s.family_id\nlimit 25",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.465Z",
       "finishedAt": "2026-10-10T21:12:54.468Z",
@@ -985,7 +985,7 @@
         },
         {
           "index": 1,
-          "sql": "select count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\n) as _pipit_walk_count",
+          "sql": "select count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\n) as _dipper_walk_count",
           "columns": [
             {
               "name": "count",
@@ -1414,11 +1414,11 @@
     }
   },
   {
-    "key": "select * from species s join families f on f.id = s.family_id where s.migrant limit 25; select count(*) from ( select * from species s join families f on f.id = s.family_id where s.migrant ) as _pipit_walk_count; select *, (s.migrant) as _pipit_walk_pass from species s join families f on f.id = s.family_id limit 25",
+    "key": "select * from species s join families f on f.id = s.family_id where s.migrant limit 25; select count(*) from ( select * from species s join families f on f.id = s.family_id where s.migrant ) as _dipper_walk_count; select *, (s.migrant) as _dipper_walk_pass from species s join families f on f.id = s.family_id limit 25",
     "kind": "probe",
     "scene": "walk",
     "request": {
-      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\n) as _pipit_walk_count;\nselect *, (s.migrant) as _pipit_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25",
+      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\n) as _dipper_walk_count;\nselect *, (s.migrant) as _dipper_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25",
       "maxRows": 25,
       "readOnly": true,
       "record": false
@@ -1426,8 +1426,8 @@
     "record": {
       "id": "walk-4",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
-      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\n) as _pipit_walk_count;\nselect *, (s.migrant) as _pipit_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25",
+      "database": "dipper_site_demo",
+      "sql": "select *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\nlimit 25;\nselect count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\n) as _dipper_walk_count;\nselect *, (s.migrant) as _dipper_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.505Z",
       "finishedAt": "2026-10-10T21:12:54.507Z",
@@ -1766,7 +1766,7 @@
               true,
               "2026-05-27T05:26:00.000Z",
               10,
-              "Wagtails & pipits",
+              "Wagtails & dippers",
               "Motacillidae"
             ],
             [
@@ -1839,7 +1839,7 @@
         },
         {
           "index": 1,
-          "sql": "select count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\n) as _pipit_walk_count",
+          "sql": "select count(*) from (\nselect *\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\n) as _dipper_walk_count",
           "columns": [
             {
               "name": "count",
@@ -1861,7 +1861,7 @@
         },
         {
           "index": 2,
-          "sql": "select *, (s.migrant) as _pipit_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25",
+          "sql": "select *, (s.migrant) as _dipper_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nlimit 25",
           "columns": [
             {
               "name": "id",
@@ -1954,7 +1954,7 @@
               }
             },
             {
-              "name": "_pipit_walk_pass",
+              "name": "_dipper_walk_pass",
               "type": "bool",
               "align": "left",
               "source": {
@@ -2302,11 +2302,11 @@
     }
   },
   {
-    "key": "select f.name as family, count(*) as migrants, (f.name) as _pipit_walk_k0 from species s join families f on f.id = s.family_id where s.migrant group by f.name limit 25; select count(*) from ( select f.name as family, count(*) as migrants from species s join families f on f.id = s.family_id where s.migrant group by f.name ) as _pipit_walk_count; select *, (f.name) as _pipit_walk_k0 from species s join families f on f.id = s.family_id where s.migrant order by _pipit_walk_k0 limit 25",
+    "key": "select f.name as family, count(*) as migrants, (f.name) as _dipper_walk_k0 from species s join families f on f.id = s.family_id where s.migrant group by f.name limit 25; select count(*) from ( select f.name as family, count(*) as migrants from species s join families f on f.id = s.family_id where s.migrant group by f.name ) as _dipper_walk_count; select *, (f.name) as _dipper_walk_k0 from species s join families f on f.id = s.family_id where s.migrant order by _dipper_walk_k0 limit 25",
     "kind": "probe",
     "scene": "walk",
     "request": {
-      "sql": "select f.name as family, count(*) as migrants, (f.name) as _pipit_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\n) as _pipit_walk_count;\nselect *, (f.name) as _pipit_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\norder by _pipit_walk_k0\nlimit 25",
+      "sql": "select f.name as family, count(*) as migrants, (f.name) as _dipper_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\n) as _dipper_walk_count;\nselect *, (f.name) as _dipper_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\norder by _dipper_walk_k0\nlimit 25",
       "maxRows": 25,
       "readOnly": true,
       "record": false
@@ -2314,8 +2314,8 @@
     "record": {
       "id": "walk-5",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
-      "sql": "select f.name as family, count(*) as migrants, (f.name) as _pipit_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\n) as _pipit_walk_count;\nselect *, (f.name) as _pipit_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\norder by _pipit_walk_k0\nlimit 25",
+      "database": "dipper_site_demo",
+      "sql": "select f.name as family, count(*) as migrants, (f.name) as _dipper_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\n) as _dipper_walk_count;\nselect *, (f.name) as _dipper_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\norder by _dipper_walk_k0\nlimit 25",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.515Z",
       "finishedAt": "2026-10-10T21:12:54.517Z",
@@ -2323,7 +2323,7 @@
       "results": [
         {
           "index": 0,
-          "sql": "select f.name as family, count(*) as migrants, (f.name) as _pipit_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
+          "sql": "select f.name as family, count(*) as migrants, (f.name) as _dipper_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
           "columns": [
             {
               "name": "family",
@@ -2340,7 +2340,7 @@
               "align": "right"
             },
             {
-              "name": "_pipit_walk_k0",
+              "name": "_dipper_walk_k0",
               "type": "text",
               "align": "left",
               "source": {
@@ -2411,9 +2411,9 @@
               "Ospreys"
             ],
             [
-              "Wagtails & pipits",
+              "Wagtails & dippers",
               "1",
-              "Wagtails & pipits"
+              "Wagtails & dippers"
             ],
             [
               "Sylviid warblers",
@@ -2450,7 +2450,7 @@
         },
         {
           "index": 1,
-          "sql": "select count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\n) as _pipit_walk_count",
+          "sql": "select count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\n) as _dipper_walk_count",
           "columns": [
             {
               "name": "count",
@@ -2472,7 +2472,7 @@
         },
         {
           "index": 2,
-          "sql": "select *, (f.name) as _pipit_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\norder by _pipit_walk_k0\nlimit 25",
+          "sql": "select *, (f.name) as _dipper_walk_k0\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\norder by _dipper_walk_k0\nlimit 25",
           "columns": [
             {
               "name": "id",
@@ -2565,7 +2565,7 @@
               }
             },
             {
-              "name": "_pipit_walk_k0",
+              "name": "_dipper_walk_k0",
               "type": "text",
               "align": "left",
               "source": {
@@ -2913,11 +2913,11 @@
     }
   },
   {
-    "key": "select f.name as family, count(*) as migrants from species s join families f on f.id = s.family_id where s.migrant group by f.name having count(*) > 1 limit 25; select count(*) from ( select f.name as family, count(*) as migrants from species s join families f on f.id = s.family_id where s.migrant group by f.name having count(*) > 1 ) as _pipit_walk_count; select f.name as family, count(*) as migrants, (count(*) > 1) as _pipit_walk_pass from species s join families f on f.id = s.family_id where s.migrant group by f.name limit 25",
+    "key": "select f.name as family, count(*) as migrants from species s join families f on f.id = s.family_id where s.migrant group by f.name having count(*) > 1 limit 25; select count(*) from ( select f.name as family, count(*) as migrants from species s join families f on f.id = s.family_id where s.migrant group by f.name having count(*) > 1 ) as _dipper_walk_count; select f.name as family, count(*) as migrants, (count(*) > 1) as _dipper_walk_pass from species s join families f on f.id = s.family_id where s.migrant group by f.name limit 25",
     "kind": "probe",
     "scene": "walk",
     "request": {
-      "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\n) as _pipit_walk_count;\nselect f.name as family, count(*) as migrants, (count(*) > 1) as _pipit_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
+      "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\n) as _dipper_walk_count;\nselect f.name as family, count(*) as migrants, (count(*) > 1) as _dipper_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
       "maxRows": 25,
       "readOnly": true,
       "record": false
@@ -2925,8 +2925,8 @@
     "record": {
       "id": "walk-6",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
-      "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\n) as _pipit_walk_count;\nselect f.name as family, count(*) as migrants, (count(*) > 1) as _pipit_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
+      "database": "dipper_site_demo",
+      "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\nlimit 25;\nselect count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\n) as _dipper_walk_count;\nselect f.name as family, count(*) as migrants, (count(*) > 1) as _dipper_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.526Z",
       "finishedAt": "2026-10-10T21:12:54.528Z",
@@ -2986,7 +2986,7 @@
         },
         {
           "index": 1,
-          "sql": "select count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\n) as _pipit_walk_count",
+          "sql": "select count(*) from (\nselect f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\n) as _dipper_walk_count",
           "columns": [
             {
               "name": "count",
@@ -3008,7 +3008,7 @@
         },
         {
           "index": 2,
-          "sql": "select f.name as family, count(*) as migrants, (count(*) > 1) as _pipit_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
+          "sql": "select f.name as family, count(*) as migrants, (count(*) > 1) as _dipper_walk_pass\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nlimit 25",
           "columns": [
             {
               "name": "family",
@@ -3025,7 +3025,7 @@
               "align": "right"
             },
             {
-              "name": "_pipit_walk_pass",
+              "name": "_dipper_walk_pass",
               "type": "bool",
               "align": "left"
             }
@@ -3092,7 +3092,7 @@
               false
             ],
             [
-              "Wagtails & pipits",
+              "Wagtails & dippers",
               "1",
               false
             ],
@@ -3146,7 +3146,7 @@
     "record": {
       "id": "walk-7",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
+      "database": "dipper_site_demo",
       "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\nlimit 25",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.534Z",
@@ -3222,7 +3222,7 @@
     "record": {
       "id": "walk-8",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
+      "database": "dipper_site_demo",
       "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\norder by migrants desc, family\nlimit 25",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.545Z",
@@ -3298,7 +3298,7 @@
     "record": {
       "id": "walk-9",
       "connectionId": "23e3a6d2-40c6-473a-8790-6143a2bb9ce8",
-      "database": "pipit_site_demo",
+      "database": "dipper_site_demo",
       "sql": "select f.name as family, count(*) as migrants\nfrom species s\njoin families f on f.id = s.family_id\nwhere s.migrant\ngroup by f.name\nhaving count(*) > 1\norder by migrants desc, family\nlimit 4",
       "status": "done",
       "startedAt": "2026-10-10T21:12:54.556Z",

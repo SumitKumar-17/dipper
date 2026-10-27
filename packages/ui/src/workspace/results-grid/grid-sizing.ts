@@ -5,7 +5,7 @@
 // Deliberately not a client module: `formatCell` is reused across the workspace, and a pure module
 // keeps it out of the client boundary its callers would otherwise inherit.
 
-import type { Cell, ResultColumn } from "@pipit/protocol";
+import type { Cell, ResultColumn } from "@dipper/protocol";
 
 /** Fixed, and must stay in step with the `h-7` on a row. Virtualization needs one number. */
 export const ROW_HEIGHT = 28;

@@ -2,7 +2,7 @@
 // survivors - so they share one builder and differ by which clause they read and what they call
 // the card.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import { memberColumn, memberNullColumn, PASS_COLUMN, type Station } from "../../steps";
 import {
   colsOf,

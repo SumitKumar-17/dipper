@@ -29,7 +29,7 @@ export type FrameParts = {
 export function WindowFrame({
   size,
   className,
-  label = "Pipit, a SQL workspace, open in a browser",
+  label = "Dipper, a SQL workspace, open in a browser",
   live = false,
   closeUp = false,
   onParts,
@@ -100,7 +100,7 @@ export function WindowFrame({
     return (
       <div
         className={cn("relative w-full", CLOSE_UP_ASPECT, !live && "pointer-events-none", className)}
-        data-pipit-frame=""
+        data-dipper-frame=""
         ref={outer}
         style={vars}
       >
@@ -123,11 +123,11 @@ export function WindowFrame({
               127.0.0.1:4600
             </div>
           </div>
-          <div className="relative min-h-0 flex-1 overflow-hidden bg-background" data-pipit-frame-lens="" ref={lens}>
+          <div className="relative min-h-0 flex-1 overflow-hidden bg-background" data-dipper-frame-lens="" ref={lens}>
             {/* Unclipped: a wide shot centres the app in the taller crop, which clips instead. */}
             <div
               className="absolute top-0 left-0 h-(--frame-app-h) w-(--frame-w) origin-top-left scale-(--frame-scale) bg-background font-sans text-foreground antialiased"
-              data-pipit-frame-app=""
+              data-dipper-frame-app=""
               inert={!live}
               ref={app}
             >
@@ -142,7 +142,7 @@ export function WindowFrame({
   return (
     <div
       className={cn("relative w-full aspect-(--frame-aspect)", !live && "pointer-events-none", className)}
-      data-pipit-frame=""
+      data-dipper-frame=""
       ref={outer}
       style={vars}
     >
@@ -167,7 +167,7 @@ export function WindowFrame({
         </div>
         <div
           className="absolute top-10 left-0 h-(--frame-app-h) w-(--frame-w) overflow-hidden bg-background font-sans text-foreground antialiased"
-          data-pipit-frame-app=""
+          data-dipper-frame-app=""
           inert={!live}
           ref={app}
         >

@@ -1,5 +1,5 @@
 // The workspace contract. Every UI surface reads this and nothing else - no component imports
-// @pipit/client - so components stay independent of the transport. Protocol types are reused
+// @dipper/client - so components stay independent of the transport. Protocol types are reused
 // verbatim; the types here are the ones with no wire equivalent.
 
 import type { EditorLayout } from "./pane-layout";
@@ -15,7 +15,7 @@ import type {
   RunRecord,
   Settings,
   StatementResult,
-} from "@pipit/protocol";
+} from "@dipper/protocol";
 
 
 /**
@@ -166,7 +166,7 @@ export type ServerState = {
   readonly url: string;
   /** Probes again now. Safe to call in any state; a no-op while a probe is already in flight. */
   retry(): void;
-  /** The folder pipit keeps for itself, offered when an untitled query has nowhere else to go. */
+  /** The folder dipper keeps for itself, offered when an untitled query has nowhere else to go. */
   readonly queriesDir: string | null;
 };
 

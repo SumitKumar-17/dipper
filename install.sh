@@ -1,18 +1,18 @@
 #!/bin/sh
-# Installs the latest pipit release.
+# Installs the latest dipper release.
 #
-#   curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/pipit/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/dipper/main/install.sh | sh
 #
 # Environment:
-#   PIPIT_VERSION        install this tag instead of the latest (e.g. vX.Y.Z)
-#   PIPIT_INSTALL_DIR    install here instead of the first writable default
-#   PIPIT_DOWNLOAD_BASE  fetch assets from here instead of GitHub (testing, mirrors)
-#   PIPIT_NO_MODIFY_PATH leave the shell profile alone and just print the line to add
+#   DIPPER_VERSION        install this tag instead of the latest (e.g. vX.Y.Z)
+#   DIPPER_INSTALL_DIR    install here instead of the first writable default
+#   DIPPER_DOWNLOAD_BASE  fetch assets from here instead of GitHub (testing, mirrors)
+#   DIPPER_NO_MODIFY_PATH leave the shell profile alone and just print the line to add
 set -eu
 
-REPO="SumitKumar-17/pipit"
-BIN="pipit"
-MARKER="# added by the pipit installer"
+REPO="SumitKumar-17/dipper"
+BIN="dipper"
+MARKER="# added by the dipper installer"
 OS=""
 
 say() { printf '%s\n' "$*"; }
@@ -40,7 +40,7 @@ detect_target() {
     Darwin) os=darwin ;;
     Linux) os=linux ;;
     MINGW* | MSYS* | CYGWIN*)
-      err "Windows is not supported by this script - download pipit-<version>-windows-amd64.exe from https://github.com/$REPO/releases/latest" ;;
+      err "Windows is not supported by this script - download dipper-<version>-windows-amd64.exe from https://github.com/$REPO/releases/latest" ;;
     *) err "unsupported operating system: $os" ;;
   esac
   case "$arch" in
@@ -55,14 +55,14 @@ latest_tag() {
   # Parsed with sed rather than jq, which is not installed everywhere.
   tag=$(fetch "https://api.github.com/repos/$REPO/releases/latest" \
     | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1)
-  [ -n "$tag" ] || err "could not find a published release for $REPO - a draft release is not visible here; publish it, or set PIPIT_VERSION"
+  [ -n "$tag" ] || err "could not find a published release for $REPO - a draft release is not visible here; publish it, or set DIPPER_VERSION"
   printf '%s\n' "$tag"
 }
 
 # The first writable candidate wins; ~/.local/bin is created if that is where we land.
 choose_dir() {
-  if [ -n "${PIPIT_INSTALL_DIR:-}" ]; then
-    printf '%s\n' "$PIPIT_INSTALL_DIR"
+  if [ -n "${DIPPER_INSTALL_DIR:-}" ]; then
+    printf '%s\n' "$DIPPER_INSTALL_DIR"
     return
   fi
   for dir in /usr/local/bin "$HOME/.local/bin"; do
@@ -138,7 +138,7 @@ setup_path() {
   case "$dir" in "$HOME"/*) ref="\$HOME/${dir#"$HOME"/}" ;; esac
   line=$(path_line "$ref")
   rc=$(profile_path)
-  [ -z "${PIPIT_NO_MODIFY_PATH:-}" ] || rc=""
+  [ -z "${DIPPER_NO_MODIFY_PATH:-}" ] || rc=""
 
   if [ -n "$rc" ]; then
     if [ -f "$rc" ] && grep -qF "$ref" "$rc"; then
@@ -170,12 +170,12 @@ setup_path() {
 main() {
   target=$(detect_target)
   OS=${target%-*}
-  tag=${PIPIT_VERSION:-$(latest_tag)}
+  tag=${DIPPER_VERSION:-$(latest_tag)}
   version=${tag#v}
   archive="$BIN-$version-$target.tar.gz"
-  base=${PIPIT_DOWNLOAD_BASE:-"https://github.com/$REPO/releases/download/$tag"}
+  base=${DIPPER_DOWNLOAD_BASE:-"https://github.com/$REPO/releases/download/$tag"}
 
-  say "pipit $tag ($target)"
+  say "dipper $tag ($target)"
 
   tmp=$(mktemp -d)
   trap 'rm -rf "$tmp"' EXIT INT TERM
@@ -196,7 +196,7 @@ main() {
   dir=$(choose_dir)
   mkdir -p "$dir" 2>/dev/null || err "cannot create $dir"
   if [ ! -w "$dir" ]; then
-    err "$dir is not writable - re-run with PIPIT_INSTALL_DIR=\$HOME/.local/bin, or use sudo"
+    err "$dir is not writable - re-run with DIPPER_INSTALL_DIR=\$HOME/.local/bin, or use sudo"
   fi
   mv "$tmp/$BIN" "$dir/$BIN"
 

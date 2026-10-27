@@ -61,7 +61,7 @@ func Wrap(h Handler) http.HandlerFunc {
 			writeErrorEnvelope(w, httpErr.Status, httpErr.Message, httpErr.Code, httpErr.Details)
 			return
 		}
-		log.Printf("[pipit] %v", err)
+		log.Printf("[dipper] %v", err)
 		writeErrorEnvelope(w, http.StatusInternalServerError, err.Error(), "", nil)
 	}
 }

@@ -1,6 +1,6 @@
 # replay
 
-The real Pipit workspace from `@pipit/ui`, fed by recordings of a real Pipit talking to a real
+The real Dipper workspace from `@dipper/ui`, fed by recordings of a real Dipper talking to a real
 Postgres. Nothing here draws an imitation of the app: every pane is the component the shipped
 binary renders, and every row on screen is a row the server returned while recording.
 
@@ -75,7 +75,7 @@ Input fields beyond the spec's `{ fixtures, extraRecordings }` are optional: `op
 // scenes/real/workspace.ts - light; this is what scenes/index.ts exports
 export const RealXScene = lazyScene(() => import("./workspace/x.scene"), { width: 1280, height: 760 });
 
-// scenes/real/workspace/x.scene.tsx - heavy (CodeMirror, @pipit/ui); default export
+// scenes/real/workspace/x.scene.tsx - heavy (CodeMirror, @dipper/ui); default export
 const script: SceneScript = {
   camera: "always" | "narrow",          // narrow: only below 700px frame width
   input: { fixtures: birdwatch, open: [...], panels: { layout: splitLayout(42) } },
@@ -123,7 +123,7 @@ What the replayed `WorkspaceApi` does:
   cost, 90 ms floor). A `maxRows` smaller than the recorded rows cuts them and sets `truncated`, as
   the server would. Anything else resolves, never rejects, with a `done` run whose single
   statement has no columns and one notice, `REPLAY_NOTICE`:
-  "This preview replays recorded queries - install Pipit to run your own." The results pane opens
+  "This preview replays recorded queries - install Dipper to run your own." The results pane opens
   Messages for it. No row is ever invented.
 - **files, tabs, settings, panels, history**: in memory. Edits mark a buffer dirty and autosave
   writes it (to memory) after `settings.autosaveDelayMs`, so the save indicator moves as it does
@@ -139,8 +139,8 @@ What the replayed `WorkspaceApi` does:
 type ReplayFixtures = {
   version: 1;
   recordedAt: string;           // ISO
-  pipitVersion: string;         // from GET /api/health
-  server: ServerInfo;           // GET /api/health, scrubbed (configDir ~/.pipit, url :4600)
+  dipperVersion: string;         // from GET /api/health
+  server: ServerInfo;           // GET /api/health, scrubbed (configDir ~/.dipper, url :4600)
   connections: ConnectionSummary[];             // GET /api/connections after connect
   databases: Record<string, string[]>;          // by connection id
   schemas: Record<string, DatabaseSchema>;      // by `${connectionId}/${database}`
@@ -170,7 +170,7 @@ type Recording = {
 ```
 
 Paths in fixtures are what the visitor sees: the workspace is `~/birdwatch`, roost's home is
-`~/.pipit`, the OS user is `birder`. The recorder scrubs every response before writing; grep
+`~/.dipper`, the OS user is `birder`. The recorder scrubs every response before writing; grep
 before committing (see the recorder's header).
 
 Adding recordings (R2): write them in this shape to `fixtures/walk*.json` (an array of
@@ -182,7 +182,7 @@ Adding recordings (R2): write them in this shape to `fixtures/walk*.json` (an ar
 bun apps/site/scripts/record.ts
 ```
 
-Needs `apps/server/dist/pipit` (built from main), Postgres with the `pipit_site_demo` database
-loaded, and bun. It starts its own `pipit serve` on 4696 with a throwaway `PIPIT_HOME` and
-workspace, never `~/.pipit`. Environment, all optional: `PGHOST`, `PGPORT`, `PGUSER`,
+Needs `apps/server/dist/dipper` (built from main), Postgres with the `dipper_site_demo` database
+loaded, and bun. It starts its own `dipper serve` on 4696 with a throwaway `DIPPER_HOME` and
+workspace, never `~/.dipper`. Environment, all optional: `PGHOST`, `PGPORT`, `PGUSER`,
 `RECORD_DB`, `RECORD_PORT`, `RECORD_TMP` (where the throwaway folders go).

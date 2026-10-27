@@ -1,8 +1,8 @@
-// Settings → Files. Autosave, its delay, and the workspace roots list - the only folders Pipit
+// Settings → Files. Autosave, its delay, and the workspace roots list - the only folders Dipper
 // may read or write, which is why that fact is said once, plainly, rather than repeated by every
 // control underneath it.
 
-import type { Settings } from "@pipit/protocol";
+import type { Settings } from "@dipper/protocol";
 import { FolderOpenIcon, TrashIcon } from "lucide-react";
 import * as React from "react";
 import { Button } from "../ui/button";
@@ -68,7 +68,7 @@ export function FilesSection({
               button and the placeholder underneath - saying them again is the reader's time spent
               on what they can see. */}
           <span className="text-muted-foreground text-xs">
-            The only folders Pipit may read or write.
+            The only folders Dipper may read or write.
           </span>
         </div>
 

@@ -5,7 +5,7 @@ import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // TanStack Start in SPA mode: `vite build` prerenders the shell once and emits `dist/client/`,
-// which scripts/postbuild.mjs copies into apps/server/ui/ - the directory the published `pipit`
+// which scripts/postbuild.mjs copies into apps/server/ui/ - the directory the published `dipper`
 // package serves at `/`. Start's server half never runs; there are no server functions and no SSR.
 // See docs/architecture/monorepo.md, "How the frontend ships inside the server package".
 export default defineConfig({

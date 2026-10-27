@@ -30,7 +30,7 @@ func (m CompletionMode) Valid() bool {
 	return m == CompletionOff || m == CompletionBasic || m == CompletionSmart
 }
 
-// How much of a run survives it. `queries` is what pipit has always kept - the shape of a run and
+// How much of a run survives it. `queries` is what dipper has always kept - the shape of a run and
 // its counts, never a row - and stays the default: turning on row storage without being asked
 // would put a database's contents in a second place on disk that nobody chose.
 type HistoryMode string
@@ -48,7 +48,7 @@ func (m HistoryMode) Valid() bool {
 // KeepsRows is the one question the run path asks of the mode.
 func (m HistoryMode) KeepsRows() bool { return m == HistoryResults }
 
-// What the history store currently holds. `Bytes` is what pipit has stored; `FileBytes` is what
+// What the history store currently holds. `Bytes` is what dipper has stored; `FileBytes` is what
 // the file takes up, which is larger and does not shrink when runs are dropped - bbolt reuses the
 // pages it frees rather than returning them, so the file plateaus instead of growing.
 type HistoryStats struct {

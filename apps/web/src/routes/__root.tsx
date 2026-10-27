@@ -1,10 +1,10 @@
-import { THEME_BOOT_SCRIPT } from "@pipit/ui";
+import { THEME_BOOT_SCRIPT } from "@dipper/ui";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import type * as React from "react";
 import { NotFound } from "@/not-found";
 import appCss from "@/styles.css?url";
 
-// The product is "Pipit"; the command, the scopes and `~/.pipit` stay lowercase. The tab is the
+// The product is "Dipper"; the command, the scopes and `~/.dipper` stay lowercase. The tab is the
 // only label a local tool gets, so a route with something more specific to say - a database name,
 // with several windows open on several databases - sets its own `title` here, which wins over this
 // one. That is also why only the overridable half of the head lives in `head()`; the fixed half is
@@ -15,9 +15,9 @@ import appCss from "@/styles.css?url";
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { title: "Pipit" },
+      { title: "Dipper" },
       { name: "description", content: "A fast, local SQL client for Postgres and MySQL." },
-      { name: "application-name", content: "Pipit" },
+      { name: "application-name", content: "Dipper" },
     ],
     links: [
       // A real <link> in the prerendered shell rather than a stylesheet the bundle injects once it

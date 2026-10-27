@@ -1,7 +1,7 @@
 // Assembling a scene out of cards: the two constructors every station builder reaches for, and the
 // width cap that runs over whatever they return.
 
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import { colsOf, positional, rowsOf, visibleIndices } from "./columns";
 import type { Col, Row, Scene, TableView } from "./types";
 

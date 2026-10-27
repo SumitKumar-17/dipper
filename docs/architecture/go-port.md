@@ -1,7 +1,7 @@
 # Porting `apps/server` to Go
 
 Why: distribution is one self-contained binary per platform, and the target is under 30 MB. A
-`bun build --compile` binary is 64.9 MB, of which 60.2 MB is the Bun runtime - pipit's own code,
+`bun build --compile` binary is 64.9 MB, of which 60.2 MB is the Bun runtime - dipper's own code,
 dependencies and UI are 4.7 MB of it. No Bun flag removes the runtime, so the size target is only
 reachable by leaving JavaScript.
 
@@ -11,7 +11,7 @@ a pure HTTP client and cannot tell which language answers it.
 
 ## Status
 
-**Done and cut over.** The Go module is `apps/server` (module `pipit`, 6.8k lines); the
+**Done and cut over.** The Go module is `apps/server` (module `dipper`, 6.8k lines); the
 TypeScript server was deleted on 2026-09-18. `bun run dev`, `build`, `lint`, `typecheck` and
 `smoke` all drive it, and CI builds it with Go.
 
@@ -34,7 +34,7 @@ from one machine because `CGO_ENABLED=0` holds - every dependency is pure Go.
 failed** - identical to the same suite against the TypeScript server, down to the byte count of
 its stderr. That covers connect/test/databases/schema, sync and streaming queries, cancel,
 read-only sessions, column `source`, CSV export, workspace file CRUD with the 403/409 cases,
-`record:false` probes, history and `pipit status`.
+`record:false` probes, history and `dipper status`.
 
 ## Libraries
 
@@ -60,7 +60,7 @@ apps/server/
   main.go          CLI: serve, stop, status
   server/          HTTP: one file per route group, pool, runner, run log, watcher wiring
   db/              driver contract, postgres, mysql, value mapping, introspection
-  storage/         ~/.pipit documents
+  storage/         ~/.dipper documents
   protocol/        the wire types
   sqlscript/       statement splitting
   discover/        local database discovery
@@ -103,7 +103,7 @@ Behaviour is the same; the structure differs where Go has a better answer.
    `github.com/go-mysql-org/go-mysql`, whose client exposes the full field metadata, or accept
    that the UI feature degrades on MySQL. **This is a product call, not a technical one.**
 3. **MySQL notices are gone** for the same reason: the OkPacket `info` string is not exported.
-4. **`@pipit/protocol` is still hand-mirrored.** The Go structs in `protocol/` match the
+4. **`@dipper/protocol` is still hand-mirrored.** The Go structs in `protocol/` match the
    TypeScript by hand today. The plan is to generate the TypeScript from the Go with `tygo` and
    have CI fail on a stale checkin, so the package stays types-only and single-source.
 5. **No release workflow yet.** `scripts/build.sh --all` produces every target and CI

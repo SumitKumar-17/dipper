@@ -3,7 +3,7 @@
 // belongs in the narration; it does not belong in the text of the query the walk echoes.
 //
 // This is frontend-only, so unlike split.ts there is no server copy for
-// `bun run --filter @pipit/sql check` to hold it to. split.ts is the one mirrored file and must
+// `bun run --filter @dipper/sql check` to hold it to. split.ts is the one mirrored file and must
 // stay byte-identical to `apps/server/src/core/sql/split.ts`, which is why the quote, comment and
 // dollar-quote skipping below is duplicated here rather than imported from it: sharing a helper
 // would mean editing split.ts, and that file is not this package's to edit.

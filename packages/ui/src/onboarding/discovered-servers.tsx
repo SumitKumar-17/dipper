@@ -1,4 +1,4 @@
-// "Found on this machine". pipit never bundles a database; it looks for the one you already have -
+// "Found on this machine". dipper never bundles a database; it looks for the one you already have -
 // on a default port, installed as a service, in a container, or on PATH - which turns the worst
 // moment of a first run, a blank form asking for a host and port, into a row with a button on it.
 //
@@ -7,7 +7,7 @@
 // accept a password, and that is not a reason to leave: the row that was refused grows a password
 // field. Only a failure a password cannot fix falls back to the form.
 
-import type { DiscoveredServer, DiscoveryResult, DiscoverySource } from "@pipit/protocol";
+import type { DiscoveredServer, DiscoveryResult, DiscoverySource } from "@dipper/protocol";
 import { RefreshCwIcon, SearchXIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
 import { messageOf } from "../lib/errors";

@@ -1,9 +1,9 @@
 {
-  "name": "@pipit/protocol",
+  "name": "@dipper/protocol",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The wire contract between the pipit server and every client. TYPES ONLY \u2014 no runtime code, ever.",
+  "description": "The wire contract between the dipper server and every client. TYPES ONLY \u2014 no runtime code, ever.",
   "types": "./src/index.ts",
   "exports": {
     ".": {
@@ -19,7 +19,7 @@
     "check": "node scripts/assert-types-only.mjs"
   },
   "devDependencies": {
-    "@pipit/tsconfig": "*",
+    "@dipper/tsconfig": "*",
     "typescript": "^6.0.3"
   }
 }

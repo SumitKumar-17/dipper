@@ -5,7 +5,7 @@
 // never sees it again, even after deleting every connection, because re-running onboarding at
 // someone mid-cleanup is an interruption, not help.
 //
-// That consent is `settings.onboarded`, so it lives in ~/.pipit/settings.json rather than in
+// That consent is `settings.onboarded`, so it lives in ~/.dipper/settings.json rather than in
 // localStorage: onboarding is a property of the installation, not of one browser profile.
 
 import * as React from "react";
@@ -46,7 +46,7 @@ export function useMarkOnboarded(): () => void {
 }
 
 /** Dispatch on `window` to reopen the setup screen over the workspace. */
-const CONNECT_SETUP_EVENT = "pipit:connect-setup";
+const CONNECT_SETUP_EVENT = "dipper:connect-setup";
 
 /**
  * The way back to the setup screen - what the connection picker's "Connect a database…" calls.

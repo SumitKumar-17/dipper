@@ -10,7 +10,7 @@
 
 import { motion } from "motion/react";
 import * as React from "react";
-import { PipitBadge, PipitLogo } from "../brand/logo";
+import { DipperBadge, DipperLogo } from "../brand/logo";
 import { useFade, useSpring } from "../lib/motion";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -64,7 +64,7 @@ export function ServerGate(): React.ReactElement {
           initial={{ opacity: 0 }}
           transition={{ ...fade, delay: 0.25 }}
         >
-          <PipitLogo />
+          <DipperLogo />
           <Spinner className="size-4" />
         </motion.div>
       </Centered>
@@ -80,7 +80,7 @@ export function ServerGate(): React.ReactElement {
         role="alert"
         transition={spring}
       >
-        <PipitBadge />
+        <DipperBadge />
         <Unreachable
           onRetry={() => {
             setRetried(true);
@@ -110,7 +110,7 @@ function Unreachable({
           Can&rsquo;t reach the server at <span className="break-all font-mono text-sm">{url}</span>
         </h1>
         <p className="text-muted-foreground text-sm">
-          Start it from a terminal: <Code>pipit</Code>
+          Start it from a terminal: <Code>dipper</Code>
         </p>
       </header>
       {/* The provider is probing the whole time this is up, so the button is a courtesy for

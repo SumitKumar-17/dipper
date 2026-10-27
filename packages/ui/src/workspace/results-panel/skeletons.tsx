@@ -46,10 +46,10 @@ export function RunningRows(): React.ReactElement {
       className="h-full w-full overflow-hidden font-mono text-sm"
       ref={ref}
       role="status"
-      style={{ "--pipit-grid-cols": SKELETON_TEMPLATE } as React.CSSProperties}
+      style={{ "--dipper-grid-cols": SKELETON_TEMPLATE } as React.CSSProperties}
     >
       <div className="bg-muted">
-        <div className="grid grid-cols-(--pipit-grid-cols)">
+        <div className="grid grid-cols-(--dipper-grid-cols)">
           {SKELETON_COLUMNS.map((_, column) => (
             <div
               className="flex h-7 items-center gap-1.5 border-border border-r border-b px-2 last:border-r-0"
@@ -57,8 +57,8 @@ export function RunningRows(): React.ReactElement {
             >
               {/* Two bars, because the real header is a name and a type sitting beside it. */}
               <Skeleton
-                className="h-2.5 w-(--pipit-bar)"
-                style={{ "--pipit-bar": barWidth(0, column, 34, 26) } as React.CSSProperties}
+                className="h-2.5 w-(--dipper-bar)"
+                style={{ "--dipper-bar": barWidth(0, column, 34, 26) } as React.CSSProperties}
               />
               <Skeleton className="h-2 w-5 shrink-0" />
             </div>
@@ -68,7 +68,7 @@ export function RunningRows(): React.ReactElement {
 
       {Array.from({ length: rows }, (_, row) => (
         <div
-          className={cn("grid grid-cols-(--pipit-grid-cols)", row % 2 === 1 && "bg-muted/40")}
+          className={cn("grid grid-cols-(--dipper-grid-cols)", row % 2 === 1 && "bg-muted/40")}
           key={row}
         >
           {SKELETON_COLUMNS.map((_, column) => (
@@ -77,8 +77,8 @@ export function RunningRows(): React.ReactElement {
               key={column}
             >
               <Skeleton
-                className="h-2.5 w-(--pipit-bar)"
-                style={{ "--pipit-bar": barWidth(row + 1, column, 46, 44) } as React.CSSProperties}
+                className="h-2.5 w-(--dipper-bar)"
+                style={{ "--dipper-bar": barWidth(row + 1, column, 46, 44) } as React.CSSProperties}
               />
             </div>
           ))}

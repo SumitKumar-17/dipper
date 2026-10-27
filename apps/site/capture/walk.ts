@@ -1,4 +1,4 @@
-// Records Query Walk for <pipit-walk>: runs the built binary against the birdwatch database, opens
+// Records Query Walk for <dipper-walk>: runs the built binary against the birdwatch database, opens
 // the walk on walk.sql in headless Chrome, screencasts it at device scale 2, and encodes the frames
 // on their real timestamps. While it plays, the rail's active station is read off the DOM, so the
 // clause times in walk.json are the app's own, on the encoded video's clock.
@@ -18,7 +18,7 @@ import { join, resolve } from "node:path";
 
 const REPO = resolve(import.meta.dir, "../../..");
 const ASSETS = join(REPO, "apps/site/public/legacy");
-const PIPIT = join(REPO, "apps/server/dist/pipit");
+const DIPPER = join(REPO, "apps/server/dist/dipper");
 const CHROME = process.env.CHROME ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = Number(process.env.WALK_PORT ?? 4693);
 const CDP_PORT = Number(process.env.WALK_CDP_PORT ?? 9313);
@@ -26,10 +26,10 @@ const PG = {
   host: process.env.PGHOST ?? "localhost",
   port: Number(process.env.PGPORT ?? 5432),
   user: process.env.PGUSER ?? userInfo().username,
-  database: process.env.CAPTURE_DB ?? "pipit_site_demo",
+  database: process.env.CAPTURE_DB ?? "dipper_site_demo",
 };
 
-// By default the same app size <pipit-workspace> replays, so the two windows share one scale on the page.
+// By default the same app size <dipper-workspace> replays, so the two windows share one scale on the page.
 const WIDTH = Number(process.env.WALK_WIDTH ?? 1280);
 const HEIGHT = Number(process.env.WALK_HEIGHT ?? 760);
 const NAME = process.env.WALK_NAME ?? "walk";
@@ -46,7 +46,7 @@ const RAIL = "FROM JOIN WHERE GROUP_BY HAVING WINDOW SELECT DISTINCT ORDER_BY LI
 
 // WALK_WORK keeps the frames for inspection; otherwise everything lives in a temp dir that goes.
 const given = process.env.WALK_WORK;
-const work = given ?? mkdtempSync(join(tmpdir(), "pipit-walk-"));
+const work = given ?? mkdtempSync(join(tmpdir(), "dipper-walk-"));
 const home = join(work, "home");
 const workspace = join(work, "birdwatch");
 const profile = join(work, "chrome");
@@ -78,8 +78,8 @@ function ffmpeg(args: string[]) {
   if (r.exitCode !== 0) throw new Error(`ffmpeg ${args.join(" ")}\n${r.stderr.toString()}`);
 }
 
-const pipit = Bun.spawn([PIPIT, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
-  env: { ...process.env, PIPIT_HOME: home },
+const dipper = Bun.spawn([DIPPER, "serve", "--port", String(PORT), "--no-open", "--dir", workspace], {
+  env: { ...process.env, DIPPER_HOME: home },
   stdout: "ignore",
   stderr: "inherit",
 });
@@ -161,7 +161,7 @@ try {
   await page.evaluate(`__walkFlash(false)`);
   await sleep(600);
 
-  await page.evaluate(`window.dispatchEvent(new CustomEvent("pipit:visualise-query", { detail: { sql: ${JSON.stringify(SQL)} } }))`);
+  await page.evaluate(`window.dispatchEvent(new CustomEvent("dipper:visualise-query", { detail: { sql: ${JSON.stringify(SQL)} } }))`);
   // Playback starts by itself; it is over when the primary control goes back to Play.
   await page.until(`window.__walkMarks.some((m) => m.kind === 'play' && m.label === 'Pause')`, 20000);
   await page.until(`(() => { const m = window.__walkMarks.filter((m) => m.kind === 'play'); return m.at(-1).label === 'Play' && m.at(-2)?.label === 'Pause'; })()`, 90000);
@@ -295,8 +295,8 @@ try {
   console.log(JSON.stringify(data.stages));
 } finally {
   chrome.kill();
-  pipit.kill();
-  await Promise.all([chrome.exited, pipit.exited]);
+  dipper.kill();
+  await Promise.all([chrome.exited, dipper.exited]);
   if (given) {
     for (const dir of [home, workspace, profile]) rmSync(dir, { recursive: true, force: true });
   } else rmSync(work, { recursive: true, force: true });

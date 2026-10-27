@@ -2,8 +2,8 @@
 // disk. The rules themselves are in `buffers-reducer.ts`; this file is the I/O around them - every
 // action here is "call the server, then say what came back".
 
-import { isPipitError, staleWrite, type PipitClient } from "@pipit/client";
-import type { Buffer, CursorPosition, SaveState } from "@pipit/ui";
+import { isDipperError, staleWrite, type DipperClient } from "@dipper/client";
+import type { Buffer, CursorPosition, SaveState } from "@dipper/ui";
 import * as React from "react";
 import { buffersReducer, initialBuffersState, saveStateOf } from "./buffers-reducer";
 import { dirName, fileName, messageOf } from "./helpers";
@@ -54,7 +54,7 @@ export type BuffersApi = {
 };
 
 export function useBuffers(
-  getClient: () => PipitClient,
+  getClient: () => DipperClient,
   enabled: boolean,
   options: BuffersOptions,
 ): BuffersApi {
@@ -203,7 +203,7 @@ export function useBuffers(
           target = (await files.create(dirName(path), fileName(path))).path;
         } catch (error) {
           // Saving onto an existing file is a legitimate "save as"; anything else is not.
-          if (!isPipitError(error) || error.status !== 409) throw error;
+          if (!isDipperError(error) || error.status !== 409) throw error;
         }
         const written = await files.write({ path: target, content: buffer.content });
         const nextId = bufferIdFor(target);

@@ -1,7 +1,7 @@
 # Monorepo architecture
 
 One Bun workspaces repo, one lockfile, one `node_modules`. The product is a single binary
-(`pipit`, built by `apps/server/scripts/build.sh`); everything else in here exists to keep what
+(`dipper`, built by `apps/server/scripts/build.sh`); everything else in here exists to keep what
 goes into it small, honest and easy to change. `apps/server` is marked `private` - nothing here
 is published to a registry, and distribution is a file you download.
 
@@ -10,15 +10,15 @@ rather than 65: a JavaScript runtime cannot be left out of a JavaScript binary, 
 the old one.
 
 ```
-pipit/
+dipper/
 ├─ package.json            workspaces ["packages/*", "apps/*"]; scripts fan out (except lint)
-├─ apps/server/            `pipit` - the published package: Hono API + `pipit` CLI
-├─ apps/web/               @pipit/web - the UI; builds into apps/server/ui/
-├─ packages/protocol/      @pipit/protocol - the wire contract, types only
-├─ packages/client/        @pipit/client - typed HTTP/NDJSON/SSE client over /api/*
-├─ packages/ui/            @pipit/ui - components + the workspace contract, raw .tsx
-├─ packages/sql/           @pipit/sql - SQL text utilities the frontend needs; mirrors apps/server
-├─ packages/tsconfig/      @pipit/tsconfig - base.json / node.json / react.json
+├─ apps/server/            `dipper` - the published package: Hono API + `dipper` CLI
+├─ apps/web/               @dipper/web - the UI; builds into apps/server/ui/
+├─ packages/protocol/      @dipper/protocol - the wire contract, types only
+├─ packages/client/        @dipper/client - typed HTTP/NDJSON/SSE client over /api/*
+├─ packages/ui/            @dipper/ui - components + the workspace contract, raw .tsx
+├─ packages/sql/           @dipper/sql - SQL text utilities the frontend needs; mirrors apps/server
+├─ packages/tsconfig/      @dipper/tsconfig - base.json / node.json / react.json
 ├─ eslint.config.js        one ESLint config for the repo, every workspace
 ├─ turbo.json              Turborepo - one task, `dev`, so both halves start together
 ├─ scripts/dev.mjs         picks the API's dev port before handing off to turbo
@@ -26,11 +26,11 @@ pipit/
 ```
 
 Note what is _not_ at the root: no tsconfig. TypeScript presets live in `packages/tsconfig` and
-are consumed by name (`extends: "@pipit/tsconfig/node.json"`), so a package's compiler settings are
+are consumed by name (`extends: "@dipper/tsconfig/node.json"`), so a package's compiler settings are
 a normal dependency rather than an inheritance accident of where it happens to sit on disk. Five
 workspaces extend them - the indirection buys something.
 
-ESLint used to work the same way, as `@pipit/eslint-config`. It doesn't any more. The config had
+ESLint used to work the same way, as `@dipper/eslint-config`. It doesn't any more. The config had
 exactly one consumer (`apps/server`): `packages/protocol` and `packages/client` have no `lint`
 script, and `apps/web` was then running `eslint-config-next` on its own pinned ESLint 9. A package export
 that one workspace imports is not a shared preset, it is a file with extra steps - a manifest, a
@@ -58,50 +58,50 @@ once and tested once. A UI component never sees a `fetch`.
 **`apps/web` - the UI, and nothing else.** A TanStack Start app in SPA mode - one prerendered
 shell, no SSR, no server functions - that builds into `apps/server/ui/`, so the single package
 carries both halves and there is no second artefact to ship. It owns routing and the choice between the live provider and the fixtures; everything a
-second surface might reuse lives in `packages/ui`, which may not import `@pipit/client`.
+second surface might reuse lives in `packages/ui`, which may not import `@dipper/client`.
 
 ## Dependency rules
 
 ```
-@pipit/protocol   →  nothing
-@pipit/sql        →  nothing
-@pipit/client     →  @pipit/protocol
-@pipit/ui         →  @pipit/protocol + @pipit/sql
-apps/server     →  @pipit/protocol (devDependency, type-only)
-apps/web        →  @pipit/protocol + @pipit/client + @pipit/ui + @pipit/sql
-                   nothing depends on apps/server, and apps/server depends on no @pipit/* at runtime
+@dipper/protocol   →  nothing
+@dipper/sql        →  nothing
+@dipper/client     →  @dipper/protocol
+@dipper/ui         →  @dipper/protocol + @dipper/sql
+apps/server     →  @dipper/protocol (devDependency, type-only)
+apps/web        →  @dipper/protocol + @dipper/client + @dipper/ui + @dipper/sql
+                   nothing depends on apps/server, and apps/server depends on no @dipper/* at runtime
 ```
 
 Two rules carry real weight.
 
-**`@pipit/sql` is a copy, on purpose.** The frontend needs the same statement boundaries the
+**`@dipper/sql` is a copy, on purpose.** The frontend needs the same statement boundaries the
 server will use - for "run the statement under the cursor" and for notebook cells - but it cannot
 import them. `apps/server` builds with plain `tsc` and carries five runtime dependencies, so
-an `import { splitStatements } from "@pipit/sql"` would survive into `dist/` and drag a private
-workspace package into the shipped output. `@pipit/protocol` escapes that only because types erase; a function does not.
+an `import { splitStatements } from "@dipper/sql"` would survive into `dist/` and drag a private
+workspace package into the shipped output. `@dipper/protocol` escapes that only because types erase; a function does not.
 The server is Go now, so the copy is not a copy at all: `packages/sql/src/split.ts` and
 `apps/server/sqlscript/split.go` are two implementations of one rule. They used to be
-byte-identical TypeScript, kept honest mechanically by `bun run --filter @pipit/sql check`.
+byte-identical TypeScript, kept honest mechanically by `bun run --filter @dipper/sql check`.
 Nothing can diff across languages, so that check is gone and the agreement is now maintained by
 hand - a change to either must be made to both. A drift means the editor offers to run one range
 while the server runs another, which is why both files say so at the top.
 
-**Protocol is types only, and that is load-bearing.** Every export in `@pipit/protocol` is a
+**Protocol is types only, and that is load-bearing.** Every export in `@dipper/protocol` is a
 `type`. TypeScript erases type-only imports entirely, so the package is consumed as raw `.ts`
-source by `apps/web` and `@pipit/client` with no build step of its own, and it never reaches a
+source by `apps/web` and `@dipper/client` with no build step of its own, and it never reaches a
 runtime bundle.
 
 The server no longer consumes it: `apps/server/protocol` is the same contract written as Go
 structs, and the two are kept in step by hand. The binary's only dependencies are `pgx/v5`,
 `go-sql-driver/mysql` and `fsnotify`, all pure Go.
 
-The rule is enforced, not merely documented: `bun run --filter @pipit/protocol check` runs
+The rule is enforced, not merely documented: `bun run --filter @dipper/protocol check` runs
 `scripts/assert-types-only.mjs`, which fails on any `export const | let | var | function | class |
 enum | default` in `packages/protocol/src`. If you need a value - a default, a lookup table, a
-type guard - it belongs to whoever owns the behaviour: `@pipit/client`, or the server's Go side.
+type guard - it belongs to whoever owns the behaviour: `@dipper/client`, or the server's Go side.
 
 **Nothing depends on `apps/server`.** The server is a leaf, not a library. A frontend that wants
-something from it asks over HTTP through `@pipit/client`; the types it needs are in the protocol
+something from it asks over HTTP through `@dipper/client`; the types it needs are in the protocol
 package. This is what keeps the UI honest about the fact that it is talking to a process over a
 socket, and keeps the server free to restructure its internals - as it did in the restructure
 that split `server/app.ts` into `create-server.ts` + `routes/*` + `services/*`, with no change
@@ -109,7 +109,7 @@ outside the workspace - without breaking anyone.
 
 ## How the frontend ships inside the server package
 
-There is one artifact, and the UI is inside it. `@pipit/web`'s build writes `apps/server/ui/`;
+There is one artifact, and the UI is inside it. `@dipper/web`'s build writes `apps/server/ui/`;
 `scripts/build.sh` stages that into `apps/server/webui/static/`, which `//go:embed` compiles into
 the binary. `apps/server/server/ui.go` serves it with an SPA fallback to `index.html`, registered
 last and behind `/api/*`.
@@ -121,10 +121,10 @@ answers 503 saying the UI was not built.
 So the build chain is:
 
 ```
-apps/web  →  static export  →  apps/server/ui/  →  packed into `pipit`  →  served at /
+apps/web  →  static export  →  apps/server/ui/  →  packed into `dipper`  →  served at /
 ```
 
-`apps/server/ui/` is generated, and the root `.gitignore` ignores it. `pipit serve --ui <dir>`
+`apps/server/ui/` is generated, and the root `.gitignore` ignores it. `dipper serve --ui <dir>`
 overrides the location, which is how you point a running server at a dev build.
 
 ## Toolchain
@@ -135,21 +135,21 @@ overrides the location, which is how you point a running server at a dev build.
 - **Bun ≥ 1.2 installs and runs scripts; Go ≥ 1.25 builds the server.** The two are separate
   choices and they do not meet: the Go module has no npm dependencies, and
   `apps/server/package.json` holds nothing but scripts that shell out to `scripts/*.sh`, so that
-  turbo and `--filter pipit` keep working. CI runs the CLI on three OSes from the compiled
+  turbo and `--filter dipper` keep working. CI runs the CLI on three OSes from the compiled
   binary, which is the artifact we ship rather than a stand-in for it.
 - **Scripts fan out** with `bun run --filter '*'`, which skips a workspace that lacks the script
   rather than breaking the run. Target one workspace with `--filter <name>`. Two do not fan out:
-  `lint` (see the ESLint bullet below) and `build`, which is ordered `@pipit/web` then `pipit`
+  `lint` (see the ESLint bullet below) and `build`, which is ordered `@dipper/web` then `dipper`
   because the binary embeds the web bundle and `--filter '*'` promises no order.
 - **Turborepo owns `dev` and `start`, and nothing else.** `bun run dev` starts `vite dev` on
   :5173 and the API on a free port, output prefixed per workspace. `bun run start` runs what
-  `bun run build` produced - a single `pipit serve`, since the built UI is a folder of static
+  `bun run build` produced - a single `dipper serve`, since the built UI is a folder of static
   files the server mounts at `/` rather than a second process to supervise. The port is chosen by `scripts/dev.mjs`
   before turbo runs, because it is the one thing turbo cannot do: Vite inlines `VITE_*` at
   compile time, so the UI has to be told where the server is _before_ it starts, and a port fixed
-  in both scripts would collide with a real `pipit serve`. The launcher picks a free port, passes
-  it to the server as `PIPIT_DEV_PORT` and to the bundle as `VITE_PIPIT_URL`, and refuses to
-  start at all when a server is already registered in `server.json` - `pipit serve` would attach to
+  in both scripts would collide with a real `dipper serve`. The launcher picks a free port, passes
+  it to the server as `DIPPER_DEV_PORT` and to the bundle as `VITE_DIPPER_URL`, and refuses to
+  start at all when a server is already registered in `server.json` - `dipper serve` would attach to
   that one and leave the UI pointed at nothing. Turbo 2 filters task environments, so both
   variables are declared in `passThroughEnv`. It is there for the
   _parallelism_ - two long-lived processes that have to agree on a port and an origin -
@@ -157,7 +157,7 @@ overrides the location, which is how you point a running server at a dev build.
   task while `build`, `typecheck` and `lint` stay on bun's fan-out and CI never invokes turbo.
   Moving a build task in would mean thinking about cache keys for a repo whose full build takes
   seconds; the day that stops being true, that task list is where to start.
-- **Shared tsconfig presets** in `@pipit/tsconfig`: `base.json` holds the strictness everyone
+- **Shared tsconfig presets** in `@dipper/tsconfig`: `base.json` holds the strictness everyone
   agrees on (`strict`, `noUncheckedIndexedAccess`, `isolatedModules`,
   `noFallthroughCasesInSwitch`); `node.json` adds NodeNext resolution; `react.json` adds Bundler
   resolution, DOM libs and `jsx: preserve`. Nothing redefines strictness locally.
@@ -182,7 +182,7 @@ There is no test suite: the repo deliberately carries none - no `*.test.ts`, no 
 | Workflow       | What it runs                                                                                                                                                                                     |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `server.yml`   | `typecheck`, `lint`, `build` and a CLI smoke (`--version`, `status`), on **Node** across 22/24 × ubuntu/windows/macos; then `apps/server/scripts/smoke.sh` against a Postgres service container |
-| `packages.yml` | protocol `typecheck`, `bun run --filter @pipit/protocol check` (the types-only guard), client `typecheck`                                                                                        |
+| `packages.yml` | protocol `typecheck`, `bun run --filter @dipper/protocol check` (the types-only guard), client `typecheck`                                                                                        |
 | `web.yml`      | `lint`, `typecheck`, `build` for `apps/web`                                                                                                                                                      |
 
 `scripts/smoke.sh` is **the only thing that exercises the HTTP API end to end** - it starts a real
@@ -197,17 +197,17 @@ It was `private`, never published, and nothing in `packages/` or `apps/server` w
 depend on it. The decision went to a merge of all four rather than to any one of them, and the workspace was
 deleted in a single pass:
 
-1. **`apps/web` was scaffolded** - a Next 16 app on `@pipit/tsconfig/react.json` with the same
+1. **`apps/web` was scaffolded** - a Next 16 app on `@dipper/tsconfig/react.json` with the same
    Tailwind and shadcn setup, and `web.yml` was pointed at it.
 2. **The merged layout became `app/page.tsx`.** The four routes, `lib/directions.ts` and
    `components/workspace/direction-switcher.tsx` only ever existed to compare, and went with the
    workspace.
 3. **The shared components graduated into `packages/ui`.** They were written against props
    rather than against a layout, which is what made four directions cheap in the first place and
-   what makes them reusable now: `packages/ui` is typed against `@pipit/protocol` alone, so
+   what makes them reusable now: `packages/ui` is typed against `@dipper/protocol` alone, so
    `apps/web` composes them and a future surface can too. The shadcn primitives came along; the
    44 unused ones did not.
-4. **`lib/mock/*` was replaced by `@pipit/client`.** The mock provider was always the seam -
+4. **`lib/mock/*` was replaced by `@dipper/client`.** The mock provider was always the seam -
    everything above it consumed a connection, a schema tree, a file list and a run result - so
    swapping in a provider backed by real connections, the NDJSON run stream and the SSE event
    feed was the whole integration. The fixtures survive as `apps/web/lib/mock-workspace.tsx`,

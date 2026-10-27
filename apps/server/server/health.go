@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"os"
 
-	"pipit/httpx"
+	"dipper/httpx"
 )
 
-// The one public route, and what `pipit status` polls to decide whether the server in
+// The one public route, and what `dipper status` polls to decide whether the server in
 // server.json is still alive.
 func (s *Server) registerHealth() {
 	s.handle("GET /api/health", func(w http.ResponseWriter, r *http.Request) error {

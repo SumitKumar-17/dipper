@@ -1,4 +1,4 @@
-import type { FileEntry } from "@pipit/protocol";
+import type { FileEntry } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type FileContent = { path: string; content: string; modifiedAt: string };

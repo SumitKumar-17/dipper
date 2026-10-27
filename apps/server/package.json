@@ -1,12 +1,12 @@
 {
-  "name": "pipit",
+  "name": "dipper",
   "version": "0.2.0",
-  "description": "The pipit server and CLI: connections, schema, queries, files, history. The UI is a pure client.",
+  "description": "The dipper server and CLI: connections, schema, queries, files, history. The UI is a pure client.",
   "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "start": "./dist/pipit serve",
+    "start": "./dist/dipper serve",
     "build": "bash scripts/build.sh",
     "build:all": "bash scripts/build.sh --all",
     "lint": "go vet ./...",

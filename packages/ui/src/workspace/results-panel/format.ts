@@ -1,4 +1,4 @@
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import { clockOf, plural } from "../../lib/format";
 import type { Run } from "../types";
 

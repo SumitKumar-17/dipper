@@ -7,7 +7,7 @@
 // `parse-select.ts`'s business.
 
 import { MySQL, PostgreSQL } from "@codemirror/lang-sql";
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import type { Range } from "./clause-types";
 
 export type SyntaxNode = ReturnType<typeof PostgreSQL.language.parser.parse>["topNode"];

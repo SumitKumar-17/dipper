@@ -12,7 +12,7 @@
 //
 // The file stays valid SQL either way: it runs in psql and opens in any editor.
 
-import { splitStatements } from "@pipit/sql";
+import { splitStatements } from "@dipper/sql";
 
 /** Written at the start of its own line. Everything after it on that line is ignored. */
 const CELL_MARKER = "-- %%";

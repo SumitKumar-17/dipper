@@ -3,7 +3,7 @@ import type {
   ConnectionSummary,
   Dialect,
   DiscoveredServer,
-} from "@pipit/protocol";
+} from "@dipper/protocol";
 import * as React from "react";
 import { failureCodeOf, isPasswordFailure, messageOf } from "../lib/errors";
 import { useWorkspace } from "../workspace/context";

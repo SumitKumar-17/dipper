@@ -9,7 +9,7 @@ const LEAVE_MS = 400;
 const QUIET_MS = 250;
 const SCROLL_PX = 4;
 
-export type WhyPipitState = {
+export type WhyDipperState = {
   /** Where the bird stood when the slip opened; null while it is closed. */
   anchor: Anchor | null;
   slip: RefObject<HTMLDivElement | null>;
@@ -21,7 +21,7 @@ export type WhyPipitState = {
  * of it. A mouse resting on a roosted, idle bird opens the slip, as does a tap on it; the bird turns
  * to the pointer, hops, and is held on its branch until the slip closes.
  */
-export function useWhyPipit(settled: boolean): WhyPipitState {
+export function useWhyDipper(settled: boolean): WhyDipperState {
   const bird = useBird();
   const slip = useRef<HTMLDivElement>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);

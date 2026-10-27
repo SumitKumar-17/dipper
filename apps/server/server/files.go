@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"pipit/httpx"
-	"pipit/protocol"
+	"dipper/httpx"
+	"dipper/protocol"
 )
 
 // Every client-supplied path goes through SafePath, which realpaths the roots and the target

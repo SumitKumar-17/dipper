@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"pipit/db"
-	"pipit/httpx"
-	"pipit/protocol"
-	"pipit/storage"
+	"dipper/db"
+	"dipper/httpx"
+	"dipper/protocol"
+	"dipper/storage"
 )
 
 const schemaTTL = 60 * time.Second

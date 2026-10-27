@@ -6,7 +6,7 @@ Conventions for any AI agent or coding tool working in this repo. This is the ca
 Read [docs/architecture/monorepo.md](docs/architecture/monorepo.md) before moving anything
 between workspaces. [CONTRIBUTING.md](CONTRIBUTING.md) has the repo map and the script table.
 
-**[README.md](README.md) is project-facing** - what `pipit` is, install, usage, security. Setup,
+**[README.md](README.md) is project-facing** - what `dipper` is, install, usage, security. Setup,
 scripts, layering and CI belong in `CONTRIBUTING.md`. Do not move dev instructions back into the
 README.
 
@@ -17,20 +17,20 @@ Run everything from the repo root. There is one `bun.lock` and one `node_modules
 - **Never** run an install or add a dependency inside `apps/*` or `packages/*` - it creates a
   nested lockfile and a second copy of React or TypeScript. Add the dependency to that
   workspace's `package.json` and install at the root.
-- `build` is ordered, not fanned out: `@pipit/web` first, then `pipit`, because the binary embeds
+- `build` is ordered, not fanned out: `@dipper/web` first, then `dipper`, because the binary embeds
   the web bundle. `typecheck` fans out (`--filter '*'`, which skips a workspace that lacks the
   script); for the Go server it is `go build ./...`. `lint` is one root ESLint run over
   `apps/web/src` and `packages/ui/src`, then `go vet ./...` in `apps/server`.
-- Target one workspace with `--filter`: `bun run --filter pipit typecheck`,
-  `bun run --filter @pipit/web build`, `bun run --filter @pipit/protocol check`.
-  `bun run pipit -- <args>` drives the CLI (the workspace bin, so it needs a `build` first).
+- Target one workspace with `--filter`: `bun run --filter dipper typecheck`,
+  `bun run --filter @dipper/web build`, `bun run --filter @dipper/protocol check`.
+  `bun run dipper -- <args>` drives the CLI (the workspace bin, so it needs a `build` first).
 - **`dev` is `scripts/dev.mjs`, and turbo owns only `dev:server`, `dev:ui` and `start`.** `dev`
   runs both halves itself, with one prefixed log stream and a ready line once both answer: `vite
   dev` (:5173, pinned with `strictPort` because apps/server's dev script allow-lists that exact
-  origin) and `pipit serve` (a free port, passed to both through `PIPIT_DEV_PORT` /
-  `VITE_PIPIT_URL`). It never starts the landing page. `dev:server` and `dev:ui` are the halves,
+  origin) and `dipper serve` (a free port, passed to both through `DIPPER_DEV_PORT` /
+  `VITE_DIPPER_URL`). It never starts the landing page. `dev:server` and `dev:ui` are the halves,
   both on :4600. `start` runs the built app, which is one process: there is no production UI
-  server, because `apps/web` builds into `apps/server/ui/` and `pipit serve` mounts it at `/`.
+  server, because `apps/web` builds into `apps/server/ui/` and `dipper serve` mounts it at `/`.
   **Turbo 2 filters the environment**: a variable the turbo tasks need must be in `passThroughEnv`
   in `turbo.json` or it silently will not arrive. Don't move another task into turbo without a
   reason to want its cache.
@@ -38,28 +38,28 @@ Run everything from the repo root. There is one `bun.lock` and one `node_modules
   it and serves the built page on the same port, which is the one to put behind ngrok;
   `build:site` only builds.
 - **The server is Go**; everything else is TypeScript on Bun. It needs Go 1.25+ and no Node at
-  all. `apps/server/package.json` exists only so turbo and `--filter pipit` keep working: every
+  all. `apps/server/package.json` exists only so turbo and `--filter dipper` keep working: every
   script in it shells out to `scripts/*.sh`, and the module has no npm dependencies.
 - **Keep `CGO_ENABLED=0`.** Every Go dependency is pure Go, which is the only reason one machine
   cross-compiles all five release targets. A cgo dependency would cost that, so adding one is a
   decision, not a detail. CI's `cross-compile` job is what catches it.
 - **ESLint config lives at the repo root** (`eslint.config.js`) and covers every workspace in one
   ESLint 10 run; no workspace nests its own any more. Do not add a root `tsconfig.json` - tsconfig
-  presets still live in `@pipit/tsconfig` and are extended by name.
+  presets still live in `@dipper/tsconfig` and are extended by name.
 
 ## Code
 
-- **`apps/server/protocol` and `@pipit/protocol` are the same contract, twice.** The Go structs
+- **`apps/server/protocol` and `@dipper/protocol` are the same contract, twice.** The Go structs
   are what the server marshals; the TypeScript is what the UI parses. They are kept in step by
   hand, so a change to a wire type is a change to both files. The Go package doc lists the three
   places Go's JSON defaults differ from TypeScript's.
-- **`@pipit/protocol` is types only.** Every export must be a `type`. A `const`, `function`,
-  `class` or `enum` there fails `bun run --filter @pipit/protocol check`
+- **`@dipper/protocol` is types only.** Every export must be a `type`. A `const`, `function`,
+  `class` or `enum` there fails `bun run --filter @dipper/protocol check`
   (`scripts/assert-types-only.mjs`),
   because the package is consumed as raw `.ts` and erased at compile time - that is what keeps
   the published package free of scoped dependencies. Values belong to `apps/server`
-  or `@pipit/client`.
-- **Anything that crosses the wire goes in `@pipit/protocol`.** Server-internal types (the `Driver`
+  or `@dipper/client`.
+- **Anything that crosses the wire goes in `@dipper/protocol`.** Server-internal types (the `Driver`
   interface, `ConnectionPoolOptions`, `RouteDeps`) stay next to their implementation.
 - **Import direction inside `apps/server`** - `main → server → db`, with `storage/` (on-disk
   state) shared, and `protocol/`, `httpx/`, `fsx/`, `sqlscript/` leaf-level. `db/` must not import
@@ -67,7 +67,7 @@ Run everything from the repo root. There is one `bun.lock` and one `node_modules
   errors and `server/pool.go` is the seam that turns them into answerable failures. Go's compiler
   rejects an import cycle, which covers most of this for free; the rest is convention. The tree is
   in `docs/architecture/server-structure.md`.
-- **Nothing depends on `apps/server`.** Frontends talk to it over HTTP through `@pipit/client`.
+- **Nothing depends on `apps/server`.** Frontends talk to it over HTTP through `@dipper/client`.
 - `apps/server/ui/` is build output (the frontend bundle the package ships); it is gitignored.
 
 ## Frontend structure
@@ -99,7 +99,7 @@ Read this before adding to or writing a new component in `apps/web` or `packages
 **The repo carries no test suite, and none gets committed.** The gate is
 typecheck + lint + build + a CLI smoke on the OS matrix, plus `apps/server/scripts/smoke.sh`
 against a real Postgres, which is the only end-to-end exercise of the HTTP API. Do not remove it.
-It drives the compiled binary, so `bun run --filter pipit build` has to run first. See
+It drives the compiled binary, so `bun run --filter dipper build` has to run first. See
 `docs/architecture/monorepo.md`.
 
 Before handing work back, run:
@@ -113,10 +113,10 @@ land is a committed `*.test.ts`.
 
 ## Project facts that trip people up
 
-- **It is pipit all the way down.** Product, package, binary, internal scopes (`@pipit/*`), env
-  vars (`PIPIT_HOME`, `PIPIT_DEV_PORT`, `PIPIT_SMOKE_PG`) and the on-disk home: `~/.pipit` holds
+- **It is dipper all the way down.** Product, package, binary, internal scopes (`@dipper/*`), env
+  vars (`DIPPER_HOME`, `DIPPER_DEV_PORT`, `DIPPER_SMOKE_PG`) and the on-disk home: `~/.dipper` holds
   connections.json, settings.json, history.db, server.json and `queries/`, the default
-  workspace - **nothing pipit writes belongs anywhere else**. The earlier `sql-engine` / `sqe`
+  workspace - **nothing dipper writes belongs anywhere else**. The earlier `sql-engine` / `sqe`
   names are gone; if you find one, it is a leftover, not a convention.
 - **Nothing is published to a registry.** `apps/server` is `private` and distribution is a single
   self-contained binary (`scripts/build.sh --all`, one per platform).
@@ -127,13 +127,13 @@ land is a committed `*.test.ts`.
   enforceable. The binaries are unsigned, so macOS needs notarization and Windows a cert before
   anyone can download them without a warning.
 - **`install.sh`, `apps/server/update/` and the release workflow are coupled.** The installer and
-  `pipit update` both build the asset name (`pipit-<version>-<os>-<arch>.tar.gz`, a bare `.exe`
+  `dipper update` both build the asset name (`dipper-<version>-<os>-<arch>.tar.gz`, a bare `.exe`
   on Windows) and read `checksums.txt`; changing how `release.yml` names or packages assets
-  breaks `curl … | sh` for everyone and `pipit update` for everyone already on an older binary,
+  breaks `curl … | sh` for everyone and `dipper update` for everyone already on an older binary,
   which no later release can fix. Change all three, and test both against a local directory with
-  `PIPIT_DOWNLOAD_BASE=file:///path` - `update` speaks `file://` for exactly that.
+  `DIPPER_DOWNLOAD_BASE=file:///path` - `update` speaks `file://` for exactly that.
   Never add an `npm i -g` line to docs - there is no package to install, and the npm names
-  `pipit`, `sqe` and `sql-engine` all belong to unrelated projects.
+  `dipper`, `sqe` and `sql-engine` all belong to unrelated projects.
 - **The frontend is `apps/web`.** The four layout directions in `apps/mockups` did their job
   and were deleted; the components they shared now live in `packages/ui`. `apps/web` is TanStack
   Start in SPA mode: `vite build` prerenders one shell, `scripts/postbuild.mjs` copies
@@ -143,11 +143,11 @@ land is a committed `*.test.ts`.
   `apps/server/webui/static/`, which is the directory `//go:embed` reads. Both are build output
   and gitignored; `webui/static/.gitkeep` is committed because the embed needs the directory to
   exist in a clean checkout.
-- **The landing page is `apps/site`** (`@pipit/site`), a multi-page Vite + React app that Vercel
+- **The landing page is `apps/site`** (`@dipper/site`), a multi-page Vite + React app that Vercel
   deploys with Root Directory `apps/site`. It is not part of the root `build`, because the binary
   doesn't carry it, but `typecheck` and `lint` cover it. Its product scenes are the real
-  `@pipit/ui` workspace running on a `WorkspaceApi` that replays recordings
-  (`src/shared/replay/`). Recordings come from a real pipit and Postgres via
+  `@dipper/ui` workspace running on a `WorkspaceApi` that replays recordings
+  (`src/shared/replay/`). Recordings come from a real dipper and Postgres via
   `scripts/record*.ts`, so re-record them; don't hand-edit them. `public/legacy/` is captured
   output too (`capture/`, which also holds the sample database), used for scenes that are not yet
   real; treat it the same way.

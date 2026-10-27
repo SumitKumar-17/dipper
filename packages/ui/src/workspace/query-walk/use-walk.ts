@@ -7,7 +7,7 @@
 // `useProgram` runs the same loop once per section of a program, in the program's own order, so a
 // section's dependencies have already been computed by the time it starts.
 
-import type { RunRecord } from "@pipit/protocol";
+import type { RunRecord } from "@dipper/protocol";
 import * as React from "react";
 import { boundPlan } from "./bound";
 import { isSetOp, type ParsedSelect } from "./clauses";

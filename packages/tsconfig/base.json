@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@pipit/base",
+  "display": "@dipper/base",
   "compilerOptions": {
     "target": "ES2022",
     "strict": true,

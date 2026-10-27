@@ -13,8 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"pipit/protocol"
-	"pipit/storage"
+	"dipper/protocol"
+	"dipper/storage"
 )
 
 const (
@@ -51,7 +51,7 @@ func Start(opts StartOptions) (*Running, error) {
 		host = DefaultHost
 	}
 
-	// First run has no workspace at all: create ~/.pipit/queries and adopt it before anything
+	// First run has no workspace at all: create ~/.dipper/queries and adopt it before anything
 	// reads settings, so the file API, the watcher and the UI all start on a real folder.
 	if _, err := storage.EnsureDefaultWorkspace(); err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func Start(opts StartOptions) (*Running, error) {
 
 	go func() {
 		if err := httpServer.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			fmt.Fprintf(os.Stderr, "[pipit] %v\n", err)
+			fmt.Fprintf(os.Stderr, "[dipper] %v\n", err)
 		}
 	}()
 

@@ -3,7 +3,7 @@ package server
 import (
 	"sync"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // Bus fans server events out to every open SSE stream. Sends are non-blocking: a subscriber that

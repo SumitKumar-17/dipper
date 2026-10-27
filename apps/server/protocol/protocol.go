@@ -1,5 +1,5 @@
 // Package protocol is everything crossing the wire. It must stay field-for-field identical to
-// the TypeScript @pipit/protocol the UI parses, which constrains three things Go gets wrong by
+// the TypeScript @dipper/protocol the UI parses, which constrains three things Go gets wrong by
 // default: `T?` is omitempty, `T | null` is a pointer WITHOUT omitempty (it must serialise as
 // null, not vanish), and a required slice must never be nil (Go marshals nil to null, not []).
 package protocol

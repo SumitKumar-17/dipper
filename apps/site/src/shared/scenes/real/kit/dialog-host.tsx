@@ -4,7 +4,7 @@
 // the scene's window instead, over the same backdrop and at the same inset. The dialogs themselves
 // cannot be used on a page - they are modal, so opening one would lock the page's scroll.
 
-import { Dialog, DialogPortal } from "@pipit/ui";
+import { Dialog, DialogPortal } from "@dipper/ui";
 import * as React from "react";
 
 /**

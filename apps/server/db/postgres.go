@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
 // The connection's own pool. A statement holds one connection at a time; four covers concurrent
@@ -69,7 +69,7 @@ func (d *postgresDriver) poolConfig(database string, max int32) (*pgxpool.Config
 	if database == "" {
 		database = d.config.Database
 	}
-	appName := "pipit"
+	appName := "dipper"
 	if v, ok := d.config.Options["application_name"].(string); ok && v != "" {
 		appName = v
 	}

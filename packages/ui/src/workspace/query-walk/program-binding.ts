@@ -7,7 +7,7 @@
 // it once and print a value that is true of no row, which is why the uncertainty is carried as
 // `Binding.certain` rather than flattened here.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   bareName,
   countingRewrite,

@@ -13,7 +13,7 @@
 // per row, and seeing it is the lesson. It stays contained here: `outerProbeSql` splices only
 // ranges, and nothing else in the walk builds a literal.
 
-import type { Cell, Dialect, ResultColumn, StatementResult } from "@pipit/protocol";
+import type { Cell, Dialect, ResultColumn, StatementResult } from "@dipper/protocol";
 import {
   canWidenSelectList,
   collapsesToOneRow,
@@ -430,7 +430,7 @@ export function bindKeyOf(row: BoundRow): string {
  * The outer probe's rows, read back into what the view needs.
  *
  * A column is found by NAME rather than by position, because the walk's own columns are appended to
- * a select list that may be `*`: the position of `_pipit_walk_n` then depends on how many columns
+ * a select list that may be `*`: the position of `_dipper_walk_n` then depends on how many columns
  * the user's tables happen to have, which is not something this can know.
  */
 export function boundRows(plan: BoundPlan, result: StatementResult): BoundRow[] {

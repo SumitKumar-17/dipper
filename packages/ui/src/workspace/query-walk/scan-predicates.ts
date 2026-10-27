@@ -5,7 +5,7 @@
 // running the same scan over that one's own clauses, which is also how a predicate two levels down
 // gets its correlation worked out.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   bareName,
   children,

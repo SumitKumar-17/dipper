@@ -2,7 +2,7 @@
 
 import type { Completion } from "@codemirror/autocomplete";
 import type { SQLNamespace } from "@codemirror/lang-sql";
-import type { DatabaseSchema, Dialect } from "@pipit/protocol";
+import type { DatabaseSchema, Dialect } from "@dipper/protocol";
 
 /**
  * The contract's schema, as completion data. `{ "<schema>.<table>": columns }` is the shape `sql()`

@@ -6,7 +6,7 @@
 // The indirection stays so the app has one place that names what it runs on, and so every surface
 // imports `useAppWorkspace` rather than the provider itself.
 
-import type { WorkspaceApi } from "@pipit/ui";
+import type { WorkspaceApi } from "@dipper/ui";
 import { useLiveWorkspace } from "./live-workspace";
 
 /** The provider the app runs on. One call, at the top of the tree. */

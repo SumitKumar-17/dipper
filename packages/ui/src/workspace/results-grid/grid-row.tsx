@@ -1,4 +1,4 @@
-import type { Cell, ResultColumn } from "@pipit/protocol";
+import type { Cell, ResultColumn } from "@dipper/protocol";
 import { AnimatePresence, motion } from "motion/react";
 import type * as React from "react";
 import { FADE_EASE, FADE_S } from "../../lib/motion";
@@ -44,7 +44,7 @@ export function GridRow({
       animate={{ opacity: 1 }}
       aria-rowindex={index + 2}
       className={cn(
-        "grid grid-cols-(--pipit-grid-cols) hover:bg-accent/40",
+        "grid grid-cols-(--dipper-grid-cols) hover:bg-accent/40",
         // Zebra by absolute index: a windowed row's DOM position changes as you
         // scroll, so an nth-child stripe would crawl.
         index % 2 === 1 && "bg-muted/40",

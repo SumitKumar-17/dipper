@@ -6,17 +6,17 @@
 // middle query's driving rows across the top, and one cell per pair. The loop stops being the
 // picture; the scrubber stays as nothing more than the row cursor.
 //
-// The tie back to what already shipped: the count the per-row probe brings back (`_pipit_walk_n`)
+// The tie back to what already shipped: the count the per-row probe brings back (`_dipper_walk_n`)
 // is exactly the ROW-SUM of this grid. Zhang's 3 is three cells. The grid shows what the count was
 // counting - measured, on the Silberschatz data, for all 13 students.
 //
 // EVERY FRAGMENT IS A RANGE. The probe below is sliced out of the outer section's text and the
 // middle section's text and glued back together; the only things the walk writes are its own
-// `_pipit_walk_` aliases, the word `true`, a comma and an ORDER BY over its own aliases - each of
+// `_dipper_walk_` aliases, the word `true`, a comma and an ORDER BY over its own aliases - each of
 // which it already writes elsewhere. No literal appears in the grid probe. Literals appear only in
 // the per-cell SQL, which is the sanctioned departure and where the lesson lives.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   canWidenSelectList,
   normalizeRef,

@@ -10,7 +10,7 @@
 // It reuses the stage's vocabulary rather than inventing one: the same fail mark WHERE stamps on a
 // row it threw away, the same monospaced cells, the same column widths.
 
-import type { Cell } from "@pipit/protocol";
+import type { Cell } from "@dipper/protocol";
 import { motion } from "motion/react";
 import type * as React from "react";
 import { cn } from "../../lib/utils";

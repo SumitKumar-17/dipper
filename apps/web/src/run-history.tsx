@@ -11,7 +11,7 @@
 // project" - and a machine with four checkouts open over a year has one history in which none of
 // them can be found.
 
-import type { HistoryScope } from "@pipit/protocol";
+import type { HistoryScope } from "@dipper/protocol";
 import {
   Badge,
   Button,
@@ -25,7 +25,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-  PipitMark,
+  DipperMark,
   Select,
   SelectItem,
   SelectPopup,
@@ -36,7 +36,7 @@ import {
   requestSettings,
   useWorkspace,
   type Run,
-} from "@pipit/ui";
+} from "@dipper/ui";
 import { ChevronRightIcon } from "lucide-react";
 import * as React from "react";
 
@@ -192,7 +192,7 @@ export function RunHistory(): React.ReactElement {
           <EmptyMedia variant="icon">
             {/* The mark, muted: the colour belongs to the span, because the mark owns its own. */}
             <span className="text-muted-foreground">
-              <PipitMark className="size-4.5" />
+              <DipperMark className="size-4.5" />
             </span>
           </EmptyMedia>
           <EmptyTitle>Nothing is recorded</EmptyTitle>

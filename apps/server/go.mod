@@ -1,4 +1,4 @@
-module pipit
+module dipper
 
 go 1.25.0
 

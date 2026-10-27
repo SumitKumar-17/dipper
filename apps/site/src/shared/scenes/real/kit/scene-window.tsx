@@ -1,5 +1,5 @@
 // The light half of what the real Relationship View and Query Walk scenes share: the window they
-// are drawn in. Nothing here imports @pipit/ui, so a page can load it with its first paint; the
+// are drawn in. Nothing here imports @dipper/ui, so a page can load it with its first paint; the
 // components themselves arrive later, from dialog-host.tsx and the scene modules that import it.
 
 import * as React from "react";

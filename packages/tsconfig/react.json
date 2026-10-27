@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@pipit/react",
+  "display": "@dipper/react",
   "extends": "./base.json",
   "compilerOptions": {
     "module": "ESNext",

@@ -10,9 +10,9 @@
 
 /* The app's design system - tokens, the .dark palette, variants and keyframes - so the site and
    the product it shows are drawn from one set of values. */
-@import "@pipit/ui/styles.css";
+@import "@dipper/ui/styles.css";
 
-/* @pipit/ui is a workspace symlink: without it here every class used only inside a packages/ui
+/* @dipper/ui is a workspace symlink: without it here every class used only inside a packages/ui
    component is dropped. */
 @source "../../../../../packages/ui/src";
 @source "../..";

@@ -1,4 +1,4 @@
-import type { DiscoveryResult } from "@pipit/protocol";
+import type { DiscoveryResult } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type DiscoverOptions = CallOptions & {

@@ -3,7 +3,7 @@
 // Every test below is a REFUSAL and the bar is proof: a recursive CTE the walk mis-splits does not
 // fail visibly, it hangs, or returns rows until something runs out. See the doc on `readRecursion`.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import {
   bareName,
   isSetOp,

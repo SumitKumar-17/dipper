@@ -1,16 +1,16 @@
 // The only picture in the app: a client on your machine, and your database over there. The screen
-// underneath asks for a host and a port because pipit neither is a database nor ships one, so the
+// underneath asks for a host and a port because dipper neither is a database nor ships one, so the
 // picture has to make "two things, joined" the obvious reading before the form is read at all.
 //
-// Drawn, not branded - see `dialect-mark.tsx` for why pipit ships no vendor logos.
+// Drawn, not branded - see `dialect-mark.tsx` for why dipper ships no vendor logos.
 //
-// The beam travels pipit → database, the direction the connection is made in, and only while there
+// The beam travels dipper → database, the direction the connection is made in, and only while there
 // is nothing to report. Once a server is found the link goes solid, agreeing with the row below it.
 
-import type { Dialect } from "@pipit/protocol";
+import type { Dialect } from "@dipper/protocol";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type React from "react";
-import { PipitMark } from "../brand/logo";
+import { DipperMark } from "../brand/logo";
 import { cn } from "../lib/utils";
 import { DIALECT_LABEL, DialectMark } from "./dialect-mark";
 import { useSpring } from "../lib/motion";
@@ -34,12 +34,12 @@ export function ConnectionBeam({
 
   return (
     <div
-      aria-label={`Pipit, connecting to ${DIALECT_LABEL[target]}`}
+      aria-label={`Dipper, connecting to ${DIALECT_LABEL[target]}`}
       className={cn("flex items-start justify-center gap-3", className)}
       role="img"
     >
-      <Node label="Pipit">
-        <PipitMark />
+      <Node label="Dipper">
+        <DipperMark />
       </Node>
 
       {/* The wire. A hairline the pulse runs along, so the motion is the only thing that moves.
@@ -86,7 +86,7 @@ function Node({
   children,
 }: {
   label: string;
-  /** Identity of the contents. Omitted for an end that never changes, like pipit's own. */
+  /** Identity of the contents. Omitted for an end that never changes, like dipper's own. */
   swapKey?: string;
   children: React.ReactNode;
 }): React.ReactElement {

@@ -7,11 +7,11 @@
 // <head>. The server stays the source of truth; the mirror is a paint hint, never read as the
 // setting, and may be one load stale.
 
-import type { Settings } from "@pipit/protocol";
+import type { Settings } from "@dipper/protocol";
 import { readRaw, writeRaw } from "./storage";
 
 /** Where the paint hint lives. Written by `applyTheme`, read by `THEME_BOOT_SCRIPT`. */
-const THEME_STORAGE_KEY = "pipit.theme";
+const THEME_STORAGE_KEY = "dipper.theme";
 
 /**
  * Puts a theme on the document and remembers it for the next load.

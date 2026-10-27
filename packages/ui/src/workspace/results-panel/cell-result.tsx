@@ -1,4 +1,4 @@
-import type { StatementResult } from "@pipit/protocol";
+import type { StatementResult } from "@dipper/protocol";
 import { DownloadIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
@@ -87,9 +87,9 @@ export function CellResult({
       )}
 
       <div
-        className="h-(--pipit-cell-h) shrink-0 overflow-hidden"
+        className="h-(--dipper-cell-h) shrink-0 overflow-hidden"
         style={
-          { "--pipit-cell-h": height === undefined ? "auto" : `${height}px` } as React.CSSProperties
+          { "--dipper-cell-h": height === undefined ? "auto" : `${height}px` } as React.CSSProperties
         }
       >
         <ResultBody

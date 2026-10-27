@@ -10,7 +10,7 @@
 // (a connection id, a database, a refresh nonce), so they keep their own effects and reuse
 // `applyError` alone.
 
-import { asyncError, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@pipit/ui";
+import { asyncError, asyncLoading, asyncReady, asyncRefreshing, type Async } from "@dipper/ui";
 import * as React from "react";
 import { aborted, detached, messageOf } from "./helpers";
 

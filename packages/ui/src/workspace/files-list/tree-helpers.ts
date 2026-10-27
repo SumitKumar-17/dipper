@@ -2,7 +2,7 @@
 // structure. Directories may arrive as entries, arrive after their children, or never arrive, so
 // paths are threaded onto a node map keyed by full path and missing directories are synthesised.
 
-import type { FileEntry } from "@pipit/protocol";
+import type { FileEntry } from "@dipper/protocol";
 import { baseName, isUnder } from "../../lib/paths";
 
 export type TreeNode = {

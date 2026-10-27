@@ -17,14 +17,14 @@ const dim = paint("2");
 const bold = paint("1");
 const red = paint("31");
 
-/** Where `pipit serve` records the server it started; `PIPIT_HOME` moves it. */
+/** Where `dipper serve` records the server it started; `DIPPER_HOME` moves it. */
 function serverInfoPath() {
-  const home = process.env.PIPIT_HOME ?? path.join(os.homedir(), ".pipit");
+  const home = process.env.DIPPER_HOME ?? path.join(os.homedir(), ".dipper");
   return path.join(home, "server.json");
 }
 
 /**
- * A server that is already running wins: `pipit serve` attaches to it rather than starting a
+ * A server that is already running wins: `dipper serve` attaches to it rather than starting a
  * second one, whatever port we ask for. The UI would then be pointed at a port with nothing on
  * it and would quietly fall back to its fixtures, which is a confusing way to spend ten minutes.
  * Better to stop here and say so.
@@ -39,7 +39,7 @@ async function runningServer() {
   if (!info?.url) return undefined;
   try {
     const res = await fetch(`${info.url}/api/health`, { signal: AbortSignal.timeout(1_500) });
-    return res.ok ? info : undefined; // not ok / unreachable ⇒ stale file, `pipit serve` clears it
+    return res.ok ? info : undefined; // not ok / unreachable ⇒ stale file, `dipper serve` clears it
   } catch {
     return undefined;
   }
@@ -74,10 +74,10 @@ async function waitFor(url, deadline) {
 const existing = await runningServer();
 if (existing) {
   console.error(
-    `A pipit server is already running on ${existing.url} (pid ${existing.pid}).\n` +
-      `\`pipit serve\` would attach to it instead of starting a dev server, so the UI would end up\n` +
+    `A dipper server is already running on ${existing.url} (pid ${existing.pid}).\n` +
+      `\`dipper serve\` would attach to it instead of starting a dev server, so the UI would end up\n` +
       `pointed at the wrong port. Stop it first:\n\n` +
-      `  bun run pipit -- stop\n\n` +
+      `  bun run dipper -- stop\n\n` +
       `Or leave it up and run just the UI against it: bun run dev:ui\n`,
   );
   process.exit(1);
@@ -87,10 +87,10 @@ const port = await freePort();
 const apiUrl = `http://127.0.0.1:${port}`;
 const env = {
   ...process.env,
-  PIPIT_DEV_PORT: String(port),
+  DIPPER_DEV_PORT: String(port),
   // Read by apps/web at compile time. An env var set here beats apps/web/.env.development,
   // which is only there for `dev:ui` on its own.
-  VITE_PIPIT_URL: apiUrl,
+  VITE_DIPPER_URL: apiUrl,
   // Piped output is not a TTY, so the children would otherwise drop their colours.
   ...(tty ? { FORCE_COLOR: "1" } : {}),
 };
@@ -177,7 +177,7 @@ if (!stopping) {
   if (api && ui) {
     const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
     console.log(
-      `\n  ${bold("pipit dev")} ${dim(`ready in ${seconds}s`)}\n` +
+      `\n  ${bold("dipper dev")} ${dim(`ready in ${seconds}s`)}\n` +
         `  ${dim("➜")} app  ${bold(UI_URL)}\n` +
         `  ${dim("➜")} api  ${apiUrl}\n` +
         `  ${dim("ctrl-c stops both")}\n`,

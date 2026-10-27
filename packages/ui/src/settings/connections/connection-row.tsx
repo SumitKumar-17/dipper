@@ -1,4 +1,4 @@
-import type { ConnectionSummary } from "@pipit/protocol";
+import type { ConnectionSummary } from "@dipper/protocol";
 import { CheckIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type * as React from "react";

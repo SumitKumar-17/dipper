@@ -9,7 +9,7 @@
 // This file owns the submit; the fields are in `use-connection-fields.ts` and the three groups of
 // markup are their own components.
 
-import type { ConnectionSummary, Dialect } from "@pipit/protocol";
+import type { ConnectionSummary, Dialect } from "@dipper/protocol";
 import * as React from "react";
 import { messageOf } from "../../lib/errors";
 import { cn } from "../../lib/utils";

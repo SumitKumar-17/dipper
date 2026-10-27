@@ -5,10 +5,10 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"pipit/protocol"
+	"dipper/protocol"
 )
 
-// 0600: the one file pipit writes that can hold a password.
+// 0600: the one file dipper writes that can hold a password.
 var connectionsStore = NewStore(ConnectionsFile, 0o600, func() []protocol.ConnectionConfig {
 	return []protocol.ConnectionConfig{}
 })

@@ -2,7 +2,7 @@ import type { Ref } from "react";
 
 /**
  * The binary as a bar of porcelain, like a cake of soap: a lit top face a hair narrower than its
- * base, a deep skirt and a soft contact shadow, with `pipit` fired into the glaze. Its legend sits
+ * base, a deep skirt and a soft contact shadow, with `dipper` fired into the glaze. Its legend sits
  * left of the string tied round the bar's right end.
  */
 export function Ingot({ topRef }: { topRef: Ref<HTMLElement> }) {
@@ -14,7 +14,7 @@ export function Ingot({ topRef }: { topRef: Ref<HTMLElement> }) {
         ref={topRef}
         className="porcelain absolute inset-x-0.75 top-0 flex h-14 items-center justify-center rounded-2xl pr-6 font-mono text-2xl leading-none text-glaze"
       >
-        pipit
+        dipper
       </span>
     </div>
   );
