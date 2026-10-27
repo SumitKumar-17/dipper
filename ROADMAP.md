@@ -65,7 +65,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] SQLite support, pure Go so cross-compiling keeps working (M)
 - [ ] SSH tunnels (L)
 - [x] More export formats: TSV, NDJSON, SQL INSERT, Markdown, with a formula-safe option (S)
-- [ ] CSV import (M)
+- [x] CSV import in the Table Editor: column mapping, preview, dry run, one transaction, up to 5,000 rows per load (M)
 
 ## 3. Workspace UI
 

@@ -56,6 +56,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   function wrapped around a column in `WHERE`, and `SELECT *`.
 - **History search** - Search the SQL of past runs and filter them by result in the History tab. The
   API also filters by status and minimum duration.
+- **CSV import** - Table Editor, Import CSV. Pick a file, check how its columns map to the table's
+  (matched by name, and changeable), see a preview, and load it. A dry run proves the database accepts
+  every row first, then all of them go in as one transaction, or none do. Up to 5,000 rows per load.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

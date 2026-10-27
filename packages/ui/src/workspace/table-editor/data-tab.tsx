@@ -7,6 +7,7 @@ import { Spinner } from "../../ui/spinner";
 import { DataGrid } from "./data-grid";
 import { DataToolbar } from "./data-toolbar";
 import { NO_EDITS, addInsert, buildChanges, countChanges } from "./edit-model";
+import { ImportPanel } from "./import-panel";
 import { ReviewPanel } from "./review-panel";
 import { useTableRows } from "./use-table-rows";
 
@@ -24,6 +25,7 @@ export function DataTab({ detail }: { detail: TableDetail }): React.ReactElement
   const rows = useTableRows(detail.schema, detail.name);
   const [edits, setEdits] = React.useState(NO_EDITS);
   const [reviewing, setReviewing] = React.useState(false);
+  const [importing, setImporting] = React.useState(false);
   const reason = lockReason(detail);
   const pending = countChanges(edits);
 
@@ -35,6 +37,21 @@ export function DataTab({ detail }: { detail: TableDetail }): React.ReactElement
         : [],
     [detail.columns, edits, page],
   );
+
+  if (importing) {
+    return (
+      <ImportPanel
+        columns={detail.columns}
+        onBack={() => setImporting(false)}
+        onDone={() => {
+          setImporting(false);
+          rows.reload();
+        }}
+        schema={detail.schema}
+        table={detail.name}
+      />
+    );
+  }
 
   if (reviewing) {
     return (
@@ -68,6 +85,7 @@ export function DataTab({ detail }: { detail: TableDetail }): React.ReactElement
         offset={rows.offset}
         onAdd={() => setEdits(addInsert(edits))}
         onFilters={rows.setFilters}
+        onImport={() => setImporting(true)}
         onNext={rows.nextPage}
         onPrevious={rows.previousPage}
         onReload={rows.reload}

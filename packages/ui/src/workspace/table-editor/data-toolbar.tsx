@@ -1,5 +1,5 @@
 import type { RowFilterOp } from "@dipper/protocol";
-import { ChevronLeftIcon, ChevronRightIcon, FilterIcon, PlusIcon, RefreshCwIcon, XIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, FilterIcon, PlusIcon, RefreshCwIcon, UploadIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import { plural } from "../../lib/format";
 import { Button } from "../../ui/button";
@@ -31,6 +31,7 @@ export function DataToolbar({
   offset,
   onAdd,
   onFilters,
+  onImport,
   onNext,
   onPrevious,
   onReload,
@@ -45,6 +46,7 @@ export function DataToolbar({
   offset: number;
   onAdd: () => void;
   onFilters: (next: Filter[]) => void;
+  onImport: () => void;
   onNext: () => void;
   onPrevious: () => void;
   onReload: () => void;
@@ -68,6 +70,11 @@ export function DataToolbar({
         {canAdd && (
           <Button onClick={onAdd} size="xs" variant="outline">
             <PlusIcon /> Add row
+          </Button>
+        )}
+        {canAdd && (
+          <Button disabled={locked} onClick={onImport} size="xs" variant="outline">
+            <UploadIcon /> Import CSV
           </Button>
         )}
         <Button aria-label="Reload rows" disabled={locked} onClick={onReload} size="icon-xs" variant="ghost">
