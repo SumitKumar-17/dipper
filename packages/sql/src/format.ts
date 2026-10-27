@@ -53,8 +53,8 @@ const loadPrinter = (): Promise<Printer> =>
   })());
 
 /** The dialect names the plugin's parsers go by. */
-const parserFor = (dialect: Dialect): "mysql" | "postgresql" =>
-  dialect === "mysql" ? "mysql" : "postgresql";
+const parserFor = (dialect: Dialect): "mysql" | "postgresql" | "sqlite" =>
+  dialect === "mysql" || dialect === "sqlite" ? dialect : "postgresql";
 
 /**
  * A real grammar rejects what it does not know, and this one has holes: `EXPLAIN (ANALYZE, …)`,

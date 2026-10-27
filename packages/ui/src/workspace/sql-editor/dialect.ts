@@ -3,7 +3,7 @@
 // `DO` block paints in one flat colour. Parsing the body as SQL a second time, as an overlay, puts
 // the keywords back without the outer grammar having to know what PL/pgSQL is.
 
-import { MySQL, PostgreSQL, SQLDialect } from "@codemirror/lang-sql";
+import { MySQL, PostgreSQL, SQLDialect, SQLite } from "@codemirror/lang-sql";
 import { type Input, type NestedParse, type SyntaxNodeRef, parseMixed } from "@lezer/common";
 import type { Dialect } from "@dipper/protocol";
 
@@ -38,5 +38,6 @@ function dollarQuotedBody(node: SyntaxNodeRef, input: Input): NestedParse | null
 const PostgresWithBlocks = PostgreSQL.configureLanguage({ wrap: parseMixed(dollarQuotedBody) });
 
 export function dialectFor(dialect: Dialect): SQLDialect {
+  if (dialect === "sqlite") return SQLite;
   return dialect === "mysql" ? MySQL : PostgresWithBlocks;
 }

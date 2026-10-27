@@ -6,7 +6,7 @@
 // literal never matches. Everything here is about TOKENS; what a run of them MEANS is
 // `parse-select.ts`'s business.
 
-import { MySQL, PostgreSQL } from "@codemirror/lang-sql";
+import { MySQL, PostgreSQL, SQLite } from "@codemirror/lang-sql";
 import type { Dialect } from "@dipper/protocol";
 import type { Range } from "./clause-types";
 
@@ -157,6 +157,7 @@ export function splitRef(ref: string): { qualifier: string | null; column: strin
 }
 
 export function parserFor(dialect: Dialect): typeof PostgreSQL.language.parser {
+  if (dialect === "sqlite") return SQLite.language.parser;
   return dialect === "mysql" ? MySQL.language.parser : PostgreSQL.language.parser;
 }
 
