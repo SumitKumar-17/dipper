@@ -1,10 +1,10 @@
 import type { StatementResult } from "@dipper/protocol";
 import * as React from "react";
 import { Tabs, TabsList, TabsTab } from "../../ui/tabs";
-import { ResultsGrid } from "../results-grid";
 import type { ResultsView, Run } from "../types";
 import { isRowResult, statementSummary } from "./format";
 import { CommandOutcome, MessagesView, Outcome } from "./messages";
+import { ResultExplorer } from "./result-explorer";
 
 /**
  * One tab per statement outcome. Hidden for a single-statement run, where it would only be a
@@ -89,7 +89,7 @@ export function ResultBody({
         </p>
       )}
       <div className="min-h-0 flex-1">
-        <ResultsGrid animateRows={animateRows} result={statement} />
+        <ResultExplorer animateRows={animateRows} result={statement} />
       </div>
     </div>
   );

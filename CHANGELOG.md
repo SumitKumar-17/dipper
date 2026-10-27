@@ -35,6 +35,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Health and index advice** - Command palette, Health and index advice. Finds unused, duplicate
   and invalid indexes, foreign keys with no supporting index, and tables with many dead rows, each
   with the statement that would fix it. It never runs them for you. Postgres.
+- **Results** - Find in the loaded rows, click a column header to sort (numbers sort as numbers,
+  NULL stays last), and select a cell to read it in full, with JSON indented and a Copy button.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

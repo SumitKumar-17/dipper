@@ -88,8 +88,8 @@ change reviewed as plain SQL before it runs.
       twice, DDL runs in a transaction where the dialect allows it (S)
 - [ ] Undo of the last applied change set where it is reversible (M)
 
-- [ ] Result find, sort and column filter (S/M)
-- [ ] Cell inspector and copy as CSV, JSON or INSERT (S)
+- [x] Result find and click-to-sort over the loaded rows (column filters next) (S/M)
+- [x] Cell inspector with JSON pretty-printing and copy (copy-as formats next) (S)
 - [ ] Streaming runs with an elapsed timer and partial rows (M)
 - [ ] Keyboard shortcut editor (M)
 - [ ] Typed command registry for the palette, with prefixes for tables and history (M)

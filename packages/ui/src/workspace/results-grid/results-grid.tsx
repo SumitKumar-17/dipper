@@ -9,20 +9,30 @@
 //   why.
 
 import type { StatementResult } from "@dipper/protocol";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useReducedMotion } from "motion/react";
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import { GridRow } from "./grid-row";
 import { columnTemplate, OVERSCAN, ROW_HEIGHT } from "./grid-sizing";
-import { useGridSelection } from "./use-grid-selection";
+import { type CellRef, useGridSelection } from "./use-grid-selection";
+import type { GridSort } from "./view-rows";
 
 export function ResultsGrid({
   result,
   animateRows = false,
   className,
+  onSelectCell,
+  onSort,
+  sort = null,
 }: {
   result: StatementResult;
+  /** Called when the selected cell changes, so a surface beside the grid can show it in full. */
+  onSelectCell?: (cell: CellRef | null) => void;
+  /** Makes the headers sort buttons. The grid does not reorder anything itself. */
+  onSort?: (column: number) => void;
+  sort?: GridSort | null;
   /**
    * Fade the rows in, staggered, when the result lands. Off by default: a pane is a standing surface
    * you scroll, so arrival fades would fire every time the window refills. A notebook cell is the
@@ -54,6 +64,10 @@ export function ResultsGrid({
     scrollRef,
     scrollToIndex: (index) => virtualizer.scrollToIndex(index),
   });
+
+  React.useEffect(() => {
+    onSelectCell?.(selected);
+  }, [onSelectCell, selected]);
 
   // A first-paint flourish, not a scroll effect: only the window rendered on the frame the result
   // appeared animates, or the grid shimmers every time you drag it. The decision has to land on the
@@ -95,9 +109,24 @@ export function ResultsGrid({
                   column.align === "right" && "justify-end",
                 )}
                 key={index}
+                aria-sort={
+                  sort?.column === index ? (sort.desc ? "descending" : "ascending") : undefined
+                }
                 role="columnheader"
               >
-                <span className="truncate font-medium text-foreground">{column.name}</span>
+                {onSort ? (
+                  <button
+                    className="flex min-w-0 cursor-pointer items-center gap-1.5 outline-none hover:text-foreground focus-visible:underline"
+                    onClick={() => onSort(index)}
+                    type="button"
+                  >
+                    <span className="truncate font-medium text-foreground">{column.name}</span>
+                    {sort?.column === index &&
+                      (sort.desc ? <ArrowDownIcon className="size-3 shrink-0" /> : <ArrowUpIcon className="size-3 shrink-0" />)}
+                  </button>
+                ) : (
+                  <span className="truncate font-medium text-foreground">{column.name}</span>
+                )}
                 <span className="shrink-0 font-sans text-muted-foreground text-xs">
                   {column.type}
                 </span>
