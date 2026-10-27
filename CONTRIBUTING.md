@@ -48,6 +48,13 @@ the server's `--port ${DIPPER_DEV_PORT:-4600}` and `apps/web/.env.development` a
 so the halves still find each other. `vite dev` exits rather than pick another port if :5173 is
 taken, so stop any dev UI you already have running first.
 
+## Windows
+
+Everything runs on Windows, with two notes. `bun run build` and `bun run smoke` call the shell
+scripts in `apps/server/scripts`, so run them from Git Bash or WSL (`scripts/build.bat` is the
+plain-cmd equivalent for building the binary). `bun run clean` is a Node script and works in any
+shell. Shortcuts show as `Ctrl+...` and `Alt+...` there; see `packages/ui/src/workspace/shortcuts.ts`.
+
 ## Repo map
 
 ```

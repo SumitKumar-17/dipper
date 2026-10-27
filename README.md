@@ -111,6 +111,8 @@ This makes complex SQL easier to understand, debug, and explain - especially joi
 
 The visualization is based on your actual SQL and database. Query Walk uses read-only executions and does not modify your data.
 
+**To open it:** put the cursor in a `SELECT` (or select the part you want), right-click and choose **Visualise query**, or open the command palette (<kbd>⌘</kbd><kbd>K</kbd>, or <kbd>Ctrl</kbd>+<kbd>K</kbd>) and run **Visualise query**. It plays automatically: use the arrow keys or the controls to step, and click a stage in the rail to jump to it.
+
 ---
 
 ### Table Editor
