@@ -119,7 +119,7 @@ change reviewed as plain SQL before it runs.
 
 - [x] `go test` in CI
 - [x] `bun test` for pure TypeScript logic, wired into CI (grows with every feature; splitter and pane layout still to cover) (S)
-- [ ] Wire-contract drift check between Go and TypeScript protocol types (S/M)
+- [x] Drift check between Go and TypeScript: the statement splitter runs one shared fixture file in both languages (protocol types still to cover) (S/M)
 - [ ] Lint `packages/client`, `packages/sql`, `packages/protocol` and scripts; add react-hooks and
       jsx-a11y rules (S)
 - [x] Pin `bun-version` to the `packageManager` field, add concurrency groups and read-only permissions in CI (S)

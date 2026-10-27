@@ -4,6 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "lib": ["ES2023"],
+    // Only the test files read Bun and Node globals; the library itself uses neither.
+    "types": ["bun"],
     "noEmit": true
   },
   "include": ["src"]

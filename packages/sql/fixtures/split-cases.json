@@ -1,0 +1,218 @@
+[
+  {
+    "name": "two plain statements",
+    "sql": "select 1; select 2;",
+    "expected": [
+      {
+        "sql": "select 1",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 10
+      }
+    ]
+  },
+  {
+    "name": "no trailing semicolon",
+    "sql": "select 1;\nselect 2",
+    "expected": [
+      {
+        "sql": "select 1",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 10
+      }
+    ]
+  },
+  {
+    "name": "semicolon inside single quotes",
+    "sql": "select 'a;b'; select 2",
+    "expected": [
+      {
+        "sql": "select 'a;b'",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 14
+      }
+    ]
+  },
+  {
+    "name": "doubled quote escapes",
+    "sql": "select 'it''s; fine'; select 2",
+    "expected": [
+      {
+        "sql": "select 'it''s; fine'",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 22
+      }
+    ]
+  },
+  {
+    "name": "semicolon inside double quotes",
+    "sql": "select \"a;b\" from t; select 2",
+    "expected": [
+      {
+        "sql": "select \"a;b\" from t",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 21
+      }
+    ]
+  },
+  {
+    "name": "semicolon inside backticks",
+    "sql": "select `a;b` from t; select 2",
+    "expected": [
+      {
+        "sql": "select `a;b` from t",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 21
+      }
+    ]
+  },
+  {
+    "name": "line comment hides a semicolon",
+    "sql": "select 1 -- ; not a split\n; select 2",
+    "expected": [
+      {
+        "sql": "select 1 -- ; not a split",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 28
+      }
+    ]
+  },
+  {
+    "name": "block comment hides a semicolon",
+    "sql": "select 1 /* ; */ ; select 2",
+    "expected": [
+      {
+        "sql": "select 1 /* ; */",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 19
+      }
+    ]
+  },
+  {
+    "name": "nested block comments",
+    "sql": "select 1 /* a /* b ; */ c ; */ ; select 2",
+    "expected": [
+      {
+        "sql": "select 1 /* a /* b ; */ c ; */",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 33
+      }
+    ]
+  },
+  {
+    "name": "dollar quoted body",
+    "sql": "create function f() returns int as $$ begin return 1; end $$ language plpgsql; select 2",
+    "expected": [
+      {
+        "sql": "create function f() returns int as $$ begin return 1; end $$ language plpgsql",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 79
+      }
+    ]
+  },
+  {
+    "name": "tagged dollar quote",
+    "sql": "do $body$ begin perform 1; end $body$; select 2",
+    "expected": [
+      {
+        "sql": "do $body$ begin perform 1; end $body$",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 39
+      }
+    ]
+  },
+  {
+    "name": "blank chunks are dropped",
+    "sql": ";;  ;\n select 1 ;; ; select 2;",
+    "expected": [
+      {
+        "sql": "select 1",
+        "offset": 7
+      },
+      {
+        "sql": "select 2",
+        "offset": 21
+      }
+    ]
+  },
+  {
+    "name": "comment only chunks are dropped",
+    "sql": "-- nothing here\n; select 1; /* still nothing */;",
+    "expected": [
+      {
+        "sql": "select 1",
+        "offset": 18
+      }
+    ]
+  },
+  {
+    "name": "offsets skip leading whitespace",
+    "sql": "   \n\tselect 1;   select 2",
+    "expected": [
+      {
+        "sql": "select 1",
+        "offset": 5
+      },
+      {
+        "sql": "select 2",
+        "offset": 17
+      }
+    ]
+  },
+  {
+    "name": "offsets count UTF-16 units",
+    "sql": "select '😀'; select 2",
+    "expected": [
+      {
+        "sql": "select '😀'",
+        "offset": 0
+      },
+      {
+        "sql": "select 2",
+        "offset": 13
+      }
+    ]
+  },
+  {
+    "name": "empty script",
+    "sql": "",
+    "expected": []
+  },
+  {
+    "name": "only whitespace",
+    "sql": "  \n  ",
+    "expected": []
+  }
+]
