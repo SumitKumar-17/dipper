@@ -11,9 +11,13 @@ import (
 	"dipper/protocol"
 )
 
+// DefaultPort is 0 for SQLite, which has no port to listen on.
 func DefaultPort(dialect protocol.Dialect) int {
-	if dialect == protocol.DialectMySQL {
+	switch dialect {
+	case protocol.DialectMySQL:
 		return 3306
+	case protocol.DialectSQLite:
+		return 0
 	}
 	return 5432
 }
@@ -41,15 +45,20 @@ func NewDriver(config protocol.ConnectionConfig) (Driver, error) {
 		return newPostgresDriver(config), nil
 	case protocol.DialectMySQL:
 		return newMysqlDriver(config), nil
+	case protocol.DialectSQLite:
+		return newSqliteDriver(config), nil
 	}
 	return nil, fmt.Errorf("unsupported dialect: %s", config.Dialect)
 }
 
-// ParseConnectionURL turns a postgres:// or mysql:// URL into a connection config. Missing
+// ParseConnectionURL turns a postgres://, mysql:// or sqlite: URL into a connection config. Missing
 // pieces fall back to the OS user and `postgres` for PostgreSQL, `root` for MySQL;
 // ?sslmode=require or ?ssl=true turns TLS on, and any other query parameter is kept in Options.
 func ParseConnectionURL(raw string) (protocol.ConnectionConfig, error) {
 	var config protocol.ConnectionConfig
+	if rest, ok := sqlitePathFromURL(raw); ok {
+		return sqliteConfigFromPath(rest)
+	}
 	parsed, err := url.Parse(raw)
 	if err != nil {
 		return config, fmt.Errorf("invalid connection url: %s", raw)
@@ -57,7 +66,7 @@ func ParseConnectionURL(raw string) (protocol.ConnectionConfig, error) {
 	dialect, ok := urlSchemes[strings.ToLower(parsed.Scheme)]
 	if !ok {
 		return config, fmt.Errorf(
-			"unsupported connection url scheme %q - use postgres:// or mysql://", parsed.Scheme)
+			"unsupported connection url scheme %q - use postgres://, mysql:// or sqlite:", parsed.Scheme)
 	}
 
 	host := strings.Trim(parsed.Hostname(), "[]")

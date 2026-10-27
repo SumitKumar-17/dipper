@@ -24,7 +24,7 @@ func resetPostgres(parent context.Context, conn *pgxpool.Conn, statement string)
 	}
 }
 
-// resetSQLConn is the same for MySQL. Returning ErrBadConn from Raw makes database/sql drop the
+// resetSQLConn is the same for any database/sql connection (MySQL, SQLite). Returning ErrBadConn from Raw makes database/sql drop the
 // connection when it is closed rather than pooling it.
 func resetSQLConn(parent context.Context, conn *sql.Conn, statement string) {
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(parent), resetTimeout)

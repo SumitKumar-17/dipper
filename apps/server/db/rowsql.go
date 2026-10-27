@@ -19,6 +19,8 @@ type flavor struct {
 	// escapeText prepares text for a single-quoted literal.
 	escapeText  func(string) string
 	emptyInsert string
+	// likeEscape names the escape character of a LIKE pattern where the dialect has no default.
+	likeEscape string
 }
 
 var postgresFlavor = flavor{
@@ -40,9 +42,23 @@ var mysqlFlavor = flavor{
 	emptyInsert: "() values ()",
 }
 
+var sqliteFlavor = flavor{
+	quote:       quoteIdent,
+	placeholder: func(int) string { return "?" },
+	// In SQLite, IS compares like = but treats two NULLs as equal.
+	sameAs:      func(c, p string) string { return c + " is " + p },
+	escapeText:  func(s string) string { return strings.ReplaceAll(s, "'", "''") },
+	emptyInsert: "default values",
+	// Unlike Postgres and MySQL, SQLite's LIKE has no escape character until one is named.
+	likeEscape: ` escape '\'`,
+}
+
 func flavorFor(dialect protocol.Dialect) flavor {
-	if dialect == protocol.DialectMySQL {
+	switch dialect {
+	case protocol.DialectMySQL:
 		return mysqlFlavor
+	case protocol.DialectSQLite:
+		return sqliteFlavor
 	}
 	return postgresFlavor
 }
@@ -163,9 +179,9 @@ func (f flavor) filterClause(filter protocol.RowFilter) (string, error) {
 	case "not_null":
 		return column + " is not null", nil
 	case "contains":
-		return column + " like " + f.literal("%"+escapeLike(filter.Value)+"%"), nil
+		return column + " like " + f.literal("%"+escapeLike(filter.Value)+"%") + f.likeEscape, nil
 	case "starts_with":
-		return column + " like " + f.literal(escapeLike(filter.Value)+"%"), nil
+		return column + " like " + f.literal(escapeLike(filter.Value)+"%") + f.likeEscape, nil
 	}
 	if op, ok := ops[filter.Op]; ok {
 		return column + " " + op + " " + f.literal(filter.Value), nil
