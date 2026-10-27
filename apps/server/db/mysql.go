@@ -260,19 +260,19 @@ func (d *mysqlDriver) execOn(ctx context.Context, conn *sql.Conn, statement stri
 		// MySQL 5.7.8+ / MariaDB: a server-side cap for SELECTs.
 		ms := strconv.FormatInt(sc.Options.Timeout.Milliseconds(), 10)
 		_, _ = conn.ExecContext(ctx, "set session max_execution_time = "+ms)
-		defer resetMysql(ctx, conn, "set session max_execution_time = 0")
+		defer resetSQLConn(ctx, conn, "set session max_execution_time = 0")
 	}
 	if sc.Options.ReadOnly {
 		if _, err := conn.ExecContext(ctx, "set session transaction_read_only = 1"); err != nil {
 			return err
 		}
-		defer resetMysql(ctx, conn, "set session transaction_read_only = 0")
+		defer resetSQLConn(ctx, conn, "set session transaction_read_only = 0")
 	}
 
 	if err := d.readInto(ctx, conn, statement, sc.Options.Params, sc.Sink); err != nil {
 		return err
 	}
-	sc.Sink.Command(mysqlCommandOf(statement))
+	sc.Sink.Command(commandFromText(statement))
 	return nil
 }
 
@@ -396,12 +396,12 @@ func mysqlRowReturning(sql string) bool {
 	return false
 }
 
-var mysqlTwoWordCommands = map[string]bool{
+var twoWordCommands = map[string]bool{
 	"create": true, "drop": true, "alter": true, "rename": true, "truncate": true, "show": true,
 }
 
 // MySQL has no command tag, so one is derived from the statement text.
-func mysqlCommandOf(sql string) string {
+func commandFromText(sql string) string {
 	head := stripLeadingNoise(sql)
 	words := strings.Fields(head)
 	if len(words) == 0 {
@@ -411,7 +411,7 @@ func mysqlCommandOf(sql string) string {
 	if first == "" {
 		return ""
 	}
-	if mysqlTwoWordCommands[first] && len(words) > 1 {
+	if twoWordCommands[first] && len(words) > 1 {
 		if second := lettersOnly(words[1]); second != "" {
 			return strings.ToUpper(first) + " " + strings.ToUpper(second)
 		}
