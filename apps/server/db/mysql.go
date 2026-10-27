@@ -249,13 +249,13 @@ func (d *mysqlDriver) exec(ctx context.Context, statement string, sc *StatementC
 		// MySQL 5.7.8+ / MariaDB: a server-side cap for SELECTs.
 		ms := strconv.FormatInt(sc.Options.Timeout.Milliseconds(), 10)
 		_, _ = conn.ExecContext(ctx, "set session max_execution_time = "+ms)
-		defer conn.ExecContext(ctx, "set session max_execution_time = 0")
+		defer resetMysql(ctx, conn, "set session max_execution_time = 0")
 	}
 	if sc.Options.ReadOnly {
 		if _, err := conn.ExecContext(ctx, "set session transaction_read_only = 1"); err != nil {
 			return err
 		}
-		defer conn.ExecContext(ctx, "set session transaction_read_only = 0")
+		defer resetMysql(ctx, conn, "set session transaction_read_only = 0")
 	}
 
 	if err := d.readInto(ctx, conn, statement, sc.Sink); err != nil {

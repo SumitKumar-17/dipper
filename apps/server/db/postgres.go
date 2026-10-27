@@ -271,13 +271,13 @@ func (d *postgresDriver) exec(ctx context.Context, sql string, sc *StatementCont
 		if _, err := conn.Exec(ctx, "set statement_timeout = "+ms); err != nil {
 			return err
 		}
-		defer conn.Exec(ctx, "set statement_timeout = default")
+		defer resetPostgres(ctx, conn, "set statement_timeout = default")
 	}
 	if sc.Options.ReadOnly {
 		if _, err := conn.Exec(ctx, "set default_transaction_read_only = on"); err != nil {
 			return err
 		}
-		defer conn.Exec(ctx, "set default_transaction_read_only = default")
+		defer resetPostgres(ctx, conn, "set default_transaction_read_only = default")
 	}
 
 	database := sc.Options.Database

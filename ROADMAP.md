@@ -13,8 +13,8 @@ checked off as they land; each one is its own commit.
 - [ ] Pin one connection per run so `BEGIN; ...; COMMIT;` scripts work (S/M)
 - [ ] Cancel through the wire protocol and give column-source lookups their own connection, so four
       concurrent runs cannot exhaust the pool (S)
-- [ ] Reset session settings with a context that survives cancellation, destroy the connection if
-      the reset fails, and run read-only work in `BEGIN READ ONLY` (S)
+- [x] Reset session settings with a context that survives cancellation and discard the connection if
+      the reset fails (`BEGIN READ ONLY` wrapping still open) (S)
 - [ ] Stop draining the full result after the maxRows cut (S)
 - [ ] Resolve Postgres type names through the connection's type map instead of `oid:NNN` (S)
 - [ ] Serialise file saves and prompt before discarding a dirty tab or overwriting on save-as (S)
