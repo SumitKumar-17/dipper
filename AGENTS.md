@@ -11,6 +11,9 @@ here. If you learn something every contributor should know, add it to this file.
 - **Comments explain why**, never what: a constraint, a trade-off, a surprising upstream
   behaviour. No commented-out code, no changelog-in-comments, no TODOs without an issue.
 - **No dead code.** Delete it; git remembers. No unused exports, flags, files or dependencies.
+- **Every platform.** Shortcuts are written once in `packages/ui/src/workspace/shortcuts.ts` and
+  labelled with `hotkeyLabel`, never typed as `⌘` in a component: a label that names a key Windows
+  does not have is a bug. Anything the app prints for the user must read right on Windows too.
 - **Plain punctuation.** No em dashes or en dashes in code, comments, docs or commit messages.
   Use commas, colons, parentheses or a plain hyphen.
 - **Commits.** Small, one concern each, imperative subject under 72 characters. Do not add
@@ -141,8 +144,8 @@ bun run check && bun run build
   run it only against a tag whose `server` workflow is green - being manual is what makes that
   enforceable. The binaries are unsigned, so macOS needs notarization and Windows a cert before
   anyone can download them without a warning.
-- **`install.sh`, `apps/server/update/` and the release workflow are coupled.** The installer and
-  `dipper update` both build the asset name (`dipper-<version>-<os>-<arch>.tar.gz`, a bare `.exe`
+- **`install.sh`, `install.ps1`, `apps/server/update/` and the release workflow are coupled.** The
+  installers and `dipper update` all build the asset name (`dipper-<version>-<os>-<arch>.tar.gz`, a bare `.exe`
   on Windows) and read `checksums.txt`; changing how `release.yml` names or packages assets
   breaks `curl … | sh` for everyone and `dipper update` for everyone already on an older binary,
   which no later release can fix. Change all three, and test both against a local directory with

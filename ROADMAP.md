@@ -114,6 +114,8 @@ change reviewed as plain SQL before it runs.
 - [ ] Real Query Walk scene, then delete `public/legacy` and its capture scripts (M)
 - [ ] Docs and changelog pages rendered from the repo (M)
 
+- [x] Shortcut labels follow the platform (Ctrl+S on Windows, ⌘S on a Mac) from one shortcuts module, and a Windows PowerShell installer (not yet run on Windows) (S)
+
 ## 5. Tooling
 
 - [x] `go test` in CI

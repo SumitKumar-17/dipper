@@ -28,6 +28,7 @@ import {
   CommandShortcut,
 } from "../../ui/command";
 import { useWorkspace } from "../context";
+import { PALETTE } from "../shortcuts";
 import { useHotkey } from "../use-hotkey";
 import { asyncData } from "../types";
 import { useBuiltinActions } from "./palette-actions";
@@ -64,7 +65,7 @@ export function CommandPalette(): React.ReactElement {
 
   const [query, setQuery] = React.useState("");
 
-  useHotkey({ key: "k", mod: true }, () => togglePanel("paletteOpen"));
+  useHotkey(PALETTE, () => togglePanel("paletteOpen"));
 
   const close = React.useCallback(() => setPanel("paletteOpen", false), [setPanel]);
 

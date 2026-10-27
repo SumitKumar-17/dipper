@@ -37,16 +37,11 @@ import {
   type FormatDocumentEventDetail,
 } from "../sql-editor";
 import type { Buffer, CursorPosition, PanelState } from "../types";
+import { FORMAT_DOCUMENT, NEW_FILE, RUN, SAVE, TOGGLE_RESULTS, TOGGLE_SIDEBAR } from "../shortcuts";
 import { hotkeyLabel } from "../use-hotkey";
 import type { PaletteAction } from "./palette-items";
 
-export const NEW_FILE = { key: "n", mod: true } as const;
-export const SAVE = { key: "s", mod: true } as const;
-export const RUN = { key: "Enter", mod: true } as const;
-export const TOGGLE_RESULTS = { key: "j", mod: true } as const;
-export const TOGGLE_SIDEBAR = { key: "b", mod: true } as const;
-// No `mod`: the editor's own binding is a bare Shift-Alt-F.
-export const FORMAT_DOCUMENT = { key: "f", shift: true, alt: true } as const;
+export { FORMAT_DOCUMENT, NEW_FILE, RUN, SAVE, TOGGLE_RESULTS, TOGGLE_SIDEBAR } from "../shortcuts";
 
 /** Exactly what the built-in actions read from the workspace. */
 export type BuiltinActionDeps = {

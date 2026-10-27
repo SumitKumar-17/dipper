@@ -23,6 +23,8 @@ import { summaryOf } from "./format";
 import { QueryLine } from "./query-line";
 import { RunningRows } from "./skeletons";
 import { ResultBody, StatementStrip } from "./statement-view";
+import { RUN } from "../shortcuts";
+import { hotkeyLabel } from "../use-hotkey";
 
 export function ResultsPanel({
   run,
@@ -243,7 +245,7 @@ function EmptyState(): React.ReactElement {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground text-sm">
       <span>Run a query to see results</span>
-      <Kbd>⌘↵</Kbd>
+      <Kbd>{hotkeyLabel(RUN)}</Kbd>
     </div>
   );
 }

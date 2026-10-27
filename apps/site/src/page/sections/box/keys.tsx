@@ -1,16 +1,7 @@
 import { cn } from "../../../shared/cn";
+import { isMac as mac } from "../../../shared/platform";
 import { small } from "../../layout/type";
 import type { ShortcutKey } from "./items";
-
-type NavigatorWithUAData = Navigator & { userAgentData?: { platform?: string } };
-
-// The app labels its shortcuts ⌘ and ⌥ on a Mac and Ctrl and Alt everywhere else (hotkeyLabel in
-// @dipper/ui); the page says the same thing the visitor's copy of the app will.
-const mac =
-  typeof navigator === "undefined" ||
-  /mac|iphone|ipad|ipod/i.test(
-    (navigator as NavigatorWithUAData).userAgentData?.platform || navigator.platform || navigator.userAgent,
-  );
 
 const label = (key: ShortcutKey) => (key === "mod" ? (mac ? "⌘" : "Ctrl") : key === "alt" ? (mac ? "⌥" : "Alt") : key);
 

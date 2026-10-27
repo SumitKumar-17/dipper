@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "../../../shared/cn";
+import { RUN_SHORTCUT } from "../../../shared/platform";
 import { code } from "../../layout/type";
 
 /**
@@ -27,7 +28,7 @@ const STEPS: { id: string; text: ReactNode }[] = [
     id: "run",
     text: (
       <>
-        <Keys>⌘↵</Keys> runs it
+        <Keys>{RUN_SHORTCUT}</Keys> runs it
       </>
     ),
   },

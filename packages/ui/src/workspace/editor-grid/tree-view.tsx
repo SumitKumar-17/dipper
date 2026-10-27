@@ -11,6 +11,8 @@ import { PaneTabs, bodyDroppableId } from "../pane-tabs";
 import { DropRegion } from "./drop-affordances";
 import { useGrid } from "./grid-context";
 import { PaneBody } from "./pane-body";
+import { PALETTE } from "../shortcuts";
+import { hotkeyLabel } from "../use-hotkey";
 
 /** A pane smaller than this is unreadable, and one dragged to nothing is a way to lose a query. */
 const MIN_PANE = "12%";
@@ -143,7 +145,7 @@ function EmptyGroup(): React.ReactElement {
         New query
       </Button>
       <span className="flex items-center gap-1.5 text-xs">
-        or find a file with <Kbd>⌘P</Kbd>
+        or search with <Kbd>{hotkeyLabel(PALETTE)}</Kbd>
       </span>
     </div>
   );

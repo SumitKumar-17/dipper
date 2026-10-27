@@ -341,7 +341,19 @@ next update - deleting it by hand is fine too.
 
 ### Windows
 
-Download `dipper-<version>-windows-amd64.exe` from the
+In PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/SumitKumar-17/dipper/main/install.ps1 | iex
+```
+
+This downloads the latest release, verifies its checksum, installs `dipper.exe` into
+`%LOCALAPPDATA%\Programs\dipper` and adds that folder to your user `PATH` (open a new terminal
+afterwards). It reads the same `DIPPER_VERSION`, `DIPPER_INSTALL_DIR` and `DIPPER_NO_MODIFY_PATH`
+variables as the shell installer. The script has not yet been run on a Windows machine, so if it
+misbehaves, please open an issue.
+
+Or download `dipper-<version>-windows-amd64.exe` from the
 [releases page](https://github.com/SumitKumar-17/dipper/releases/latest) and run it. Windows shows a
 SmartScreen warning the first time - choose **More info → Run anyway**.
 
@@ -383,7 +395,7 @@ Dipper never installs or bundles a database server.
 | <kbd>⌘</kbd><kbd>,</kbd>             | Settings                  |
 | <kbd>⇧</kbd><kbd>⌥</kbd><kbd>F</kbd> | Format SQL                |
 
-Use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd> on Windows and Linux.
+Use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd> and <kbd>Alt</kbd> instead of <kbd>⌥</kbd> on Windows and Linux. Inside the app every shortcut is labelled for your platform.
 
 ## Local-first
 

@@ -1,3 +1,4 @@
+import { RUN_SHORTCUT } from "../../../shared/platform";
 import { AnimatePresence, motion, useAnimate } from "motion/react";
 import { useEffect, useImperativeHandle, useState, type Ref } from "react";
 import { EASE_OUT } from "../../../shared/motion";
@@ -48,7 +49,7 @@ export function LockPill({ ref, live, onSkip }: { ref?: Ref<LockPillHandle>; liv
               className="pointer-events-auto flex h-8 items-center gap-2.5 rounded-full bg-porcelain pr-1 pl-3.5 text-paper-ink text-sm shadow-(--bui-shadow-overlay)"
             >
               {live ? (
-                <p className="pr-2.5">Your turn - edit anything, ⌘↵ to run</p>
+                <p className="pr-2.5">Your turn - edit anything, {RUN_SHORTCUT} to run</p>
               ) : (
                 <>
                   <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-glaze" />

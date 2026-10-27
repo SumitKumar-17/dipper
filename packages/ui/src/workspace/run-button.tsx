@@ -20,6 +20,8 @@ import type * as React from "react";
 import { useFade, useSpring } from "../lib/motion";
 import { Button } from "../ui/button";
 import { useWorkspace } from "./context";
+import { RUN } from "./shortcuts";
+import { hotkeyLabel } from "./use-hotkey";
 
 export function RunButton({ className }: { className?: string }): React.ReactElement {
   const { activeRun, run, cancelRun } = useWorkspace();
@@ -60,7 +62,7 @@ export function RunButton({ className }: { className?: string }): React.ReactEle
               <PlayIcon />
               Run
               <span aria-hidden className="text-primary-foreground/56">
-                ⌘↵
+                {hotkeyLabel(RUN)}
               </span>
             </>
           )}

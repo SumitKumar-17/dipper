@@ -19,6 +19,8 @@ import { requestSaveQuery } from "./save-query-dialog";
 import { useWorkspace } from "./context";
 import { ErrorText } from "./error-text";
 import { SAVE_LABEL, isScratch } from "./types";
+import { SAVE } from "./shortcuts";
+import { hotkeyLabel } from "./use-hotkey";
 
 /**
  * Whether the buffer is on disk yet.
@@ -119,7 +121,7 @@ export function SaveIndicator({
 
         <DropdownMenuItem onClick={requestSaveQuery}>
           Save now
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          <DropdownMenuShortcut>{hotkeyLabel(SAVE)}</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

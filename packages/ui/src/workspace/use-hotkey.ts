@@ -72,18 +72,22 @@ export function useHotkey(hotkey: Hotkey, handler: () => void, enabled = true): 
   }, [key, mod, shift, alt, enabled]);
 }
 
-/** The label for a shortcut, so a Kbd and its handler cannot drift apart. */
+/**
+ * The label for a shortcut, so a Kbd and its handler cannot drift apart. A Mac reads symbols run
+ * together (`⌘⇧↵`); Windows and Linux read words joined with plus signs (`Ctrl+Shift+Enter`),
+ * which is how those platforms write them and keeps `CtrlS` from reading as one word.
+ */
 export function hotkeyLabel(
   hotkey: Hotkey,
-  platform = globalThis.navigator?.platform ?? "",
+  platform: string = globalThis.navigator?.platform ?? "",
 ): string {
   const mac = /mac|iphone|ipad/i.test(platform);
-  const keyLabel =
-    hotkey.key === "Enter" ? "↵" : hotkey.key.length === 1 ? hotkey.key.toUpperCase() : hotkey.key;
-  return [
-    hotkey.mod ? (mac ? "⌘" : "Ctrl") : "",
-    hotkey.shift ? "⇧" : "",
-    hotkey.alt ? (mac ? "⌥" : "Alt") : "",
-    keyLabel,
-  ].join("");
+  if (mac) {
+    const key = hotkey.key === "Enter" ? "↵" : hotkey.key.length === 1 ? hotkey.key.toUpperCase() : hotkey.key;
+    return [hotkey.mod ? "⌘" : "", hotkey.shift ? "⇧" : "", hotkey.alt ? "⌥" : "", key].join("");
+  }
+  const key = hotkey.key.length === 1 ? hotkey.key.toUpperCase() : hotkey.key;
+  return [hotkey.mod ? "Ctrl" : "", hotkey.shift ? "Shift" : "", hotkey.alt ? "Alt" : "", key]
+    .filter(Boolean)
+    .join("+");
 }
