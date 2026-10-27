@@ -12,6 +12,8 @@ import type {
   RunRecord,
   SchemaDiffRequest,
   SchemaDiffResult,
+  StatementOrder,
+  StatementStats,
   TableDetail,
 } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
@@ -67,6 +69,8 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** The heaviest statements the server has seen, ranked by total time, mean time or calls. */
+  statementStats(id: string, options?: { sort?: StatementOrder; limit?: number } & CallOptions): Promise<StatementStats>;
   /** What must change in one database for it to match another, with a migration script. */
   schemaDiff(request: SchemaDiffRequest, opts?: CallOptions): Promise<SchemaDiffResult>;
   /** Unused and duplicate indexes, foreign keys without one, dead rows, and overall health. */
@@ -146,6 +150,12 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         method: "POST",
         body: request,
         signal: opts?.signal,
+      }),
+
+    statementStats: (id, options) =>
+      http.json<StatementStats>(at(id, "/statements"), {
+        query: { sort: options?.sort, limit: options?.limit },
+        signal: options?.signal,
       }),
 
     schemaDiff: (request, opts) =>

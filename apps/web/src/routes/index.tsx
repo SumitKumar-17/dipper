@@ -33,6 +33,7 @@ import {
   ExplainDialog,
   SchemaDiagramDialog,
   SchemaDiffDialog,
+  SlowQueriesDialog,
   TableEditorDialog,
   useWorkspace,
 } from "@dipper/ui";
@@ -99,6 +100,7 @@ function Workspace(): React.ReactElement {
       <ActivityDialog />
       <AdviceDialog />
       <SchemaDiffDialog />
+      <SlowQueriesDialog />
       {/* And the editor's context menu and the palette open this one. */}
       <QueryWalkDialog />
       <AppTopbar

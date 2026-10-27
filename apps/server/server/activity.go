@@ -9,6 +9,25 @@ import (
 	"dipper/httpx"
 )
 
+func (s *Server) registerStatementStats() {
+	s.handle("GET /api/connections/{id}/statements", func(w http.ResponseWriter, r *http.Request) error {
+		query := r.URL.Query()
+		limit := 25
+		if raw := query.Get("limit"); raw != "" {
+			parsed, err := strconv.Atoi(raw)
+			if err != nil {
+				return httpx.BadRequest("limit must be a number")
+			}
+			limit = min(200, max(1, parsed))
+		}
+		stats, err := s.pool.StatementStats(r.Context(), r.PathValue("id"), db.ParseStatementStatsOrder(query.Get("sort")), limit)
+		if err != nil {
+			return err
+		}
+		return httpx.JSON(w, stats)
+	})
+}
+
 func (s *Server) registerAdvice() {
 	s.handle("GET /api/connections/{id}/advice", func(w http.ResponseWriter, r *http.Request) error {
 		advice, err := s.pool.Advise(r.Context(), r.PathValue("id"), r.URL.Query().Get("database"))

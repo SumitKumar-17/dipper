@@ -41,6 +41,10 @@ The section matching a release's version becomes that release's notes on GitHub 
   or DBML.
 - **Parameterised queries** - `POST /api/query` accepts `params` bound to `$1`, `$2` (Postgres) or
   `?` (MySQL), so values are never spliced into SQL.
+- **Slow queries** - Command palette, Slow queries. The statements that have cost the most total time,
+  the slowest on average, or the most called, with each one's share of the total. Postgres reads
+  `pg_stat_statements` and MySQL its performance schema; when neither is on, the view says what to
+  enable.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

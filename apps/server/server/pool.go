@@ -373,6 +373,23 @@ func (p *Pool) Advise(ctx context.Context, idOrName, database string) (protocol.
 	return advisor.Advise(ctx, database)
 }
 
+// StatementStats reports the heaviest statements the server has seen.
+func (p *Pool) StatementStats(ctx context.Context, idOrName string, order db.StatementStatsOrder, limit int) (protocol.StatementStats, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.StatementStats{}, err
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.StatementStats{}, err
+	}
+	reader, ok := driver.(db.StatementStatsReader)
+	if !ok {
+		return protocol.StatementStats{}, httpx.BadRequest(string(config.Dialect) + " connections cannot report statement statistics yet")
+	}
+	return reader.StatementStats(ctx, order, limit)
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

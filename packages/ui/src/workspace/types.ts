@@ -23,6 +23,8 @@ import type {
   RunRecord,
   SchemaDiffResult,
   Settings,
+  StatementOrder,
+  StatementStats,
   StatementResult,
   TableDetail,
 } from "@dipper/protocol";
@@ -297,6 +299,8 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /** The heaviest statements the server has seen on this connection, or how to start collecting them. */
+  statementStats(sort: StatementOrder): Promise<StatementStats>;
   /** What must change in the current database for it to match `other` on the same connection. */
   schemaDiff(other: string): Promise<SchemaDiffResult>;
   /** Unused and duplicate indexes, foreign keys without one, dead rows, and overall health. */

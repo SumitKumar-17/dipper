@@ -84,6 +84,8 @@ expect "a schema diff without sides is a 400" "400" "$(curl -s -o /dev/null -w '
 expect "bound parameters are applied" "42" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select \$1::int + \$2::int\",\"params\":[40,2],\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
 expect "a parameter holding SQL stays data" "0" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select * from orders where status = \$1\",\"params\":[\"x' or '1'='1\"],\"record\":false}" "$B/query/sync" | json 'j.results[0].rowCount')"
 expect "params with several statements is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select 1; select 2\",\"params\":[1]}" "$B/query/sync")"
+expect "statement stats answer, or say how to enable them" "true" "$(curl -s "$B/connections/$CID/statements" | json 'String(j.available === true || typeof j.hint === "string")')"
+expect "a malformed statement stats limit is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/connections/$CID/statements?limit=abc")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

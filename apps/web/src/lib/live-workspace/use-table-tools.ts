@@ -7,6 +7,8 @@ import type {
   Plan,
   RowPageRequest,
   SchemaDiffResult,
+  StatementOrder,
+  StatementStats,
   RunRecord,
   TableDetail,
 } from "@dipper/protocol";
@@ -20,6 +22,7 @@ export type TableTools = {
   rowPage: (schema: string, table: string, request: RowPageRequest) => Promise<RunRecord>;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
+  statementStats: (sort: StatementOrder) => Promise<StatementStats>;
   schemaDiff: (other: string) => Promise<SchemaDiffResult>;
   advice: () => Promise<Advice>;
   activity: () => Promise<ActivitySnapshot>;
@@ -57,6 +60,10 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       explain: async (request) => {
         const { id, scoped } = aimed();
         return getClient().connections.explain(id, { ...request, ...scoped });
+      },
+      statementStats: async (sort) => {
+        const { id } = aimed();
+        return getClient().connections.statementStats(id, { sort, limit: 50 });
       },
       schemaDiff: async (other) => {
         const { id } = aimed();

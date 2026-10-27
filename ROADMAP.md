@@ -54,7 +54,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] Triggers, functions, sequences, enums and extensions (M)
 - [x] DDL generation per table (M)
 - [x] Activity and locks: sessions, waits and blockers, with cancel and terminate (M)
-- [ ] Slow query statistics from `pg_stat_statements` and the MySQL digest tables (M)
+- [x] Slow query statistics from `pg_stat_statements` and the MySQL digest tables, with a Slow queries view (M)
 - [x] Index and health advice: unused, duplicate, invalid and missing indexes, dead rows, health numbers (Postgres) (M)
 - [x] Schema diff with migration SQL, verified by applying it and re-diffing to zero (tables, columns, foreign keys; indexes next) (M/L)
 - [x] Parameterised queries: values bound separately from the SQL, Postgres and MySQL (a parameter bar in the editor is still open) (S)
