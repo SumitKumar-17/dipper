@@ -81,6 +81,9 @@ expect "an unknown activity action is a 400" "400" "$(curl -s -o /dev/null -w '%
 expect "advice reports database health" "true" "$(curl -s "$B/connections/$CID/advice" | json 'String(j.health.sizeBytes > 0 && Array.isArray(j.findings))')"
 expect "a schema compared with itself has no differences" "0" "$(curl -s -X POST -H "$J" -d "{\"from\":{\"connectionId\":\"$CID\"},\"to\":{\"connectionId\":\"$CID\"}}" "$B/schema/diff" | json 'j.changes.length')"
 expect "a schema diff without sides is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d '{}' "$B/schema/diff")"
+expect "bound parameters are applied" "42" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select \$1::int + \$2::int\",\"params\":[40,2],\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
+expect "a parameter holding SQL stays data" "0" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select * from orders where status = \$1\",\"params\":[\"x' or '1'='1\"],\"record\":false}" "$B/query/sync" | json 'j.results[0].rowCount')"
+expect "params with several statements is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select 1; select 2\",\"params\":[1]}" "$B/query/sync")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

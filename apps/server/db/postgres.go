@@ -284,16 +284,17 @@ func (d *postgresDriver) exec(ctx context.Context, sql string, sc *StatementCont
 	if database == "" {
 		database = d.config.Database
 	}
-	return d.readRows(ctx, pool, conn, database, sql, sc.Sink)
+	return d.readRows(ctx, pool, conn, database, sql, sc.Options.Params, sc.Sink)
 }
 
 // readRows streams a statement's rows into the sink. pgx reads the result set message by message
 // rather than buffering it, so a large table never lands in memory whole, and closing early is
 // what the maxRows cut does. Statements that are not row-returning go through the simple
 // protocol, the only one that can run e.g. VACUUM.
-func (d *postgresDriver) readRows(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, database, sql string, sink *Sink) error {
-	args := []any{}
-	if !looksRowReturning(sql) {
+func (d *postgresDriver) readRows(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, database, sql string, params []any, sink *Sink) error {
+	args := append([]any{}, params...)
+	// The simple protocol cannot bind parameters, so a statement that has them takes the extended one.
+	if len(params) == 0 && !looksRowReturning(sql) {
 		args = append(args, pgx.QueryExecModeSimpleProtocol)
 	}
 	rows, err := conn.Query(ctx, sql, args...)

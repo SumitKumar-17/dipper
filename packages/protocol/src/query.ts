@@ -106,6 +106,11 @@ export type QueryOptions = {
    * `set session transaction_read_only = 1`. Default false.
    */
   readOnly?: boolean;
+  /**
+   * Values bound to the placeholders of a single statement (`$1`, `$2` on Postgres, `?` on MySQL),
+   * so they never have to be spliced into the SQL text. Several statements with params is a 400.
+   */
+  params?: (string | number | boolean | null)[];
   /** The workspace root this run belongs to; see `RunRecord.workspace`. */
   workspace?: string;
 };

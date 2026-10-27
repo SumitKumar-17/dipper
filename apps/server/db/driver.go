@@ -49,6 +49,8 @@ type RunOptions struct {
 	// ReadOnly is applied per statement, on that statement's own pooled connection, never once
 	// per run.
 	ReadOnly bool
+	// Params are the text values bound to the statement's placeholders, nil for NULL.
+	Params []any
 }
 
 func NormalizeRunOptions(opts protocol.QueryOptions) RunOptions {
@@ -58,6 +60,7 @@ func NormalizeRunOptions(opts protocol.QueryOptions) RunOptions {
 		MaxRows:   1000,
 		BatchSize: 200,
 		ReadOnly:  opts.ReadOnly,
+		Params:    boundParams(opts.Params),
 	}
 	if opts.MaxRows != 0 {
 		out.MaxRows = max(0, opts.MaxRows)
@@ -214,4 +217,19 @@ func (b *base) clearRuns() {
 	b.mu.Lock()
 	b.runs = map[string]*runEntry{}
 	b.mu.Unlock()
+}
+
+// boundParams turns JSON scalars into the text every driver binds. Everything travels as text so
+// numbers keep their exact digits and the database applies the placeholder's own type rules.
+func boundParams(params []any) []any {
+	if len(params) == 0 {
+		return nil
+	}
+	out := make([]any, len(params))
+	for i, p := range params {
+		if text := asText(p); text != nil {
+			out[i] = *text
+		}
+	}
+	return out
 }

@@ -39,6 +39,8 @@ The section matching a release's version becomes that release's notes on GitHub 
   NULL stays last), and select a cell to read it in full, with JSON indented and a Copy button.
 - **Diagram export** - Relationship View has an Export menu that writes the whole schema as Mermaid
   or DBML.
+- **Parameterised queries** - `POST /api/query` accepts `params` bound to `$1`, `$2` (Postgres) or
+  `?` (MySQL), so values are never spliced into SQL.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

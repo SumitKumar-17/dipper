@@ -258,7 +258,7 @@ func (d *mysqlDriver) exec(ctx context.Context, statement string, sc *StatementC
 		defer resetMysql(ctx, conn, "set session transaction_read_only = 0")
 	}
 
-	if err := d.readInto(ctx, conn, statement, sc.Sink); err != nil {
+	if err := d.readInto(ctx, conn, statement, sc.Options.Params, sc.Sink); err != nil {
 		return err
 	}
 	sc.Sink.Command(mysqlCommandOf(statement))
@@ -268,9 +268,9 @@ func (d *mysqlDriver) exec(ctx context.Context, statement string, sc *StatementC
 // MySQL sends no command tag and database/sql exposes affected rows only from Exec, so the
 // statement text decides which of the two paths it takes. A wrong guess costs the affected-row
 // count or the result set, never correctness of the statement itself.
-func (d *mysqlDriver) readInto(ctx context.Context, conn *sql.Conn, statement string, sink *Sink) error {
+func (d *mysqlDriver) readInto(ctx context.Context, conn *sql.Conn, statement string, params []any, sink *Sink) error {
 	if !mysqlRowReturning(statement) {
-		result, err := conn.ExecContext(ctx, statement)
+		result, err := conn.ExecContext(ctx, statement, params...)
 		if err != nil {
 			return err
 		}
@@ -280,7 +280,7 @@ func (d *mysqlDriver) readInto(ctx context.Context, conn *sql.Conn, statement st
 		return nil
 	}
 
-	rows, err := conn.QueryContext(ctx, statement)
+	rows, err := conn.QueryContext(ctx, statement, params...)
 	if err != nil {
 		return err
 	}

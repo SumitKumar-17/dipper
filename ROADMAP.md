@@ -57,7 +57,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] Slow query statistics from `pg_stat_statements` and the MySQL digest tables (M)
 - [x] Index and health advice: unused, duplicate, invalid and missing indexes, dead rows, health numbers (Postgres) (M)
 - [x] Schema diff with migration SQL, verified by applying it and re-diffing to zero (tables, columns, foreign keys; indexes next) (M/L)
-- [ ] Parameterised queries (S)
+- [x] Parameterised queries: values bound separately from the SQL, Postgres and MySQL (a parameter bar in the editor is still open) (S)
 - [x] Row browser endpoint (offset paging; keyset pagination still to do) (S/M)
 - [x] Data editing with a reviewed, transactional change set (M/L)
 - [ ] Richer connection options: CA and client certificates, search_path, unix sockets (S/M)

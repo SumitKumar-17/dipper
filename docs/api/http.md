@@ -101,7 +101,7 @@ for; otherwise TLS to a remote host is `verify-full` and to loopback is `require
 
 | Method | Path                   | Body                                                                                                      | Response                                        | Purpose                                                                                                                                             |
 | ------ | ---------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/api/query`           | `{ connectionId, sql, database?, runId?, maxRows?, timeoutMs?, batchSize?, record?, readOnly?, source? }` | `application/x-ndjson`, one `RunEvent` per line | Run SQL and stream results as they arrive: one JSON object per line, flushed in order.                                                              |
+| POST   | `/api/query`           | `{ connectionId, sql, database?, runId?, maxRows?, timeoutMs?, batchSize?, record?, readOnly?, source?, params? }` | `application/x-ndjson`, one `RunEvent` per line | Run SQL and stream results as they arrive: one JSON object per line, flushed in order.                                                              |
 | POST   | `/api/query/sync`      | same as `/api/query`                                                                                      | `RunRecord`                                     | The same run, buffered into a single reply. Convenient for small queries.                                                                           |
 | POST   | `/api/runs/:id/cancel` | -                                                                                                         | `{ cancelled: boolean }`                        | Cancel an in-flight run.                                                                                                                            |
 | GET    | `/api/runs`            | -                                                                                                         | `RunRecord[]`                                   | Recent runs from memory, newest first, **without result rows** - fetch one run to get its rows.                                                     |
@@ -114,6 +114,10 @@ client never has to parse a stream to discover the connection was wrong. If the 
 disconnects mid-stream the server chases the cancel until it lands or the run finishes on its
 own. Errors inside a started run arrive as an `error` `RunEvent` followed by `done`, not as an
 HTTP status.
+
+`params` binds values to the placeholders of a single statement (`$1`, `$2` on Postgres, `?` on MySQL), so
+they never have to be spliced into the SQL; several statements with params is a 400. Values travel as
+text, so the database applies each placeholder's own type rules.
 
 `record: false` keeps the run out of history and off the SSE stream (no `run` event),
 while the in-memory run log still holds it, so cancel and export keep working; the query walk's

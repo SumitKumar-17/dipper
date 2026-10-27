@@ -8,6 +8,7 @@ import (
 
 	"dipper/httpx"
 	"dipper/protocol"
+	"dipper/sqlscript"
 	"dipper/storage"
 )
 
@@ -29,6 +30,7 @@ type queryBody struct {
 	ReadOnly     *bool   `json:"readOnly"`
 	Source       *string `json:"source"`
 	Workspace    *string `json:"workspace"`
+	Params       []any   `json:"params"`
 }
 
 func (s *Server) runInputFrom(r *http.Request) (StartRunInput, error) {
@@ -41,6 +43,10 @@ func (s *Server) runInputFrom(r *http.Request) (StartRunInput, error) {
 	}
 	if strings.TrimSpace(body.SQL) == "" {
 		return StartRunInput{}, httpx.BadRequest("sql is required")
+	}
+	// Parameters bind to one statement's placeholders; across several it is ambiguous which they mean.
+	if len(body.Params) > 0 && len(sqlscript.Split(body.SQL)) > 1 {
+		return StartRunInput{}, httpx.BadRequest("params can only be used with a single statement")
 	}
 	// Surfaces an unknown connection as a 404 before we commit to a streaming response.
 	config, err := s.pool.Config(body.ConnectionID)
@@ -66,6 +72,7 @@ func (s *Server) runInputFrom(r *http.Request) (StartRunInput, error) {
 		BatchSize:    body.BatchSize,
 		Record:       body.Record,
 		Source:       source,
+		Params:       body.Params,
 	}
 	if body.Workspace != nil {
 		input.Workspace = *body.Workspace

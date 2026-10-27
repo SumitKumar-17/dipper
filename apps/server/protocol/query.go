@@ -207,6 +207,9 @@ type QueryOptions struct {
 	// Pointer because the default is true: an absent field must not read as false.
 	Record   *bool `json:"record,omitempty"`
 	ReadOnly bool  `json:"readOnly,omitempty"`
+	// Params are bound to the placeholders of a single statement ($1, $2 on Postgres; ? on MySQL),
+	// so values never have to be spliced into the SQL text. Each is a JSON scalar or null.
+	Params []any `json:"params,omitempty"`
 	// The workspace root this run belongs to; see RunRecord.Workspace.
 	Workspace string `json:"workspace,omitempty"`
 }

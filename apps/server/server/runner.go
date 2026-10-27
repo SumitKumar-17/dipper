@@ -25,6 +25,8 @@ type StartRunInput struct {
 	Record   *bool
 	ReadOnly bool
 	Source   protocol.RunSource
+	// Params bind to the placeholders of a single statement; see QueryOptions.
+	Params []any
 	// The workspace root the SQL came from, for History's per-folder view. Empty is global.
 	Workspace string
 }
@@ -116,6 +118,7 @@ func (r *Runner) StartRun(ctx context.Context, input StartRunInput, emit func(pr
 		TimeoutMs: settings.StatementTimeout,
 		Record:    input.Record,
 		ReadOnly:  input.ReadOnly,
+		Params:    input.Params,
 	}
 	if input.MaxRows != nil {
 		opts.MaxRows = *input.MaxRows
