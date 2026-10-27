@@ -70,7 +70,7 @@ export function StructureEditor({
             const d = draft.columns.get(c.name)!;
             return (
               <div className="flex flex-wrap items-center gap-2" key={c.name}>
-                <div className={d.drop ? "opacity-50" : undefined}>
+                <div className={d.drop ? "w-52 opacity-50" : "w-52"}>
                   <Input aria-label={`Name of ${c.name}`} disabled={d.drop} onChange={(e) => editColumn(c.name, { name: e.target.value })} value={d.name} />
                 </div>
                 <Input aria-label={`Type of ${c.name}`} className="w-40" disabled={d.drop} onChange={(e) => editColumn(c.name, { type: e.target.value })} value={d.type} />
@@ -92,7 +92,9 @@ export function StructureEditor({
           })}
           {draft.added.map((c, i) => (
             <div className="flex flex-wrap items-center gap-2" key={i}>
-              <Input aria-label="New column name" onChange={(e) => editAdded(i, { name: e.target.value })} placeholder="new column" value={c.name} />
+              <div className="w-52">
+                <Input aria-label="New column name" onChange={(e) => editAdded(i, { name: e.target.value })} placeholder="new column" value={c.name} />
+              </div>
               <Input aria-label="New column type" className="w-40" onChange={(e) => editAdded(i, { type: e.target.value })} value={c.type} />
               <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Switch checked={c.nullable} onCheckedChange={(nullable) => editAdded(i, { nullable })} /> Null
@@ -128,7 +130,9 @@ export function StructureEditor({
           })}
           {draft.newIndexes.map((ix, i) => (
             <div className="flex flex-wrap items-center gap-2" key={i}>
-              <Input aria-label="New index name" onChange={(e) => editIndex(i, { name: e.target.value })} placeholder="index name" value={ix.name} />
+              <div className="w-52">
+                <Input aria-label="New index name" onChange={(e) => editIndex(i, { name: e.target.value })} placeholder="index name" value={ix.name} />
+              </div>
               <Input aria-label="New index columns" className="w-56" onChange={(e) => editIndex(i, { columns: e.target.value })} placeholder="columns, comma separated" value={ix.columns} />
               <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Switch checked={ix.unique} onCheckedChange={(unique) => editIndex(i, { unique })} /> Unique
