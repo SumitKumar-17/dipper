@@ -319,3 +319,75 @@ func TestSqliteTestReportsVersion(t *testing.T) {
 		t.Errorf("databases: %v", names)
 	}
 }
+
+func applySqliteChanges(t *testing.T, d *sqliteDriver, table string, dryRun bool, changes ...protocol.RowChange) protocol.ApplyResult {
+	t.Helper()
+	detail, err := d.TableDetail(context.Background(), "", "main", table)
+	if err != nil {
+		t.Fatal(err)
+	}
+	statements, err := BuildRowStatements(RowTarget{
+		Dialect: protocol.DialectSQLite, Schema: "main", Table: table, Columns: detail.Columns,
+	}, changes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := d.ApplyRowChanges(context.Background(), "", statements, dryRun)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return result
+}
+
+func TestSqliteTableEditorWrites(t *testing.T) {
+	d := openSqlite(t)
+	loadFixture(t, d)
+	update := protocol.RowChange{
+		Op: protocol.RowUpdate, Key: map[string]any{"id": "1"},
+		Set: map[string]any{"email": "new@x.io"}, Expect: map[string]any{"email": "a@x.io", "age": "30"},
+	}
+	if dry := applySqliteChanges(t, d, "users", true, update); dry.Applied || dry.Error != "" {
+		t.Fatalf("dry run: %+v", dry)
+	}
+	if real := applySqliteChanges(t, d, "users", false, update); !real.Applied {
+		t.Fatalf("update refused: %+v", real)
+	}
+	if stale := applySqliteChanges(t, d, "users", false, update); stale.Applied || stale.Error == "" {
+		t.Errorf("a stale expectation must be refused: %+v", stale)
+	}
+	nullExpect := protocol.RowChange{
+		Op: protocol.RowUpdate, Key: map[string]any{"id": "2"},
+		Set: map[string]any{"bio": "hi"}, Expect: map[string]any{"age": nil},
+	}
+	if result := applySqliteChanges(t, d, "users", false, nullExpect); !result.Applied {
+		t.Errorf("a NULL expectation must match a NULL column: %+v", result)
+	}
+}
+
+func TestSqliteInsertLeavesDefaultColumnsOut(t *testing.T) {
+	d := openSqlite(t)
+	loadFixture(t, d)
+	insert := protocol.RowChange{
+		Op:  protocol.RowInsert,
+		Set: map[string]any{"email": "d@x.io", "age": map[string]any{"$default": true}},
+	}
+	if result := applySqliteChanges(t, d, "users", false, insert); !result.Applied {
+		t.Fatalf("insert: %+v", result)
+	}
+	out := runSqlite(d, "select age from users where email = 'd@x.io'", protocol.QueryOptions{})
+	if out.results[0].Rows[0][0] != "18" {
+		t.Errorf("the column default was not applied: %v", out.results[0].Rows)
+	}
+}
+
+func TestSqliteUpdateToDefaultIsRefused(t *testing.T) {
+	_, err := BuildRowStatements(RowTarget{
+		Dialect: protocol.DialectSQLite, Table: "users",
+		Columns: []protocol.ColumnDetail{{Column: protocol.Column{Name: "id", PK: true}}, {Column: protocol.Column{Name: "age"}}},
+	}, []protocol.RowChange{{
+		Op: protocol.RowUpdate, Key: map[string]any{"id": "1"}, Set: map[string]any{"age": map[string]any{"$default": true}},
+	}})
+	if err == nil {
+		t.Error("SQLite has no DEFAULT keyword, so the update cannot be written")
+	}
+}
