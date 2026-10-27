@@ -107,10 +107,10 @@ change reviewed as plain SQL before it runs.
 
 ## 4. Landing site
 
-- [ ] SEO basics: Open Graph image, canonical link, sitemap, robots, structured data (S)
+- [x] SEO basics: social image and cards, structured data, robots, no-JS fallback (canonical link and sitemap wait for a domain) (S)
 - [ ] Skip link, mobile menu, focus audit (S)
 - [ ] Bundle work: lazy formatter, manual chunks, narrower Tailwind `@source` (M)
-- [ ] Feature grid driven by one data file (M)
+- [x] Feature grid driven by one data file (M)
 - [ ] Comparison table and FAQ (S/M)
 - [ ] Real Query Walk scene, then delete `public/legacy` and its capture scripts (M)
 - [ ] Docs and changelog pages rendered from the repo (M)

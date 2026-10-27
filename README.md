@@ -391,4 +391,4 @@ Bug reports and feature requests: [GitHub Issues](https://github.com/SumitKumar-
 
 ## License
 
-MIT © SumitKumar-17
+MIT © [Sumit Kumar](https://github.com/SumitKumar-17)

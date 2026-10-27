@@ -1,3 +1,4 @@
+import { FeaturesSection } from "./sections/features";
 import { MotionConfig } from "motion/react";
 import { useCallback, useRef, useState } from "react";
 import { BirdProvider } from "../shared/bird";
@@ -85,6 +86,7 @@ function Page() {
           <WalkSection roostRef={walk} onSceneDone={hopWalk} />
           <RelationsSection roostRef={relations} onSceneDone={hopRelations} />
           <NotebookSection roostRef={notebook} onSceneDone={hopNotebook} />
+          <FeaturesSection />
           <BoxSection roostRef={box} />
           <BinarySection roostRef={binary} onSceneDone={hopBinary} />
           <DownloadSection roostRef={download} onCopy={flutter} />

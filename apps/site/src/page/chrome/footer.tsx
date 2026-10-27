@@ -3,7 +3,9 @@ import { cn } from "../../shared/cn";
 import { Roost } from "../layout/roost";
 import { Container } from "../layout/container";
 import { small } from "../layout/type";
+import { AUTHOR } from "./author";
 import { Brand } from "./brand";
+import { SocialLinks } from "./social-links";
 import { REPO_URL } from "../../shared/release";
 import { LG, useMediaQuery } from "../../shared/viewport/media";
 
@@ -46,6 +48,12 @@ export function Footer({ roostRef }: { roostRef?: Ref<HTMLDivElement> }) {
         <a href={`${REPO_URL}/blob/main/LICENSE`} className={cn(link, "ml-auto sm:ml-0")}>
           MIT License
         </a>
+        <p className="flex w-full items-center gap-2 border-t pt-4 sm:order-last">
+          Built by <a className={link} href={AUTHOR.github} rel="author">{AUTHOR.name}</a>
+          <span className="ms-auto">
+            <SocialLinks />
+          </span>
+        </p>
       </Container>
     </footer>
   );

@@ -5,7 +5,7 @@
   "description": "Monorepo for dipper: the `dipper` server/CLI, the web UI, and the packages they share.",
   "type": "module",
   "license": "MIT",
-  "author": "SumitKumar-17 (https://github.com/SumitKumar-17)",
+  "author": "Sumit Kumar (https://github.com/SumitKumar-17)",
   "homepage": "https://github.com/SumitKumar-17/dipper#readme",
   "repository": {
     "type": "git",

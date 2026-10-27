@@ -15,11 +15,43 @@
       property="og:description"
       content="An editor that knows your schema, results you can read, and a step-by-step view of how each query runs. For PostgreSQL and MySQL, in one 14 MB binary that runs on your machine. No account."
     />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/SumitKumar-17/dipper/main/docs/assets/hero.png"
+    />
+    <meta property="og:image:alt" content="Dipper: a SQL workspace with a schema tree, editor and results" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dipper - a quiet place to write SQL" />
+    <meta
+      name="twitter:description"
+      content="A SQL workspace for PostgreSQL and MySQL in one 14 MB binary. Edit tables, read query plans, watch a query run step by step."
+    />
+    <meta name="author" content="Sumit Kumar" />
     <meta name="theme-color" content="#16171a" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Dipper",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "macOS, Linux, Windows",
+        "description": "A local-first SQL workspace for PostgreSQL and MySQL: schema-aware editor, table editor, query plans and a step-by-step view of how a query runs.",
+        "license": "https://opensource.org/licenses/MIT",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Sumit Kumar", "url": "https://github.com/SumitKumar-17" },
+        "codeRepository": "https://github.com/SumitKumar-17/dipper"
+      }
+    </script>
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      Dipper is a lightweight SQL workspace for PostgreSQL and MySQL, in one 14 MB binary that runs on
+      your machine. Install it with
+      <code>curl -fsSL https://raw.githubusercontent.com/SumitKumar-17/dipper/main/install.sh | sh</code>
+      or read the source at https://github.com/SumitKumar-17/dipper.
+    </noscript>
     <script type="module" src="/src/page/main.tsx"></script>
   </body>
 </html>
