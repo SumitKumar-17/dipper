@@ -6,6 +6,7 @@
 
 import {
   ActivityIcon,
+  DiffIcon,
   GaugeIcon,
   FootprintsIcon,
   PanelBottomIcon,
@@ -23,6 +24,7 @@ import { requestActivity } from "../activity";
 import { requestAdvice } from "../advice";
 import { requestExplain } from "../explain";
 import { requestQueryWalk } from "../query-walk";
+import { requestSchemaCompare } from "../schema-diff-view";
 import { requestSchemaDiagram } from "../schema-diagram";
 import {
   FORMAT_DOCUMENT_EVENT,
@@ -159,6 +161,15 @@ export function useBuiltinActions(
             const sql = statementAtCursor(activeBuffer.content, at)?.sql;
             if (sql) requestExplain(sql);
           }
+          close();
+        },
+      },
+      {
+        label: "Compare schemas",
+        hint: "What would make this database match another one",
+        icon: DiffIcon,
+        onSelect: () => {
+          requestSchemaCompare();
           close();
         },
       },

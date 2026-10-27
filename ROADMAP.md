@@ -56,7 +56,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Activity and locks: sessions, waits and blockers, with cancel and terminate (M)
 - [ ] Slow query statistics from `pg_stat_statements` and the MySQL digest tables (M)
 - [x] Index and health advice: unused, duplicate, invalid and missing indexes, dead rows, health numbers (Postgres) (M)
-- [ ] Schema diff with migration SQL (M/L)
+- [x] Schema diff with migration SQL, verified by applying it and re-diffing to zero (tables, columns, foreign keys; indexes next) (M/L)
 - [ ] Parameterised queries (S)
 - [x] Row browser endpoint (offset paging; keyset pagination still to do) (S/M)
 - [x] Data editing with a reviewed, transactional change set (M/L)

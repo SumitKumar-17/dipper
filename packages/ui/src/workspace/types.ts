@@ -21,6 +21,7 @@ import type {
   Plan,
   RowPageRequest,
   RunRecord,
+  SchemaDiffResult,
   Settings,
   StatementResult,
   TableDetail,
@@ -296,6 +297,8 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /** What must change in the current database for it to match `other` on the same connection. */
+  schemaDiff(other: string): Promise<SchemaDiffResult>;
   /** Unused and duplicate indexes, foreign keys without one, dead rows, and overall health. */
   advice(): Promise<Advice>;
   /** Every session on the current database right now, with who is blocking whom. */
