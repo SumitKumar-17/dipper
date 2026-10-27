@@ -16,7 +16,7 @@ checked off as they land; each one is its own commit.
 - [x] Reset session settings with a context that survives cancellation and discard the connection if
       the reset fails (`BEGIN READ ONLY` wrapping still open) (S)
 - [ ] Stop draining the full result after the maxRows cut (S)
-- [ ] Resolve Postgres type names through the connection's type map instead of `oid:NNN` (S)
+- [x] Resolve Postgres type names through pgx's type table (bytea, inet, arrays and more); only user-defined types stay `oid:NNN` (S)
 - [ ] Serialise file saves and prompt before discarding a dirty tab or overwriting on save-as (S)
 - [ ] Detect a dead or restarted server in the UI and resync (S)
 - [ ] Refresh `docs/api/http.md` where it is stale (history store, MySQL `source`, UI fallback) (S)

@@ -6,16 +6,20 @@ import (
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgtype"
 
 	"dipper/protocol"
 )
 
-// Builtin OIDs worth naming; anything else is reported as oid:<n>.
+// The common built-in OIDs, named the way psql shows them; pgTypeName falls back to a wider table.
 var pgOIDNames = map[uint32]string{
 	16: "bool", 20: "int8", 21: "int2", 23: "int4", 25: "text",
 	114: "json", 700: "float4", 701: "float8", 1042: "bpchar", 1043: "varchar",
 	1082: "date", 1083: "time", 1114: "timestamp", 1184: "timestamptz",
 	1186: "interval", 1700: "numeric", 2950: "uuid", 3802: "jsonb",
+	// Types pgx's table leaves out.
+	18: "char", 19: "name", 26: "oid", 142: "xml", 650: "cidr", 790: "money", 829: "macaddr",
+	1266: "timetz", 1560: "bit", 1562: "varbit", 3614: "tsvector", 3615: "tsquery",
 }
 
 var rightAligned = map[string]bool{
@@ -26,9 +30,22 @@ var rightAligned = map[string]bool{
 	"decimal": true, "float": true, "double": true, "year": true, "datetime": true,
 }
 
+// pgKnownTypes is pgx's own table of built-in types, which names hundreds the short list above
+// does not (bytea, inet, money, every array). It is only read, so one shared copy serves every call.
+var pgKnownTypes = pgtype.NewMap()
+
+// pgTypeName is a column's type as a person would write it. A user-defined type (an enum, a
+// domain) is unknown to the built-in table and stays oid:<n>, which is still a stable handle.
 func pgTypeName(oid uint32) string {
 	if name, ok := pgOIDNames[oid]; ok {
 		return name
+	}
+	if known, ok := pgKnownTypes.TypeForOID(oid); ok {
+		// Postgres names an array type by prefixing an underscore: _int4 is int4[].
+		if element, isArray := strings.CutPrefix(known.Name, "_"); isArray {
+			return element + "[]"
+		}
+		return known.Name
 	}
 	return "oid:" + strconv.Itoa(int(oid))
 }
