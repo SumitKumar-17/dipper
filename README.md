@@ -1,0 +1,364 @@
+<div align="center">
+
+<img src="apps/web/public/icon.svg" alt="Perch" width="72">
+
+# Perch
+
+<p><strong>A lightweight SQL workspace for developers.</strong></p>
+
+<p>
+PostgreSQL · MySQL · Local-first · SQL notebooks
+</p>
+
+<p>
+<a href="#install">Install</a> ·
+<a href="#features">Features</a> ·
+<a href="apps/server/README.md">API</a> ·
+<a href="CONTRIBUTING.md">Contributing</a>
+</p>
+
+<img src="https://img.shields.io/badge/PostgreSQL-supported-336791?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
+<img src="https://img.shields.io/badge/MySQL-supported-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
+<img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
+
+</div>
+
+<br>
+
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="Writing a query in Perch, running it, and reading the results" width="820">
+</p>
+
+## What is Perch?
+
+Perch is a lightweight SQL workspace for developers who spend their time **writing, exploring, and understanding SQL**.
+
+It brings schema exploration, SQL editing, query execution, results, and database visualization into one focused workspace.
+
+Perch works with PostgreSQL and MySQL — running on your machine, in a container, or hosted somewhere like Neon, Supabase, or RDS. Your SQL files stay on disk as normal `.sql` files, while Perch provides the tools around them.
+
+**No account. No cloud service. No bundled database.**
+
+Perch ships as a single self-contained binary — around 14 MB, with no runtime to install
+alongside it.
+
+## Features
+
+### Schema-aware SQL editor
+
+Write SQL with your database schema directly in context.
+
+The schema sidebar shows tables, views, materialized views, columns, types, nullability, primary keys, and row estimates. The editor uses the same metadata for dialect-aware syntax highlighting and for completion.
+
+Database errors are mapped back to the exact location in your query.
+
+<p align="center">
+  <img src="docs/assets/schema-editor.png" alt="Perch schema tree and SQL editor" width="748">
+</p>
+
+Run the statement under your cursor with <kbd>⌘</kbd><kbd>↵</kbd>, or the entire file with <kbd>⌘</kbd><kbd>⇧</kbd><kbd>↵</kbd>.
+
+---
+
+### Completion that reads your query
+
+Perch suggests what can actually go where your cursor is, not everything in the database.
+
+Inside a `SELECT` it offers the columns of the tables you have joined so far — not every column in every table. Where a table can go, it offers tables, and after `JOIN` the ones related to what is already in the statement come first. Type `ON` and the join condition is offered already written, straight from the foreign key. Keywords are only suggested where they are legal, and rank below your own tables and columns, because the keyword you want is usually one you can already spell.
+
+It works on half-written SQL, which is the only kind that needs it.
+
+<p align="center">
+  <img src="docs/assets/completion.png" alt="Perch suggesting a join and its ON clause" width="748">
+</p>
+
+---
+
+### Relationship View
+
+**See how your database fits together.**
+
+Relationship View turns foreign-key relationships into an interactive schema diagram. Tables show their columns and keys, while relationships are drawn between the tables they connect.
+
+Click to focus on a table, drag to rearrange the layout, and zoom or pan around larger schemas.
+
+<p align="center">
+  <img src="docs/assets/relationship-view.png" alt="Perch relationship view showing connected database tables" width="748">
+</p>
+
+Large tables automatically switch to a compact keys-only view, keeping the diagram readable.
+
+---
+
+### Query Walk
+
+**See how a SQL query produces its result.**
+
+Query Walk visualizes a `SELECT` step by step through its major stages:
+
+```text
+FROM → JOIN → WHERE → GROUP BY → HAVING
+→ WINDOW → SELECT → DISTINCT → ORDER BY → LIMIT
+```
+
+At each stage, Perch shows the rows returned by your database and explains what happened.
+
+This makes complex SQL easier to understand, debug, and explain — especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
+
+<p align="center">
+  <img src="docs/assets/query-walk.gif" alt="Perch Query Walk visualizing SQL execution" width="748">
+</p>
+
+The visualization is based on your actual SQL and database. Query Walk uses read-only executions and does not modify your data.
+
+---
+
+### SQL notebooks
+
+Turn any `.sql` file into a notebook.
+
+Each statement can run independently while keeping its own results, row count, and execution time.
+
+```sql
+-- Query 1
+SELECT *
+FROM orders
+WHERE status = 'paid'
+LIMIT 20;
+
+-- %%
+
+-- Query 2
+SELECT *
+FROM orders
+WHERE status = 'paid'
+  AND created_at > now() - interval '7 days';
+```
+
+The file remains valid SQL and can still be used outside Perch.
+
+<p align="center">
+  <img src="docs/assets/notebook.png" alt="Perch SQL notebook" width="730">
+</p>
+
+---
+
+### Workspace folders
+
+Open a directory and work directly with the `.sql` files inside it.
+
+There is no import step or proprietary project format.
+
+- Files open and save in place
+- External changes are detected
+- Multiple folders can be open
+- Tabs and focus are restored between sessions
+- Autosave is configurable
+- Untitled queries can be saved into a workspace
+
+<p align="center">
+  <img src="docs/assets/open-folder.png" alt="Perch folder picker for opening a workspace" width="748">
+</p>
+
+---
+
+### Split panes
+
+Compare queries and results side by side using a resizable pane layout.
+
+Drag tabs to any edge to create splits, move tabs between panes, and restore the layout when you return.
+
+<p align="center">
+  <img src="docs/assets/hero.png" alt="Perch split-pane SQL workspace" width="780">
+</p>
+
+---
+
+### Result grid
+
+Inspect query results in a fast, virtualized grid.
+
+- Typed column headers
+- Row counts and execution time
+- Distinct `NULL` representation
+- Grid and text views
+- CSV export
+- Clipboard copying
+- Separate result tabs for multi-statement queries
+- Server messages and notices
+
+<p align="center">
+  <img src="docs/assets/results.png" alt="Perch query result grid" width="750">
+</p>
+
+---
+
+### Query history
+
+Every query you run is kept, grouped by day, and survives restarts.
+
+**History is split by folder.** The queries you ran while working in one project stay separate from the rest, and you can switch between the current folder, everything, and queries that were not run in a folder at all.
+
+**You choose what is kept.** Settings → History saves nothing, just the queries you ran, or the queries and their results. Saving results is off by default — it puts a copy of what your database returned on disk, so it is yours to turn on. With it on, a query from last week reopens with the rows it returned, and exports again.
+
+Opening a query from history shows the SQL above its results. Right-click any entry to run it again or copy it.
+
+Old runs are dropped once you pass the limits you set, and **Clear history** empties the lot.
+
+<p align="center">
+  <img src="docs/assets/history.png" alt="Perch query history" width="355">
+</p>
+
+<p align="center">
+  <img src="docs/assets/history-settings.png" alt="Perch history settings" width="748">
+</p>
+
+---
+
+### Command palette
+
+Press <kbd>⌘</kbd><kbd>K</kbd> to search Perch without leaving the keyboard.
+
+Search across:
+
+- Commands
+- Open files
+- Connections
+- Databases
+- Tables
+
+Switching connections or databases automatically updates the schema and editor context.
+
+<p align="center">
+  <img src="docs/assets/command-palette.png" alt="Perch command palette" width="635">
+</p>
+
+## Install
+
+### macOS and Linux
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Sahil1337/perch/main/install.sh | sh
+```
+
+This fetches the latest release for your platform, verifies its checksum, and installs `perch`
+into `/usr/local/bin` if that is writable, or `~/.local/bin` otherwise.
+
+If it lands somewhere that is not on your `PATH`, the installer adds it to your shell profile
+(`~/.zshrc`, `~/.bash_profile` or `~/.bashrc`, or fish's `config.fish`) and prints one line to
+paste into the terminal you already have open. New terminals need nothing.
+
+```sh
+perch          # starts the server and opens the UI
+perch status   # is it running, and where
+perch stop     # stop it
+perch update   # install the latest release over this one
+```
+
+| Variable                | What it does                                             |
+| ----------------------- | -------------------------------------------------------- |
+| `PERCH_VERSION`         | install a specific tag, e.g. `vX.Y.Z`, instead of latest |
+| `PERCH_INSTALL_DIR`     | install somewhere else, e.g. `~/bin`                     |
+| `PERCH_NO_MODIFY_PATH`  | leave the shell profile alone and just print the line    |
+| `PERCH_NO_UPDATE_CHECK` | don't look for a newer release on start                  |
+
+### Updating
+
+```sh
+perch update           # download the latest release and replace this binary
+perch update --check   # just say whether there is a newer one
+```
+
+`update` fetches the release for your platform, verifies it against the release's checksum, and
+replaces the binary in place — the same file `perch` already runs from, wherever the installer
+put it. Nothing else on disk is touched: connections, settings and history stay where they are.
+
+A server that is already running keeps the old version until you restart it (`perch stop`, then
+`perch`), and `perch update` says so when it finds one.
+
+`perch serve` also looks for a newer release once a day, in the background, and prints a single
+line when there is one. It never blocks startup and never updates anything on its own; set
+`PERCH_NO_UPDATE_CHECK=1` to turn the look off entirely.
+
+`perch update --version v0.1.0` installs that exact tag, which is how you go back a version.
+
+On Windows, `perch update` replaces the `.exe` you ran it from. Windows will not delete a file
+that is open, so the previous version is left beside it as `perch.exe.old` and cleared on the
+next update — deleting it by hand is fine too.
+
+### Windows
+
+Download `perch-<version>-windows-amd64.exe` from the
+[releases page](https://github.com/Sahil1337/perch/releases/latest) and run it. Windows shows a
+SmartScreen warning the first time — choose **More info → Run anyway**.
+
+### From source
+
+Needs Go 1.25+ and Bun. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+### If macOS refuses to open it
+
+Perch's binaries are not notarized yet. The `curl` install above avoids this entirely, because
+macOS only quarantines files a *browser* downloaded. If you took the binary from the releases
+page instead and macOS says the developer cannot be verified:
+
+```sh
+xattr -d com.apple.quarantine ./perch
+```
+
+## Getting started
+
+On first launch, choose a workspace, connection, and database.
+
+Perch finds the databases already on your machine — on their usual ports, installed through Homebrew or systemd, running as a Windows service, or in a Docker, Podman or nerdctl container — and offers to connect to each one. Containers are offered with the username they were set up with. If a database needs a password, Perch asks for it there and then.
+
+For a database somewhere else, paste the connection string your provider gave you — Neon, Supabase, RDS, or anything else. Connections that leave your machine use TLS and their certificate is checked; if your connection string sets `sslmode`, Perch uses that instead.
+
+Perch never installs or bundles a database server.
+
+## Keyboard shortcuts
+
+| Shortcut                             | Action                    |
+| ------------------------------------ | ------------------------- |
+| <kbd>⌘</kbd><kbd>↵</kbd>             | Run selection / statement |
+| <kbd>⌘</kbd><kbd>⇧</kbd><kbd>↵</kbd> | Run entire file           |
+| <kbd>⌘</kbd><kbd>K</kbd>             | Command palette           |
+| <kbd>⌘</kbd><kbd>B</kbd>             | Toggle sidebar            |
+| <kbd>⌘</kbd><kbd>J</kbd>             | Toggle results            |
+| <kbd>⌘</kbd><kbd>S</kbd>             | Save                      |
+| <kbd>⌘</kbd><kbd>&#92;</kbd>         | Split pane                |
+| <kbd>⌘</kbd><kbd>,</kbd>             | Settings                  |
+| <kbd>⇧</kbd><kbd>⌥</kbd><kbd>F</kbd> | Format SQL                |
+
+Use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd> on Windows and Linux.
+
+## Local-first
+
+Perch runs locally and keeps your workspace on your machine.
+
+```text
+~/.perch/
+├── connections.json
+├── settings.json
+├── history.db
+├── server.json
+├── update.json
+└── queries/
+```
+
+`PERCH_HOME` can be used to relocate this directory.
+
+Perch sends no telemetry and does not require a remote service for normal operation.
+
+## Contributing
+
+Perch is a Bun workspace monorepo. The server and CLI are Go; the UI and the shared packages are
+TypeScript.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for development setup, project structure, scripts, and verification.
+
+Bug reports and feature requests: [GitHub Issues](https://github.com/Sahil1337/perch/issues).
+
+## License
+
+MIT © Sahil1337

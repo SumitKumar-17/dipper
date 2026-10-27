@@ -1,0 +1,29 @@
+{
+  "name": "@perch/sql",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dialect-agnostic SQL text utilities for the frontend. The statement splitter is mirrored by the Go server's sqlscript package.",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@perch/protocol": "*",
+    "prettier": "^3.9.7",
+    "prettier-plugin-sql-cst": "^0.22.1"
+  },
+  "devDependencies": {
+    "@perch/tsconfig": "*",
+    "typescript": "^6.0.3"
+  }
+}

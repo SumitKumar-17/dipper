@@ -1,0 +1,128 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build a draft release from"
+        required: true
+
+env:
+  GO_VERSION: "1.25"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          # `gh release create --generate-notes` needs the history to diff against the last tag.
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: apps/server/go.sum
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Resolve the version
+        id: version
+        run: |
+          TAG="${{ inputs.tag }}"
+          VERSION="${TAG#v}"
+          # The linker stamps package.json's version into the binary, so a tag that disagrees
+          # would name the assets one thing and have the binary report another.
+          DECLARED=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' apps/server/package.json | head -1)
+          if [ "$VERSION" != "$DECLARED" ]; then
+            echo "::error::tag $TAG says $VERSION but apps/server/package.json says $DECLARED"
+            exit 1
+          fi
+          echo "tag=$TAG"         >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # The binary embeds the UI at compile time, so the web build has to happen first.
+      - run: bun install --frozen-lockfile
+      - run: bun run --filter @perch/web build
+
+      - name: Build every target
+        working-directory: apps/server
+        run: bash scripts/build.sh --all
+
+      - name: Package
+        id: package
+        working-directory: apps/server
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          for path in dist/perch-*; do
+            base=$(basename "$path")
+            target=${base#perch-}; target=${target%.exe}
+
+            # Windows ships the bare .exe: it is runnable straight from the download, and
+            # Windows has no executable bit to lose.
+            if [ "${base##*.}" = "exe" ]; then
+              cp "$path" "release/perch-$VERSION-$target.exe"
+              continue
+            fi
+
+            # Everything else is a tarball, which is what carries the executable bit — a raw
+            # download arrives without it and needs a chmod before it will run. The binary goes
+            # in under its plain name, because what lands on PATH should be `perch`.
+            stage=$(mktemp -d)
+            cp "$path" "$stage/perch"
+            chmod +x "$stage/perch"
+            cp LICENSE README.md "$stage/"
+            tar -czf "release/perch-$VERSION-$target.tar.gz" -C "$stage" .
+            rm -rf "$stage"
+          done
+          (cd release && sha256sum perch-* > checksums.txt)
+          ls -lh release
+
+      - name: Release notes
+        id: notes
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # The CHANGELOG section for this version is the release body. Hand-written, because a
+          # list of commit subjects is a log, not release notes.
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > "$GITHUB_WORKSPACE/notes.md"
+          if [ -s "$GITHUB_WORKSPACE/notes.md" ]; then
+            echo "notes=$GITHUB_WORKSPACE/notes.md" >> "$GITHUB_OUTPUT"
+            echo "using the CHANGELOG section for $VERSION"
+          else
+            echo "::warning::no '## [$VERSION]' section in CHANGELOG.md — falling back to generated notes"
+          fi
+
+      # Note: these binaries are unsigned. macOS quarantines a downloaded copy and Gatekeeper
+      # refuses it without notarization; Windows shows a SmartScreen warning. Both need paid
+      # certificates, so the draft says so until they exist.
+      - name: Draft the release
+        working-directory: apps/server
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          NOTES: ${{ steps.notes.outputs.notes }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            # Re-running against an existing release refreshes the notes too, not just the
+            # assets: a CHANGELOG fix is a re-run rather than a hand-edit of the draft.
+            gh release upload "$TAG" release/* --clobber
+            if [ -n "$NOTES" ]; then
+              gh release edit "$TAG" --notes-file "$NOTES"
+            fi
+          elif [ -n "$NOTES" ]; then
+            gh release create "$TAG" release/* --draft --title "perch $TAG" --notes-file "$NOTES"
+          else
+            gh release create "$TAG" release/* --draft --title "perch $TAG" --generate-notes
+          fi

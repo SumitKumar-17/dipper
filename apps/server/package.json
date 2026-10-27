@@ -1,0 +1,16 @@
+{
+  "name": "perch",
+  "version": "0.2.0",
+  "description": "The perch server and CLI: connections, schema, queries, files, history. The UI is a pure client.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "start": "./dist/perch serve",
+    "build": "bash scripts/build.sh",
+    "build:all": "bash scripts/build.sh --all",
+    "lint": "go vet ./...",
+    "typecheck": "go build ./...",
+    "smoke": "bash scripts/smoke.sh"
+  }
+}
