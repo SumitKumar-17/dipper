@@ -121,8 +121,10 @@ drives the compiled binary, so `bun run --filter dipper build` has to run first.
 Before handing work back, run:
 
 ```sh
-bun run typecheck && bun run lint && bun run build && bun run test
+bun run check && bun run build
 ```
+
+`bun run check` is typecheck, lint and the unit tests together.
 
 ## Project facts that trip people up
 
