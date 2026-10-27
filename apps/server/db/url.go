@@ -30,7 +30,9 @@ var urlSchemes = map[string]protocol.Dialect{
 // is not among them: it sets the SSL flag *and* stays in Options, because "on" is not the whole
 // answer - a pasted hosted-Postgres URL says which of the five modes it wants, and dropping that
 // silently downgrades verify-full to an unverified tunnel.
-var reservedParams = map[string]bool{"ssl": true, "dialect": true}
+// Only these URL parameters become connection options. Anything else could be a secret
+// (?password=, ?sslpassword=) and options travel back to the UI in the connection list.
+var keptParams = map[string]bool{"sslmode": true, "application_name": true}
 
 // NewDriver builds the driver for a connection's dialect.
 func NewDriver(config protocol.ConnectionConfig) (Driver, error) {
@@ -92,7 +94,7 @@ func ParseConnectionURL(raw string) (protocol.ConnectionConfig, error) {
 	query := parsed.Query()
 	options := map[string]any{}
 	for key, values := range query {
-		if !reservedParams[strings.ToLower(key)] && len(values) > 0 {
+		if keptParams[strings.ToLower(key)] && len(values) > 0 {
 			options[key] = values[0]
 		}
 	}

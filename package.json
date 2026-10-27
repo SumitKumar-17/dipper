@@ -35,6 +35,7 @@
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "eslint apps/web/src apps/web/vite.config.ts apps/site/src packages/ui/src && bun run --filter dipper lint",
     "smoke": "bun run --filter dipper smoke",
+    "test": "bun run --filter dipper test",
     "dipper": "dipper",
     "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/server/dist apps/server/ui apps/server/webui/static apps/web/dist .turbo apps/*/.turbo"
   },

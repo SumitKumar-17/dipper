@@ -244,8 +244,9 @@ func TrimHistory(maxRuns int, maxBytes int64) error {
 		count := runs.Stats().KeyN
 		stored := readStored(tx)
 
+		// Restart from First after each delete: stepping on from a deleted key can skip its neighbour.
 		cursor := runs.Cursor()
-		for key, value := cursor.First(); key != nil; key, value = cursor.Next() {
+		for key, value := cursor.First(); key != nil; key, value = cursor.First() {
 			overCount := maxRuns > 0 && count > maxRuns
 			overBytes := maxBytes > 0 && stored > maxBytes
 			if !overCount && !overBytes {

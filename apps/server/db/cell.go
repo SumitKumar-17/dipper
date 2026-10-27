@@ -4,7 +4,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math"
 	"math/big"
+	"strconv"
 	"time"
 
 	"dipper/protocol"
@@ -50,9 +52,9 @@ func toCell(value any) protocol.Cell {
 	case uint64:
 		return fmt.Sprintf("%d", v)
 	case float32:
-		return float64(v)
+		return finiteOrText(float64(v))
 	case float64:
-		return v
+		return finiteOrText(v)
 	case time.Time:
 		return protocol.ISOTime(v)
 	case *big.Int:
@@ -77,4 +79,12 @@ func toRow(values []any) protocol.Row {
 		row[i] = toCell(value)
 	}
 	return row
+}
+
+// JSON has no NaN or Infinity, and one such value would fail the encoding of its whole row batch.
+func finiteOrText(f float64) any {
+	if math.IsNaN(f) || math.IsInf(f, 0) {
+		return strconv.FormatFloat(f, 'g', -1, 64)
+	}
+	return f
 }
