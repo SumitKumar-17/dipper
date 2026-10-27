@@ -9,6 +9,7 @@ import { Spinner } from "../../ui/spinner";
 import { Switch } from "../../ui/switch";
 import { useWorkspace } from "../context";
 import { EXPLAIN_EVENT, type ExplainEventDetail } from "./explain-event";
+import { LintNotes } from "./lint-notes";
 import { PlanView } from "./plan-view";
 
 type State = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; plan: Plan };
@@ -69,6 +70,7 @@ function ExplainPanel({ sql }: { sql: string }): React.ReactElement {
         </label>
       </header>
       <pre className="max-h-24 overflow-auto border-b bg-muted/30 px-4 py-2 font-mono text-xs">{sql}</pre>
+      <LintNotes sql={sql} />
       <div className="min-h-0 flex-1 overflow-auto p-4">
         {state.status === "loading" && (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">

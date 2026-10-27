@@ -51,6 +51,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   The tag shows in the connection picker. Read-only is enforced by the server: every statement
   through the connection runs in a read-only session whatever the client asks, and row edits are
   refused.
+- **SQL lint** - The plan view lists problems found in the SQL itself: `= NULL`, `NOT IN` with a
+  subquery, `UPDATE` or `DELETE` with no `WHERE`, accidental cross joins, leading-wildcard `LIKE`, a
+  function wrapped around a column in `WHERE`, and `SELECT *`.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

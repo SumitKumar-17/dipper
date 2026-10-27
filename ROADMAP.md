@@ -42,7 +42,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] LATERAL joins (M)
 - [ ] Logical order versus written order strip (S)
 - [ ] EXPLAIN plan beside the walk, nodes mapped to stations (M)
-- [ ] Anti-pattern lint: `NOT IN` with NULLs, accidental cross joins, non-sargable predicates (M)
+- [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)
 - [ ] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (L)
 - [ ] Shareable step-through export as a standalone HTML file (M)
 
