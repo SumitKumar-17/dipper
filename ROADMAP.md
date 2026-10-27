@@ -98,7 +98,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Pinned results and cell-level diff between runs (M)
 - [ ] Charts from result columns (M)
 - [ ] Transactions toolbar and safe mode for UPDATE or DELETE without WHERE (M)
-- [ ] ER diagram export to SVG, PNG, Mermaid and DBML (M)
+- [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
 - [ ] Column profiling: distinct count, null rate, top values (M)
 - [ ] Per-connection colour, tag and read-only flag, so production looks like production (S/M)
 - [ ] File rename, delete and workspace search (S/M)

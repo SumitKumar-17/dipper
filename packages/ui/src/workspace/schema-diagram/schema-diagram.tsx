@@ -10,6 +10,7 @@ import { asyncData } from "../types";
 import { DiagramCanvas } from "./diagram-canvas";
 import { Legend, Notice } from "./diagram-chrome";
 import { DiagramToolbar } from "./diagram-toolbar";
+import { ExportMenu } from "./export-menu";
 import { useDiagramDrag } from "./use-diagram-drag";
 import { useDiagramLayout } from "./use-diagram-layout";
 import { useDiagramView } from "./use-diagram-view";
@@ -39,6 +40,7 @@ export function SchemaDiagram({ focus }: { focus?: string }): React.ReactElement
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-lg/5">
       <DiagramToolbar
         counts={data ? { relations: relationCount, tables: tableCount } : null}
+        exporter={data ? <ExportMenu database={database} schema={data} /> : null}
         database={database}
         keysOnly={layout.keysOnly}
         onFit={view.fit}

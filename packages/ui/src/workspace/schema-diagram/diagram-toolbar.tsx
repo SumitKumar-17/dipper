@@ -17,6 +17,7 @@ const ZOOM_STEP = 1.2;
 
 export function DiagramToolbar({
   counts,
+  exporter,
   database,
   keysOnly,
   onFit,
@@ -25,6 +26,8 @@ export function DiagramToolbar({
   onZoom,
   zoom,
 }: {
+  /** The export control, once there is a schema to export. */
+  exporter: React.ReactNode;
   /** What the schema holds, once it has loaded. */
   counts: { tables: number; relations: number } | null;
   database: string | null;
@@ -89,6 +92,7 @@ export function DiagramToolbar({
         <ToolButton label="Reset layout" onClick={onReset}>
           <RotateCcwIcon />
         </ToolButton>
+        {exporter}
         <div aria-hidden className="mx-1 h-4 w-px bg-border" />
         <DialogPrimitive.Close
           aria-label="Close"
