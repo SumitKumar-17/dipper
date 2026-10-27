@@ -81,8 +81,8 @@ change reviewed as plain SQL before it runs.
 - [x] Typed inputs: booleans toggle through true, false and NULL, JSON is validated as you type (date pickers still open) (M)
 - [x] Pending changes panel: every edit listed as the exact INSERT, UPDATE or DELETE it will run,
       dry-run checked first; apply all in one transaction or discard (M)
-- [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage
-      indexes and constraints; each change produces reviewable DDL (L)
+- [x] Structure editor: add, rename, retype and drop columns; set defaults and nullability; add and
+      drop indexes; each change is reviewed as DDL after a dry run (constraints and table rename in the UI still open) (L)
 - [x] Foreign key aware cells: click through to the referenced row (a lookup picker for editing is still open) (M)
 - [x] Read-only connections stay read-only (enforced in the server for queries and row edits); asking twice on red-tagged connections is still open (S)
 - [ ] Undo of the last applied change set where it is reversible (M)

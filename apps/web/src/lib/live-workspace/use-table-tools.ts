@@ -1,6 +1,8 @@
 import type {
   ActivitySnapshot,
   Advice,
+  AlterRequest,
+  AlterResult,
   ApplyRequest,
   ApplyResult,
   DatabaseObjects,
@@ -22,6 +24,7 @@ export type TableTools = {
   tableDetail: (schema: string, table: string) => Promise<TableDetail>;
   rowPage: (schema: string, table: string, request: RowPageRequest) => Promise<RunRecord>;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
+  alterTable: (schema: string, table: string, request: AlterRequest) => Promise<AlterResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
   objects: () => Promise<DatabaseObjects>;
   statementStats: (sort: StatementOrder) => Promise<StatementStats>;
@@ -58,6 +61,10 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       applyRows: async (schema, table, request) => {
         const { id, scoped } = aimed();
         return getClient().connections.applyRows(id, schema, table, { ...request, ...scoped });
+      },
+      alterTable: async (schema, table, request) => {
+        const { id, scoped } = aimed();
+        return getClient().connections.alterTable(id, schema, table, { ...request, ...scoped });
       },
       explain: async (request) => {
         const { id, scoped } = aimed();

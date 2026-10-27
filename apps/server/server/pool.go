@@ -413,6 +413,44 @@ func (p *Pool) Objects(ctx context.Context, idOrName, database string) (protocol
 	return lister.Objects(ctx, database)
 }
 
+// AlterTable builds and runs structural changes to one table. The table's own columns decide what
+// can be named, and the schema cache is dropped afterwards so the tree shows the new shape.
+func (p *Pool) AlterTable(ctx context.Context, idOrName, schema, table string, request protocol.AlterRequest) (protocol.AlterResult, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.AlterResult{}, err
+	}
+	if config.ReadOnly {
+		return protocol.AlterResult{}, httpx.Forbidden(config.Name + " is a read-only connection, so its structure cannot be changed")
+	}
+	detail, err := p.TableDetail(ctx, idOrName, request.Database, schema, table)
+	if err != nil {
+		return protocol.AlterResult{}, err
+	}
+	if detail.Kind != protocol.KindTable {
+		return protocol.AlterResult{}, httpx.BadRequest(table + " is a " + string(detail.Kind) + ", not a table")
+	}
+	statements, err := db.BuildAlterStatements(db.AlterTarget{
+		Dialect: config.Dialect, Schema: schema, Table: table, Columns: detail.Columns,
+	}, request.Operations)
+	if err != nil {
+		return protocol.AlterResult{}, httpx.BadRequest(err.Error())
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.AlterResult{}, err
+	}
+	editor, ok := driver.(db.StructureEditor)
+	if !ok {
+		return protocol.AlterResult{}, httpx.BadRequest(string(config.Dialect) + " connections cannot change structure yet")
+	}
+	result, err := editor.ApplyAlterations(ctx, request.Database, statements, request.DryRun)
+	if err == nil && result.Applied {
+		p.dropSchemas(config.ID)
+	}
+	return result, err
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

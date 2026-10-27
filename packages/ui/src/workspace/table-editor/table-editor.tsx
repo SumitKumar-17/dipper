@@ -30,6 +30,14 @@ export function TableEditor({ focus, schema, table }: { focus?: TableFocus; sche
     };
   }, [tableDetail, schema, table]);
 
+  // After a structure change: swap in the new detail without the loading flash, which would also
+  // throw the person back to the Data tab.
+  const refresh = React.useCallback((): void => {
+    tableDetail(schema, table)
+      .then((detail) => setLoad({ status: "ready", detail }))
+      .catch((error: unknown) => setLoad({ status: "error", message: messageOf(error) }));
+  }, [tableDetail, schema, table]);
+
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border bg-background shadow-lg">
       <header className="flex items-center gap-2 border-b px-4 py-3">
@@ -62,7 +70,7 @@ export function TableEditor({ focus, schema, table }: { focus?: TableFocus; sche
             <DataTab detail={load.detail} focus={focus} />
           </TabsPanel>
           <TabsPanel className="min-h-0 flex-1 overflow-auto" value="structure">
-            <StructureView detail={load.detail} />
+            <StructureView detail={load.detail} onChanged={refresh} />
           </TabsPanel>
           <TabsPanel className="min-h-0 flex-1 overflow-auto" value="ddl">
             <DdlView ddl={load.detail.ddl} />

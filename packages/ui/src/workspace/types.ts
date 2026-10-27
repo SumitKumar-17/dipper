@@ -6,6 +6,8 @@ import type { EditorLayout } from "./pane-layout";
 import type {
   ActivitySnapshot,
   Advice,
+  AlterRequest,
+  AlterResult,
   ApplyRequest,
   ApplyResult,
   BrowseResult,
@@ -316,6 +318,11 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /**
+   * Changes a table's structure from a list of operations the server turns into DDL. With `dryRun`
+   * it shows the statements, and on Postgres runs and rolls them back.
+   */
+  alterTable(schema: string, table: string, request: AlterRequest): Promise<AlterResult>;
   readonly transaction: TransactionView;
   /** Pins a connection and begins a transaction on it; runs then share that transaction. */
   beginTransaction(): Promise<void>;

@@ -1,6 +1,8 @@
 import type {
   ActivitySnapshot,
   Advice,
+  AlterRequest,
+  AlterResult,
   ApplyRequest,
   ApplyResult,
   ConnectionColor,
@@ -96,6 +98,14 @@ export type ConnectionsApi = {
     request: ApplyRequest,
     opts?: CallOptions,
   ): Promise<ApplyResult>;
+  /** Changes a table's structure from a reviewed list of operations, all or nothing where the database allows. */
+  alterTable(
+    id: string,
+    schema: string,
+    table: string,
+    request: AlterRequest,
+    opts?: CallOptions,
+  ): Promise<AlterResult>;
 };
 
 const tablePath = (schema: string, table: string): string =>
@@ -190,6 +200,13 @@ export function connectionsApi(http: Transport): ConnectionsApi {
 
     applyRows: (id, schema, table, request, opts) =>
       http.json<ApplyResult>(at(id, `${tablePath(schema, table)}/rows/apply`), {
+        method: "POST",
+        body: request,
+        signal: opts?.signal,
+      }),
+
+    alterTable: (id, schema, table, request, opts) =>
+      http.json<AlterResult>(at(id, `${tablePath(schema, table)}/alter`), {
         method: "POST",
         body: request,
         signal: opts?.signal,

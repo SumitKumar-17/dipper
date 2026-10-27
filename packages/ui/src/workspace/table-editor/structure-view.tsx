@@ -1,21 +1,45 @@
 import type { TableDetail } from "@dipper/protocol";
-import { KeyIcon } from "lucide-react";
+import { KeyIcon, PencilIcon } from "lucide-react";
 import * as React from "react";
 import { plural } from "../../lib/format";
 import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";
 import { ColumnProfile } from "./column-profile";
 import { formatBytes, formatWhen } from "./format";
+import { StructureEditor } from "./structure-editor";
 
 /** Everything the schema tree leaves out: sizes, columns, indexes, constraints and triggers. */
-export function StructureView({ detail }: { detail: TableDetail }): React.ReactElement {
+export function StructureView({ detail, onChanged }: { detail: TableDetail; onChanged: () => void }): React.ReactElement {
   const { connection } = useWorkspace();
+  const [editing, setEditing] = React.useState(false);
+  // Only a real table can be altered here, and never through a read-only connection.
+  const canEdit = detail.kind === "table" && !connection?.readOnly;
   // The column being profiled, if any: one at a time, since each is a scan of the table.
   const [profiled, setProfiled] = React.useState<string | null>(null);
   const dialect = connection?.dialect ?? "postgres";
+  if (editing) {
+    return (
+      <StructureEditor
+        detail={detail}
+        onCancel={() => setEditing(false)}
+        onChanged={() => {
+          setEditing(false);
+          onChanged();
+        }}
+      />
+    );
+  }
   return (
     <div className="flex flex-col gap-6 p-4">
-      <StatsStrip detail={detail} />
+      <div className="flex items-start justify-between gap-4">
+        <StatsStrip detail={detail} />
+        {canEdit && (
+          <Button onClick={() => setEditing(true)} size="xs" variant="outline">
+            <PencilIcon /> Edit structure
+          </Button>
+        )}
+      </div>
       <Section title="Columns">
         <Grid head={["Name", "Type", "Null", "Default", "Notes", ""]}>
           {detail.columns.map((c) => (

@@ -30,6 +30,9 @@ type ColumnDetail struct {
 	// Generated is the expression of a stored generated column, empty otherwise.
 	Generated string  `json:"generated,omitempty"`
 	Collation *string `json:"collation"`
+	// DefaultIsExpression is set when MySQL reports the default as an expression such as uuid()
+	// rather than a literal. It is not sent to clients: only the structure editor's DDL needs it.
+	DefaultIsExpression bool `json:"-"`
 }
 
 type IndexInfo struct {

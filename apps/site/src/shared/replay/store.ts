@@ -449,6 +449,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     tableDetail: () => Promise.reject(new Error(NOT_RECORDED)),
     rowPage: () => Promise.reject(new Error(NOT_RECORDED)),
     applyRows: () => Promise.reject(new Error(NOT_RECORDED)),
+    alterTable: () => Promise.reject(new Error(NOT_RECORDED)),
     explain: () => Promise.reject(new Error(NOT_RECORDED)),
     transaction: { state: "none", busy: false, error: null },
     beginTransaction: () => Promise.reject(new Error(NOT_RECORDED)),

@@ -128,6 +128,7 @@ database with a dry run, and then applies all of it in one transaction, or none 
 - NULL and DEFAULT are real choices, not typed words
 - Generated columns are locked; tables without a primary key, and views, open read-only
 - The **Structure** tab shows sizes, vacuum state, columns, indexes with scan counts, constraints and triggers
+- **Edit structure** (Structure tab) renames, retypes and drops columns, changes nullability and defaults, and adds or drops indexes. The DDL is reviewed first; Postgres dry-runs it and applies it in one transaction, while MySQL, which cannot roll back DDL, says so
 - The **DDL** tab shows the statements that would recreate the table
 
 ---

@@ -138,6 +138,20 @@ expect "plain column names its source, expression has none" "$(echo "$RO_SYNC" |
 expect "settings update persists" "$(curl -s -X PUT -H "$J" -d '{"maxRows":500}' "$B/settings" | json 'j.maxRows')" "500"
 expect "history has the runs" "$(curl -s "$B/history?limit=2" | json 'j.length')" "2"
 expect "history records the sql that ran" "$(curl -s "$B/history?limit=2" | json 'String(j.every(r => typeof r.sql === "string" && r.sql.length > 0))')" "true"
+curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"drop table if exists smoke_alter; create table smoke_alter (id int primary key, qty int, note text); insert into smoke_alter values (1, null, 'a')\"}" "$B/query/sync" >/dev/null
+ALTER="$B/connections/$CID/tables/public/smoke_alter/alter"
+alter() { curl -s -X POST -H "$J" -d "$1" "$ALTER"; }
+cols() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select string_agg(column_name, ',' order by ordinal_position) from information_schema.columns where table_name='smoke_alter'\"}" "$B/query/sync" | json 'j.results[0].rows[0][0]'; }
+DRY=$(alter '{"dryRun":true,"operations":[{"op":"add_column","newName":"total","type":"numeric(10,2)","nullable":false,"default":"0"}]}')
+expect "alter dry run validates the statements" "$(echo "$DRY" | json 'j.validated + ":" + j.applied')" "true:false"
+expect "alter dry run keeps nothing" "$(cols)" "id,qty,note"
+alter '{"operations":[{"op":"add_column","newName":"total","type":"integer","default":"0"},{"op":"rename_column","column":"note","newName":"memo"}]}' >/dev/null
+expect "alter applies and renames" "$(cols)" "id,qty,memo,total"
+FAILED_ALTER=$(alter '{"operations":[{"op":"rename_column","column":"memo","newName":"note"},{"op":"set_nullable","column":"qty","nullable":false}]}')
+expect "failed alter reports where it stopped" "$(echo "$FAILED_ALTER" | json 'j.applied + ":" + j.failedAt')" "false:1"
+expect "failed alter rolls everything back" "$(cols)" "id,qty,memo,total"
+expect "alter refuses a type that ends the statement" "$(alter '{"operations":[{"op":"alter_type","column":"qty","type":"int; drop table smoke_alter"}]}' | json 'j.error.code')" "bad_request"
+curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"drop table smoke_alter\"}" "$B/query/sync" >/dev/null
 expect_has "status sees the server" "running" "$($CLI status)"
 
 echo "== $FAILED failure(s)"

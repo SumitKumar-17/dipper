@@ -112,6 +112,7 @@ func readMysqlColumns(ctx context.Context, handle *sql.DB, tableCollation string
 			&comment, &extra, &generation, &collation); err != nil {
 			return err
 		}
+		c.DefaultIsExpression = strings.Contains(strings.ToLower(extra), "default_generated")
 		c.Nullable = nullable == "YES"
 		c.PK = key == "PRI"
 		if comment != "" {
