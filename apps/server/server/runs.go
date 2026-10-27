@@ -104,11 +104,28 @@ func (s *Server) registerHistory() {
 		default:
 			scope = protocol.ScopeAll
 		}
+		minMs := int64(0)
+		if raw := query.Get("minMs"); raw != "" {
+			parsed, err := strconv.ParseInt(raw, 10, 64)
+			if err != nil || parsed < 0 {
+				return httpx.BadRequest("minMs must be a non-negative number")
+			}
+			minMs = parsed
+		}
+		status := protocol.RunStatus(query.Get("status"))
+		switch status {
+		case "", protocol.RunDone, protocol.RunError, protocol.RunCancelled:
+		default:
+			return httpx.BadRequest("status must be done, error or cancelled")
+		}
 		records, err := storage.ListRuns(storage.HistoryQuery{
-			Limit:        limit,
-			ConnectionID: query.Get("connectionId"),
-			Scope:        scope,
-			Workspace:    query.Get("workspace"),
+			Text:          query.Get("q"),
+			Status:        status,
+			MinDurationMs: minMs,
+			Limit:         limit,
+			ConnectionID:  query.Get("connectionId"),
+			Scope:         scope,
+			Workspace:     query.Get("workspace"),
 		})
 		if err != nil {
 			return err

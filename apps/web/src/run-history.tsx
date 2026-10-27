@@ -11,7 +11,7 @@
 // project" - and a machine with four checkouts open over a year has one history in which none of
 // them can be found.
 
-import type { HistoryScope } from "@dipper/protocol";
+import type { HistoryScope, RunStatus } from "@dipper/protocol";
 import {
   Badge,
   Button,
@@ -37,13 +37,22 @@ import {
   useWorkspace,
   type Run,
 } from "@dipper/ui";
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon, SearchIcon } from "lucide-react";
 import * as React from "react";
+import { NO_FILTER, filterRuns, isFiltering, type HistoryFilter } from "./lib/history-filter";
 
 /**
  * Which runs to show. "This folder" is the default and includes the runs that belong to no folder:
  * a scratch query is part of what you were doing in this project even though no file holds it.
  */
+const STATUSES: Readonly<Record<RunStatus | "any", string>> = {
+  any: "Any result",
+  done: "Succeeded",
+  error: "Failed",
+  cancelled: "Cancelled",
+  running: "Running",
+};
+
 const SCOPES: Readonly<Record<HistoryScope, string>> = {
   workspace: "This folder",
   all: "All runs",
@@ -164,6 +173,8 @@ function RunRow({
 export function RunHistory(): React.ReactElement {
   const { runs, selectRun, run: runSql, historyScope, setHistoryScope, settings } = useWorkspace();
   const [collapsed, setCollapsed] = React.useState<ReadonlySet<string>>(new Set());
+  const [filter, setFilter] = React.useState<HistoryFilter>(NO_FILTER);
+  const shown = React.useMemo(() => filterRuns(runs, filter), [runs, filter]);
 
   // Only once settings have actually loaded: undefined is "not known yet", and answering it with
   // the off screen would flash "history is off" over a history that is about to arrive.
@@ -173,14 +184,14 @@ export function RunHistory(): React.ReactElement {
   // newest first too and each day's runs keep their order within it.
   const days = React.useMemo(() => {
     const byDay = new Map<string, Run[]>();
-    for (const run of runs) {
+    for (const run of shown) {
       const key = dayKey(run.startedAt);
       const bucket = byDay.get(key);
       if (bucket) bucket.push(run);
       else byDay.set(key, [run]);
     }
     return [...byDay.entries()];
-  }, [runs]);
+  }, [shown]);
 
   // Nothing is being recorded, so there is no empty list to explain and no scope to pick within
   // it. The panel says which setting did this and opens it: a screen that is blank *by a setting*
@@ -230,10 +241,43 @@ export function RunHistory(): React.ReactElement {
         </Select>
       </div>
 
+      {runs.length > 0 && (
+        <div className="flex shrink-0 flex-col gap-1.5 px-2 pb-1.5">
+          <label className="flex items-center gap-1.5 rounded-md border border-input px-2">
+            <SearchIcon aria-hidden className="size-3.5 text-muted-foreground" />
+            <input
+              aria-label="Search history"
+              className="h-7 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              onChange={(event) => setFilter({ ...filter, text: event.target.value })}
+              placeholder="Search the SQL"
+              value={filter.text}
+            />
+          </label>
+          <Select
+            items={STATUSES}
+            onValueChange={(value) => setFilter({ ...filter, status: value as HistoryFilter["status"] })}
+            value={filter.status}
+          >
+            <SelectTrigger className="w-full" size="sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectPopup>
+              {Object.entries(STATUSES).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectPopup>
+          </Select>
+        </div>
+      )}
+
       {runs.length === 0 ? (
         <p className="px-3 py-2 text-muted-foreground text-sm">
           {historyScope === "all" ? "Nothing run yet." : "Nothing run here yet."}
         </p>
+      ) : shown.length === 0 && isFiltering(filter) ? (
+        <p className="px-3 py-2 text-muted-foreground text-sm">No run matches.</p>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-1">
           {days.map(([key, dayRuns]) => {

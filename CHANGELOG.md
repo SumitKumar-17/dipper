@@ -54,6 +54,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **SQL lint** - The plan view lists problems found in the SQL itself: `= NULL`, `NOT IN` with a
   subquery, `UPDATE` or `DELETE` with no `WHERE`, accidental cross joins, leading-wildcard `LIKE`, a
   function wrapped around a column in `WHERE`, and `SELECT *`.
+- **History search** - Search the SQL of past runs and filter them by result in the History tab. The
+  API also filters by status and minimum duration.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

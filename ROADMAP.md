@@ -102,7 +102,7 @@ change reviewed as plain SQL before it runs.
 - [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)
 - [ ] File rename, delete and workspace search (S/M)
 - [ ] Accessible tree and tab semantics, `inert` for the collapsed sidebar (S/M)
-- [ ] History search and filter by connection, status and duration (S/M)
+- [x] History search and filter: the API filters by text, status and duration, the History tab by text and status (S/M)
 
 ## 4. Landing site
 

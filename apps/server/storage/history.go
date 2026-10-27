@@ -153,10 +153,25 @@ type HistoryQuery struct {
 	Scope protocol.HistoryScope
 	// The root Scope compares against, when it is `workspace`.
 	Workspace string
+	// Text keeps runs whose SQL contains it, ignoring case. Empty keeps every run.
+	Text string
+	// Status keeps runs that ended that way. Empty keeps every status.
+	Status protocol.RunStatus
+	// MinDurationMs keeps runs that took at least this long; zero keeps them all.
+	MinDurationMs int64
 }
 
 func (q HistoryQuery) keep(record protocol.RunRecord) bool {
 	if q.ConnectionID != "" && record.ConnectionID != q.ConnectionID {
+		return false
+	}
+	if q.Status != "" && record.Status != q.Status {
+		return false
+	}
+	if q.MinDurationMs > 0 && (record.DurationMs == nil || *record.DurationMs < q.MinDurationMs) {
+		return false
+	}
+	if q.Text != "" && !strings.Contains(strings.ToLower(record.SQL), strings.ToLower(q.Text)) {
 		return false
 	}
 	switch q.Scope {

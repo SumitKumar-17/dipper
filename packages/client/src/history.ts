@@ -8,6 +8,12 @@ export type HistoryOptions = CallOptions & {
   /** Default "all". `workspace` needs `workspace` set, and includes runs belonging to no folder. */
   scope?: HistoryScope;
   workspace?: string;
+  /** Only runs whose SQL contains this text, ignoring case. */
+  text?: string;
+  /** Only runs that ended this way. */
+  status?: "done" | "error" | "cancelled";
+  /** Only runs that took at least this many milliseconds. */
+  minMs?: number;
 };
 
 export type HistoryApi = {
@@ -31,6 +37,9 @@ export function historyApi(http: Transport): HistoryApi {
           connectionId: opts?.connectionId,
           scope: opts?.scope,
           workspace: opts?.workspace,
+          q: opts?.text,
+          status: opts?.status,
+          minMs: opts?.minMs,
         },
         signal: opts?.signal,
       }),

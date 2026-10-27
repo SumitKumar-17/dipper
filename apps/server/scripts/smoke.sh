@@ -87,6 +87,9 @@ expect "params with several statements is a 400" "400" "$(curl -s -o /dev/null -
 expect "statement stats answer, or say how to enable them" "true" "$(curl -s "$B/connections/$CID/statements" | json 'String(j.available === true || typeof j.hint === "string")')"
 expect "a malformed statement stats limit is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/connections/$CID/statements?limit=abc")"
 expect "database objects list the plpgsql extension" "true" "$(curl -s "$B/connections/$CID/objects" | json 'String(j.extensions.some(e=>e.name==="plpgsql"))')"
+expect "history can be searched by SQL text" "true" "$(curl -s "$B/history?q=ORDERS" | json 'String(j.every(r=>r.sql.toLowerCase().includes("orders")))')"
+expect "history rejects an unknown status" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/history?status=bogus")"
+expect "history rejects a malformed minimum duration" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/history?minMs=abc")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")
