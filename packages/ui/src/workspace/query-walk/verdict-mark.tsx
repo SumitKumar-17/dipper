@@ -8,13 +8,14 @@
 
 import type * as React from "react";
 import { cn } from "../../lib/utils";
+import type { RowVerdict } from "./scenes/types";
 
 export function VerdictMark({
   verdict,
   delayMs,
   settled,
 }: {
-  readonly verdict?: "pass" | "fail";
+  readonly verdict?: RowVerdict;
   readonly delayMs: number;
   readonly settled?: boolean;
 }): React.ReactElement {
@@ -25,11 +26,26 @@ export function VerdictMark({
         "flex size-3.5 items-center justify-center rounded-full text-white",
         !settled && "transition-opacity delay-(--d) duration-200",
         verdict ? "opacity-100" : "opacity-0",
-        verdict === "fail" ? "bg-destructive" : "bg-success",
+        verdict === "fail" && "bg-destructive",
+        verdict === "unknown" && "bg-warning",
+        (verdict === "pass" || verdict === undefined) && "bg-success",
       )}
       style={{ "--d": `${delayMs}ms` } as React.CSSProperties}
     >
-      {verdict === "fail" ? (
+      {verdict === "unknown" ? (
+        <svg
+          fill="none"
+          height="8"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.6"
+          viewBox="0 0 8 8"
+          width="8"
+        >
+          <path d="M2.6 2.6a1.5 1.5 0 1 1 2.2 1.3C4.2 4.2 4 4.5 4 5.1M4 6.8v.1" />
+        </svg>
+      ) : verdict === "fail" ? (
         <svg height="8" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" viewBox="0 0 8 8" width="8">
           <path d="M1.5 1.5l5 5M6.5 1.5l-5 5" />
         </svg>

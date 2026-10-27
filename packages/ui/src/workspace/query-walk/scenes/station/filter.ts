@@ -90,17 +90,25 @@ export function filterScene(ctx: SceneContext): Scene {
     const rows = rowsOf(source, cols, indices, "m:").map((row, i): Row => {
       const raw = source.rows[i]!;
       const pass = passAt >= 0 ? truthy(raw[passAt]) : kept.has(hashCells(raw, indices));
+      // A test that came back NULL is neither passed nor failed: the row is dropped all the same.
+      const unknown = passAt >= 0 && raw[passAt] === null;
       const extra = Object.fromEntries(
         member.cols.map((col, c) => [col.id, member.cells[c]![i] ?? null]),
       );
       return {
         ...row,
         cells: { ...row.cells, ...extra },
-        verdict: pass ? "pass" : "fail",
+        verdict: unknown ? "unknown" : pass ? "pass" : "fail",
         testIndex: i,
       };
     });
-    return tables([{ key: "main", title, cols: [...cols, ...member.cols], rows, note }], input);
+    const unknownRows = rows.filter((row) => row.verdict === "unknown").length;
+    const nullNote =
+      unknownRows === 0
+        ? undefined
+        : `${unknownRows === 1 ? "One row's test" : `${unknownRows} rows' tests`} came out NULL, which is neither true nor false. A filter keeps only rows whose test is true, so ${unknownRows === 1 ? "it is" : "they are"} dropped too.`;
+    const notes = [note, nullNote].filter(Boolean).join(" ") || undefined;
+    return tables([{ key: "main", title, cols: [...cols, ...member.cols], rows, note: notes }], input);
   }
   // An empty result is the honest answer to plenty of queries, and it is exactly the answer a
   // reader is most likely to mistake for a broken step, so the card says what emptied it and how

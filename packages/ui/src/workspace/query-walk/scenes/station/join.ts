@@ -21,10 +21,13 @@ export function joinScene(ctx: SceneContext): Scene {
   if (!joined) return EMPTY;
   const right = okResult(walk.results[0], `src${j + 1}.sample`);
   const left = prevSample;
+  // USING and NATURAL print each key column once, at the front, so the right side contributes that
+  // many columns fewer than it has. With the left sample at hand its width is the answer outright.
+  const merged = join.using || join.natural ? keys.length : 0;
   const leftCount = left
     ? left.columns.length
     : right
-      ? joined.columns.length - right.columns.length
+      ? joined.columns.length - (right.columns.length - merged)
       : joined.columns.length;
   const all = joined.columns.map((_, i) => i);
   const leftIdx = all.slice(0, leftCount);

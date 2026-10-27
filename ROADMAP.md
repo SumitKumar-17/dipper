@@ -31,7 +31,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] USING and NATURAL joins: correct left and right column split (S)
 - [x] MySQL `LIMIT offset, count` and quantified `ANY/ALL/SOME` subqueries reported instead of ignored (S)
 - [x] Aggregates without GROUP BY report the right row counts (set-returning functions still open) (S)
-- [ ] Three-valued logic: NULL shown as unknown, not as a failed row (S/M)
+- [x] Three-valued logic: a NULL test shows as unknown (orange ?), not as a failed row, with a note (S/M)
 - [ ] Collision-proof row identity (cell separator) (S)
 - [ ] Row lineage: follow one input row through join, group and output (L)
 - [ ] One consistent snapshot for all probes of a walk (M)

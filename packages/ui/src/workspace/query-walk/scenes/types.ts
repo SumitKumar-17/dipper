@@ -23,10 +23,17 @@ export type Col = {
   readonly drop?: boolean;
 };
 
+/**
+ * What a row's test came to. `unknown` is SQL's third answer: a WHERE or HAVING that evaluates to
+ * NULL does not keep the row, but it is not the same as a test the row failed, and showing it as
+ * one hides the most common surprise in the language (`x = NULL`, `NOT IN` against a NULL).
+ */
+export type RowVerdict = "pass" | "fail" | "unknown";
+
 export type Row = {
   readonly key: string;
   readonly cells: Readonly<Record<string, Cell>>;
-  readonly verdict?: "pass" | "fail";
+  readonly verdict?: RowVerdict;
   readonly testIndex?: number;
   readonly hl?: readonly string[];
   /** The row playback is standing on, in a card the reader scrubs through rather than watches once. */
