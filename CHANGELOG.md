@@ -47,6 +47,10 @@ The section matching a release's version becomes that release's notes on GitHub 
   enable.
 - **Database objects** - Command palette, Database objects. Functions and procedures with their
   full definitions, sequences, enum types, extensions and triggers. MySQL lists routines and triggers.
+- **Safer connections** - Tag a connection with a colour and mark it read-only in Settings, Connections.
+  The tag shows in the connection picker. Read-only is enforced by the server: every statement
+  through the connection runs in a read-only session whatever the client asks, and row edits are
+  refused.
 - **Compare schemas** - Command palette, Compare schemas. Shows what would make the current
   database match another one on the same connection: new and dropped tables, new and dropped
   columns, type, nullability and default changes, and foreign keys. It writes a migration script

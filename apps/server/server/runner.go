@@ -110,6 +110,9 @@ func (r *Runner) StartRun(ctx context.Context, input StartRunInput, emit func(pr
 	r.running[runID] = driver
 	r.mu.Unlock()
 
+	// A read-only connection is enforced here, not trusted to the client: whatever a request asks,
+	// its statements run in a read-only session.
+	readOnly := input.ReadOnly || config.ReadOnly
 	opts := protocol.QueryOptions{
 		RunID:     runID,
 		Database:  input.Database,
@@ -117,7 +120,7 @@ func (r *Runner) StartRun(ctx context.Context, input StartRunInput, emit func(pr
 		BatchSize: 200,
 		TimeoutMs: settings.StatementTimeout,
 		Record:    input.Record,
-		ReadOnly:  input.ReadOnly,
+		ReadOnly:  readOnly,
 		Params:    input.Params,
 	}
 	if input.MaxRows != nil {

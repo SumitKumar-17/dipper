@@ -20,6 +20,8 @@ type connectionBody struct {
 	Password *string        `json:"password"`
 	SSL      *bool          `json:"ssl"`
 	Options  map[string]any `json:"options"`
+	Color    *string        `json:"color"`
+	ReadOnly *bool          `json:"readOnly"`
 }
 
 // connectionFromBody builds the stored config, merging over existing for a PUT. An explicit
@@ -93,6 +95,15 @@ func connectionFromBody(body connectionBody, existing *protocol.ConnectionConfig
 		// network wants TLS - every hosted provider requires it - and a local one does not offer
 		// it, so the host is the answer. An explicit sslmode in a pasted URL outranks this.
 		merged.SSL = db.RemoteDefaultSSL(merged.Host)
+	}
+	if body.Color != nil {
+		if !protocol.ConnectionColors[*body.Color] {
+			return merged, httpx.BadRequest("color must be green, blue, amber, red or empty")
+		}
+		merged.Color = *body.Color
+	}
+	if body.ReadOnly != nil {
+		merged.ReadOnly = *body.ReadOnly
 	}
 	return merged, nil
 }

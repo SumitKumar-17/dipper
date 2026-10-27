@@ -9,6 +9,7 @@ import type {
   ApplyRequest,
   ApplyResult,
   BrowseResult,
+  ConnectionColor,
   ConnectionSummary,
   DatabaseObjects,
   DatabaseSchema,
@@ -160,6 +161,9 @@ export type ConnectionInput = {
   readonly user?: string;
   readonly password?: string;
   readonly database?: string;
+  /** An empty string clears the tag. */
+  readonly color?: ConnectionColor | "";
+  readonly readOnly?: boolean;
   readonly ssl?: boolean;
 };
 

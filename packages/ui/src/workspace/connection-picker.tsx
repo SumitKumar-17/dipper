@@ -16,6 +16,7 @@ import { Spinner } from "../ui/spinner";
 import { CONNECT_MS, CONNECT_STAGES } from "../onboarding/connecting-screen";
 import { requestConnectSetup } from "../onboarding/use-onboarding";
 import { useConnecting } from "./connecting-overlay";
+import { ConnectionTag } from "./connection-tag";
 import { useWorkspace } from "./context";
 import { ErrorText } from "./error-text";
 import { StatusDot, dotStatusOf } from "./status-dot";
@@ -50,6 +51,7 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
         ) : (
           <span className="text-muted-foreground">No connection</span>
         )}
+        {connection && <ConnectionTag connection={connection} />}
         {connection && <span className="text-muted-foreground">{connection.dialect}</span>}
         <ChevronDownIcon />
       </DropdownMenuTrigger>

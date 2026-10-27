@@ -319,6 +319,9 @@ func (p *Pool) ApplyRows(ctx context.Context, idOrName, schema, table string, re
 	if err != nil {
 		return protocol.ApplyResult{}, err
 	}
+	if config.ReadOnly {
+		return protocol.ApplyResult{}, httpx.Forbidden(config.Name + " is a read-only connection, so rows cannot be edited through it")
+	}
 	if detail.Kind != protocol.KindTable {
 		return protocol.ApplyResult{}, httpx.BadRequest(table + " is a " + string(detail.Kind) + " and cannot be edited")
 	}

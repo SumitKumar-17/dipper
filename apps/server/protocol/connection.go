@@ -12,7 +12,14 @@ type ConnectionConfig struct {
 	SSL       bool           `json:"ssl,omitempty"`
 	Options   map[string]any `json:"options,omitempty"`
 	CreatedAt string         `json:"createdAt"`
+	// Color tags the connection so a production database cannot be mistaken for a test one.
+	Color string `json:"color,omitempty"`
+	// ReadOnly makes the server refuse every write through this connection, whatever the client asks.
+	ReadOnly bool `json:"readOnly,omitempty"`
 }
+
+// ConnectionColors are the tags a connection may carry; empty means none.
+var ConnectionColors = map[string]bool{"": true, "green": true, "blue": true, "amber": true, "red": true}
 
 type ConnectionStatus string
 
@@ -37,6 +44,8 @@ type ConnectionSummary struct {
 	Status    ConnectionStatus `json:"status"`
 	Error     string           `json:"error,omitempty"`
 	Databases []string         `json:"databases,omitempty"`
+	Color     string           `json:"color,omitempty"`
+	ReadOnly  bool             `json:"readOnly,omitempty"`
 }
 
 func (c ConnectionConfig) Summary(status ConnectionStatus, errMsg string, databases []string) ConnectionSummary {
@@ -54,6 +63,8 @@ func (c ConnectionConfig) Summary(status ConnectionStatus, errMsg string, databa
 		Status:    status,
 		Error:     errMsg,
 		Databases: databases,
+		Color:     c.Color,
+		ReadOnly:  c.ReadOnly,
 	}
 }
 

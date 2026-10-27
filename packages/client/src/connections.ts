@@ -3,6 +3,7 @@ import type {
   Advice,
   ApplyRequest,
   ApplyResult,
+  ConnectionColor,
   ConnectionConfig,
   ConnectionSummary,
   DatabaseObjects,
@@ -23,7 +24,9 @@ import type { CallOptions, Transport } from "./http";
  * A create/update body. Every field is optional because the server merges: `url` fills in the
  * discrete fields, and a PUT merges over what is already stored.
  */
-export type ConnectionInput = Partial<Omit<ConnectionConfig, "id" | "createdAt">> & {
+export type ConnectionInput = Partial<Omit<ConnectionConfig, "id" | "createdAt" | "color">> & {
+  /** An empty string clears the tag. */
+  color?: ConnectionColor | "";
   /** `postgres://user:pass@host:5432/db` or `mysql://…`. */
   url?: string;
 };

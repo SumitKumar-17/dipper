@@ -84,8 +84,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Structure editor: add, rename, retype and drop columns; set defaults and nullability; manage
       indexes and constraints; each change produces reviewable DDL (L)
 - [ ] Foreign key aware cells: click through to the referenced row, pick from a lookup list (M)
-- [ ] Safe by default: read-only connections stay read-only, production-tagged connections ask
-      twice, DDL runs in a transaction where the dialect allows it (S)
+- [x] Read-only connections stay read-only (enforced in the server for queries and row edits); asking twice on red-tagged connections is still open (S)
 - [ ] Undo of the last applied change set where it is reversible (M)
 
 - [x] Result find and click-to-sort over the loaded rows (column filters next) (S/M)
@@ -100,7 +99,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Transactions toolbar and safe mode for UPDATE or DELETE without WHERE (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
 - [ ] Column profiling: distinct count, null rate, top values (M)
-- [ ] Per-connection colour, tag and read-only flag, so production looks like production (S/M)
+- [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)
 - [ ] File rename, delete and workspace search (S/M)
 - [ ] Accessible tree and tab semantics, `inert` for the collapsed sidebar (S/M)
 - [ ] History search and filter by connection, status and duration (S/M)

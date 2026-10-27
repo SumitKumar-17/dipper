@@ -7,7 +7,9 @@ import { cn } from "../../lib/utils";
 import { DialectMark } from "../../onboarding/dialect-mark";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
+import { ConnectionTag } from "../../workspace/connection-tag";
 import { StatusDot, dotStatusOf } from "../../workspace/status-dot";
+import { ConnectionSafety } from "./connection-safety";
 import type { TestState } from "./use-connection-actions";
 
 /** One saved connection, with Test, Edit and Remove all reporting into the row they belong to. */
@@ -44,6 +46,7 @@ export function ConnectionRow({
       <StatusDot label={connection.status} status={dotStatusOf(connection.status)} />
       <DialectMark className="text-muted-foreground" dialect={connection.dialect} />
       <span className="min-w-0 truncate text-sm">{connection.name}</span>
+      <ConnectionTag connection={connection} />
       <span className="min-w-0 truncate text-muted-foreground text-xs">
         {connection.dialect} · {connection.host}:{connection.port}/{connection.database}
       </span>
@@ -109,6 +112,7 @@ export function ConnectionRow({
           </Button>
         )}
       </span>
+      <ConnectionSafety connection={connection} />
     </li>
   );
 }

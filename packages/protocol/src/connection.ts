@@ -1,5 +1,8 @@
 export type Dialect = "postgres" | "mysql";
 
+/** A tag so a production database cannot be mistaken for a test one. */
+export type ConnectionColor = "green" | "blue" | "amber" | "red";
+
 export type ConnectionConfig = {
   id: string;
   name: string;
@@ -14,6 +17,10 @@ export type ConnectionConfig = {
   /** Free-form driver options (e.g. { application_name }). */
   options?: Record<string, string | number | boolean>;
   createdAt: string;
+  /** Absent for no tag. */
+  color?: ConnectionColor;
+  /** The server refuses every write through this connection, whatever the client asks. */
+  readOnly?: boolean;
 };
 
 export type ConnectionStatus = "connected" | "disconnected" | "error";
