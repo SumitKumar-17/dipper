@@ -305,7 +305,7 @@ func (p *Pool) Explain(ctx context.Context, idOrName string, request protocol.Ex
 		return protocol.Plan{}, httpx.BadRequest(string(config.Dialect) + " connections cannot explain yet")
 	}
 	plan, err := explainer.Explain(ctx, request)
-	if errors.Is(err, db.ErrExplainEmpty) || errors.Is(err, db.ErrExplainMultiple) {
+	if errors.Is(err, db.ErrExplainEmpty) || errors.Is(err, db.ErrExplainMultiple) || errors.Is(err, db.ErrExplainAnalyzeUnsupported) {
 		return protocol.Plan{}, httpx.BadRequest(err.Error())
 	}
 	return plan, err
