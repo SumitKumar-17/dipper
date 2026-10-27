@@ -4,6 +4,7 @@
 
 import type { EditorLayout } from "./pane-layout";
 import type {
+  ActivitySnapshot,
   ApplyRequest,
   ApplyResult,
   BrowseResult,
@@ -294,6 +295,10 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /** Every session on the current database right now, with who is blocking whom. */
+  activity(): Promise<ActivitySnapshot>;
+  /** Stops a session's running query (`cancel`) or closes its connection (`terminate`). */
+  signalSession(pid: number, action: "cancel" | "terminate"): Promise<void>;
   /** The query plan of one statement. `analyze` executes it, inside a transaction rolled back. */
   explain(request: ExplainRequest): Promise<Plan>;
   /** What the run history is costing on disk, for the pane that offers to clear it. */

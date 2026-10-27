@@ -5,6 +5,7 @@
 // actually change rather than the twenty the palette happens to destructure.
 
 import {
+  ActivityIcon,
   FootprintsIcon,
   PanelBottomIcon,
   PanelLeftIcon,
@@ -12,10 +13,13 @@ import {
   PlusIcon,
   RefreshCwIcon,
   SaveIcon,
+  ScanSearchIcon,
   WandSparklesIcon,
   WaypointsIcon,
 } from "lucide-react";
 import * as React from "react";
+import { requestActivity } from "../activity";
+import { requestExplain } from "../explain";
 import { requestQueryWalk } from "../query-walk";
 import { requestSchemaDiagram } from "../schema-diagram";
 import {
@@ -140,6 +144,28 @@ export function useBuiltinActions(
             const sql = statementAtCursor(activeBuffer.content, at)?.sql;
             if (sql) requestQueryWalk(sql);
           }
+          close();
+        },
+      },
+      {
+        label: "Explain query plan",
+        hint: "How the database will run the statement at the cursor",
+        icon: ScanSearchIcon,
+        onSelect: () => {
+          if (activeBuffer) {
+            const at = offsetOfPosition(activeBuffer.content, cursor.line, cursor.col);
+            const sql = statementAtCursor(activeBuffer.content, at)?.sql;
+            if (sql) requestExplain(sql);
+          }
+          close();
+        },
+      },
+      {
+        label: "Show activity",
+        hint: "Sessions, locks and who is blocking whom",
+        icon: ActivityIcon,
+        onSelect: () => {
+          requestActivity();
           close();
         },
       },

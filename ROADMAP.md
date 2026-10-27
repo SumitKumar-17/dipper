@@ -53,7 +53,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Lazy table detail: sizes, vacuum state, comments, partitions (M)
 - [ ] Triggers, functions, sequences, enums and extensions (M)
 - [x] DDL generation per table (M)
-- [x] Activity and locks: sessions, waits and blockers, with cancel and terminate (server; UI next) (M)
+- [x] Activity and locks: sessions, waits and blockers, with cancel and terminate (M)
 - [ ] Slow query statistics from `pg_stat_statements` and the MySQL digest tables (M)
 - [ ] Index and health advice: unused, duplicate and missing indexes, dead tuples (M)
 - [ ] Schema diff with migration SQL (M/L)
