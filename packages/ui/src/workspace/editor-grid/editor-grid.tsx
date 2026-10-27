@@ -43,6 +43,7 @@ import { DragGhost } from "./drop-affordances";
 import { GridContext, type GridContextValue } from "./grid-context";
 import { RESULTS_EXIT_MS } from "./pane-body";
 import { NodeView } from "./tree-view";
+import { UnsavedCloseDialog } from "./unsaved-close-dialog";
 
 /** Where the results pane goes when ⌘J brings it back, rather than as a tab beside a query. */
 const HOMES: Readonly<Record<PaneId, PaneHome>> = {
@@ -59,8 +60,10 @@ export function EditorGrid({
   onLayoutChange: (layout: EditorLayout) => void;
   className?: string;
 }): React.ReactElement {
-  const { buffers, activeBufferId, panels, closeBuffer, focusBuffer, newScratch, setPanel } =
+  const { buffers, activeBufferId, panels, closeBuffer, focusBuffer, newScratch, save, setPanel } =
     useWorkspace();
+  // The buffer waiting on an answer to "save before closing?".
+  const [unsaved, setUnsaved] = React.useState<{ id: string; name: string } | null>(null);
 
   const reduced = useReducedMotion();
 
@@ -160,10 +163,12 @@ export function EditorGrid({
   const close = React.useCallback(
     (pane: PaneId): void => {
       const bufferId = paneBufferId(pane);
-      if (bufferId) closeBuffer(bufferId);
+      const buffer = bufferId ? buffers.find((b) => b.id === bufferId) : undefined;
+      if (bufferId && buffer?.dirty) setUnsaved({ id: bufferId, name: buffer.name });
+      else if (bufferId) closeBuffer(bufferId);
       else if (pane === RESULTS_PANE) setPanel("outputOpen", false);
     },
-    [closeBuffer, setPanel],
+    [buffers, closeBuffer, setPanel],
   );
 
   const addScratch = React.useCallback(
@@ -237,6 +242,22 @@ export function EditorGrid({
         <DragOverlay dropAnimation={null}>
           {dragging ? <DragGhost pane={dragging} /> : null}
         </DragOverlay>
+        <UnsavedCloseDialog
+          name={unsaved?.name ?? null}
+          onCancel={() => setUnsaved(null)}
+          onDiscard={() => {
+            if (unsaved) closeBuffer(unsaved.id);
+            setUnsaved(null);
+          }}
+          onSave={() => {
+            const pending = unsaved;
+            setUnsaved(null);
+            if (!pending) return;
+            // `save` writes the focused buffer, so focus it first, and close only once it is written.
+            focusBuffer(pending.id);
+            void save().then(() => closeBuffer(pending.id));
+          }}
+        />
       </GridContext.Provider>
     </DndContext>
   );

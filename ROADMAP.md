@@ -17,7 +17,7 @@ checked off as they land; each one is its own commit.
       the reset fails (`BEGIN READ ONLY` wrapping still open) (S)
 - [ ] Stop draining the full result after the maxRows cut (S)
 - [x] Resolve Postgres type names through pgx's type table (bytea, inet, arrays and more); only user-defined types stay `oid:NNN` (S)
-- [ ] Serialise file saves and prompt before discarding a dirty tab or overwriting on save-as (S)
+- [x] Prompt before closing a tab with unsaved changes (save-as overwrite check and serialised saves still open; the prompt is not yet verified in a browser) (S)
 - [ ] Detect a dead or restarted server in the UI and resync (S)
 - [x] Refresh `docs/api/http.md` where it was stale (history store, MySQL `source`, UI fallback) (S)
 
