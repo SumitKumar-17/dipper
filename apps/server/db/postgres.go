@@ -30,7 +30,8 @@ type postgresDriver struct {
 	pool  *pgxpool.Pool
 	extra map[string]*pgxpool.Pool
 
-	sources *columnSourceCache
+	sources  *columnSourceCache
+	sessions *sessionRegistry[*pgSession]
 	// Notices arrive on the connection, not the query, so the sink currently reading that
 	// connection is looked up when one fires.
 	noticeSinks sync.Map // *pgconn.PgConn -> *Sink
@@ -42,6 +43,7 @@ func newPostgresDriver(config protocol.ConnectionConfig) *postgresDriver {
 		extra:   map[string]*pgxpool.Pool{},
 		sources: newColumnSourceCache(),
 	}
+	d.sessions = newSessionRegistry(closePgSession)
 	d.execStatement = d.exec
 	d.killHandle = d.kill
 	d.isCancellation = pgIsCancellation
@@ -128,6 +130,8 @@ func (d *postgresDriver) Disconnect() error {
 	d.mu.Unlock()
 
 	d.clearRuns()
+	// Sessions hold connections of these pools, so they go first.
+	d.sessions.closeAll()
 	for _, extra := range extras {
 		extra.Close()
 	}
@@ -245,6 +249,9 @@ func (d *postgresDriver) Cancel(runID string) bool {
 }
 
 func (d *postgresDriver) exec(ctx context.Context, sql string, sc *StatementContext) error {
+	if id := sc.Options.SessionID; id != "" {
+		return d.execInSession(ctx, id, sql, sc)
+	}
 	pool, err := d.poolFor(ctx, sc.Options.Database)
 	if err != nil {
 		return err
@@ -254,7 +261,12 @@ func (d *postgresDriver) exec(ctx context.Context, sql string, sc *StatementCont
 		return err
 	}
 	defer conn.Release()
+	return d.execOn(ctx, pool, conn, sql, sc)
+}
 
+// execOn runs one statement on a connection it was handed: a pooled one that is released
+// afterwards, or a session's, which stays pinned.
+func (d *postgresDriver) execOn(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, sql string, sc *StatementContext) error {
 	pgConn := conn.Conn().PgConn()
 	d.noticeSinks.Store(pgConn, sc.Sink)
 	defer d.noticeSinks.Delete(pgConn)

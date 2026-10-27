@@ -7,6 +7,7 @@ import { discoverApi, type DiscoverApi } from "./discover";
 import { queryApi, type QueryApi } from "./query";
 import { runsApi, type RunsApi } from "./runs";
 import { historyApi, type HistoryApi } from "./history";
+import { sessionsApi, type SessionsApi } from "./sessions";
 import { settingsApi, type SettingsApi } from "./settings";
 import { filesApi, type FilesApi } from "./files";
 import { eventsApi, type EventsApi } from "./events";
@@ -23,6 +24,7 @@ export type DipperClient = {
   query: QueryApi;
   runs: RunsApi;
   history: HistoryApi;
+  sessions: SessionsApi;
   settings: SettingsApi;
   files: FilesApi;
   events: EventsApi;
@@ -59,6 +61,7 @@ export function createClient(options: ClientOptions): DipperClient {
     query: queryApi(http),
     runs: runsApi(http),
     history: historyApi(http),
+    sessions: sessionsApi(http),
     settings: settingsApi(http),
     files: filesApi(http),
     events: eventsApi(http),

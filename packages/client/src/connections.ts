@@ -12,6 +12,7 @@ import type {
   Plan,
   RowPageRequest,
   RunRecord,
+  SessionInfo,
   SchemaDiffRequest,
   SchemaDiffResult,
   StatementOrder,
@@ -73,6 +74,8 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** Pins a database connection, so a transaction can span statements. Close it when done. */
+  openSession(id: string, database?: string, opts?: CallOptions): Promise<SessionInfo>;
   /** Functions, sequences, enums, extensions and triggers of one database. */
   objects(id: string, opts?: TableDetailOptions): Promise<DatabaseObjects>;
   /** The heaviest statements the server has seen, ranked by total time, mean time or calls. */
@@ -155,6 +158,13 @@ export function connectionsApi(http: Transport): ConnectionsApi {
       http.json<RunRecord>(at(id, `${tablePath(schema, table)}/rows/page`), {
         method: "POST",
         body: request,
+        signal: opts?.signal,
+      }),
+
+    openSession: (id, database, opts) =>
+      http.json<SessionInfo>(at(id, "/sessions"), {
+        method: "POST",
+        body: database ? { database } : {},
         signal: opts?.signal,
       }),
 

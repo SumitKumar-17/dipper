@@ -31,6 +31,7 @@ type queryBody struct {
 	Source       *string `json:"source"`
 	Workspace    *string `json:"workspace"`
 	Params       []any   `json:"params"`
+	SessionID    string  `json:"sessionId"`
 }
 
 func (s *Server) runInputFrom(r *http.Request) (StartRunInput, error) {
@@ -54,6 +55,12 @@ func (s *Server) runInputFrom(r *http.Request) (StartRunInput, error) {
 		return StartRunInput{}, err
 	}
 
+	if body.SessionID != "" {
+		if err := s.pool.checkSession(body.SessionID, config.ID); err != nil {
+			return StartRunInput{}, err
+		}
+	}
+
 	runID := body.RunID
 	if runID == "" {
 		runID = storage.NewID()
@@ -73,6 +80,7 @@ func (s *Server) runInputFrom(r *http.Request) (StartRunInput, error) {
 		Record:       body.Record,
 		Source:       source,
 		Params:       body.Params,
+		SessionID:    body.SessionID,
 	}
 	if body.Workspace != nil {
 		input.Workspace = *body.Workspace

@@ -99,6 +99,7 @@ func (s *Server) routes() {
 	s.registerActivity()
 	s.registerAdvice()
 	s.registerObjects()
+	s.registerSessions()
 	s.registerStatementStats()
 	s.registerSchemaDiff()
 	s.registerQuery()

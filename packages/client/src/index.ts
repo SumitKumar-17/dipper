@@ -45,3 +45,5 @@ export type { EventsApi } from "./events";
 
 // Re-exported so a consumer never needs a second import for the wire types.
 export type * from "@dipper/protocol";
+
+export type { SessionsApi } from "./sessions";

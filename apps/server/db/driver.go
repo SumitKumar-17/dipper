@@ -49,6 +49,8 @@ type RunOptions struct {
 	// ReadOnly is applied per statement, on that statement's own pooled connection, never once
 	// per run.
 	ReadOnly bool
+	// SessionID pins the statement to a held connection, so a transaction can span statements.
+	SessionID string
 	// Params are the text values bound to the statement's placeholders, nil for NULL.
 	Params []any
 }
@@ -61,6 +63,7 @@ func NormalizeRunOptions(opts protocol.QueryOptions) RunOptions {
 		BatchSize: 200,
 		ReadOnly:  opts.ReadOnly,
 		Params:    boundParams(opts.Params),
+		SessionID: opts.SessionID,
 	}
 	if opts.MaxRows != 0 {
 		out.MaxRows = max(0, opts.MaxRows)

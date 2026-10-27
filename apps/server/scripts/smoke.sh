@@ -90,6 +90,15 @@ expect "database objects list the plpgsql extension" "true" "$(curl -s "$B/conne
 expect "history can be searched by SQL text" "true" "$(curl -s "$B/history?q=ORDERS" | json 'String(j.every(r=>r.sql.toLowerCase().includes("orders")))')"
 expect "history rejects an unknown status" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/history?status=bogus")"
 expect "history rejects a malformed minimum duration" "400" "$(curl -s -o /dev/null -w '%{http_code}' "$B/history?minMs=abc")"
+SID="$(curl -s -X POST "$B/connections/$CID/sessions" | json 'j.id')"
+sess() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sessionId\":\"$SID\",\"sql\":\"$1\",\"record\":false}" "$B/query/sync" >/dev/null; }
+sess "begin"
+sess "insert into orders (status) values ('session-test')"
+expect "a session reports its open transaction" "open" "$(curl -s "$B/sessions/$SID" | json 'j.transaction')"
+expect "an uncommitted session row is invisible to other connections" "0" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select count(*) from orders where status = 'session-test'\",\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
+curl -s -X DELETE "$B/sessions/$SID" >/dev/null
+expect "closing a session rolls its transaction back" "0" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select count(*) from orders where status = 'session-test'\",\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
+expect "a closed session is a 404" "404" "$(curl -s -o /dev/null -w '%{http_code}' "$B/sessions/$SID")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

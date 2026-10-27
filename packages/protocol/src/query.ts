@@ -111,6 +111,11 @@ export type QueryOptions = {
    * so they never have to be spliced into the SQL text. Several statements with params is a 400.
    */
   params?: (string | number | boolean | null)[];
+  /**
+   * Runs the statements on a pinned connection (see `connections.openSession`), so a transaction
+   * can span statements and runs.
+   */
+  sessionId?: string;
   /** The workspace root this run belongs to; see `RunRecord.workspace`. */
   workspace?: string;
 };

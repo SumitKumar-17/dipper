@@ -10,7 +10,7 @@ checked off as they land; each one is its own commit.
 - [x] NaN and Infinity cells no longer break a whole row batch
 - [x] Connection URL options are allow-listed, so `?password=` never reaches the connection list
 - [x] History trim no longer skips keys after a delete
-- [ ] Pin one connection per run so `BEGIN; ...; COMMIT;` scripts work (S/M)
+- [x] Pinned sessions: statements sent with a session id share one connection, so transactions span runs; idle sessions are rolled back and closed (Postgres and MySQL) (L)
 - [ ] Cancel through the wire protocol and give column-source lookups their own connection, so four
       concurrent runs cannot exhaust the pool (S)
 - [x] Reset session settings with a context that survives cancellation and discard the connection if

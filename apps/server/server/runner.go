@@ -27,6 +27,8 @@ type StartRunInput struct {
 	Source   protocol.RunSource
 	// Params bind to the placeholders of a single statement; see QueryOptions.
 	Params []any
+	// SessionID pins the run to a held connection, so a transaction spans runs.
+	SessionID string
 	// The workspace root the SQL came from, for History's per-folder view. Empty is global.
 	Workspace string
 }
@@ -122,6 +124,7 @@ func (r *Runner) StartRun(ctx context.Context, input StartRunInput, emit func(pr
 		Record:    input.Record,
 		ReadOnly:  readOnly,
 		Params:    input.Params,
+		SessionID: input.SessionID,
 	}
 	if input.MaxRows != nil {
 		opts.MaxRows = *input.MaxRows

@@ -21,6 +21,9 @@ type Pool struct {
 	mu      sync.Mutex
 	entries map[string]*poolEntry
 	schemas map[string]schemaEntry
+	// sessions maps a session id to the connection that owns it, so a route that knows only the id
+	// can find the driver holding it.
+	sessions map[string]string
 }
 
 type poolEntry struct {
@@ -37,7 +40,7 @@ type schemaEntry struct {
 }
 
 func NewPool() *Pool {
-	return &Pool{entries: map[string]*poolEntry{}, schemas: map[string]schemaEntry{}}
+	return &Pool{entries: map[string]*poolEntry{}, schemas: map[string]schemaEntry{}, sessions: map[string]string{}}
 }
 
 func (p *Pool) Config(idOrName string) (protocol.ConnectionConfig, error) {

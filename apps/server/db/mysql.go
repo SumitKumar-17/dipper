@@ -25,10 +25,12 @@ type mysqlDriver struct {
 	db        *sql.DB
 	extra     map[string]*sql.DB
 	connected bool
+	sessions  *sessionRegistry[*sql.Conn]
 }
 
 func newMysqlDriver(config protocol.ConnectionConfig) *mysqlDriver {
 	d := &mysqlDriver{base: newBase(config), extra: map[string]*sql.DB{}}
+	d.sessions = newSessionRegistry(closeMysqlSession)
 	d.execStatement = d.exec
 	d.killHandle = d.kill
 	d.isCancellation = mysqlIsCancellation
@@ -103,6 +105,7 @@ func (d *mysqlDriver) Disconnect() error {
 	d.mu.Unlock()
 
 	d.clearRuns()
+	d.sessions.closeAll()
 	for _, extra := range extras {
 		extra.Close()
 	}
@@ -224,6 +227,9 @@ func (d *mysqlDriver) Cancel(runID string) bool {
 }
 
 func (d *mysqlDriver) exec(ctx context.Context, statement string, sc *StatementContext) error {
+	if id := sc.Options.SessionID; id != "" {
+		return d.execInSession(ctx, id, statement, sc)
+	}
 	handle, err := d.dbFor(ctx, sc.Options.Database)
 	if err != nil {
 		return err
@@ -234,7 +240,12 @@ func (d *mysqlDriver) exec(ctx context.Context, statement string, sc *StatementC
 		return err
 	}
 	defer conn.Close()
+	return d.execOn(ctx, conn, statement, sc)
+}
 
+// execOn runs one statement on a connection it was handed: a pooled one that is closed afterwards,
+// or a session's, which stays pinned.
+func (d *mysqlDriver) execOn(ctx context.Context, conn *sql.Conn, statement string, sc *StatementContext) error {
 	var threadID int64
 	if err := conn.QueryRowContext(ctx, "select connection_id()").Scan(&threadID); err != nil {
 		return err

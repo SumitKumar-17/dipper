@@ -210,6 +210,8 @@ type QueryOptions struct {
 	// Params are bound to the placeholders of a single statement ($1, $2 on Postgres; ? on MySQL),
 	// so values never have to be spliced into the SQL text. Each is a JSON scalar or null.
 	Params []any `json:"params,omitempty"`
+	// SessionID runs the statements on a pinned connection (see POST /api/connections/{id}/sessions).
+	SessionID string `json:"sessionId,omitempty"`
 	// The workspace root this run belongs to; see RunRecord.Workspace.
 	Workspace string `json:"workspace,omitempty"`
 }
