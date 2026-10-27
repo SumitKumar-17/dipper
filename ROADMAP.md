@@ -93,7 +93,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Keyboard shortcut editor (M)
 - [ ] Typed command registry for the palette, with prefixes for tables and history (M)
 - [ ] Snippets and tagged saved queries (M)
-- [ ] EXPLAIN plan visualiser pane (L)
+- [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)
 - [ ] Pinned results and cell-level diff between runs (M)
 - [ ] Charts from result columns (M)
 - [ ] Transactions toolbar and safe mode for UPDATE or DELETE without WHERE (M)

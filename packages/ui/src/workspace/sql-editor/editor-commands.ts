@@ -6,6 +6,7 @@ import { selectAll, toggleComment } from "@codemirror/commands";
 import type { EditorView } from "@codemirror/view";
 import type { Dialect, Settings } from "@dipper/protocol";
 import * as React from "react";
+import { requestExplain } from "../explain/explain-event";
 import { requestQueryWalk } from "../query-walk/query-walk-event";
 import type { CursorPosition } from "../types";
 import { formatDocument } from "./format-document";
@@ -34,6 +35,8 @@ export type EditorCommands = {
   toggleCommentFromMenu: () => void;
   /** Opens the query walk on the selection, or on the statement at the cursor. */
   visualiseFromMenu: () => void;
+  /** Opens the plan view on the selection, or on the statement at the cursor. */
+  explainFromMenu: () => void;
 };
 
 export function useEditorCommands(
@@ -89,6 +92,15 @@ export function useEditorCommands(
     const selected = from !== to ? view.state.doc.sliceString(from, to).trim() : "";
     const sqlText = selected || statementAtCursor(view.state.doc.toString(), head)?.sql;
     if (sqlText) requestQueryWalk(sqlText);
+  }, [viewRef]);
+
+  const explainFromMenu = React.useCallback(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    const { from, to, head } = view.state.selection.main;
+    const selected = from !== to ? view.state.doc.sliceString(from, to).trim() : "";
+    const sqlText = selected || statementAtCursor(view.state.doc.toString(), head)?.sql;
+    if (sqlText) requestExplain(sqlText);
   }, [viewRef]);
 
   const toggleCommentFromMenu = React.useCallback(() => {
@@ -168,5 +180,6 @@ export function useEditorCommands(
     selectAllFromMenu,
     toggleCommentFromMenu,
     visualiseFromMenu,
+    explainFromMenu,
   };
 }
