@@ -14,6 +14,12 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- **SQLite** - A third database: connect to a SQLite file by path (or `sqlite:///path/to/app.db`).
+  It uses a pure-Go driver, so the single binary still cross-compiles to every platform with no
+  SQLite install. Schema tree with foreign keys, table structure (indexes, constraints, triggers,
+  the stored `CREATE`), query plans from `EXPLAIN QUERY PLAN`, the Table Editor, triggers in the
+  objects view, and a read-only mode the engine itself enforces. Health advice, activity, slow-query
+  statistics and pinned sessions are not available for SQLite.
 - **Table Editor** - Double-click a table in the schema tree, or use its Open table button, to
   browse and edit it. Rows load a page at a time with server-side sorting and filtering. Edit a
   cell, add a row or delete one, and nothing is written until you review the exact SQL it will run.

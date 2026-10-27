@@ -1,7 +1,8 @@
 # Server structure (`apps/server`)
 
 The server is a single Go module (`dipper`) that builds to one binary with the web UI inside it.
-It has three direct dependencies - `pgx/v5`, `go-sql-driver/mysql`, `fsnotify` - and uses the
+It has four direct dependencies - `pgx/v5`, `go-sql-driver/mysql`, the pure-Go
+`modernc.org/sqlite`, `fsnotify` - and uses the
 standard library for everything else, including routing, CORS, SSE, NDJSON, CSV and the embed.
 
 The HTTP surface it serves is specified in [docs/api/http.md](../api/http.md). That page is the
@@ -57,6 +58,16 @@ apps/server/
 │   ├── columnsource.go       relation oid + attnum → table and column names, cached
 │   ├── mysql.go              the same shape over database/sql; cancel via KILL QUERY
 │   ├── mysqlintrospect.go    the schema tree from information_schema
+│   ├── sqlite.go             the file-based dialect over database/sql and modernc.org/sqlite;
+│   │                         cancel and timeout are context interruption, read-only is
+│   │                         `pragma query_only` per statement
+│   ├── sqlitetypes.go        declared type -> affinity, column alignment, RETURNING detection
+│   ├── sqliteintrospect.go   the schema tree from sqlite_master and the table-valued pragmas
+│   ├── sqlitetable.go        table detail: indexes, constraints, triggers, stored DDL
+│   ├── plan_sqlite.go        EXPLAIN QUERY PLAN rows -> the shared Plan tree
+│   ├── sqliteexplain.go sqliteobjects.go    the Explainer and ObjectLister capabilities
+│   ├── sqliteurl.go          sqlite: / sqlite:// / file: URLs
+│   ├── sqlrowedit.go         the Table Editor's transaction for the database/sql dialects
 │   └── url.go                postgres:// and mysql:// parsing, and the driver factory
 │
 ├── storage/                  ~/.dipper: connections.json (0600), settings.json, history.db,
@@ -104,10 +115,16 @@ that is how the stale-write 409 returns the file as it is on disk now.
 
 ## Drivers
 
-`db.Driver` is nine methods. Both implementations embed `base`, which owns the run loop (one
+`db.Driver` is nine methods. All three implementations embed `base`, which owns the run loop (one
 `start`, one `statement` per statement, one `done`), the cancellation flag and the per-statement
 bookkeeping; each dialect supplies four hooks - execute a statement, kill a handle, recognise a
 cancellation, convert an error. That is the Go shape of what `BaseDriver` did with inheritance.
+
+SQLite is the odd one out: no server, so `Database` is a file path and host, port and login are
+unused. Its driver implements `TableInspector`, `Explainer`, `ObjectLister` and `RowEditor` and
+leaves out activity, advice, statement stats and sessions; the server answers 400 for a capability
+a driver does not implement. `:memory:` pins the pool to one connection, because each connection
+would otherwise be its own empty database.
 
 Streaming has no cursor. pgx reads a result set message by message rather than buffering it, so
 `conn.Query` plus an early `Close` on the maxRows cut does what `pg-cursor` was there for.

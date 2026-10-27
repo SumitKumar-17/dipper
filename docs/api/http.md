@@ -60,7 +60,7 @@ not drop it. Detection is push-based (OS file watching); the ping is pure keep-a
 | Method | Path                              | Body                                           | Response                                       | Purpose                                                                                                                                                      |
 | ------ | --------------------------------- | ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | GET    | `/api/connections`                | -                                              | `ConnectionSummary[]`                          | Every saved connection with its live status. Passwords are never returned.                                                                                   |
-| POST   | `/api/connections`                | `{ url }` or partial `ConnectionConfig` fields | `ConnectionSummary` (201)                      | Create a connection. `url` is a `postgres://`/`mysql://` shorthand that fills in the discrete fields; explicit fields win over it. 409 if the name is taken. `color` (`green`, `blue`, `amber`, `red`, or empty) tags it; `readOnly: true` makes the server run every statement through it in a read-only session and refuse row edits (403), whatever the client asks. |
+| POST   | `/api/connections`                | `{ url }` or partial `ConnectionConfig` fields | `ConnectionSummary` (201)                      | Create a connection. `url` is a `postgres://`, `mysql://` or `sqlite:` shorthand that fills in the discrete fields; explicit fields win over it. 409 if the name is taken. `color` (`green`, `blue`, `amber`, `red`, or empty) tags it; `readOnly: true` makes the server run every statement through it in a read-only session and refuse row edits (403), whatever the client asks. |
 | PUT    | `/api/connections/:id`            | same as POST                                   | `ConnectionSummary`                            | Update a connection, merging the body over the stored config, and drop the pooled driver.                                                                    |
 | DELETE | `/api/connections/:id`            | -                                              | `{ ok: boolean }`                              | Forget the driver and remove the saved connection.                                                                                                           |
 | POST   | `/api/connections/test` | `ConnectionInput` | `{ serverVersion, latencyMs }` | Tries details that are not saved yet; nothing is stored and nothing stays connected. `name` is optional. 400 with the same failure codes as the saved test. |
@@ -70,10 +70,10 @@ not drop it. Detection is push-based (OS file watching); the ping is pure keep-a
 | GET    | `/api/connections/:id/databases`  | -                                              | `string[]`                                     | Databases visible to the connection.                                                                                                                         |
 | GET    | `/api/connections/:id/schema`     | -                                              | `DatabaseSchema`                               | Schema → table → column tree. `?database=` picks a non-default database; `?refresh=1` bypasses the cache.                                                    |
 | GET    | `/api/connections/:id/tables/:schema/:table` | -                                  | `TableDetail`                                  | Indexes, constraints, triggers, sizes, vacuum state and rebuilt DDL for one table. `?database=` as for schema. 404 when the table does not exist; 400 on a dialect without support. |
-| POST   | `/api/connections/:id/explain` | `ExplainRequest` `{ sql, database?, analyze? }` | `Plan` | One statement only (400 otherwise). `analyze` runs it inside a transaction that is always rolled back. Postgres returns a structured tree with per-node warnings; MySQL returns a tree for plain EXPLAIN and the text tree under ANALYZE. |
+| POST   | `/api/connections/:id/explain` | `ExplainRequest` `{ sql, database?, analyze? }` | `Plan` | One statement only (400 otherwise). `analyze` runs it inside a transaction that is always rolled back. Postgres returns a structured tree with per-node warnings; MySQL returns a tree for plain EXPLAIN and the text tree under ANALYZE. SQLite returns its `EXPLAIN QUERY PLAN` as a tree of access paths with no costs, and refuses `analyze` (400). |
 | POST   | `/api/schema/diff` | `SchemaDiffRequest` `{ from, to }` | `SchemaDiffResult` | Compares two schema trees (fresh reads) and lists what must change in `from` to match `to`: tables, columns (type, nullability, default) and foreign keys, with a migration script. Both sides must share a dialect (400 otherwise). Views and indexes are not compared yet. |
 | GET    | `/api/connections/:id/statements` | - | `StatementStats` | The heaviest statements the server has seen, with calls and total, mean and max time. `?sort=total` (default), `mean` or `calls`; `?limit=` (1-200, default 25). Postgres reads `pg_stat_statements`, MySQL the performance schema digest table; when neither is on, `available` is false and `hint` says what to enable. |
-| GET    | `/api/connections/:id/objects` | - | `DatabaseObjects` | Routines (with their definitions), sequences, enum types, extensions and triggers. A group is empty where the dialect has no equivalent (MySQL has no sequences, enums or extensions). `?database=` as for schema. |
+| GET    | `/api/connections/:id/objects` | - | `DatabaseObjects` | Routines (with their definitions), sequences, enum types, extensions and triggers. A group is empty where the dialect has no equivalent (MySQL has no sequences, enums or extensions; SQLite lists triggers only). `?database=` as for schema. |
 | POST   | `/api/connections/:id/sessions` | `{ database? }` (optional) | `SessionInfo` (201) | Pins one database connection for one user. Send its id as `sessionId` on `POST /api/query` and every statement runs on that connection, so `BEGIN`, what follows and `COMMIT` belong together, across runs. |
 | GET    | `/api/sessions/:sid` | - | `SessionInfo` | Where the session's transaction stands: `idle`, `open`, or `failed` (an error inside it; only `ROLLBACK` is accepted). 404 once it was closed or sat idle for 15 minutes. |
 | DELETE | `/api/sessions/:sid` | - | `{ ok }` | Ends the session, rolling back anything still open on it. The idle reaper does the same, so a forgotten transaction cannot hold locks for ever. MySQL cannot report an open transaction, so its state follows the statements sent. |
@@ -120,7 +120,7 @@ disconnects mid-stream the server chases the cancel until it lands or the run fi
 own. Errors inside a started run arrive as an `error` `RunEvent` followed by `done`, not as an
 HTTP status.
 
-`params` binds values to the placeholders of a single statement (`$1`, `$2` on Postgres, `?` on MySQL), so
+`params` binds values to the placeholders of a single statement (`$1`, `$2` on Postgres, `?` on MySQL and SQLite), so
 they never have to be spliced into the SQL; several statements with params is a 400. Values travel as
 text, so the database applies each placeholder's own type rules.
 
@@ -128,13 +128,36 @@ text, so the database applies each placeholder's own type rules.
 while the in-memory run log still holds it, so cancel and export keep working; the query walk's
 probe runs pass it so they never show up in History. `readOnly: true` runs every statement in a
 read-only session (Postgres `set default_transaction_read_only = on`, MySQL
-`set session transaction_read_only = 1`), set and reset per statement on its pooled client, so a
+`set session transaction_read_only = 1`, SQLite `pragma query_only = on`), set and reset per statement on its pooled client, so a
 write is refused by the server and arrives as an ordinary `error` event.
 
 Each `ResultColumn` in a `columns` event or a `StatementResult` carries `source` - the base
 `{ table, column }` a value comes from - when the driver can tell: Postgres resolves the field's
 relation oid and attnum against `pg_class`/`pg_attribute` (one lookup per statement, cached for
 the connection's lifetime), MySQL does not report them: its driver does not expose the source table and column, so MySQL columns have no `source`. Expressions and aggregates have none on either dialect.
+
+## SQLite
+
+A `sqlite` connection is a file, not a server. Its `database` is the path of an existing database
+file (a leading `~/` is expanded, `:memory:` gives a private scratch database); `host`, `port`,
+`user`, `password` and `ssl` are unused and stored empty. The URL shorthand accepts
+`sqlite:///abs/path.db`, `sqlite://rel/path.db`, `sqlite:rel.db` and `file:` forms, and
+`?mode=ro` sets `readOnly`. A path that does not exist is a connection failure rather than a new
+empty database, so a typo cannot silently create one.
+
+- `GET /api/connections/:id/databases` answers the file's name, and a `database` argument elsewhere
+  is ignored: there is only the one. The schema tree has one schema, `main`.
+- Table detail covers columns, indexes, primary key, unique and foreign key constraints, triggers
+  and the stored `CREATE` text. It has no sizes or scan counts, and CHECK constraints appear only in
+  the DDL.
+- The Table Editor works as on the other dialects, except that an update cannot reset a column to
+  its `DEFAULT` (SQLite has no such keyword; an insert simply leaves the column out).
+- Activity, advice, slow-query statistics and sessions are not implemented, so those routes answer
+  400 for a SQLite connection, as for any capability a dialect lacks.
+- Cancel and `timeoutMs` interrupt the running statement; a timeout arrives as an `error` event, a
+  cancel as status `cancelled`.
+- A script is split at semicolons, so a `CREATE TRIGGER` whose body holds several statements
+  cannot be run from the editor as a single statement.
 
 ## Settings
 

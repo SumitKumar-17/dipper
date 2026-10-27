@@ -7,7 +7,7 @@
 <p><strong>A lightweight SQL workspace for developers.</strong></p>
 
 <p>
-PostgreSQL · MySQL · Local-first · SQL notebooks
+PostgreSQL · MySQL · SQLite · Local-first · SQL notebooks
 </p>
 
 <p>
@@ -19,6 +19,7 @@ PostgreSQL · MySQL · Local-first · SQL notebooks
 
 <img src="https://img.shields.io/badge/PostgreSQL-supported-336791?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
 <img src="https://img.shields.io/badge/MySQL-supported-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
+<img src="https://img.shields.io/badge/SQLite-supported-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite">
 <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
 
 </div>
@@ -35,7 +36,7 @@ Dipper is a lightweight SQL workspace for developers who spend their time **writ
 
 It brings schema exploration, SQL editing, query execution, results, and database visualization into one focused workspace.
 
-Dipper works with PostgreSQL and MySQL - running on your machine, in a container, or hosted somewhere like Neon, Supabase, or RDS. Your SQL files stay on disk as normal `.sql` files, while Dipper provides the tools around them.
+Dipper works with PostgreSQL and MySQL - running on your machine, in a container, or hosted somewhere like Neon, Supabase, or RDS - and with SQLite files on disk. Your SQL files stay on disk as normal `.sql` files, while Dipper provides the tools around them.
 
 **No account. No cloud service. No bundled database.**
 
@@ -263,6 +264,14 @@ Everything below is in the command palette (<kbd>⌘</kbd><kbd>K</kbd>) and runs
 </p>
 
 ---
+
+### SQLite
+
+Choose SQLite when connecting and give it the path of a database file (or `sqlite:///path/to/app.db`).
+There is no server and no password; the file is opened by Dipper itself, with no SQLite install
+needed. Schema browsing, the Table Editor, table structure, query plans (`EXPLAIN QUERY PLAN`) and
+read-only connections work as elsewhere. Health advice, the activity monitor, slow-query statistics and
+transactions that span statements are PostgreSQL and MySQL only.
 
 ### Results
 

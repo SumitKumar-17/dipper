@@ -62,7 +62,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Data editing with a reviewed, transactional change set (M/L)
 - [ ] Richer connection options: CA and client certificates, search_path, unix sockets (S/M)
 - [x] Test an unsaved connection (S)
-- [ ] SQLite support, pure Go so cross-compiling keeps working (M)
+- [x] SQLite support, pure Go so cross-compiling keeps working (activity, advice, statement stats and sessions are not implemented for it) (M)
 - [ ] SSH tunnels (L)
 - [x] More export formats: TSV, NDJSON, SQL INSERT, Markdown, with a formula-safe option (S)
 - [x] CSV import in the Table Editor: column mapping, preview, dry run, one transaction, up to 5,000 rows per load (M)
