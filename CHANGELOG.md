@@ -29,6 +29,19 @@ The section matching a release's version becomes that release's notes on GitHub 
   real timings; it always runs inside a transaction that is rolled back. Dipper flags stale
   statistics, large sequential scans, filters that discard most rows, and sorts that spilled to
   disk.
+- **Activity** - Command palette, Show activity. Every session on the database with its state,
+  what it is waiting for, how long its query and transaction have run, and which sessions are
+  blocking which. Cancel a query or terminate a connection, after a confirmation. Postgres and MySQL.
+- **Health and index advice** - Command palette, Health and index advice. Finds unused, duplicate
+  and invalid indexes, foreign keys with no supporting index, and tables with many dead rows, each
+  with the statement that would fix it. It never runs them for you. Postgres.
+- **More export formats** - TSV, NDJSON, Markdown and SQL INSERT statements, alongside CSV and
+  JSON, with an option that defuses spreadsheet formula injection. Duplicate column names no longer
+  overwrite each other in JSON.
+- **Test before saving** - `POST /api/connections/test` tries connection details without storing them.
+- **Query Walk** - A NULL test result is shown as unknown (not failed) with an explanation. Constructs the
+  walk does not understand are named instead of silently dropped. Fixed `GROUP BY ROLLUP`, `CUBE` and
+  `GROUPING SETS`, `DISTINCT ON` row choice, aggregate row counts and MySQL `LIMIT offset, count`.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.

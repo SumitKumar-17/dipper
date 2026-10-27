@@ -61,6 +61,7 @@ export * from "./workspace/schema-diagram";
 export * from "./workspace/table-editor";
 export * from "./workspace/explain";
 export * from "./workspace/activity";
+export * from "./workspace/advice";
 export * from "./workspace/schema-tree";
 export * from "./workspace/sidebar-tabs";
 export * from "./workspace/sql-editor";

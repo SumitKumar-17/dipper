@@ -5,6 +5,7 @@
 import type { EditorLayout } from "./pane-layout";
 import type {
   ActivitySnapshot,
+  Advice,
   ApplyRequest,
   ApplyResult,
   BrowseResult,
@@ -295,6 +296,8 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  /** Unused and duplicate indexes, foreign keys without one, dead rows, and overall health. */
+  advice(): Promise<Advice>;
   /** Every session on the current database right now, with who is blocking whom. */
   activity(): Promise<ActivitySnapshot>;
   /** Stops a session's running query (`cancel`) or closes its connection (`terminate`). */

@@ -78,6 +78,7 @@ expect "testing an unsaved connection stores nothing" "0" "$(curl -s "$B/connect
 expect "activity includes the asking session" "true" "$(curl -s "$B/connections/$CID/activity" | json 'String(j.sessions.some(s=>s.self))')"
 expect "terminating a session that does not exist is a 404" "404" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/connections/$CID/activity/2147483000/terminate")"
 expect "an unknown activity action is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/connections/$CID/activity/1/explode")"
+expect "advice reports database health" "true" "$(curl -s "$B/connections/$CID/advice" | json 'String(j.health.sizeBytes > 0 && Array.isArray(j.findings))')"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

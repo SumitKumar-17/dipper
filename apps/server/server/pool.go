@@ -356,6 +356,23 @@ func (p *Pool) monitor(ctx context.Context, idOrName string) (db.ActivityMonitor
 	return monitor, nil
 }
 
+// Advise runs the health and index checks for one database.
+func (p *Pool) Advise(ctx context.Context, idOrName, database string) (protocol.Advice, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.Advice{}, err
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.Advice{}, err
+	}
+	advisor, ok := driver.(db.Advisor)
+	if !ok {
+		return protocol.Advice{}, httpx.BadRequest(string(config.Dialect) + " connections cannot give index advice yet")
+	}
+	return advisor.Advise(ctx, database)
+}
+
 func (p *Pool) dropSchemas(connectionID string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

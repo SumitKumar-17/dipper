@@ -1,5 +1,6 @@
 import type {
   ActivitySnapshot,
+  Advice,
   ApplyRequest,
   ApplyResult,
   ConnectionConfig,
@@ -64,6 +65,8 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** Unused and duplicate indexes, foreign keys without one, dead rows, and overall health. */
+  advice(id: string, opts?: TableDetailOptions): Promise<Advice>;
   /** Every session on the database right now, with who is blocking whom. */
   activity(id: string, opts?: CallOptions): Promise<ActivitySnapshot>;
   /** Stops a session's running query (`cancel`) or closes its connection (`terminate`). */
@@ -140,6 +143,9 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         body: request,
         signal: opts?.signal,
       }),
+
+    advice: (id, opts) =>
+      http.json<Advice>(at(id, "/advice"), { query: { database: opts?.database }, signal: opts?.signal }),
 
     activity: (id, opts) => http.json<ActivitySnapshot>(at(id, "/activity"), { signal: opts?.signal }),
 

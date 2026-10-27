@@ -6,6 +6,7 @@
 
 import {
   ActivityIcon,
+  GaugeIcon,
   FootprintsIcon,
   PanelBottomIcon,
   PanelLeftIcon,
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 import * as React from "react";
 import { requestActivity } from "../activity";
+import { requestAdvice } from "../advice";
 import { requestExplain } from "../explain";
 import { requestQueryWalk } from "../query-walk";
 import { requestSchemaDiagram } from "../schema-diagram";
@@ -157,6 +159,15 @@ export function useBuiltinActions(
             const sql = statementAtCursor(activeBuffer.content, at)?.sql;
             if (sql) requestExplain(sql);
           }
+          close();
+        },
+      },
+      {
+        label: "Health and index advice",
+        hint: "Unused and duplicate indexes, missing foreign key indexes, dead rows",
+        icon: GaugeIcon,
+        onSelect: () => {
+          requestAdvice();
           close();
         },
       },

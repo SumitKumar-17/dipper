@@ -9,6 +9,16 @@ import (
 	"dipper/httpx"
 )
 
+func (s *Server) registerAdvice() {
+	s.handle("GET /api/connections/{id}/advice", func(w http.ResponseWriter, r *http.Request) error {
+		advice, err := s.pool.Advise(r.Context(), r.PathValue("id"), r.URL.Query().Get("database"))
+		if err != nil {
+			return err
+		}
+		return httpx.JSON(w, advice)
+	})
+}
+
 func (s *Server) registerActivity() {
 	s.handle("GET /api/connections/{id}/activity", func(w http.ResponseWriter, r *http.Request) error {
 		monitor, err := s.pool.monitor(r.Context(), r.PathValue("id"))

@@ -29,6 +29,7 @@ import {
   QueryWalkDialog,
   SaveQueryDialog,
   ActivityDialog,
+  AdviceDialog,
   ExplainDialog,
   SchemaDiagramDialog,
   TableEditorDialog,
@@ -95,6 +96,7 @@ function Workspace(): React.ReactElement {
       <TableEditorDialog />
       <ExplainDialog />
       <ActivityDialog />
+      <AdviceDialog />
       {/* And the editor's context menu and the palette open this one. */}
       <QueryWalkDialog />
       <AppTopbar

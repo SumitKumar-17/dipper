@@ -97,6 +97,7 @@ func (s *Server) routes() {
 	s.registerExplain()
 	s.registerRows()
 	s.registerActivity()
+	s.registerAdvice()
 	s.registerQuery()
 	s.registerRuns()
 	s.registerHistory()

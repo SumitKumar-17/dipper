@@ -1,5 +1,6 @@
 import type {
   ActivitySnapshot,
+  Advice,
   ApplyRequest,
   ApplyResult,
   ExplainRequest,
@@ -18,6 +19,7 @@ export type TableTools = {
   rowPage: (schema: string, table: string, request: RowPageRequest) => Promise<RunRecord>;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
+  advice: () => Promise<Advice>;
   activity: () => Promise<ActivitySnapshot>;
   signalSession: (pid: number, action: "cancel" | "terminate") => Promise<void>;
 };
@@ -53,6 +55,10 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       explain: async (request) => {
         const { id, scoped } = aimed();
         return getClient().connections.explain(id, { ...request, ...scoped });
+      },
+      advice: async () => {
+        const { id } = aimed();
+        return getClient().connections.advice(id, database ? { database } : {});
       },
       activity: async () => {
         const { id } = aimed();
