@@ -29,6 +29,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Fix GROUP BY probes for ROLLUP, CUBE, GROUPING SETS and MySQL `WITH ROLLUP` (M)
 - [x] DISTINCT ON picks the rows the ORDER BY says it should (S)
 - [ ] USING and NATURAL joins: correct left and right column split (S)
+- [x] MySQL `LIMIT offset, count` and quantified `ANY/ALL/SOME` subqueries reported instead of ignored (S)
 - [x] Aggregates without GROUP BY report the right row counts (set-returning functions still open) (S)
 - [ ] Three-valued logic: NULL shown as unknown, not as a failed row (S/M)
 - [ ] Collision-proof row identity (cell separator) (S)

@@ -159,8 +159,20 @@ export function readTail(cur: TokenCursor): Tail {
     } else if (kw === "limit") {
       const read = readClause(1);
       limit = read.clause;
-      const n = read.tokens[0];
-      limitValue = n && n.name === "Number" && read.tokens.length === 1 ? Number(n.text) : null;
+      const [first, comma, second] = read.tokens;
+      if (
+        read.tokens.length === 3 &&
+        first?.name === "Number" &&
+        comma?.text === "," &&
+        second?.name === "Number"
+      ) {
+        // MySQL's `LIMIT offset, count`: the first number skips, the second is the limit.
+        offsetValue = Number(first.text);
+        limitValue = Number(second.text);
+      } else {
+        limitValue =
+          first && first.name === "Number" && read.tokens.length === 1 ? Number(first.text) : null;
+      }
     } else if (kw === "offset") {
       const read = readClause(1);
       offset = read.clause;

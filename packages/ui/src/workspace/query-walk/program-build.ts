@@ -33,6 +33,7 @@
 // a missing one reads as a missing feature. The UI's fallback for a null is to show the statement
 // with nothing lit up.
 
+import { quantifiedSubqueries } from "./quantified";
 import type { Dialect } from "@dipper/protocol";
 import {
   isSetOp,
@@ -139,6 +140,15 @@ class ProgramBuilder {
     if (mainId === null) {
       const refusal = this.skipped.find((part) => part.why === "unsupported");
       return { kind: "unsupported", reason: refusal?.reason ?? "This query could not be read." };
+    }
+
+    for (const found of quantifiedSubqueries(this.root)) {
+      this.skipped.push({
+        why: "unsupported",
+        label: "A quantified subquery",
+        reason: `The subquery in "${found}" returns many rows and is compared against each, which the walk does not model. The rest of the query is walked as written.`,
+        sql: found,
+      });
     }
 
     const sections = orderSections(this.sections);
