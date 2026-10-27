@@ -1,4 +1,9 @@
-import type { ConnectionConfig, ConnectionSummary, DatabaseSchema } from "@dipper/protocol";
+import type {
+  ConnectionConfig,
+  ConnectionSummary,
+  DatabaseSchema,
+  TableDetail,
+} from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 /**
@@ -21,6 +26,8 @@ export type SchemaOptions = CallOptions & {
   refresh?: boolean;
 };
 
+export type TableDetailOptions = CallOptions & { database?: string };
+
 export type ConnectionsApi = {
   list(opts?: CallOptions): Promise<ConnectionSummary[]>;
   create(input: NewConnection, opts?: CallOptions): Promise<ConnectionSummary>;
@@ -31,6 +38,13 @@ export type ConnectionsApi = {
   disconnect(id: string, opts?: CallOptions): Promise<ConnectionSummary>;
   databases(id: string, opts?: CallOptions): Promise<string[]>;
   schema(id: string, opts?: SchemaOptions): Promise<DatabaseSchema>;
+  /** Indexes, constraints, triggers, sizes and DDL for one table. */
+  tableDetail(
+    id: string,
+    schema: string,
+    table: string,
+    opts?: TableDetailOptions,
+  ): Promise<TableDetail>;
 };
 
 export function connectionsApi(http: Transport): ConnectionsApi {
@@ -69,5 +83,11 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         query: { database: opts?.database, refresh: opts?.refresh ? "1" : undefined },
         signal: opts?.signal,
       }),
+
+    tableDetail: (id, schema, table, opts) =>
+      http.json<TableDetail>(
+        at(id, `/tables/${encodeURIComponent(schema)}/${encodeURIComponent(table)}`),
+        { query: { database: opts?.database }, signal: opts?.signal },
+      ),
   };
 }

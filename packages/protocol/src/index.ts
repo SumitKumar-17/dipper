@@ -2,6 +2,7 @@
 
 export type * from "./connection.js";
 export type * from "./schema.js";
+export type * from "./table-detail.js";
 export type * from "./query.js";
 export type * from "./files.js";
 export type * from "./settings.js";

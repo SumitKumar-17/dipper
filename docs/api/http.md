@@ -68,6 +68,7 @@ not drop it. Detection is push-based (OS file watching); the ping is pure keep-a
 | POST   | `/api/connections/:id/disconnect` | -                                              | `ConnectionSummary`                            | Close the pooled driver.                                                                                                                                     |
 | GET    | `/api/connections/:id/databases`  | -                                              | `string[]`                                     | Databases visible to the connection.                                                                                                                         |
 | GET    | `/api/connections/:id/schema`     | -                                              | `DatabaseSchema`                               | Schema → table → column tree. `?database=` picks a non-default database; `?refresh=1` bypasses the cache.                                                    |
+| GET    | `/api/connections/:id/tables/:schema/:table` | -                                  | `TableDetail`                                  | Indexes, constraints, triggers, sizes, vacuum state and rebuilt DDL for one table. `?database=` as for schema. 404 when the table does not exist; 400 on a dialect without support. |
 
 `:id` accepts either the connection id or its name.
 

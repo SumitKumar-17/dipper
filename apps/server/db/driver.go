@@ -30,6 +30,12 @@ type Driver interface {
 	Cancel(runID string) bool
 }
 
+// TableInspector is the optional capability behind the table detail view. A dialect that cannot
+// report indexes, constraints and sizes simply does not implement it.
+type TableInspector interface {
+	TableDetail(ctx context.Context, database, schema, table string) (protocol.TableDetail, error)
+}
+
 // RunOptions is QueryOptions with every default filled in, so no dialect repeats the coercions.
 type RunOptions struct {
 	RunID string

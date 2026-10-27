@@ -50,7 +50,8 @@ export function colsOf(
 
 export const positional = (index: number): string => `c${index}`;
 
-const CELL_SEPARATOR = "";
+// A control character no cell text will contain, so ("ab","c") and ("a","bc") hash apart.
+const CELL_SEPARATOR = "\u0001";
 
 export function hashCells(row: readonly Cell[], indices: readonly number[]): string {
   return indices.map((index) => formatCell(row[index] ?? null)).join(CELL_SEPARATOR);

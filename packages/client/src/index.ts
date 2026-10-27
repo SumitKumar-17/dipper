@@ -32,6 +32,7 @@ export type {
   ConnectionTest,
   NewConnection,
   SchemaOptions,
+  TableDetailOptions,
 } from "./connections";
 export { browseApi, type BrowseApi, type BrowseOptions } from "./browse";
 export type { DiscoverApi, DiscoverOptions } from "./discover";

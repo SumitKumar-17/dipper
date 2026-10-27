@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 
@@ -247,6 +248,27 @@ func (p *Pool) Schema(ctx context.Context, idOrName, database string, refresh bo
 	p.schemas[cacheKey] = schemaEntry{schema: schema, cachedAt: time.Now()}
 	p.mu.Unlock()
 	return schema, nil
+}
+
+// TableDetail asks the driver for one relation's indexes, constraints, sizes and DDL.
+func (p *Pool) TableDetail(ctx context.Context, idOrName, database, schema, table string) (protocol.TableDetail, error) {
+	config, err := p.Config(idOrName)
+	if err != nil {
+		return protocol.TableDetail{}, err
+	}
+	driver, err := p.DriverFor(ctx, config.ID)
+	if err != nil {
+		return protocol.TableDetail{}, err
+	}
+	inspector, ok := driver.(db.TableInspector)
+	if !ok {
+		return protocol.TableDetail{}, httpx.BadRequest(string(config.Dialect) + " connections do not support table detail yet")
+	}
+	detail, err := inspector.TableDetail(ctx, database, schema, table)
+	if errors.Is(err, db.ErrTableNotFound) {
+		return protocol.TableDetail{}, httpx.NotFound("no table " + schema + "." + table)
+	}
+	return detail, err
 }
 
 func (p *Pool) dropSchemas(connectionID string) {
