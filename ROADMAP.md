@@ -118,9 +118,9 @@ change reviewed as plain SQL before it runs.
 ## 5. Tooling
 
 - [x] `go test` in CI
-- [ ] `bun test` for pure TypeScript logic (splitter, formatter, cells, pane layout, parsers) (S)
+- [x] `bun test` for pure TypeScript logic, wired into CI (grows with every feature; splitter and pane layout still to cover) (S)
 - [ ] Wire-contract drift check between Go and TypeScript protocol types (S/M)
 - [ ] Lint `packages/client`, `packages/sql`, `packages/protocol` and scripts; add react-hooks and
       jsx-a11y rules (S)
-- [ ] Pin `bun-version` to the `packageManager` field and add a concurrency group in CI (S)
+- [x] Pin `bun-version` to the `packageManager` field, add concurrency groups and read-only permissions in CI (S)
 - [ ] Formatter config and a `check` script (S)

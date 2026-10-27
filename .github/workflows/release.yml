@@ -28,7 +28,7 @@ jobs:
           cache-dependency-path: apps/server/go.sum
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.3.14
 
       - name: Resolve the version
         id: version
