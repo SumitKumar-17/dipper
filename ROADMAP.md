@@ -96,7 +96,7 @@ change reviewed as plain SQL before it runs.
 - [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)
 - [ ] Pinned results and cell-level diff between runs (M)
 - [x] Charts from result columns: bars and lines, any number column for the height, in the results explorer (M)
-- [ ] Transactions toolbar and safe mode for UPDATE or DELETE without WHERE (M)
+- [x] Transactions toolbar: Begin, Commit and Rollback in the topbar, runs share one pinned connection (a confirm for UPDATE or DELETE without WHERE is still open) (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
 - [x] Column profiling in the Structure tab: row count, NULL rate, distinct count, range and most common values (M)
 - [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)

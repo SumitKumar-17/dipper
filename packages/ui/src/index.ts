@@ -40,6 +40,7 @@ export * from "./workspace/context";
 export * from "./workspace/cells";
 export * from "./workspace/app-topbar";
 export * from "./workspace/status-bar";
+export * from "./workspace/transaction-control";
 export * from "./workspace/status-dot";
 export * from "./workspace/error-text";
 export * from "./workspace/resizable-sidebar";

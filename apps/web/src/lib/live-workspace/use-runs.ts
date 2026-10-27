@@ -25,6 +25,10 @@ export type RunsOptions = {
   /** DDL moves the ground under the schema tree, so it is re-introspected after a run. */
   onSchemaChanged: () => void;
   openOutput: () => void;
+  /** The pinned connection to run on while a transaction is open, so runs share it. */
+  sessionId?: string | undefined;
+  /** Called after a run ends, so a transaction that the statement failed is noticed. */
+  onRunFinished?: () => void;
 };
 
 export type RunsState = {
@@ -50,8 +54,17 @@ export function useRuns(
   enabled: boolean,
   options: RunsOptions,
 ): RunsState {
-  const { connectionId, database, activeSql, settings, workspace, onSchemaChanged, openOutput } =
-    options;
+  const {
+    connectionId,
+    database,
+    activeSql,
+    settings,
+    workspace,
+    onSchemaChanged,
+    openOutput,
+    sessionId,
+    onRunFinished,
+  } = options;
 
   const [runs, setRuns] = React.useState<readonly Run[]>([]);
   /** Read by `clearHistory`, which decides what to keep after an await - by then `runs` is stale. */
@@ -138,6 +151,7 @@ export function useRuns(
           source: "ui",
           ...(database ? { database } : {}),
           ...(workspace ? { workspace } : {}),
+          ...(sessionId ? { sessionId } : {}),
           ...(settings ? { maxRows: settings.maxRows } : {}),
           ...(settings ? { timeoutMs: settings.statementTimeoutMs } : {}),
         });
@@ -155,9 +169,10 @@ export function useRuns(
           ),
         );
       }
+      onRunFinished?.();
       return runId;
     },
-    [activeSql, connectionId, database, getClient, onSchemaChanged, openOutput, settings, workspace],
+    [activeSql, connectionId, database, getClient, onRunFinished, onSchemaChanged, openOutput, sessionId, settings, workspace],
   );
 
   /**

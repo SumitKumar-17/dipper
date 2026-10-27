@@ -38,3 +38,6 @@ npm-debug.log*
 
 # This is a bun workspace; an npm lockfile here is a mistake.
 package-lock.json
+
+# Agent worktrees are scratch checkouts, never part of the project.
+.claude/worktrees/

@@ -129,6 +129,18 @@ export function runStatements(run: Run): readonly StatementResult[] {
 }
 
 
+/**
+ * The workspace's optional transaction. `none` is the default autocommit mode; while one is open
+ * every run goes to the same pinned connection, until a commit or rollback ends it.
+ */
+export type TransactionView = {
+  readonly state: "none" | "idle" | "open" | "failed";
+  /** A begin, commit or rollback is in flight. */
+  readonly busy: boolean;
+  /** Why the last begin, commit or rollback failed, or null. */
+  readonly error: string | null;
+};
+
 export type SidebarTab = "schema" | "files" | "history";
 export type ResultsView = "results" | "messages";
 
@@ -304,6 +316,11 @@ export type WorkspaceApi = {
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.
    */
   applyRows(schema: string, table: string, request: ApplyRequest): Promise<ApplyResult>;
+  readonly transaction: TransactionView;
+  /** Pins a connection and begins a transaction on it; runs then share that transaction. */
+  beginTransaction(): Promise<void>;
+  commitTransaction(): Promise<void>;
+  rollbackTransaction(): Promise<void>;
   /** Functions, sequences, enums, extensions and triggers of the current database. */
   objects(): Promise<DatabaseObjects>;
   /** The heaviest statements the server has seen on this connection, or how to start collecting them. */

@@ -15,6 +15,7 @@ import {
   ResizableSidebar,
   RunButton,
   SaveIndicator,
+  TransactionControl,
   SchemaTree,
   ServerGate,
   SidebarTabs,
@@ -114,6 +115,7 @@ function Workspace(): React.ReactElement {
         end={
           <>
             <SaveIndicator withToggle />
+            <TransactionControl />
             <RunButton />
             <SettingsButton />
           </>

@@ -24,6 +24,7 @@ import { useConnections } from "./use-connections";
 import { workspaceOf } from "./run-scope";
 import { useRuns } from "./use-runs";
 import { useTableTools } from "./use-table-tools";
+import { useTransaction } from "./use-transaction";
 import { useSchema } from "./use-schema";
 import { useServerEvents } from "./use-server-events";
 import { useServerGate } from "./use-server-gate";
@@ -107,7 +108,14 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     database: connections.database,
   });
 
+  const transaction = useTransaction(getClient, {
+    connectionId: connections.connectionId,
+    database: connections.database,
+  });
+
   const runs = useRuns(getClient, enabled, {
+    sessionId: transaction.sessionId,
+    onRunFinished: transaction.refresh,
     connectionId: connections.connectionId,
     database: connections.database,
     activeSql: buffers.activeBuffer?.content,
@@ -193,6 +201,10 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     selectRun: runs.selectRun,
     probe: runs.probe,
     ...tableTools,
+    transaction: transaction.view,
+    beginTransaction: transaction.begin,
+    commitTransaction: transaction.commit,
+    rollbackTransaction: transaction.rollback,
     historyStats: runs.historyStats,
     clearHistory: runs.clearHistory,
     historyScope: runs.historyScope,
