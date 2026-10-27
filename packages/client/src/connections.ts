@@ -10,6 +10,8 @@ import type {
   Plan,
   RowPageRequest,
   RunRecord,
+  SchemaDiffRequest,
+  SchemaDiffResult,
   TableDetail,
 } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
@@ -65,6 +67,8 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** What must change in one database for it to match another, with a migration script. */
+  schemaDiff(request: SchemaDiffRequest, opts?: CallOptions): Promise<SchemaDiffResult>;
   /** Unused and duplicate indexes, foreign keys without one, dead rows, and overall health. */
   advice(id: string, opts?: TableDetailOptions): Promise<Advice>;
   /** Every session on the database right now, with who is blocking whom. */
@@ -143,6 +147,9 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         body: request,
         signal: opts?.signal,
       }),
+
+    schemaDiff: (request, opts) =>
+      http.json<SchemaDiffResult>("/api/schema/diff", { method: "POST", body: request, signal: opts?.signal }),
 
     advice: (id, opts) =>
       http.json<Advice>(at(id, "/advice"), { query: { database: opts?.database }, signal: opts?.signal }),

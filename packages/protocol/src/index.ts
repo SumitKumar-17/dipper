@@ -7,6 +7,7 @@ export type * from "./plan.js";
 export type * from "./row-edit.js";
 export type * from "./activity.js";
 export type * from "./advice.js";
+export type * from "./schema-diff.js";
 export type * from "./query.js";
 export type * from "./files.js";
 export type * from "./settings.js";

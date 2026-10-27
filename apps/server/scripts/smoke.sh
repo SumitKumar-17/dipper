@@ -79,6 +79,8 @@ expect "activity includes the asking session" "true" "$(curl -s "$B/connections/
 expect "terminating a session that does not exist is a 404" "404" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/connections/$CID/activity/2147483000/terminate")"
 expect "an unknown activity action is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/connections/$CID/activity/1/explode")"
 expect "advice reports database health" "true" "$(curl -s "$B/connections/$CID/advice" | json 'String(j.health.sizeBytes > 0 && Array.isArray(j.findings))')"
+expect "a schema compared with itself has no differences" "0" "$(curl -s -X POST -H "$J" -d "{\"from\":{\"connectionId\":\"$CID\"},\"to\":{\"connectionId\":\"$CID\"}}" "$B/schema/diff" | json 'j.changes.length')"
+expect "a schema diff without sides is a 400" "400" "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "$J" -d '{}' "$B/schema/diff")"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")
