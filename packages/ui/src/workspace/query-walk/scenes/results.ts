@@ -81,13 +81,18 @@ export function previousIndex(walk: WalkData, index: number): number | null {
   return null;
 }
 
-/** The row count a station leaves behind. SELECT and ORDER BY inherit; LIMIT computes. */
+/** The row count a station leaves behind. SELECT and ORDER BY use their own sample when it is
+ *  complete and inherit otherwise; LIMIT computes. */
 export function countAt(walk: WalkData, index: number): number | null {
   const station = walk.stations[index];
   if (!station || !station.present) return null;
   switch (station.id) {
     case "select":
     case "order": {
+      // A sample that was not cut is the whole output, and it is the only place an aggregate
+      // without GROUP BY shows itself: `select count(*) from t` reads every row and leaves one.
+      const own = sampleOf(walk, index);
+      if (own && !own.truncated) return own.rowCount;
       const previous = previousIndex(walk, index);
       return previous === null ? null : countAt(walk, previous);
     }

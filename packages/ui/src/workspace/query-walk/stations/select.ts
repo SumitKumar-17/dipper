@@ -31,6 +31,7 @@ import {
   PASS_COLUMN,
   WINDOW_COLUMN,
 } from "../walk-columns";
+import { plainGroupKeys } from "../group-keys";
 import { windowFunctions, windowRange } from "../window-fn";
 
 export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[] {
@@ -173,7 +174,9 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
   }
 
   /* GROUP BY: the grouped rows, plus the rows before grouping ordered by the keys. */
-  const keyColumns = parsed.groupKeys.map((key, index) => `(${key}) as ${keyColumn(index)}`);
+  // ROLLUP, CUBE and GROUPING SETS wrap the keys; probe the expressions inside them.
+  const probeKeys = plainGroupKeys(parsed.groupKeys);
+  const keyColumns = probeKeys.map((key, index) => `(${key}) as ${keyColumn(index)}`);
   const grouped = lines(`select ${list}`, fullFrom, where, groupBy, window);
   {
     const queries: Query[] = parsed.groupBy
@@ -190,7 +193,7 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
                 `select *, ${keyColumns.join(", ")}`,
                 fullFrom,
                 where,
-                `order by ${parsed.groupKeys.map((_, index) => keyColumn(index)).join(", ")}`,
+                `order by ${probeKeys.map((_, index) => keyColumn(index)).join(", ")}`,
               ),
             ),
           },
@@ -322,6 +325,10 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
     having,
     window,
   );
+  // DISTINCT ON keeps the first row of each group in ORDER BY order, so without it the probe would
+  // keep different rows from the real query. A plain DISTINCT keeps the same set whatever the order.
+  const keepsFirstPerGroup = distinct !== null && /^distinct\s+on\b/i.test(distinct) && orderBy !== null;
+  const distinctProbe = keepsFirstPerGroup ? lines(withDistinct, orderBy) : withDistinct;
   stations.push(
     station({
     key: "distinct",
@@ -329,7 +336,7 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
     label: "DISTINCT",
     present: parsed.distinct !== null,
     clause: parsed.distinct,
-    batches: parsed.distinct ? [[sample(withDistinct), count(withDistinct)]] : ABSENT,
+    batches: parsed.distinct ? [[sample(distinctProbe), count(distinctProbe)]] : ABSENT,
     }),
   );
 

@@ -26,10 +26,10 @@ checked off as they land; each one is its own commit.
 Correctness first, because a visualiser that is silently wrong is worse than none.
 
 - [x] Refuse, never truncate: a construct the parser does not understand is named, not dropped (S)
-- [ ] Fix GROUP BY probes for ROLLUP, CUBE, GROUPING SETS and MySQL `WITH ROLLUP` (M)
-- [ ] DISTINCT ON picks the rows the ORDER BY says it should (S)
+- [x] Fix GROUP BY probes for ROLLUP, CUBE, GROUPING SETS and MySQL `WITH ROLLUP` (M)
+- [x] DISTINCT ON picks the rows the ORDER BY says it should (S)
 - [ ] USING and NATURAL joins: correct left and right column split (S)
-- [ ] Aggregates without GROUP BY and set-returning functions report the right row counts (S)
+- [x] Aggregates without GROUP BY report the right row counts (set-returning functions still open) (S)
 - [ ] Three-valued logic: NULL shown as unknown, not as a failed row (S/M)
 - [ ] Collision-proof row identity (cell separator) (S)
 - [ ] Row lineage: follow one input row through join, group and output (L)

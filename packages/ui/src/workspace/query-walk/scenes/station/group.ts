@@ -1,6 +1,7 @@
 // GROUP BY: the rows before grouping with the key columns lit, then those same rows gathered into
 // buckets, then the buckets squashed down to the one row each becomes.
 
+import { plainGroupKeys } from "../../group-keys";
 import type { StatementResult } from "@dipper/protocol";
 import { formatCell } from "../../../results-grid";
 import { WALK_PREFIX } from "../../steps";
@@ -37,7 +38,7 @@ export function groupScene(ctx: SceneContext): Scene {
   const preKeys = keyIndicesOf(pre);
   // Plain-column keys light their column; an expression key has no column to light.
   const litKeys = new Set(
-    parsed.groupKeys.flatMap((key) => {
+    plainGroupKeys(parsed.groupKeys).flatMap((key) => {
       const found = findColumn(pre, preVisible, key, tableOf);
       return found === null ? [] : [positional(found)];
     }),
