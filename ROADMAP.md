@@ -109,7 +109,10 @@ change reviewed as plain SQL before it runs.
 - [x] SEO basics: social image and cards, structured data, robots, no-JS fallback (canonical link and sitemap wait for a domain) (S)
 - [x] Skip link, mobile menu and a focus audit; the one stop without a visible focus state is the
       legacy Query Walk element, which goes with the real Query Walk scene below (S)
-- [ ] Bundle work: lazy formatter, manual chunks, narrower Tailwind `@source` (M)
+- [x] Bundle work: lazy formatter (already a dynamic import in `@dipper/sql`; the site never
+      fetches it), manual chunks for React, motion and the editor, narrower Tailwind `@source`.
+      The landing's first paint did not shrink: React, motion and the birdwatch recording the
+      sections read are all needed there; the chunks buy caching across pages and deploys (M)
 - [x] Feature grid driven by one data file (M)
 - [x] Comparison table and FAQ, both driven by data files, FAQ with structured data (S/M)
 - [ ] Real Query Walk scene, then delete `public/legacy` and its capture scripts (M)

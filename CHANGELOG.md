@@ -159,6 +159,13 @@ The section matching a release's version becomes that release's notes on GitHub 
   link, pressing outside or tabbing away closes it. The nav marks the page you are on, and code
   blocks and tables in the docs take keyboard focus only when they scroll.
 
+### Changed
+
+- **Site bundle** - React, motion and the editor (CodeMirror and Lezer) are now chunks of their
+  own, so a site-only deploy leaves them cached and the docs and changelog pages reuse the landing's
+  React. Tailwind scans only the site's and `@dipper/ui`'s TypeScript, not tests, notes, recordings
+  or the dev-only lab pages. The amount of JavaScript before first paint is unchanged.
+
 ### Security
 
 - The API now refuses requests whose `Host` or `Origin` header is not the app's own, which closes

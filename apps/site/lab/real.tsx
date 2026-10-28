@@ -11,7 +11,7 @@ import { createRoot } from "react-dom/client";
 import { RelationsScene, TerminalScene, WalkScene } from "../src/shared/scenes";
 import { RealCompletionScene, RealHeroScene, RealNotebookScene } from "../src/shared/scenes/real/workspace";
 import type { SceneAnchors, SceneProps } from "../src/shared/scenes/types";
-import "../src/shared/styles/base.css";
+import "./lab.css";
 
 type LabState = {
   ready: Record<string, number>;

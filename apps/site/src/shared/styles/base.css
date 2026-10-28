@@ -12,11 +12,15 @@
    the product it shows are drawn from one set of values. */
 @import "@dipper/ui/styles.css";
 
-/* @dipper/ui is a workspace symlink: without it here every class used only inside a packages/ui
-   component is dropped. */
-@source "../../../../../packages/ui/src";
-@source "../..";
-@source "../../../{index.html,docs,changelog,lab}";
+/* Only what renders on a built page. @dipper/ui is a workspace symlink: without it here every class
+   used only inside a packages/ui component is dropped. Tests, notes, the replay recordings and the
+   bird's hand-written renderer hold no class names, only words that could be read as one. lab/ is a
+   dev page and brings its own scan (lab/lab.css), so its classes stay out of the deploy. */
+@source "../../../../../packages/ui/src/**/*.{ts,tsx}";
+@source not "../../../../../packages/ui/src/**/*.test.ts";
+@source "../../**/*.{ts,tsx}";
+@source not "../../**/*.test.ts";
+@source "../../../{index.html,docs/index.html,changelog/index.html}";
 
 /* The two names packages/ui/src/styles.css maps `font-sans` and `font-mono` onto. */
 :root {

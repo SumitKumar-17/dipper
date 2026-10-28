@@ -24,6 +24,19 @@ export default defineConfig({
       input: Object.fromEntries(
         Object.entries(pages).map(([name, path]) => [name, fileURLToPath(new URL(path, import.meta.url))]),
       ),
+      output: {
+        // Libraries in chunks of their own, so a deploy that changes only the site's code leaves them
+        // cached, and moving from one page to another reuses React. Each group holds code that loads
+        // at one moment: React on every page, motion with the landing, the editor with a scene's
+        // window. A group that mixed those would drag lazy code into the first paint.
+        codeSplitting: {
+          groups: [
+            { name: "react", test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+            { name: "motion", test: /node_modules[\\/](motion|motion-dom|motion-utils|framer-motion)[\\/]/ },
+            { name: "editor", test: /node_modules[\\/](@codemirror|@lezer)[\\/]/ },
+          ],
+        },
+      },
     },
     // three.js is the one big chunk (about 0.5 MB, the bird's renderer), and it is only fetched
     // after first paint; the default 500 kB warning would fire on every build for it.
