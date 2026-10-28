@@ -2,12 +2,14 @@
 
 import type { JoinClause, KeyPair } from "../clauses";
 import { countAt, inputCount, joinKeys, previousIndex, sampleId } from "../scenes";
+import { windowReading } from "../scenes/window-band";
 import { fanOutSentence } from "./fan-out";
+import { LATERAL_FROM, lateralJoinSentence } from "./lateral-sentence";
+import { windowSentence } from "./window-sentence";
 import {
   caseExpressions,
   sourceTitle,
   WALK_PREFIX,
-  type WindowFn,
   windowFunctions,
 } from "../steps";
 import type { WalkData } from "../use-walk";
@@ -24,11 +26,6 @@ export type ProjectionNote = {
   readonly label: string;
   readonly perRow: boolean;
 };
-
-/** `dept_name` and `dept_name and year`: the partition, named the way the user wrote it. */
-function paneKeys(fn: WindowFn): string {
-  return fn.partition.map(code).join(" and ");
-}
 
 /** `keys` is what the join was FOUND to match on, which for a natural join is not what it says. */
 function joinCondition(join: JoinClause, keys: readonly KeyPair[] | null): string {
@@ -109,8 +106,8 @@ export function sentenceFor(
   const { parsed, stations } = walk;
   const station = stations[index]!;
   // A station that came with its own sentence is one nothing below could have written: the clause
-  // vocabulary here describes what a SELECT does to rows, and a recursive CTE's three stations are
-  // about three separate statements. It is checked before `result` because those three wear the
+  // vocabulary here describes what a SELECT does to rows, and a recursive CTE's stations are
+  // about separate statements. It is checked before `result` because those stations wear the
   // `result` id - they show a rows card, they are just not result-ONLY sections.
   if (station.sentence !== null) return station.sentence;
   if (station.id === "result") return resultSentence(walk);
@@ -123,15 +120,27 @@ export function sentenceFor(
   switch (station.id) {
     case "from": {
       const named = sources.some((source) => source.kind !== "table");
+      const lateral = sources.some((source) => source.lateral) ? LATERAL_FROM : "";
       return named
-        ? "Start with the raw tables. A subquery or CTE is a table too: it is computed first, then read like any other."
-        : "Start with the raw tables. Nothing has been filtered yet.";
+        ? `Start with the raw tables. A subquery or CTE is a table too: it is computed first, then read like any other.${lateral}`
+        : `Start with the raw tables. Nothing has been filtered yet.${lateral}`;
     }
     case "join": {
       const join = station.join;
       if (!join) return "Not in this query. A join would pair these rows with another table's.";
       const left = station.joinIndex === 0 ? code(sourceTitle(parsed.first)) : "the rows so far";
       const right = code(sourceTitle(join.source));
+      if (join.source.lateral) {
+        const condition = text(join.source.range.to, join.range.to)
+          .trim()
+          .replace(/^on\s+/i, "");
+        return lateralJoinSentence(
+          join.kind,
+          left,
+          right,
+          condition === "" || /^true$/i.test(condition) ? null : condition,
+        );
+      }
       if (join.kind === "cross") {
         return `Pair every row of ${left} with every row of ${right}. There is no condition, so the result is one row per combination.`;
       }
@@ -169,25 +178,11 @@ export function sentenceFor(
         ? `Like WHERE, but for groups. Groups that fail ${code(text(parsed.having.body.from, parsed.having.body.to))} are thrown away.`
         : "Not in this query. It would filter groups the way WHERE filters rows.";
     case "window": {
-      const functions = windowFunctions(parsed);
-      const fn = functions[0];
-      if (!fn) {
+      const reading = windowReading(parsed, station);
+      if (!reading) {
         return "Not in this query. A window function would give every row a value read off the rows around it, without losing a single one of them.";
       }
-      const partitioned = fn.partition.length > 0;
-      const panes = partitioned
-        ? `${code(fn.call)} cuts the rows into one pane per ${paneKeys(fn)}`
-        : `With nothing to partition by, ${code(fn.call)} takes the whole result as a single pane`;
-      const walked =
-        fn.order.length > 0
-          ? `, walks ${partitioned ? "each pane" : "it"} in ${fn.order.map(code).join(", ")} order,`
-          : "";
-      const others = functions.length - 1;
-      const rest =
-        others > 0
-          ? ` The other ${others === 1 ? "window function runs" : `${others} window functions run`} here too, each with its own panes.`
-          : "";
-      return `${panes}${walked} and hands every row its own value. Unlike GROUP BY it collapses nothing: the rows are all still here, which is why ORDER BY can sort by what it computed and WHERE, long finished, never saw it.${rest}`;
+      return windowSentence(reading, station.windowIndex + 1, windowFunctions(parsed).length);
     }
     case "select": {
       const alias = firstAlias(index, walk);

@@ -71,7 +71,14 @@ function Bucket({
             bucket.members.map((member, i) => (
               <motion.div
                 animate={{ opacity: 1 }}
-                className="mb-1 flex h-7 items-center gap-2 overflow-hidden rounded-md border bg-card px-2 font-mono text-xs tabular-nums last:mb-0"
+                className={cn(
+                  "mb-1 flex h-7 items-center gap-2 overflow-hidden rounded-md border bg-card px-2 font-mono text-xs tabular-nums transition-colors last:mb-0",
+                  // A window frame: the rows the current row's function read, lit as one band,
+                  // and the rest of the pane dimmed so the band is what the eye lands on.
+                  member.band === "in" && "border-info/50 bg-info/15",
+                  member.band === "out" && "border-transparent text-muted-foreground",
+                  member.current && "ring-2 ring-info",
+                )}
                 exit={{
                   height: 0,
                   opacity: 0,

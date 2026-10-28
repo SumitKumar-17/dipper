@@ -14,6 +14,8 @@ import { EvidenceContext, useEvidenceStore } from "./bound-evidence";
 import { BoundSection } from "./bound-section";
 import { Chapters } from "./chapters";
 import type { SourceRef } from "./clauses";
+import { cteGraph } from "./cte-graph";
+import { CteMap } from "./cte-map";
 import { BEAT, HOLD_MS, phasesFor, sentenceFor } from "./narration";
 import { Narrator } from "./narrator";
 import { projectionsIn, sectionForSource, type SectionId } from "./program";
@@ -264,6 +266,7 @@ export function WalkPlayer({
         : (scene?.count ?? null)
       : null;
   const error = station ? errorOf(walk?.results[stationIndex], sampleId(station)) : null;
+  const ctes = React.useMemo(() => cteGraph(program), [program]);
   const strip = sections.length > 1 || program.skipped.length > 0;
 
   return (
@@ -279,6 +282,9 @@ export function WalkPlayer({
                   sections={sections}
                   writtenOrder={program.setOp !== null}
                 />
+              )}
+              {ctes.length > 0 && (
+                <CteMap active={run?.section.id ?? null} nodes={ctes} onJump={openSection} />
               )}
               {program.skipped.length > 0 && <SkippedNote parts={program.skipped} />}
             </div>

@@ -41,16 +41,21 @@ export type Station = {
   /** Which join this station is, when it is one. */
   readonly join: JoinClause | null;
   readonly joinIndex: number;
+  /** Which window function this station is, when it is one: there is a station per function. */
+  readonly windowIndex: number;
   /**
    * A sentence that overrides the narrator's own, for a station the clause vocabulary cannot
    * describe.
    *
    * Null for every station named after a clause: FROM, WHERE and the rest are explained from the
    * parse, which is richer than anything a builder could write down in advance. It is set where
-   * there is no clause to explain - a recursive CTE's three stations are about the shape of the
+   * there is no clause to explain - a recursive CTE's stations are about the shape of the
    * whole CTE, and `sentenceFor` has nothing to read that would tell it so.
    */
   readonly sentence: string | null;
+  /** What the card says when the station's rows are empty, where an empty result means something
+   *  the default "no rows" would not say: a recursive pass that adds nothing ends the recursion. */
+  readonly empty: string | null;
   /**
    * A range in the ROOT text this station is about, when `clause` does not index the section's text.
    *
@@ -77,9 +82,9 @@ export type Station = {
 export const ABSENT: Station["batches"] = [];
 
 /**
- * A station, with the five fields most of them have nothing to say about already filled in.
+ * A station, with the fields most of them have nothing to say about already filled in.
  *
- * Thirteen station literals spelled those five out by hand, four of them on single lines over two
+ * Thirteen station literals spelled those out by hand, four of them on single lines over two
  * hundred characters wide, and what a reader had to do to tell two stations apart was find the two
  * fields that differed. They are defaults rather than omissions: `joinIndex: -1` means "not a join"
  * and `inLists: []` means "measured nothing", and either is still answerable by a caller that has
@@ -90,7 +95,16 @@ export function station(
   fields: Pick<Station, "key" | "id" | "label" | "present" | "clause" | "batches"> &
     Partial<Station>,
 ): Station {
-  return { join: null, joinIndex: -1, sentence: null, root: null, inLists: [], ...fields };
+  return {
+    join: null,
+    joinIndex: -1,
+    windowIndex: -1,
+    sentence: null,
+    empty: null,
+    root: null,
+    inLists: [],
+    ...fields,
+  };
 }
 
 /** A station for a clause the query does not have: on the rail, skipped by playback. */

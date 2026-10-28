@@ -14,6 +14,7 @@ import {
 } from "./clauses";
 import type { Recursion, RootMap, SelfRef } from "./program-types";
 import { recursionSentences } from "./narration/recursion-sentences";
+import { endOfGroup } from "./item-pieces";
 import { placeSpan } from "./root-map";
 
 /**
@@ -105,6 +106,7 @@ export function readRecursion(
     placeSpan(root, map, host, { from: cte.body.from + range.from, to: cte.body.from + range.to });
   return {
     name: cte.name,
+    columns: columnList(host.slice(cte.range.from, cte.body.from)),
     anchorSql,
     stepSql,
     operator,
@@ -120,6 +122,19 @@ export function readRecursion(
       stepParsed,
     ),
   };
+}
+
+/**
+ * `(id, depth)` out of `chain(id, depth) as (`, the text between a CTE's name and its body; null
+ * when there is no list. The name is skipped as a quoted or bare word, so a quoted name holding a
+ * parenthesis is not mistaken for one.
+ */
+export function columnList(head: string): string | null {
+  const name = /^\s*(?:"(?:[^"]|"")*"|`(?:[^`]|``)*`|[^\s(]+)\s*/.exec(head);
+  const rest = head.slice(name?.[0].length ?? 0);
+  if (!rest.startsWith("(")) return null;
+  const close = endOfGroup(rest, 0);
+  return /^\s*as\b/i.test(rest.slice(close)) ? rest.slice(0, close) : null;
 }
 
 /** The ranges replaced by spaces of their own length, so offsets stay put and no two words that
@@ -142,7 +157,7 @@ function blankOut(text: string, ranges: readonly Range[]): string {
  * the usual way to write a depth guard - still resolves afterwards, against the derived table
  * instead of against the CTE, and nothing about the statement has changed but where those rows come
  * from. A bare `chain` has no such alias to land on: it is a second, un-spliced reference to the
- * recursive CTE, and leaving it in is how the REPEAT probe would name a table that isn't there -
+ * recursive CTE, and leaving it in is how a pass probe would name a table that isn't there -
  * or, worse, name the real recursive CTE and run the recursion this walk exists not to run.
  *
  * Three ways that could be got wrong, and how each is closed:

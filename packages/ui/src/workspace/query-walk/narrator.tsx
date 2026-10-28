@@ -17,6 +17,7 @@ import type { Phase } from "./narration";
 import { NarratorShell } from "./narrator-shell";
 import { OrderStrip } from "./order-strip";
 import { countNotes, NotesPanel, StationNote } from "./notes-panel";
+import { WalkPlan } from "./walk-plan";
 import type { Section } from "./program";
 import { QueryPane, stationRange } from "./query-pane";
 import { SqlBlock } from "./sql-block";
@@ -163,6 +164,7 @@ export function Narrator({
           <TabsTab disabled={notes === 0} value="notes">
             Notes{notes > 0 && ` · ${notes}`}
           </TabsTab>
+          <TabsTab value="plan">Plan</TabsTab>
         </TabsList>
         <TabsPanel className="min-h-0 overflow-auto" value="query">
           <QueryPane fallback={sql} root={root} section={section} station={station} />
@@ -193,6 +195,9 @@ export function Narrator({
         </TabsPanel>
         <TabsPanel className="min-h-0 overflow-auto" value="notes">
           <NotesPanel comments={comments} />
+        </TabsPanel>
+        <TabsPanel className="min-h-0 overflow-auto" value="plan">
+          <WalkPlan section={section} station={station} />
         </TabsPanel>
       </Tabs>
     </NarratorShell>

@@ -64,7 +64,9 @@ function sceneAt(index: number, phase: number, walk: WalkData): Scene {
   if (station.id === "combine") return combineScene(station, phase, walk.results[index]);
   // Both checks say the same thing from either end: a result-only walk has this one station and no
   // parse, and `sceneContext` would need the parse's sources on its first line.
-  if (station.id === "result" || walk.parsed === null) return resultScene(walk.results[index]);
+  if (station.id === "result" || walk.parsed === null) {
+    return resultScene(walk.results[index], station.empty);
+  }
   const ctx = sceneContext(index, phase, walk, station, walk.parsed);
 
   switch (station.id) {

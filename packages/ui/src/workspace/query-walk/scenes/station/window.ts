@@ -6,13 +6,18 @@
 // stays on screen. That is the whole lesson - GROUP BY collapses a bucket to one row, a window
 // function leaves all of them standing - and it is told by the one difference between the scenes
 // rather than by a sentence.
+//
+// The phases after the value arrives draw the frame: for one row of every pane at a time, the rows
+// its function read are lit as a band, and the band slides down the pane step by step.
 
 import { formatCell } from "../../../results-grid";
-import { WALK_PREFIX, WINDOW_COLUMN, windowFunctions } from "../../steps";
+import { WALK_PREFIX, WINDOW_COLUMN } from "../../steps";
+import { inFrame } from "../../window-frame";
 import { colsOf, findColumn, hashCells, positional, rowsOf, visibleIndices } from "../columns";
 import type { SceneContext } from "../context";
 import { EMPTY, type BucketView, type Col, type Row, type Scene } from "../types";
 import { plain, tables } from "../view";
+import { bandFocus, bandSteps, framePositions, panesOf, windowReading } from "../window-band";
 
 /** Columns a bucket is narrow enough to show: an identity, the column the frame walks, the value. */
 const MEMBER_COLS = 3;
@@ -21,10 +26,11 @@ const MEMBER_COLS = 3;
 const DIRECTIONS = /\s+(asc|desc)\b|\s+nulls\s+(first|last)\b/gi;
 
 export function windowScene(ctx: SceneContext): Scene {
-  const { parsed, phase, sample, tableOf, input, own, mainTitle } = ctx;
+  const { parsed, phase, sample, station, tableOf, input, own, mainTitle } = ctx;
   if (!sample) return EMPTY;
   const count = own ?? input;
-  const fn = windowFunctions(parsed)[0];
+  const reading = windowReading(parsed, station);
+  const fn = reading?.fn;
   const value = sample.columns.findIndex((column) => column.name === WINDOW_COLUMN);
   // The probe asks for the function's value under a name of the walk's own, so losing it means the
   // splice came back as something else entirely; the rows are still worth showing plainly.
@@ -78,33 +84,35 @@ export function windowScene(ctx: SceneContext): Scene {
     ...(phase >= 1 ? [cols[cols.length - 1]!] : []),
   ].slice(0, MEMBER_COLS);
 
-  const buckets: BucketView[] = [];
-  const byKey = new Map<string, Row[]>();
-  sample.rows.forEach((raw, i) => {
-    const hash = hashCells(raw, keys);
-    let members = byKey.get(hash);
-    if (!members) {
-      members = [];
-      byKey.set(hash, members);
-      buckets.push({
-        key: `w:${hash}`,
-        // With no PARTITION BY the function sees one pane holding everything, and saying so is the
-        // point: the panes are not a property of the rows, they are what the clause cut.
-        title:
-          keys.length > 0 ? keys.map((k) => formatCell(raw[k] ?? null)).join(" · ") : "every row",
-        members,
-        count: 0,
-        summary: null,
-      });
-    }
-    members.push(rows[i]!);
+  // Phase 2 on is the band, one step per phase, the same step in every pane.
+  const steps = bandSteps(sample, reading ?? null);
+  const step = phase - 2;
+  const positions = framePositions(sample);
+  const banded = (pane: readonly number[]): Row[] => {
+    const frame = reading?.frame;
+    if (!frame || !positions || step < 0 || step >= steps) return pane.map((i) => rows[i]!);
+    const focus = pane[bandFocus(step, steps, pane.length)]!;
+    return pane.map((i) => ({
+      ...rows[i]!,
+      current: i === focus,
+      band: inFrame(frame, positions[focus]!, positions[i]!) ? ("in" as const) : ("out" as const),
+    }));
+  };
+
+  const buckets: BucketView[] = panesOf(sample).map((pane) => {
+    const raw = sample.rows[pane[0]!]!;
+    const members = banded(pane);
+    return {
+      key: `w:${hashCells(raw, keys)}`,
+      // With no PARTITION BY the function sees one pane holding everything, and saying so is the
+      // point: the panes are not a property of the rows, they are what the clause cut.
+      title:
+        keys.length > 0 ? keys.map((k) => formatCell(raw[k] ?? null)).join(" · ") : "every row",
+      members,
+      count: members.length,
+      summary: null,
+    };
   });
 
-  return {
-    kind: "buckets",
-    buckets: buckets.map((bucket) => ({ ...bucket, count: bucket.members.length })),
-    memberCols,
-    squash: false,
-    count,
-  };
+  return { kind: "buckets", buckets, memberCols, squash: false, count };
 }

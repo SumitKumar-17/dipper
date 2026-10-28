@@ -10,10 +10,11 @@
 // - `walk-columns.ts`      the columns the walk appends for its own bookkeeping
 // - `item-pieces.ts`       splitting one select item into words, without a parser
 // - `window-fn.ts`         the window functions in a select list
+// - `window-frame.ts`      the frame each one reads, and which rows are in it
 // - `case-expr.ts`         the CASE expressions in a select list
 // - `stations/select.ts`   the clause walk
 // - `stations/set-op.ts`   one station per meeting of two results
-// - `stations/recursion.ts` START, REPEAT, SETTLE
+// - `stations/recursion.ts` START, PASS 1 to PASS n, SETTLE
 // - `stations/result.ts`   the one station a section with no clauses gets
 
 export { caseExpressions } from "./case-expr";

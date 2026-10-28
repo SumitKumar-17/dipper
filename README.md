@@ -104,6 +104,16 @@ FROM → JOIN → WHERE → GROUP BY → HAVING
 
 At each stage, Dipper shows the rows returned by your database and explains what happened.
 
+Every window function gets a WINDOW stage of its own, which gathers the rows into the panes `PARTITION BY` cuts and then slides the function's frame down each pane as a band, so you can see exactly which rows each value was computed from.
+
+A query with CTEs is walked one chapter per CTE, and a small graph above the stages shows which CTE feeds which and how many chapters use each one.
+
+A `LATERAL` join is walked as what it is: the subquery runs once for every row before it, and each row is paired only with the rows its own run returned.
+
+A recursive CTE is stepped one pass at a time, up to six passes: each stage shows exactly the rows that pass added, until a pass adds nothing and the recursion stops.
+
+The **Plan** tab beside the walk shows the database's estimated plan for the query and lights the plan steps that do the work of the stage you are on, wherever the planner put them (Postgres).
+
 This makes complex SQL easier to understand, debug, and explain - especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
 
 <p align="center">

@@ -1,21 +1,20 @@
-// The three sentences a recursive CTE's stations carry.
+// The sentences a recursive CTE's stations carry: START, one per pass, and SETTLE.
 //
-// They live here rather than with the rest of the narration because `program.ts` is the only place
-// holding both halves' parses, and these are written from them - so this module takes the two
-// parses as arguments and `program.ts` calls it while it still has them.
+// START's, the first pass's and SETTLE's live here rather than with the rest of the narration
+// because `program.ts` is the only place holding both halves' parses, and they are written from
+// them - so this module takes the two parses as arguments and `program.ts` calls it while it still
+// has them. A later pass says nothing a parse knows, so `laterPassSentence` needs only the name.
 
 import { bareName, type ParsedSelect } from "../clauses";
 import type { RecursionSentences } from "../program";
 import { code } from "./prose";
 
 /**
- * What the three stations say, written here because this is the only place holding both halves'
- * parses - and so the only place that can name the tables each half actually reads.
+ * What START, the first pass and SETTLE say, written here because this is the only place holding
+ * both halves' parses - and so the only place that can name the tables each half actually reads.
  *
- * The hard part is that these have to be TRUE of what the probes below them show, and the probes
- * show ONE pass. So REPEAT says so in as many words rather than letting a reader who sees a rows
- * card assume it is the finished table, and SETTLE is explicit that the database ran every pass
- * even though the walk ran one. Nothing here promises the walk iterated, because it does not.
+ * Each has to be TRUE of what the probe below it shows. A pass card is exactly the rows that pass
+ * added, and SETTLE is explicit that the database ran every pass, however many the walk stepped.
  */
 export function recursionSentences(
   name: string,
@@ -26,13 +25,28 @@ export function recursionSentences(
 ): RecursionSentences {
   const cte = code(name);
   const op = code(operator);
-  const start = `${cte} is two queries joined by ${op}, and this is the half that never mentions ${cte}: it ${reads(anchor, name)}, so it can run before anything at all has been collected. These rows are where the recursion begins - every row ${cte} ends up holding descends from one of them.`;
-  const pass = `The other half is the step, and it ${reads(step, name)} - with ${cte} standing for what the pass before it produced. What is below is the FIRST PASS ONLY: ${cte} here is exactly the rows START found, spliced in where the step names it. The walk stops after that one pass; the database does not. Pass 2 runs the same step over pass 1's rows, pass 3 over pass 2's, and so on until a pass adds nothing and the recursion ends.`;
-  const repeat = dedupes
-    ? `${pass} And because the halves are joined by ${op} rather than ${code("union all")}, every pass's rows are matched against everything collected so far and the duplicates dropped - so the count below is an upper bound on what this pass really adds, not the number itself.`
+  const start = `${cte} is two queries joined by ${op}, and this is the half that never mentions ${cte}: it ${reads(anchor, name)}, so it can run before anything at all has been collected. These rows are where the recursion begins - every row ${cte} ends up holding descends from one of them.${dedupes ? ` Under ${op} a row the anchor returns twice is kept once.` : ""}`;
+  const pass = `The other half is the step, and it ${reads(step, name)} - with ${cte} standing for what the pass before it produced. This is pass 1, so ${cte} here is exactly the rows START found. Every later pass runs the same step over the pass before it alone, never over everything collected so far, until a pass adds nothing and the recursion ends.`;
+  const firstPass = dedupes
+    ? `${pass} Because the halves are joined by ${op} rather than ${code("union all")}, a row any earlier pass already produced is dropped, so each card is exactly what its pass adds.`
     : pass;
-  const settle = `These are the rows left when that repetition stops: ${cte} in full, as the database built it - every pass it ran, however many that was, collected into one table. START's rows are the first of them and REPEAT's are one pass's worth; this is all of them, and this is what the rest of the query reads under the name ${cte}.`;
-  return { start, repeat, settle };
+  const settle = `These are the rows left when that repetition stops: ${cte} in full, as the database built it - every pass it ran, however many that was, collected into one table. START's rows and every pass's are in it, and this is what the rest of the query reads under the name ${cte}.`;
+  return { start, firstPass, settle };
+}
+
+/** Pass `pass` (2 or more), and whether it is the last one the walk steps through. */
+export function laterPassSentence(
+  name: string,
+  pass: number,
+  dedupes: boolean,
+  last: boolean,
+): string {
+  const cte = code(name);
+  const dropped = dedupes ? " Rows an earlier pass already produced are dropped." : "";
+  const capped = last
+    ? ` The walk stops stepping here, after ${pass} passes. If this card still has rows the database kept going, and SETTLE holds every pass it ran.`
+    : "";
+  return `Pass ${pass} runs the same step again, with ${cte} standing for pass ${pass - 1}'s rows and nothing else.${dropped} An empty card means the pass before it added nothing, so the recursion had already stopped.${capped}`;
 }
 
 /** `reads `emp`` / `reads `emp` and `dept``: the tables a term is over, the CTE's own name left out
