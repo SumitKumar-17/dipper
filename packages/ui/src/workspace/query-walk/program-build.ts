@@ -571,7 +571,7 @@ class ProgramBuilder {
   }
 
   /**
-   * A recursive CTE, kept as ONE section - with three stations instead of ten when its shape can be
+   * A recursive CTE, kept as ONE section - with its own stations instead of ten when its shape can be
    * read, and the old black box when it cannot.
    *
    * Descending into a body that names itself is how a builder like this hangs, so the section's TEXT

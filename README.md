@@ -110,6 +110,8 @@ A query with CTEs is walked one chapter per CTE, and a small graph above the sta
 
 A `LATERAL` join is walked as what it is: the subquery runs once for every row before it, and each row is paired only with the rows its own run returned.
 
+A recursive CTE is stepped one pass at a time, up to six passes: each stage shows exactly the rows that pass added, until a pass adds nothing and the recursion stops.
+
 This makes complex SQL easier to understand, debug, and explain - especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
 
 <p align="center">

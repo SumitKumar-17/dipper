@@ -106,8 +106,8 @@ export function sentenceFor(
   const { parsed, stations } = walk;
   const station = stations[index]!;
   // A station that came with its own sentence is one nothing below could have written: the clause
-  // vocabulary here describes what a SELECT does to rows, and a recursive CTE's three stations are
-  // about three separate statements. It is checked before `result` because those three wear the
+  // vocabulary here describes what a SELECT does to rows, and a recursive CTE's stations are
+  // about separate statements. It is checked before `result` because those stations wear the
   // `result` id - they show a rows card, they are just not result-ONLY sections.
   if (station.sentence !== null) return station.sentence;
   if (station.id === "result") return resultSentence(walk);

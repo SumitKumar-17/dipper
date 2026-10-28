@@ -36,7 +36,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] Row lineage: follow one input row through join, group and output (L)
 - [ ] One consistent snapshot for all probes of a walk (M)
 - [x] CTE graph with "used by" counts (M)
-- [ ] Recursive CTE stepped one iteration at a time, with a pass cap (M/L)
+- [x] Recursive CTE stepped one iteration at a time, with a pass cap of six (M/L)
 - [x] Window frames drawn as a band, every window function per query, not the first (a `RANGE` frame with a value offset is named, not drawn) (M)
 - [x] Join fan-out explained when a join multiplies rows (a pair-by-pair match view is still open) (M)
 - [x] LATERAL joins: sampled through the join, never alone, and narrated as one run per row (a per-row view of each run is still open) (M)

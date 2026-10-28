@@ -114,7 +114,7 @@ export type ResultOnly = {
 };
 
 /** One `chain c` inside the recursive term: the thing the database replaces with the previous
- *  pass's rows, and the thing the REPEAT probe replaces with the anchor. */
+ *  pass's rows, and the thing each pass probe replaces with the pass before it. */
 export type SelfRef = {
   /** Where it sits in `Recursion.stepSql`, source as written and alias included. Never null: the
    *  probe splices by this range, and a probe that could not be built is not a probe. */
@@ -146,6 +146,9 @@ export type Recursion = {
   readonly anchorSql: string;
   /** The half that does. Its self-references are still in it; splicing them is the probe's job. */
   readonly stepSql: string;
+  /** The CTE's column list as written, `(id, depth)`; null when it names none and the anchor's
+   *  columns name the CTE. A pass replayed as a CTE of its own must answer to the same names. */
+  readonly columns: string | null;
   /** `UNION ALL`, `union`, as written, for a sentence that quotes the reader rather than the parser. */
   readonly operator: string;
   /** A plain UNION: each pass's rows are deduplicated against everything already collected, so a
@@ -156,14 +159,15 @@ export type Recursion = {
   /** Likewise for the recursive term. */
   readonly step: Range | null;
   readonly selfRefs: readonly SelfRef[];
-  /** The three stations' sentences, written here because this is the only place that holds both
-   *  halves' parses and can therefore name the tables each half really reads. */
+  /** START's, the first pass's and SETTLE's sentences, written here because this is the only place
+   *  that holds both halves' parses and can therefore name the tables each half really reads. The
+   *  later passes say nothing a parse knows, so `laterPassSentence` writes theirs. */
   readonly sentences: RecursionSentences;
 };
 
 export type RecursionSentences = {
   readonly start: string;
-  readonly repeat: string;
+  readonly firstPass: string;
   readonly settle: string;
 };
 
@@ -271,7 +275,7 @@ export type Section = {
    * Set only on a `cte` section built by `addRecursiveCte`, and only when every test in
    * `readRecursion` passed. Its presence is what swaps the ordinary ten-station walk over the
    * invented `select * from chain` - which narrates a trivial SELECT and never mentions the
-   * recursion - for the three stations that do.
+   * recursion - for the stations that do.
    */
   readonly recursion: Recursion | null;
 };

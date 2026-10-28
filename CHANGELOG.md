@@ -146,6 +146,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   failed or answered for no row. Its FROM card shows the rows it really produced, run once per row
   of the tables before it, and its JOIN stage explains that each row is paired only with what its
   own run returned. It is listed as having no chapter of its own, with the reason.
+- **Query Walk recursive CTEs, pass by pass** - A recursive CTE is stepped one iteration at a time:
+  START, then PASS 1 to PASS 6, each showing exactly the rows that pass added (under `UNION`,
+  without the rows an earlier pass already produced), then SETTLE with the whole result. The passes
+  are computed as a chain of ordinary CTEs, so no probe ever runs the recursion itself, and an empty
+  pass says the recursion has stopped. A recursion that runs past six passes is cut there and says so.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.

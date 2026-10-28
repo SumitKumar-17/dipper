@@ -12,7 +12,11 @@ import { countValue, errorOf, okResult } from "../results";
 import type { Scene } from "../types";
 import { plain, tables } from "../view";
 
-export function resultScene(result: StationResult | undefined): Scene {
+export function resultScene(
+  result: StationResult | undefined,
+  /** What an empty card says instead of the default, when the station has something to say. */
+  empty: string | null = null,
+): Scene {
   // Not a `SceneContext` builder: a result-only section has no parse to build one from, so this one
   // reads its sample itself.
   const sample = okResult(result, "sample");
@@ -34,5 +38,6 @@ export function resultScene(result: StationResult | undefined): Scene {
       total,
     );
   }
-  return tables([plain("main", "result", sample, total)], total);
+  const card = plain("main", "result", sample, total);
+  return tables([empty === null ? card : { ...card, empty }], total);
 }

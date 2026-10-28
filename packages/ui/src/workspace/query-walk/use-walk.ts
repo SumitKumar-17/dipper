@@ -209,11 +209,11 @@ function planSection(program: Program, section: Section): SectionPlan {
     };
   }
 
-  // A recursive CTE whose two halves `program.ts` could prove: START, REPEAT and SETTLE rather than
+  // A recursive CTE whose two halves `program.ts` could prove: START, its passes and SETTLE rather than
   // the ten-station walk over `select * from chain`, which narrates a trivial SELECT and leaves the
   // recursion - the only interesting thing in the query - unexplained. `parsed` goes null with
   // them, which is what routes the stage through `resultScene`: each station is a whole statement
-  // of its own, and the section's own parse describes none of the three.
+  // of its own, and the section's own parse describes none of them.
   if (section.recursion !== null) {
     if (section.binding.kind === "bound") {
       return { section, parsed: null, stations: [], status: "held" };

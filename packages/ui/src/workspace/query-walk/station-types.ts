@@ -49,10 +49,13 @@ export type Station = {
    *
    * Null for every station named after a clause: FROM, WHERE and the rest are explained from the
    * parse, which is richer than anything a builder could write down in advance. It is set where
-   * there is no clause to explain - a recursive CTE's three stations are about the shape of the
+   * there is no clause to explain - a recursive CTE's stations are about the shape of the
    * whole CTE, and `sentenceFor` has nothing to read that would tell it so.
    */
   readonly sentence: string | null;
+  /** What the card says when the station's rows are empty, where an empty result means something
+   *  the default "no rows" would not say: a recursive pass that adds nothing ends the recursion. */
+  readonly empty: string | null;
   /**
    * A range in the ROOT text this station is about, when `clause` does not index the section's text.
    *
@@ -97,6 +100,7 @@ export function station(
     joinIndex: -1,
     windowIndex: -1,
     sentence: null,
+    empty: null,
     root: null,
     inLists: [],
     ...fields,
