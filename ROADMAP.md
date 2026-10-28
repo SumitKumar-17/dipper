@@ -110,6 +110,14 @@ change reviewed as plain SQL before it runs.
 - [x] Transactions toolbar: Begin, Commit and Rollback in the topbar, runs share one pinned connection (a confirm for UPDATE or DELETE without WHERE is still open) (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
 - [x] Column profiling in the Structure tab: row count, NULL rate, distinct count, range and most common values (M)
+- [ ] Many connections at once: each editor tab remembers its own connection and database, so a
+      test, a staging and a production query sit side by side as tabs and switching between them is
+      one click. The tab and the status bar carry the connection's colour tag and name, a write to a
+      red connection asks first, and a connection strip lists what is open with its state. Closing a
+      connection's last tab leaves it saved but disconnected (L)
+- [ ] Run one query on several connections and compare: pick two or more connections (for example
+      staging and production), run the same SQL on each, and see the results side by side with the
+      pinned-result diff, so "do these two databases agree" is one action (M)
 - [ ] Expand any panel into a pop-over: one shared expand button and pop-over for every panel that
       can be too small to read (results grid, charts, plan view, pinned diff, table structure and DDL,
       activity, slow queries, advice, schema diagram), keyboard reachable and focus returning to the
