@@ -26,6 +26,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Pin a result and compare** - Pin on the results toolbar holds a result aside. After another run,
+  Compare with pinned shows what changed: rows added, rows removed, and for rows in both the exact
+  cells that differ, before and now. Rows are matched on columns you toggle (the id column is
+  preselected), or by position when none is chosen; repeated keys pair up in order, and columns
+  only one side has are named. The pin lives in memory only, so no rows are written to disk.
 - **Snippets** - Keep SQL you reuse. Command palette, Snippets opens a dialog to search by name,
   tag, trigger or text, filter by tag, and insert a snippet at the cursor or into a new query.
   Write `${1}` or `${2:name}` in a snippet for places Tab moves between. Give a snippet a trigger

@@ -94,7 +94,7 @@ change reviewed as plain SQL before it runs.
 - [ ] Typed command registry for the palette, with prefixes for tables and history (M)
 - [x] Snippets and tagged saved queries: a Snippets dialog to search, tag, insert and edit, tab stops, and trigger words in the editor's completion (M)
 - [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)
-- [ ] Pinned results and cell-level diff between runs (M)
+- [x] Pinned results and cell-level diff between runs: pin a result, run again, and see rows added, removed and the exact cells that changed, matched on columns you pick (M)
 - [x] Charts from result columns: bars and lines, any number column for the height, in the results explorer (M)
 - [x] Transactions toolbar: Begin, Commit and Rollback in the topbar, runs share one pinned connection (a confirm for UPDATE or DELETE without WHERE is still open) (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)

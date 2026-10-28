@@ -116,6 +116,13 @@ The visualization is based on your actual SQL and database. Query Walk uses read
 
 ---
 
+### Pin a result and compare
+
+**Pin** on the results toolbar holds a result aside. Change the data or the query, run again, and
+**Compare with pinned** lists rows added, rows removed and the exact cells that changed.
+
+---
+
 ### Snippets
 
 Command palette, **Snippets**: save SQL you reuse, tag it, and give it a trigger word. Type the
