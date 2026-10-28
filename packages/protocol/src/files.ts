@@ -11,6 +11,19 @@ export type FileEntry = {
   modifiedAt?: string;
 };
 
+/** One place a workspace search found its text: a file name (`line` 0) or a line inside a file. */
+export type FileHit = {
+  path: string;
+  name: string;
+  /** 1-based, or 0 when the file's name matched. */
+  line: number;
+  /** The matching line, trimmed and shortened; absent for a name match. */
+  text?: string;
+};
+
+/** `truncated` says the hits are only the first part: the search stopped at a limit. */
+export type FileSearchResult = { hits: FileHit[]; truncated: boolean };
+
 /**
  * What the file watcher noticed on disk. `change` covers creation and modification alike (editors
  * save by writing a temp file and renaming it over the target, so a "create" is indistinguishable

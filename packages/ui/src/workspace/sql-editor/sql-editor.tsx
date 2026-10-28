@@ -36,6 +36,7 @@ import {
   FORMAT_DOCUMENT_EVENT,
   type FormatDocumentEventDetail,
 } from "./format-document";
+import { GOTO_LINE_EVENT, revealLine, takePendingLine, type GotoLineEventDetail } from "./goto-line";
 import { smartCompletionSource } from "./smart-completion";
 import { queryErrorDiagnostic } from "./statements";
 
@@ -186,6 +187,9 @@ export function SqlEditor({
     const view = createEditorView({ bridge, initial: initial.current, parent, reported });
     viewRef.current = view;
     if (initial.current.autoFocus) view.focus();
+    // Opened from a search result: the request was made before this editor existed.
+    const waiting = fileId ? takePendingLine(fileId) : undefined;
+    if (waiting !== undefined) revealLine(view, waiting);
 
     return () => {
       viewRef.current = null;
@@ -203,8 +207,19 @@ export function SqlEditor({
       if (!view || detail?.bufferId !== fileId) return;
       void formatDocument(view, bridge.current.dialect, bridge.current.keywordCase);
     };
+    const onGoto = (event: Event): void => {
+      const detail = (event as CustomEvent<GotoLineEventDetail>).detail;
+      const view = viewRef.current;
+      if (!view || detail?.bufferId !== fileId) return;
+      const line = takePendingLine(fileId);
+      if (line !== undefined) revealLine(view, line);
+    };
     window.addEventListener(FORMAT_DOCUMENT_EVENT, onFormat);
-    return () => window.removeEventListener(FORMAT_DOCUMENT_EVENT, onFormat);
+    window.addEventListener(GOTO_LINE_EVENT, onGoto);
+    return () => {
+      window.removeEventListener(FORMAT_DOCUMENT_EVENT, onFormat);
+      window.removeEventListener(GOTO_LINE_EVENT, onGoto);
+    };
   }, [fileId]);
 
   /* Schema or dialect changed: swap the language in place. */

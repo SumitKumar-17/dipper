@@ -194,6 +194,7 @@ written; a path outside the roots is a 403.
 | POST   | `/api/files`         | `{ dir, name }`                    | `FileEntry` (201)               | Create an empty `.sql` file. 409 if it exists.                                                                                                                                                        |
 | POST   | `/api/files/rename`  | `{ path, name }`                   | `FileEntry`                     | Rename within the same directory. 409 if the target exists.                                                                                                                                           |
 | DELETE | `/api/files`         | -                                  | `{ ok: true }`                  | Delete the `.sql` file at `?path=`.                                                                                                                                                                   |
+| GET    | `/api/files/search`  | -                                  | `FileSearchResult`              | `?q=` finds text, case-insensitively, in the names and contents of the `.sql` files under every workspace root (the files the Files panel shows). A name match has `line: 0`; a content match carries its 1-based `line` and the trimmed text. Capped at 200 hits, 5 per file, 5000 files and 1 MB per file; `truncated` says a cap was hit. 400 without `q`. |
 
 A write made through this API is registered with the watcher, so it does not come back to the
 client as an external file change.

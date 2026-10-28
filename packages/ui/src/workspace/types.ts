@@ -20,6 +20,7 @@ import type {
   ExplainRequest,
   ExportFormat,
   FileEntry,
+  FileSearchResult,
   HistoryScope,
   HistoryStats,
   Plan,
@@ -263,6 +264,10 @@ export type WorkspaceApi = {
   save(): Promise<void>;
   /** Gives a buffer a path - the one way a scratch becomes a file. */
   saveAs(id: string, path: string): Promise<void>;
+  /** Renames a file in its folder. An open tab follows it. Rejects with the reason, such as a name already taken. */
+  renameFile(path: string, name: string): Promise<void>;
+  /** Deletes a file from disk and closes its tab. Callers confirm first: there is no trash. */
+  deleteFile(path: string): Promise<void>;
 
   /* workspace - what is browsable on disk, so `openFile` has something to be called with */
   readonly workspace: Async<readonly FileEntry[]>;
@@ -272,6 +277,8 @@ export type WorkspaceApi = {
    */
   readonly roots: readonly string[];
   refreshWorkspace(): Promise<void>;
+  /** Finds text in the names and contents of the workspace's files. */
+  searchFiles(query: string): Promise<FileSearchResult>;
 
   /* editor */
   readonly cursor: CursorPosition;

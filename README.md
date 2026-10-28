@@ -116,6 +116,14 @@ The visualization is based on your actual SQL and database. Query Walk uses read
 
 ---
 
+### Files and search
+
+The Files panel lists the `.sql` files of your workspace folders. Right-click a file to **rename**
+or **delete** it. The search button finds text in file names and inside files, case-insensitively;
+click a result to open the file at that line.
+
+---
+
 ### Table Editor
 
 **Browse and edit a table without writing SQL, then see exactly what will run.**

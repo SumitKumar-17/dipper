@@ -20,6 +20,7 @@ import {
   NotebookIcon,
   PlusIcon,
   RefreshCwIcon,
+  SearchIcon,
   TriangleAlertIcon,
   XIcon,
 } from "lucide-react";
@@ -37,10 +38,12 @@ import { useWorkspace } from "../context";
 import { FolderPicker } from "../folder-picker";
 import { asyncData } from "../types";
 import { BufferRow } from "./buffer-row";
+import { DeleteFileDialog, RenameFileDialog, type FileTarget } from "./file-dialogs";
 import { GroupHeader } from "./group-header";
 import { buildForest, toggle } from "./tree-helpers";
 import { FileNodes, RootRow } from "./tree-rows";
 import { useFolders } from "./use-folders";
+import { WorkspaceSearch } from "./workspace-search";
 import { EmptyWorkspace, OpenFolder, WorkspaceSkeleton } from "./workspace-states";
 
 export function FilesList({ className }: { className?: string }): React.ReactElement {
@@ -85,6 +88,9 @@ export function FilesList({ className }: { className?: string }): React.ReactEle
     () => new Set(buffers.map((buffer) => buffer.path).filter((path) => path !== null)),
     [buffers],
   );
+
+  const [searching, setSearching] = React.useState(false);
+  const [fileTarget, setFileTarget] = React.useState<FileTarget>(null);
 
   const openNotebook = (): void => setBufferView(newScratch(), "notebook");
 
@@ -162,6 +168,22 @@ export function FilesList({ className }: { className?: string }): React.ReactEle
           <TooltipTrigger
             render={
               <Button
+                aria-label="Search the workspace"
+                aria-pressed={searching}
+                onClick={() => setSearching((previous) => !previous)}
+                size="icon-xs"
+                variant="ghost"
+              >
+                <SearchIcon />
+              </Button>
+            }
+          />
+          <TooltipPopup>Search files and text</TooltipPopup>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
                 aria-label="Refresh workspace"
                 disabled={refreshing}
                 onClick={() => void refreshWorkspace()}
@@ -176,13 +198,17 @@ export function FilesList({ className }: { className?: string }): React.ReactEle
         </Tooltip>
       </GroupHeader>
       <FolderPicker onOpenChange={setPickingRoot} onPick={openRoot} open={pickingRoot} />
+      {fileTarget?.kind === "rename" && <RenameFileDialog onClose={() => setFileTarget(null)} path={fileTarget.path} />}
+      {fileTarget?.kind === "delete" && <DeleteFileDialog onClose={() => setFileTarget(null)} path={fileTarget.path} />}
 
       {rootError !== null && <ErrorBanner onDismiss={clearError}>{rootError}</ErrorBanner>}
 
       {/* Above the tree, not instead of it: a browsable stale tree beats an empty panel. */}
       {workspace.status === "error" && <ErrorBanner>{workspace.error}</ErrorBanner>}
 
-      <div className="min-h-0 flex-1 overflow-y-auto pb-1">
+      {searching && <WorkspaceSearch onClose={() => setSearching(false)} />}
+
+      <div className={cn("min-h-0 flex-1 overflow-y-auto pb-1", searching && "hidden")}>
         {entries === undefined ? (
           workspace.status === "error" ? null : (
             <WorkspaceSkeleton />
@@ -210,6 +236,7 @@ export function FilesList({ className }: { className?: string }): React.ReactEle
                     depth={1}
                     expanded={expandedDirs}
                     nodes={group.children}
+                    onFileAction={(kind, path) => setFileTarget({ kind, path })}
                     onOpenFile={(path) => void openFile(path)}
                     onToggleDir={setExpandedDirs}
                     openPaths={openPaths}

@@ -39,3 +39,20 @@ func NewFileDelete(path, name string) FileEvent {
 func NewDirEvent(path, name string, deleted bool) FileEvent {
 	return FileEvent{Type: "dir", Path: path, Name: name, Deleted: deleted}
 }
+
+// FileHit is one place a workspace search found its text: a file whose name matches (Line 0), or a
+// line inside a file.
+type FileHit struct {
+	Path string `json:"path"`
+	Name string `json:"name"`
+	// Line is 1-based, or 0 when the file's name matched.
+	Line int `json:"line"`
+	// Text is the matching line, trimmed and shortened; empty for a name match.
+	Text string `json:"text,omitempty"`
+}
+
+// FileSearchResult says whether the hits are everything or only the first part of it.
+type FileSearchResult struct {
+	Hits      []FileHit `json:"hits"`
+	Truncated bool      `json:"truncated"`
+}

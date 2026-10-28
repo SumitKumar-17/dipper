@@ -365,6 +365,9 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
       set({ buffers: state.buffers.map((b) => (b.id === id ? { ...b, view } : b)) });
     },
     save,
+    searchFiles: () => Promise.reject(new Error(NOT_RECORDED)),
+    renameFile: () => Promise.reject(new Error(NOT_RECORDED)),
+    deleteFile: () => Promise.reject(new Error(NOT_RECORDED)),
     saveAs: async (id: string, path: string): Promise<void> => {
       const buffer = state.buffers.find((b) => b.id === id);
       if (!buffer) return;

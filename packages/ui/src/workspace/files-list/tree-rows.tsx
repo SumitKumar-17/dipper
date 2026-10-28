@@ -1,16 +1,18 @@
-import { ChevronRightIcon, FileTextIcon, FolderIcon, FolderOpenIcon, XIcon } from "lucide-react";
+import { ChevronRightIcon, FileTextIcon, FolderIcon, FolderOpenIcon, PencilIcon, Trash2Icon, XIcon } from "lucide-react";
 import { motion } from "motion/react";
 import * as React from "react";
 import { useFade } from "../../lib/motion";
 import { cn } from "../../lib/utils";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
+import { ContextMenu, ContextMenuItem, ContextMenuPopup, ContextMenuTrigger } from "../../ui/context-menu";
 import { indent, toggle, type TreeNode } from "./tree-helpers";
 
 export function FileNodes({
   depth,
   expanded,
   nodes,
+  onFileAction,
   onOpenFile,
   onToggleDir,
   openPaths,
@@ -18,6 +20,8 @@ export function FileNodes({
   depth: number;
   expanded: ReadonlySet<string>;
   nodes: readonly TreeNode[];
+  /** Right-click on a file: rename or delete it. */
+  onFileAction: (kind: "rename" | "delete", path: string) => void;
   onOpenFile: (path: string) => void;
   onToggleDir: React.Dispatch<React.SetStateAction<ReadonlySet<string>>>;
   openPaths: ReadonlySet<string>;
@@ -49,6 +53,7 @@ export function FileNodes({
                   depth={depth + 1}
                   expanded={expanded}
                   nodes={node.children}
+                  onFileAction={onFileAction}
                   onOpenFile={onOpenFile}
                   onToggleDir={onToggleDir}
                   openPaths={openPaths}
@@ -61,22 +66,35 @@ export function FileNodes({
         const alreadyOpen = openPaths.has(node.path);
 
         return (
-          <TreeRow
-            depth={depth}
-            icon={<FileTextIcon className="size-3.5" />}
-            key={node.path}
-            label={node.name}
-            onClick={() => onOpenFile(node.path)}
-            title={node.path}
-            trailing={
-              alreadyOpen && (
-                // What the click will actually do: focus the open buffer, not open a duplicate.
-                <Badge size="sm" variant="outline">
-                  open
-                </Badge>
-              )
-            }
-          />
+          <ContextMenu key={node.path}>
+            <ContextMenuTrigger render={<div />}>
+              <TreeRow
+                depth={depth}
+                icon={<FileTextIcon className="size-3.5" />}
+                label={node.name}
+                onClick={() => onOpenFile(node.path)}
+                title={node.path}
+                trailing={
+                  alreadyOpen && (
+                    // What the click will actually do: focus the open buffer, not open a duplicate.
+                    <Badge size="sm" variant="outline">
+                      open
+                    </Badge>
+                  )
+                }
+              />
+            </ContextMenuTrigger>
+            <ContextMenuPopup>
+              <ContextMenuItem onClick={() => onFileAction("rename", node.path)}>
+                <PencilIcon />
+                Rename
+              </ContextMenuItem>
+              <ContextMenuItem onClick={() => onFileAction("delete", node.path)} variant="destructive">
+                <Trash2Icon />
+                Delete
+              </ContextMenuItem>
+            </ContextMenuPopup>
+          </ContextMenu>
         );
       })}
     </>

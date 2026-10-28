@@ -55,6 +55,8 @@ export type BuffersAction =
   | { type: "saveFailed" }
   /** A scratch became a file, or a file was written somewhere else. */
   | { type: "savedAs"; id: string; nextId: string; path: string; name: string }
+  /** A file was renamed on disk; the tab follows it and keeps whatever was unsaved in it. */
+  | { type: "renamed"; id: string; nextId: string; path: string; name: string }
   | { type: "conflictResolved"; id: string; choice: "reload" | "keep" }
   /** The file changed on disk under a buffer with nothing unsaved in it: adopt it silently. */
   | { type: "externalUpdate"; id: string; content: string };
@@ -172,6 +174,13 @@ function reduce(state: BuffersState, action: BuffersAction): BuffersState {
         activeBufferId:
           state.activeBufferId === action.id ? action.nextId : state.activeBufferId,
         phase: "idle",
+      };
+
+    case "renamed":
+      return {
+        ...state,
+        buffers: patch(state, action.id, (b) => ({ ...b, id: action.nextId, path: action.path, name: action.name })),
+        activeBufferId: state.activeBufferId === action.id ? action.nextId : state.activeBufferId,
       };
 
     case "conflictResolved": {

@@ -26,6 +26,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **File rename, delete and search** - Right-click a file in the Files panel to rename or delete it.
+  An open tab follows a rename and keeps its unsaved text; deleting asks first, says when unsaved
+  changes go with the file, and closes the tab. The search button in the Workspace header finds
+  text in file names and inside files, and clicking a result opens the file with the cursor on that
+  line.
 - **Collapsed sidebar is out of reach** - A collapsed sidebar is now `inert`, so a keyboard can no
   longer tab into content that is not on screen and a screen reader no longer finds it.
 - **Hook and accessibility lint** - The React hooks rules and the jsx-a11y rules now fail the lint

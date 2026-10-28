@@ -48,6 +48,10 @@ export type BuffersApi = {
   setBufferView: (id: string, view: Buffer["view"]) => void;
   save: () => Promise<void>;
   saveAs: (id: string, path: string) => Promise<void>;
+  /** Renames a file on disk. An open tab follows it; rejects with the server's reason if it cannot. */
+  renameFile: (path: string, name: string) => Promise<void>;
+  /** Deletes a file on disk and closes its tab, if one is open. */
+  deleteFile: (path: string) => Promise<void>;
   resolveConflict: (id: string, choice: "reload" | "keep") => Promise<void>;
   /** A file changed on disk under an open buffer: adopt it, or raise a conflict. */
   syncExternalFile: (path: string, modifiedAt: string) => void;
@@ -218,6 +222,35 @@ export function useBuffers(
     [buffers, getClient, refreshWorkspace],
   );
 
+  const renameFile = React.useCallback(
+    async (path: string, name: string): Promise<void> => {
+      const renamed = await getClient().files.rename(path, name);
+      const open = buffers.find((b) => b.path === path);
+      if (open) {
+        const nextId = bufferIdFor(renamed.path);
+        const modified = readAt.current.get(open.id);
+        readAt.current.delete(open.id);
+        if (modified !== undefined) readAt.current.set(nextId, modified);
+        dispatch({ type: "renamed", id: open.id, nextId, path: renamed.path, name: fileName(renamed.path) });
+      }
+      refreshWorkspace();
+    },
+    [buffers, getClient, refreshWorkspace],
+  );
+
+  const deleteFile = React.useCallback(
+    async (path: string): Promise<void> => {
+      await getClient().files.remove(path);
+      for (const buffer of buffers) {
+        if (buffer.path !== path) continue;
+        readAt.current.delete(buffer.id);
+        dispatch({ type: "close", id: buffer.id });
+      }
+      refreshWorkspace();
+    },
+    [buffers, getClient, refreshWorkspace],
+  );
+
   const resolveConflict = React.useCallback(
     async (id: string, choice: "reload" | "keep"): Promise<void> => {
       const buffer = buffers.find((b) => b.id === id);
@@ -291,6 +324,8 @@ export function useBuffers(
     setBufferView,
     save: commitSave,
     saveAs,
+    renameFile,
+    deleteFile,
     resolveConflict,
     syncExternalFile,
   };

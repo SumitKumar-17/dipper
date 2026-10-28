@@ -1,4 +1,4 @@
-import type { FileEntry } from "@dipper/protocol";
+import type { FileEntry, FileSearchResult } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
 
 export type FileContent = { path: string; content: string; modifiedAt: string };
@@ -22,6 +22,8 @@ export type FilesApi = {
   create(dir: string, name: string, opts?: CallOptions): Promise<FileEntry>;
   remove(path: string, opts?: CallOptions): Promise<boolean>;
   rename(path: string, name: string, opts?: CallOptions): Promise<FileEntry>;
+  /** Case-insensitive text in the names and contents of every file in the workspace. */
+  search(query: string, opts?: CallOptions): Promise<FileSearchResult>;
 };
 
 export function filesApi(http: Transport): FilesApi {
@@ -61,5 +63,8 @@ export function filesApi(http: Transport): FilesApi {
         body: { path, name },
         signal: opts?.signal,
       }),
+
+    search: (query, opts) =>
+      http.json<FileSearchResult>("/api/files/search", { query: { q: query }, signal: opts?.signal }),
   };
 }

@@ -13,7 +13,7 @@
 // files a previous session left open are reopened once the server can answer for them.
 
 import type { DipperClient } from "@dipper/client";
-import type { BrowseResult, ServerEvent } from "@dipper/protocol";
+import type { BrowseResult, FileSearchResult, ServerEvent } from "@dipper/protocol";
 import { asyncData, type PanelState, type WorkspaceApi } from "@dipper/ui";
 import * as React from "react";
 import { serverClient } from "../server-client";
@@ -148,6 +148,11 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
 
   useServerEvents(getClient, enabled, onServerEvent);
 
+  const searchFiles = React.useCallback(
+    (query: string): Promise<FileSearchResult> => getClient().files.search(query),
+    [getClient],
+  );
+
   const browse = React.useCallback(
     (path?: string): Promise<BrowseResult> =>
       getClient().browse(path === undefined ? {} : { path }),
@@ -183,6 +188,8 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     setBufferView: buffers.setBufferView,
     save: buffers.save,
     saveAs: buffers.saveAs,
+    renameFile: buffers.renameFile,
+    deleteFile: buffers.deleteFile,
     resolveConflict: buffers.resolveConflict,
 
     workspace,
@@ -215,6 +222,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
 
     server,
     browse,
+    searchFiles,
 
     panels,
     setPanel,
