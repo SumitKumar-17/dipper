@@ -316,6 +316,9 @@ Search across:
 - Databases
 - Tables
 
+Start with a character to narrow it: `>` for commands only, `@` for tables (Enter opens the
+table in the Table Editor), `#` for this session's past runs.
+
 Switching connections or databases automatically updates the schema and editor context.
 
 <p align="center">
