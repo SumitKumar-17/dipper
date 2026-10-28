@@ -11,9 +11,11 @@ here. If you learn something every contributor should know, add it to this file.
 - **Comments explain why**, never what: a constraint, a trade-off, a surprising upstream
   behaviour. No commented-out code, no changelog-in-comments, no TODOs without an issue.
 - **No dead code.** Delete it; git remembers. No unused exports, flags, files or dependencies.
-- **Every platform.** Shortcuts are written once in `packages/ui/src/workspace/shortcuts.ts` and
-  labelled with `hotkeyLabel`, never typed as `⌘` in a component: a label that names a key Windows
-  does not have is a bug. Anything the app prints for the user must read right on Windows too.
+- **Every platform.** Shortcut defaults are written once in `packages/ui/src/workspace/shortcuts.ts`.
+  Components read the binding in force with `useShortcuts()` (people can rebind them in Settings),
+  bind it with `useHotkey`, and label it with `hotkeyLabel`, never typed as `⌘` in a component: a
+  label that names a key Windows does not have is a bug. Anything the app prints for the user must
+  read right on Windows too.
 - **Plain punctuation.** No em dashes or en dashes in code, comments, docs or commit messages.
   Use commas, colons, parentheses or a plain hyphen.
 - **Commits.** Small, one concern each, imperative subject under 72 characters. Do not add

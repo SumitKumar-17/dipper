@@ -11,7 +11,7 @@ import { PaneTabs, bodyDroppableId } from "../pane-tabs";
 import { DropRegion } from "./drop-affordances";
 import { useGrid } from "./grid-context";
 import { PaneBody } from "./pane-body";
-import { PALETTE } from "../shortcuts";
+import { useShortcuts } from "../shortcut-store";
 import { hotkeyLabel } from "../use-hotkey";
 
 /** A pane smaller than this is unreadable, and one dragged to nothing is a way to lose a query. */
@@ -137,6 +137,7 @@ function GroupView({ group }: { group: PaneGroup }): React.ReactElement {
  */
 function EmptyGroup(): React.ReactElement {
   const { newScratch } = useWorkspace();
+  const keys = useShortcuts();
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground text-sm">
       <span>No file open</span>
@@ -145,7 +146,7 @@ function EmptyGroup(): React.ReactElement {
         New query
       </Button>
       <span className="flex items-center gap-1.5 text-xs">
-        or search with <Kbd>{hotkeyLabel(PALETTE)}</Kbd>
+        or search with <Kbd>{hotkeyLabel(keys.palette)}</Kbd>
       </span>
     </div>
   );

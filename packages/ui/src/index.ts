@@ -35,7 +35,7 @@ export * from "./ui/toggle-group";
 export * from "./ui/tooltip";
 
 export * from "./workspace/types";
-export { NEW_FILE, SAVE, TOGGLE_RESULTS, TOGGLE_SIDEBAR } from "./workspace/shortcuts";
+export { useShortcuts } from "./workspace/shortcut-store";
 export * from "./workspace/context";
 export * from "./workspace/cells";
 export * from "./workspace/app-topbar";

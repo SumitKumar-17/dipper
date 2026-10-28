@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { hotkeyLabel } from "./use-hotkey";
-import { FORMAT_DOCUMENT, PALETTE, RUN, SAVE, SETTINGS } from "./shortcuts";
+import { resolveShortcuts } from "./shortcut-rules";
+
+const { formatDocument: FORMAT_DOCUMENT, palette: PALETTE, run: RUN, save: SAVE, settings: SETTINGS } = resolveShortcuts({});
 
 const mac = "MacIntel";
 const windows = "Win32";

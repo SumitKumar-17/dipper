@@ -19,7 +19,7 @@ import { requestSaveQuery } from "./save-query-dialog";
 import { useWorkspace } from "./context";
 import { ErrorText } from "./error-text";
 import { SAVE_LABEL, isScratch } from "./types";
-import { SAVE } from "./shortcuts";
+import { useShortcuts } from "./shortcut-store";
 import { hotkeyLabel } from "./use-hotkey";
 
 /**
@@ -43,6 +43,7 @@ export function SaveIndicator({
   className?: string;
 }): React.ReactElement {
   const { activeBuffer, saveState, settings, updateSettings } = useWorkspace();
+  const keys = useShortcuts();
   const fade = useFade();
 
   // A scratch buffer has nowhere to be written, so every save state is a lie about it - "Unsaved
@@ -121,7 +122,7 @@ export function SaveIndicator({
 
         <DropdownMenuItem onClick={requestSaveQuery}>
           Save now
-          <DropdownMenuShortcut>{hotkeyLabel(SAVE)}</DropdownMenuShortcut>
+          <DropdownMenuShortcut>{hotkeyLabel(keys.save)}</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

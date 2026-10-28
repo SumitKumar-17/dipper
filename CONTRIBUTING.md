@@ -53,7 +53,7 @@ taken, so stop any dev UI you already have running first.
 Everything runs on Windows, with two notes. `bun run build` and `bun run smoke` call the shell
 scripts in `apps/server/scripts`, so run them from Git Bash or WSL (`scripts/build.bat` is the
 plain-cmd equivalent for building the binary). `bun run clean` is a Node script and works in any
-shell. Shortcuts show as `Ctrl+...` and `Alt+...` there; see `packages/ui/src/workspace/shortcuts.ts`.
+shell. Shortcuts show as `Ctrl+...` and `Alt+...` there; see `packages/ui/src/workspace/shortcuts.ts` for the defaults, which people can rebind in Settings.
 
 ## Repo map
 

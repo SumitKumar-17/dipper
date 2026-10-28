@@ -26,9 +26,11 @@ import {
 } from "../../ui/context-menu";
 import { useWorkspace } from "../context";
 import { asyncData, type CursorPosition } from "../types";
+import { useShortcuts } from "../shortcut-store";
 import { hotkeyLabel } from "../use-hotkey";
 import { completionNamespace, defaultSchemaName } from "./completion";
 import { completionConf, createEditorView, gutterConf, languageConf } from "./create-view";
+import { editorKeys, keysConf } from "./editor-keys";
 import { dialectFor } from "./dialect";
 import { useEditorCommands, type EditorBridge } from "./editor-commands";
 import {
@@ -41,10 +43,8 @@ import { smartCompletionSource } from "./smart-completion";
 import { snippetSource } from "./snippet-completion";
 import { queryErrorDiagnostic } from "./statements";
 
-// `Hotkey` descriptors rather than strings, so `hotkeyLabel` renders the platform's own glyphs.
-const RUN_HOTKEY = { key: "Enter", mod: true } as const;
-const RUN_ALL_HOTKEY = { key: "Enter", mod: true, shift: true } as const;
-const FORMAT_HOTKEY = { key: "f", shift: true, alt: true } as const;
+// Not a shortcut anyone rebinds: it is CodeMirror's own. `Hotkey` descriptors rather than strings, so
+// `hotkeyLabel` renders the platform's own glyphs.
 const TOGGLE_COMMENT_HOTKEY = { key: "/", mod: true } as const;
 
 export function SqlEditor({
@@ -72,6 +72,8 @@ export function SqlEditor({
   const { activeRun, connection, editBuffer, buffers, run, schema, setCursor, settings, snippets } =
     useWorkspace();
 
+  const shortcuts = useShortcuts();
+  const keys = React.useMemo(() => ({ run: shortcuts.run, formatDocument: shortcuts.formatDocument }), [shortcuts]);
   const controlled = controlledValue !== undefined;
   const value = controlled
     ? controlledValue
@@ -176,11 +178,11 @@ export function SqlEditor({
   const hostRef = React.useRef<HTMLDivElement>(null);
   const viewRef = React.useRef<EditorView | null>(null);
   const reported = React.useRef<CursorPosition>({ col: 1, line: 1 });
-  const initial = React.useRef({ autoFocus, completion, gutter, language, minimal, value });
+  const initial = React.useRef({ autoFocus, completion, gutter, keys, language, minimal, value });
   /* After the commit, and declared above the effect that builds the view, so the view is always
      created from props that actually rendered. */
   React.useEffect(() => {
-    initial.current = { autoFocus, completion, gutter, language, minimal, value };
+    initial.current = { autoFocus, completion, gutter, keys, language, minimal, value };
   });
 
   const commands = useEditorCommands(viewRef, bridge);
@@ -238,6 +240,11 @@ export function SqlEditor({
     viewRef.current?.dispatch({ effects: completionConf.reconfigure(completion) });
   }, [completion]);
 
+  /* A shortcut was rebound in Settings: swap the editor's own keys in place. */
+  React.useEffect(() => {
+    viewRef.current?.dispatch({ effects: keysConf.reconfigure(editorKeys(keys, bridge)) });
+  }, [keys]);
+
   /* Adopt changes made to the buffer from outside (a save round-trip, a palette insertion). The
      equality check is what stops this from fighting the updateListener on every keystroke. */
   React.useEffect(() => {
@@ -281,22 +288,22 @@ export function SqlEditor({
       <ContextMenuPopup>
         <ContextMenuItem onClick={commands.runStatementAtCursor}>
           Run statement
-          <ContextMenuShortcut>{hotkeyLabel(RUN_HOTKEY)}</ContextMenuShortcut>
+          <ContextMenuShortcut>{hotkeyLabel(shortcuts.run)}</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem disabled={!commands.hasSelection} onClick={commands.runSelectionText}>
           Run selection
-          <ContextMenuShortcut>{hotkeyLabel(RUN_HOTKEY)}</ContextMenuShortcut>
+          <ContextMenuShortcut>{hotkeyLabel(shortcuts.run)}</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem onClick={commands.runWholeDocument}>
           Run all
-          <ContextMenuShortcut>{hotkeyLabel(RUN_ALL_HOTKEY)}</ContextMenuShortcut>
+          <ContextMenuShortcut>{hotkeyLabel({ ...shortcuts.run, shift: true })}</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem onClick={commands.visualiseFromMenu}>Visualise query</ContextMenuItem>
         <ContextMenuItem onClick={commands.explainFromMenu}>Explain plan</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={commands.formatFromMenu}>
           Format document
-          <ContextMenuShortcut>{hotkeyLabel(FORMAT_HOTKEY)}</ContextMenuShortcut>
+          <ContextMenuShortcut>{hotkeyLabel(shortcuts.formatDocument)}</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem onClick={commands.toggleCommentFromMenu}>
           Toggle comment

@@ -40,11 +40,10 @@ import {
   type FormatDocumentEventDetail,
 } from "../sql-editor";
 import type { Buffer, CursorPosition, PanelState } from "../types";
-import { FORMAT_DOCUMENT, NEW_FILE, RUN, SAVE, TOGGLE_RESULTS, TOGGLE_SIDEBAR } from "../shortcuts";
+import { useShortcuts } from "../shortcut-store";
 import { hotkeyLabel } from "../use-hotkey";
 import type { PaletteAction } from "./palette-items";
 
-export { FORMAT_DOCUMENT, NEW_FILE, RUN, SAVE, TOGGLE_RESULTS, TOGGLE_SIDEBAR } from "../shortcuts";
 
 /** Exactly what the built-in actions read from the workspace. */
 export type BuiltinActionDeps = {
@@ -74,12 +73,13 @@ export function useBuiltinActions(
     refreshSchema,
     togglePanel,
   } = deps;
+  const keys = useShortcuts();
 
   return React.useMemo(
     () => [
       {
         label: "New file",
-        shortcut: hotkeyLabel(NEW_FILE),
+        shortcut: hotkeyLabel(keys.newFile),
         icon: PlusIcon,
         onSelect: () => {
           newScratch();
@@ -88,7 +88,7 @@ export function useBuiltinActions(
       },
       {
         label: "Save",
-        shortcut: hotkeyLabel(SAVE),
+        shortcut: hotkeyLabel(keys.save),
         icon: SaveIcon,
         onSelect: () => {
           void save();
@@ -97,7 +97,7 @@ export function useBuiltinActions(
       },
       {
         label: "Run",
-        shortcut: hotkeyLabel(RUN),
+        shortcut: hotkeyLabel(keys.run),
         icon: PlayIcon,
         onSelect: () => {
           void run();
@@ -106,7 +106,7 @@ export function useBuiltinActions(
       },
       {
         label: "Format document",
-        shortcut: hotkeyLabel(FORMAT_DOCUMENT),
+        shortcut: hotkeyLabel(keys.formatDocument),
         icon: WandSparklesIcon,
         onSelect: () => {
           // The key is bound inside CodeMirror, which needs a keydown reaching the focused
@@ -231,7 +231,7 @@ export function useBuiltinActions(
       },
       {
         label: panels.outputOpen ? "Hide results" : "Show results",
-        shortcut: hotkeyLabel(TOGGLE_RESULTS),
+        shortcut: hotkeyLabel(keys.toggleResults),
         icon: PanelBottomIcon,
         onSelect: () => {
           togglePanel("outputOpen");
@@ -240,7 +240,7 @@ export function useBuiltinActions(
       },
       {
         label: panels.sidebarOpen ? "Hide sidebar" : "Show sidebar",
-        shortcut: hotkeyLabel(TOGGLE_SIDEBAR),
+        shortcut: hotkeyLabel(keys.toggleSidebar),
         icon: PanelLeftIcon,
         onSelect: () => {
           togglePanel("sidebarOpen");
@@ -253,6 +253,7 @@ export function useBuiltinActions(
       activeBufferId,
       close,
       cursor,
+      keys,
       newScratch,
       panels.outputOpen,
       panels.sidebarOpen,

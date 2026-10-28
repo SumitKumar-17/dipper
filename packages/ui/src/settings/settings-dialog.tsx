@@ -1,6 +1,6 @@
 // Settings.
 //
-// Six panes behind a left nav, at a fixed size so the dialog never resizes under the cursor
+// Seven panes behind a left nav, at a fixed size so the dialog never resizes under the cursor
 // when you switch sections - a preferences window that changes shape as you browse it is one you
 // stop trusting to stay where you put it. The active pane is marked by one indicator that slides
 // (`layoutId`) rather than by five that blink, which is the difference between "this moved" and
@@ -13,6 +13,7 @@ import {
   DatabaseIcon,
   FolderIcon,
   HistoryIcon,
+  KeyboardIcon,
   PaletteIcon,
   SquareTerminalIcon,
   TableIcon,
@@ -28,6 +29,7 @@ import { useWorkspace } from "../workspace/context";
 import { asyncData } from "../workspace/types";
 import { ErrorText } from "../workspace/error-text";
 import { ConnectionsSection } from "./connections-section";
+import { ShortcutsSection } from "./shortcuts-section";
 import { SavedTick, useSettingsWriter } from "./saved-tick";
 import {
   AppearanceSection,
@@ -42,6 +44,7 @@ const PANES = [
   { id: "query", title: "Query", icon: TableIcon },
   { id: "history", title: "History", icon: HistoryIcon },
   { id: "files", title: "Files", icon: FolderIcon },
+  { id: "shortcuts", title: "Shortcuts", icon: KeyboardIcon },
   { id: "connections", title: "Connections", icon: DatabaseIcon },
   { id: "appearance", title: "Appearance", icon: PaletteIcon },
 ] as const;
@@ -140,6 +143,8 @@ export function SettingsDialog({
                 >
                   {pane === "connections" ? (
                     <ConnectionsSection />
+                  ) : pane === "shortcuts" ? (
+                    <ShortcutsSection />
                   ) : value === undefined ? (
                     <SettingsSkeleton status={settings.status} />
                   ) : (

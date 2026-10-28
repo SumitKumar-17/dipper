@@ -12,7 +12,7 @@ import {
 } from "@codemirror/language";
 import { lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
-import { Compartment, EditorState, Prec, type Extension } from "@codemirror/state";
+import { Compartment, EditorState, type Extension } from "@codemirror/state";
 import {
   crosshairCursor,
   drawSelection,
@@ -26,9 +26,8 @@ import {
 import type * as React from "react";
 import type { CursorPosition } from "../types";
 import type { EditorBridge } from "./editor-commands";
-import { formatDocument } from "./format-document";
+import { editorKeys, keysConf, type EditorKeys } from "./editor-keys";
 import { formatNotice } from "./format-notice";
-import { statementAtCursor } from "./statements";
 import { cellHeight, editorThemeBase, paneHeight, sqlHighlighting } from "./theme";
 
 // Compartments hold no state of their own - they are keys into a state's configuration - so one
@@ -42,6 +41,7 @@ export type EditorSnapshot = {
   autoFocus: boolean;
   completion: Extension;
   gutter: Extension;
+  keys: EditorKeys;
   language: Extension;
   minimal: boolean;
   value: string;
@@ -58,20 +58,6 @@ export function createEditorView({
   parent: HTMLElement;
   reported: React.RefObject<CursorPosition>;
 }): EditorView {
-  const runInEditor = (view: EditorView, whole: boolean): boolean => {
-    const doc = view.state.doc.toString();
-    if (whole) {
-      const all = doc.trim();
-      if (all) bridge.current.run(all);
-      return true;
-    }
-    const { from, to } = view.state.selection.main;
-    const selected = doc.slice(from, to).trim();
-    const sqlText = selected || statementAtCursor(doc, from)?.sql;
-    if (sqlText) bridge.current.run(sqlText);
-    return true;
-  };
-
   return new EditorView({
     parent,
     state: EditorState.create({
@@ -79,25 +65,7 @@ export function createEditorView({
       extensions: [
         gutterConf.of(initial.gutter),
         languageConf.of(initial.language),
-        // Ahead of defaultKeymap, which binds Mod-Enter to "insert blank line".
-        Prec.highest(
-          keymap.of([
-            { key: "Mod-Enter", preventDefault: true, run: (view) => runInEditor(view, false) },
-            {
-              key: "Mod-Shift-Enter",
-              preventDefault: true,
-              run: (view) => runInEditor(view, true),
-            },
-            {
-              key: "Shift-Alt-f",
-              preventDefault: true,
-              run: (view) => {
-                void formatDocument(view, bridge.current.dialect, bridge.current.keywordCase);
-                return true;
-              },
-            },
-          ]),
-        ),
+        keysConf.of(editorKeys(initial.keys, bridge)),
         formatNotice,
         history(),
         drawSelection(),

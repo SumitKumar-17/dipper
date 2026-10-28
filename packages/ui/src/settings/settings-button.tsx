@@ -9,7 +9,7 @@ import { SettingsIcon } from "lucide-react";
 import * as React from "react";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
-import { SETTINGS } from "../workspace/shortcuts";
+import { useShortcuts } from "../workspace/shortcut-store";
 import { hotkeyLabel, useHotkey } from "../workspace/use-hotkey";
 import {
   SETTINGS_EVENT,
@@ -30,7 +30,8 @@ export function SettingsButton({
   const [open, setOpen] = React.useState(false);
   const [pane, setPane] = React.useState<SettingsPane>("editor");
 
-  useHotkey(SETTINGS, () => setOpen(true));
+  const keys = useShortcuts();
+  useHotkey(keys.settings, () => setOpen(true));
 
   // Both halves of the request land here, because both are this component's state: the gear owns
   // the dialog, and which pane it opens on is the same kind of answer as whether it is open.
@@ -60,7 +61,7 @@ export function SettingsButton({
         >
           <SettingsIcon />
         </TooltipTrigger>
-        <TooltipPopup>Settings {hotkeyLabel(SETTINGS)}</TooltipPopup>
+        <TooltipPopup>Settings {hotkeyLabel(keys.settings)}</TooltipPopup>
       </Tooltip>
 
       <SettingsDialog

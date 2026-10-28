@@ -435,7 +435,7 @@ Dipper never installs or bundles a database server.
 | <kbd>⌘</kbd><kbd>,</kbd>             | Settings                  |
 | <kbd>⇧</kbd><kbd>⌥</kbd><kbd>F</kbd> | Format SQL                |
 
-Use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd> and <kbd>Alt</kbd> instead of <kbd>⌥</kbd> on Windows and Linux. Inside the app every shortcut is labelled for your platform.
+Use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd> and <kbd>Alt</kbd> instead of <kbd>⌥</kbd> on Windows and Linux. Inside the app every shortcut is labelled for your platform. Settings, **Shortcuts** lets you rebind any of them; a key that is already used or could not be typed around is refused with the reason, and your choices stay in this browser.
 
 ## Local-first
 

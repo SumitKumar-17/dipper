@@ -90,7 +90,7 @@ change reviewed as plain SQL before it runs.
 - [x] Result find and click-to-sort over the loaded rows (column filters next) (S/M)
 - [x] Cell inspector with JSON pretty-printing and copy (copy-as formats next) (S)
 - [x] Elapsed timer while a query runs (partial rows from the streaming endpoint are still open) (M)
-- [ ] Keyboard shortcut editor (M)
+- [x] Keyboard shortcut editor: rebind any shortcut in Settings, conflicts and unusable keys refused, kept in the browser, the editor's own Run and Format follow (M)
 - [x] Command palette modes: `>` commands, `@` tables (opens the Table Editor), `#` past runs, filtered by one tested matcher (a user-extensible command registry is still open) (M)
 - [x] Snippets and tagged saved queries: a Snippets dialog to search, tag, insert and edit, tab stops, and trigger words in the editor's completion (M)
 - [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)

@@ -26,6 +26,10 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Keyboard shortcut editor** - Settings, Shortcuts lists every shortcut with its binding. Change
+  one and press the keys you want; a combination already in use, or a bare key that could not be
+  typed around, is refused with the reason. Run and Format inside the editor follow the change,
+  and so does every label. Bindings stay in this browser, and Reset puts one or all back.
 - **Palette modes** - The command palette reads a leading character: `>` for commands only, `@`
   for tables and views, `#` for this session's runs. Choosing a table now opens it in the Table
   Editor instead of only finding it in the sidebar, and choosing a run shows its results. Without a

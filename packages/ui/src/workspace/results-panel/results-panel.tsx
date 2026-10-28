@@ -25,7 +25,7 @@ import { RunningRows } from "./skeletons";
 import { useElapsed } from "./use-elapsed";
 import { formatAge } from "../activity/session-metrics";
 import { ResultBody, StatementStrip } from "./statement-view";
-import { RUN } from "../shortcuts";
+import { useShortcuts } from "../shortcut-store";
 import { hotkeyLabel } from "../use-hotkey";
 
 export function ResultsPanel({
@@ -250,10 +250,11 @@ const MARK_LABEL: Record<"error" | "notice", string> = {
 };
 
 function EmptyState(): React.ReactElement {
+  const keys = useShortcuts();
   return (
     <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground text-sm">
       <span>Run a query to see results</span>
-      <Kbd>{hotkeyLabel(RUN)}</Kbd>
+      <Kbd>{hotkeyLabel(keys.run)}</Kbd>
     </div>
   );
 }
