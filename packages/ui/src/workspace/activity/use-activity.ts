@@ -3,7 +3,7 @@ import * as React from "react";
 import { messageOf } from "../../lib/errors";
 import { useWorkspace } from "../context";
 
-export const REFRESH_MS = 3000;
+const REFRESH_MS = 3000;
 
 type State =
   | { status: "loading" }

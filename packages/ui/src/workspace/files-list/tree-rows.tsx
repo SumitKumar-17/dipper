@@ -146,7 +146,7 @@ export function RootRow({
   );
 }
 
-export function TreeRow({
+function TreeRow({
   depth,
   expanded,
   icon,

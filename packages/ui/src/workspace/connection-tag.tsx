@@ -4,7 +4,7 @@ import type * as React from "react";
 import { cn } from "../lib/utils";
 
 /** Theme tokens for each tag colour, so a tag follows light and dark themes like everything else. */
-export const COLOR_CLASS: Readonly<Record<ConnectionColor, string>> = {
+const COLOR_CLASS: Readonly<Record<ConnectionColor, string>> = {
   green: "bg-success",
   blue: "bg-info",
   amber: "bg-warning",

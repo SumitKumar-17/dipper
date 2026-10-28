@@ -3,8 +3,8 @@
 // the same grid, so the numbers live here rather than once per tree.
 
 /** Pixels. Indentation is the one row value that depends on data, so it is the one inline value. */
-export const INDENT_BASE = 8;
-export const INDENT_STEP = 12;
+const INDENT_BASE = 8;
+const INDENT_STEP = 12;
 
 /**
  * Row indentation: the only value here Tailwind cannot hold, because it is a function of the row's

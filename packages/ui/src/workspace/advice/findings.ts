@@ -1,7 +1,7 @@
 import type { Finding, FindingKind } from "@dipper/protocol";
 
 /** The order findings are read in: what is broken, then what is wasteful, then what is slow. */
-export const KIND_ORDER: readonly FindingKind[] = [
+const KIND_ORDER: readonly FindingKind[] = [
   "invalid_index",
   "missing_fk_index",
   "duplicate_index",

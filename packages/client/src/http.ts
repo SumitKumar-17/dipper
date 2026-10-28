@@ -38,7 +38,7 @@ export type Transport = {
   json<T>(path: string, options?: RequestOptions): Promise<T>;
 };
 
-export function searchString(query?: QueryParams): string {
+function searchString(query?: QueryParams): string {
   if (!query) return "";
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
