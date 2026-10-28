@@ -46,6 +46,9 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)
 - [ ] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (L)
 - [ ] Shareable step-through export as a standalone HTML file (M)
+- [ ] Bigger panels in the walk: its stage, narration, plan, query and notes panels are small, so each
+      gets a small expand button (a square icon) that opens it alone in a large pop-over, Escape or
+      the same button to put it back, with the walk still stepping behind it (M)
 
 ## 2. Database depth (server)
 
@@ -63,6 +66,12 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Data editing with a reviewed, transactional change set (M/L)
 - [x] Richer connection options: CA and client certificates, search_path and unix sockets, in an Advanced section of the connection form (S/M)
 - [x] Test an unsaved connection (S)
+- [ ] Connection form autofill: paste or type a little and the rest fills in. A pasted URL, a
+      `psql` or `mysql` command, a `DATABASE_URL=` line or a JDBC string splits into host, port, user,
+      database, TLS and options; a bare host fills the port, user and database that dialect uses and
+      names the connection from the host; hosted providers (Neon, Supabase, RDS, PlanetScale) get their
+      TLS and options set. Each filled field is marked as filled, can be undone in one click, and never
+      overwrites something already typed (M)
 - [x] SQLite support, pure Go so cross-compiling keeps working (activity, advice, statement stats and sessions are not implemented for it) (M)
 - [x] SSH tunnels: a bastion host in the connection form, key file or ssh-agent, host key pinned by fingerprint or checked against known_hosts (L)
 - [x] More export formats: TSV, NDJSON, SQL INSERT, Markdown, with a formula-safe option (S)
@@ -101,6 +110,10 @@ change reviewed as plain SQL before it runs.
 - [x] Transactions toolbar: Begin, Commit and Rollback in the topbar, runs share one pinned connection (a confirm for UPDATE or DELETE without WHERE is still open) (M)
 - [x] ER diagram export to Mermaid and DBML, whole schema (SVG and PNG still open) (M)
 - [x] Column profiling in the Structure tab: row count, NULL rate, distinct count, range and most common values (M)
+- [ ] Expand any panel into a pop-over: one shared expand button and pop-over for every panel that
+      can be too small to read (results grid, charts, plan view, pinned diff, table structure and DDL,
+      activity, slow queries, advice, schema diagram), keyboard reachable and focus returning to the
+      button, so the same small square icon works the same way everywhere (M)
 - [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)
 - [x] File rename, delete and workspace search: right-click a file to rename or delete it (open tabs follow or close), and search file names and contents from the Files panel, opening a result at its line (S/M)
 - [x] `inert` for the collapsed sidebar, and tab list semantics with arrow-key navigation for the editor tabs; roles and keyboard for the schema and file trees still open (S/M)
