@@ -33,7 +33,7 @@
     "start": "turbo run start --filter=dipper",
     "start:site": "bun --cwd=apps/site run build && bun --cwd=apps/site run preview",
     "typecheck": "bun run --filter '*' typecheck",
-    "check": "bun run typecheck && bun run lint && bun run test",
+    "check": "bun run typecheck && bun run lint && bun run test && bun run --filter @dipper/protocol check",
     "lint": "eslint apps/web/src apps/web/vite.config.ts apps/web/scripts apps/site/src packages/ui/src packages/client/src packages/sql/src packages/protocol/src packages/protocol/scripts scripts && bun run --filter dipper lint",
     "smoke": "bun run --filter dipper smoke",
     "test": "bun test packages apps/web && bun run --filter dipper test",

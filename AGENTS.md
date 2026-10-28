@@ -127,7 +127,9 @@ Before handing work back, run:
 bun run check && bun run build
 ```
 
-`bun run check` is typecheck, lint and the unit tests together.
+`bun run check` is typecheck, lint, the unit tests and the protocol drift check together. The drift
+check fails when a JSON field exists in the Go wire types (`apps/server/protocol`) but not in
+`packages/protocol/src`, or the reverse, so change both together.
 
 ## Project facts that trip people up
 

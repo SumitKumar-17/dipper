@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "check": "node scripts/assert-types-only.mjs"
+    "check": "node scripts/assert-types-only.mjs && node scripts/check-drift.mjs"
   },
   "devDependencies": {
     "@dipper/tsconfig": "*",
