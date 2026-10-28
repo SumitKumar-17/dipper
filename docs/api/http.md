@@ -97,6 +97,19 @@ to offer.
 kept in `options` and used verbatim, so a pasted hosted-database string keeps the mode it asked
 for; otherwise TLS to a remote host is `verify-full` and to loopback is `require`.
 
+Other keys in `options` refine the connection. They hold paths and names, never secrets, and a URL
+query parameter of the same name is kept too:
+
+| Option                                | Dialects | Meaning                                                                                       |
+| ------------------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `sslrootcert`                         | pg, mysql | Absolute path of a CA certificate to verify the server against.                              |
+| `sslcert`, `sslkey`                   | pg, mysql | Absolute paths of a client certificate and its key; one without the other is refused.        |
+| `search_path`                         | pg       | Comma separated schema names, set as a startup parameter.                                     |
+| `socket`                              | pg, mysql | Absolute path of a unix socket (a Postgres `host` starting with `/` is a socket directory). A socket connection defaults `ssl` to off. |
+
+The files are read by the server, so the paths are on its machine. A relative path, a missing file
+or a malformed `search_path` is refused with `connect_failed` before any connection is tried.
+
 ## Discovery
 
 | Method | Path            | Body | Response          | Purpose                                                                                                                                                                                                                                                 |
