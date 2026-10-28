@@ -139,6 +139,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   between 2 preceding and current row)` added up for each row. The default frame, `GROUPS`,
   exclusions and ties are drawn; a `RANGE` frame measured in values (`interval '1 day' preceding`)
   is named rather than drawn, and ranking functions such as `rank()` say the frame does not apply.
+- **Query Walk CTE graph** - A query with CTEs shows which CTE feeds which under the chapter strip:
+  each CTE, the chapters that read it (with a count when one reads it more than once) and how many
+  use it. A CTE nothing reads says so. Click any name to open that chapter.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.
