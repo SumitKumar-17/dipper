@@ -156,6 +156,20 @@ The section matching a release's version becomes that release's notes on GitHub 
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.
+- **Docs and changelog pages on the site** - `/docs/` shows the README's user-facing sections and
+  the HTTP API reference, and `/changelog/` this file, both read from the repository when the site
+  is built, so they cannot drift from it. Linked from the site's nav and footer.
+- **Site menu on a phone** - Under 640px the site's links sit behind a Menu button. Opening it
+  moves focus to the first link, Escape closes it and returns focus to the button, and choosing a
+  link, pressing outside or tabbing away closes it. The nav marks the page you are on, and code
+  blocks and tables in the docs take keyboard focus only when they scroll.
+
+### Changed
+
+- **Site bundle** - React, motion and the editor (CodeMirror and Lezer) are now chunks of their
+  own, so a site-only deploy leaves them cached and the docs and changelog pages reuse the landing's
+  React. Tailwind scans only the site's and `@dipper/ui`'s TypeScript, not tests, notes, recordings
+  or the dev-only lab pages. The amount of JavaScript before first paint is unchanged.
 
 ### Security
 

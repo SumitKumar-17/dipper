@@ -15,7 +15,7 @@ import {
   TerminalScene,
   WalkScene,
 } from "../src/shared/scenes";
-import "../src/shared/styles/base.css";
+import "./lab.css";
 
 const SCENES: [string, React.FC<SceneProps>][] = [
   ["hero", HeroScene],

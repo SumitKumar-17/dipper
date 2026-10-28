@@ -2,7 +2,8 @@
   "extends": "@dipper/tsconfig/react.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "types": ["vite/client"]
+    // "bun" only for the `bun:test` import in *.test.ts; no page reads Bun globals.
+    "types": ["vite/client", "bun"]
   },
   "include": ["src", "lab", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "public"]

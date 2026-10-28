@@ -24,6 +24,7 @@ import { TrySection } from "./sections/try";
 import { TryWindowProvider, useTryWindow } from "./hand-over/try-window";
 import { WalkSection } from "./sections/walk";
 import { Sky } from "./chrome/sky";
+import { SkipLink } from "./chrome/skip-link";
 
 // The share of the bird's moves in a section that end back on its piece.
 const PIECE_HOMING = 0.5;
@@ -75,12 +76,7 @@ function Page() {
 
   return (
     <>
-      <a
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-foreground"
-        href="#main"
-      >
-        Skip to content
-      </a>
+      <SkipLink />
       <Sky />
       <Nav />
       <BirdRoute steps={route} />

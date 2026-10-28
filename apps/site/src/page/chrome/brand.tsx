@@ -26,7 +26,7 @@ export function Mark({ className }: { className?: string }) {
 export function Brand({ className }: { className?: string }) {
   return (
     <a
-      href="./"
+      href="/"
       className={cn(
         "-ml-1 inline-flex items-center gap-2 rounded-md p-1 text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
         className,

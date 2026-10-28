@@ -1,0 +1,4 @@
+/* The dev-only lab pages: the site's styles, plus a scan of these files for the few classes only they
+   use. The site's own scan leaves lab/ out, so none of them reach the deploy. */
+@import "../src/shared/styles/base.css";
+@source "./*.tsx";
