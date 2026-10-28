@@ -80,9 +80,33 @@ func (d *postgresDriver) poolConfig(database string, max int32) (*pgxpool.Config
 		quoteDSN(d.config.Host), d.config.Port, quoteDSN(d.config.User), quoteDSN(database),
 		quoteDSN(appName), sslModeFor(d.config), int(connectTimeout.Seconds()),
 	)
+	root, cert, key, err := certFiles(d.config)
+	if err != nil {
+		return nil, err
+	}
+	for keyword, path := range map[string]string{"sslrootcert": root, "sslcert": cert, "sslkey": key} {
+		if path != "" {
+			dsn += " " + keyword + "=" + quoteDSN(path)
+		}
+	}
 	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		return nil, err
+	}
+	searchPath, err := searchPathFor(d.config)
+	if err != nil {
+		return nil, err
+	}
+	if searchPath != "" {
+		cfg.ConnConfig.RuntimeParams["search_path"] = searchPath
+	}
+	if socket, err := socketFor(d.config); err != nil {
+		return nil, err
+	} else if socket != "" {
+		cfg.ConnConfig.Host = socket
+		for _, fallback := range cfg.ConnConfig.Fallbacks {
+			fallback.Host = socket
+		}
 	}
 	cfg.ConnConfig.Password = d.config.Password
 	cfg.MaxConns = max

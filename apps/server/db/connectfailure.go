@@ -57,10 +57,12 @@ func Classify(config protocol.ConnectionConfig, err error) ConnectFailure {
 	}
 	address := fmt.Sprintf("%s:%d", config.Host, config.Port)
 
-	if failure, ok := classifyNetwork(err, address); ok {
+	// TLS first: a failed certificate check arrives wrapped in a network error, and reading it as
+	// "nothing is listening" sends the user looking at the wrong thing.
+	if failure, ok := classifyTLS(err); ok {
 		return failure
 	}
-	if failure, ok := classifyTLS(err); ok {
+	if failure, ok := classifyNetwork(err, address); ok {
 		return failure
 	}
 	if failure, ok := classifyPostgres(config, err); ok {
@@ -113,13 +115,13 @@ func classifyTLS(err error) (ConnectFailure, bool) {
 		return ConnectFailure{
 			Code: protocol.ConnectTLSRequired,
 			Message: "The server's TLS certificate is not signed by a known authority. " +
-				"Add ?sslmode=require to the connection URL to encrypt without verifying it.",
+				"Give the CA certificate as sslrootcert, or add ?sslmode=require to encrypt without verifying it.",
 		}, true
 	case errors.As(err, &hostname):
 		return ConnectFailure{
 			Code: protocol.ConnectTLSRequired,
 			Message: "The server's TLS certificate is for a different host. " +
-				"Add ?sslmode=require to the connection URL to encrypt without verifying it.",
+				"Connect by the name on the certificate, or add ?sslmode=require to encrypt without verifying it.",
 		}, true
 	}
 	return ConnectFailure{}, false

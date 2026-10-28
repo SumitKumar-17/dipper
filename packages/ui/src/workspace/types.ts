@@ -179,6 +179,8 @@ export type ConnectionInput = {
   readonly color?: ConnectionColor | "";
   readonly readOnly?: boolean;
   readonly ssl?: boolean;
+  /** Driver options such as `sslrootcert` or `search_path`. When given, they replace the saved ones. */
+  readonly options?: Readonly<Record<string, string | number | boolean>>;
 };
 
 export type ConnectionTest = { readonly serverVersion: string; readonly latencyMs: number };

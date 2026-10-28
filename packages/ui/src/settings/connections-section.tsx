@@ -41,6 +41,7 @@ function inputOf(connection: ConnectionSummary): ConnectionInput {
     user: connection.user,
     database: connection.database,
     ssl: connection.ssl,
+    ...(connection.options ? { options: connection.options } : {}),
   };
 }
 

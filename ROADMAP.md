@@ -60,7 +60,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Parameterised queries: values bound separately from the SQL, Postgres and MySQL (a parameter bar in the editor is still open) (S)
 - [x] Row browser endpoint (offset paging; keyset pagination still to do) (S/M)
 - [x] Data editing with a reviewed, transactional change set (M/L)
-- [ ] Richer connection options: CA and client certificates, search_path, unix sockets (S/M)
+- [x] Richer connection options: CA and client certificates, search_path and unix sockets, in an Advanced section of the connection form (S/M)
 - [x] Test an unsaved connection (S)
 - [x] SQLite support, pure Go so cross-compiling keeps working (activity, advice, statement stats and sessions are not implemented for it) (M)
 - [ ] SSH tunnels (L)

@@ -40,7 +40,7 @@ func newMysqlDriver(config protocol.ConnectionConfig) *mysqlDriver {
 
 func (d *mysqlDriver) Dialect() protocol.Dialect { return protocol.DialectMySQL }
 
-func (d *mysqlDriver) dsn(database string) string {
+func (d *mysqlDriver) dsn(database string) (string, error) {
 	if database == "" {
 		database = d.config.Database
 	}
@@ -58,12 +58,37 @@ func (d *mysqlDriver) dsn(database string) string {
 	// match count other than one as a stale edit, and an unchanged value must not look like one.
 	cfg.ClientFoundRows = true
 	cfg.TLSConfig = mysqlTLSFor(d.config)
+	socket, err := socketFor(d.config)
+	if err != nil {
+		return "", err
+	}
+	if socket != "" {
+		cfg.Net, cfg.Addr, cfg.TLSConfig = "unix", socket, ""
+	}
+	// A private CA or a client certificate needs a TLS config of its own, which the driver takes by name.
+	if cfg.TLSConfig != "" {
+		custom, err := tlsConfigFor(d.config, cfg.TLSConfig == "true")
+		if err != nil {
+			return "", err
+		}
+		if custom != nil {
+			name := tlsName(d.config)
+			if err := mysqldriver.RegisterTLSConfig(name, custom); err != nil {
+				return "", err
+			}
+			cfg.TLSConfig = name
+		}
+	}
 	cfg.Timeout = connectTimeout
-	return cfg.FormatDSN()
+	return cfg.FormatDSN(), nil
 }
 
 func (d *mysqlDriver) open(database string, max int) (*sql.DB, error) {
-	handle, err := sql.Open("mysql", d.dsn(database))
+	dsn, err := d.dsn(database)
+	if err != nil {
+		return nil, err
+	}
+	handle, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}

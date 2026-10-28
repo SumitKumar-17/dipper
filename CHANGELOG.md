@@ -26,6 +26,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Advanced connection options** - The connection form has an Advanced section: a CA certificate
+  for servers behind a private CA, a client certificate and key, a Postgres `search_path`, and a
+  MySQL unix socket (a Postgres host that is a directory is a socket too). Paths are checked up
+  front, so a typo is named instead of surfacing as a failed handshake. A certificate that does not
+  verify is now reported as such, and points at `sslrootcert`, instead of as "nothing is listening".
 - **Undo in the Table Editor** - After a change set is applied, Undo last change offers its
   inverse, reviewed and dry-run like any other change. Edited cells go back to their old values
   (refused if the row changed again since), deleted rows are inserted again, and rows you inserted

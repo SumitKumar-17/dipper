@@ -76,7 +76,8 @@ func mysqlTLSFor(config protocol.ConnectionConfig) string {
 
 func isLoopback(host string) bool {
 	host = strings.Trim(host, "[]")
-	if host == "localhost" {
+	// A socket directory is this machine by definition.
+	if host == "localhost" || strings.HasPrefix(host, "/") {
 		return true
 	}
 	ip := net.ParseIP(host)
@@ -86,4 +87,9 @@ func isLoopback(host string) bool {
 // RemoteDefaultSSL is what a new connection starts with: a database reached over the network is
 // assumed to want TLS, because every hosted provider requires it and a local one does not offer
 // it. The user can still turn it off.
-func RemoteDefaultSSL(host string) bool { return !isLoopback(host) }
+func RemoteDefaultSSL(config protocol.ConnectionConfig) bool {
+	if socket, _ := socketFor(config); socket != "" {
+		return false
+	}
+	return !isLoopback(config.Host)
+}

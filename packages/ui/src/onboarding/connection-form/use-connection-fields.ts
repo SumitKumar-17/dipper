@@ -7,6 +7,10 @@ import { DIALECT_DEFAULTS } from "../dialect-mark";
 /** Whether the address is given as a URL or as the individual fields. The server parses either. */
 export type Mode = "fields" | "url";
 
+/** The driver options this form edits. Any other option on a connection is carried over untouched. */
+export const ADVANCED_OPTIONS = ["sslrootcert", "sslcert", "sslkey", "search_path", "socket"] as const;
+export type AdvancedOption = (typeof ADVANCED_OPTIONS)[number];
+
 export type ConnectionFields = {
   readonly dialect: Dialect;
   readonly name: string;
@@ -18,6 +22,9 @@ export type ConnectionFields = {
   readonly password: string;
   readonly database: string;
   readonly ssl: boolean;
+  /** Current value of each advanced option, empty when unset. */
+  readonly advanced: Readonly<Record<AdvancedOption, string>>;
+  setAdvanced: (key: AdvancedOption, value: string) => void;
   setName: (value: string) => void;
   setMode: (value: Mode) => void;
   setUrl: (value: string) => void;
@@ -91,6 +98,19 @@ export function useConnectionFields(
   // answer is not a preference: a hosted database requires TLS and a local one does not offer it.
   const [sslChoice, setSSLChoice] = React.useState<boolean | null>(initial?.ssl ?? null);
 
+  // The advanced options, as the text the person typed. Options the form does not manage stay
+  // with `initial` and are sent back unchanged, because saving replaces the whole set.
+  const [advanced, setAdvancedState] = React.useState<Record<AdvancedOption, string>>(() =>
+    Object.fromEntries(ADVANCED_OPTIONS.map((key) => [key, String(initial?.options?.[key] ?? "")])) as Record<
+      AdvancedOption,
+      string
+    >,
+  );
+  const setAdvanced = React.useCallback(
+    (key: AdvancedOption, value: string) => setAdvancedState((current) => ({ ...current, [key]: value })),
+    [],
+  );
+
   // Through a ref, so a parent rebuilding the callback each render cannot make the mount report
   // fire again. Written after the commit, so a render React throws away cannot leave the latest
   // callback behind; declared above the mount report, which is what makes it the fresher of the two.
@@ -149,6 +169,13 @@ export function useConnectionFields(
     if (mode === "url") {
       return { ...base, name: base.name === "" ? nameFromUrl(url) : base.name, url: url.trim() };
     }
+    const kept = Object.entries(initial?.options ?? {}).filter(
+      ([key]) => !(ADVANCED_OPTIONS as readonly string[]).includes(key),
+    );
+    const chosen = ADVANCED_OPTIONS.flatMap((key) => (advanced[key].trim() === "" ? [] : [[key, advanced[key].trim()] as const]));
+    const options = Object.fromEntries([...kept, ...chosen]);
+    // Only when there is something to say or something to clear: leaving it out keeps what is saved.
+    const speaks = chosen.length > 0 || Object.keys(initial?.options ?? {}).length > 0;
     return {
       ...base,
       dialect,
@@ -157,8 +184,9 @@ export function useConnectionFields(
       user: user.trim(),
       database: database.trim(),
       ssl,
+      ...(speaks ? { options } : {}),
     };
-  }, [database, dialect, file, host, mode, name, password, port, ssl, url, user]);
+  }, [advanced, database, dialect, file, host, initial?.options, mode, name, password, port, ssl, url, user]);
 
   return {
     dialect,
@@ -171,6 +199,8 @@ export function useConnectionFields(
     password,
     database,
     ssl,
+    advanced,
+    setAdvanced,
     setName,
     setMode,
     setUrl,

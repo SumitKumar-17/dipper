@@ -22,6 +22,7 @@ import { useWorkspace } from "../../workspace/context";
 import type { ConnectionInput, ConnectionTest } from "../../workspace/types";
 import { isFileDatabase } from "../connection-address";
 import { AddressFields } from "./address-fields";
+import { AdvancedFields } from "./advanced-fields";
 import { DialectPicker } from "./dialect-picker";
 import { FileField } from "./file-field";
 import { TestError, TestOk, type Phase } from "./form-status";
@@ -146,6 +147,8 @@ export function ConnectionForm({
           </div>
         </Field>
       )}
+
+      {!file && fields.mode === "fields" && <AdvancedFields fields={fields} />}
 
       {!file && (
         <Field>

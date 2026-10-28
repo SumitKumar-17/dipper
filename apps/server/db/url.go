@@ -36,7 +36,10 @@ var urlSchemes = map[string]protocol.Dialect{
 // silently downgrades verify-full to an unverified tunnel.
 // Only these URL parameters become connection options. Anything else could be a secret
 // (?password=, ?sslpassword=) and options travel back to the UI in the connection list.
-var keptParams = map[string]bool{"sslmode": true, "application_name": true}
+var keptParams = map[string]bool{
+	"sslmode": true, "application_name": true,
+	"sslrootcert": true, "sslcert": true, "sslkey": true, "search_path": true, "socket": true,
+}
 
 // NewDriver builds the driver for a connection's dialect.
 func NewDriver(config protocol.ConnectionConfig) (Driver, error) {
