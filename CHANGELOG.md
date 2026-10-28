@@ -163,6 +163,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 - A `NaN` or infinite value in a result no longer fails the whole batch of rows around it.
 - Trimming history no longer skips entries after a delete.
+- Several runs at once could hang: with every pooled connection busy, each run's column-source
+  lookup waited for a connection none of them would give back, and Cancel could not reach the run
+  it was meant to stop. Both now use a reserved pair of connections, for PostgreSQL and MySQL.
 
 ## [0.2.0] - 2026-09-27
 

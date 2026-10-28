@@ -29,6 +29,8 @@ type postgresDriver struct {
 	mu    sync.Mutex
 	pool  *pgxpool.Pool
 	extra map[string]*pgxpool.Pool
+	// Held back from runs; see pgcontrol.go.
+	control map[string]*pgxpool.Pool
 
 	sources  *columnSourceCache
 	sessions *sessionRegistry[*pgSession]
@@ -41,6 +43,7 @@ func newPostgresDriver(config protocol.ConnectionConfig) *postgresDriver {
 	d := &postgresDriver{
 		base:    newBase(config),
 		extra:   map[string]*pgxpool.Pool{},
+		control: map[string]*pgxpool.Pool{},
 		sources: newColumnSourceCache(),
 	}
 	d.sessions = newSessionRegistry(closePgSession)
@@ -163,6 +166,7 @@ func (d *postgresDriver) Disconnect() error {
 	d.clearRuns()
 	// Sessions hold connections of these pools, so they go first.
 	d.sessions.closeAll()
+	d.closeControlPools()
 	for _, extra := range extras {
 		extra.Close()
 	}
@@ -353,7 +357,13 @@ func (d *postgresDriver) readRows(ctx context.Context, pool *pgxpool.Pool, conn 
 
 	fields := rows.FieldDescriptions()
 	if len(fields) > 0 {
-		sink.Columns(d.sources.resolve(ctx, pool, database, fields))
+		// The lookup goes through the control pool: this run holds its own connection, and asking
+		// the same pool for another is how concurrent runs used to starve each other.
+		control, err := d.controlPool(ctx, database)
+		if err != nil {
+			control = nil // columns simply go out without a source
+		}
+		sink.Columns(d.sources.resolve(ctx, control, database, fields))
 	}
 	for rows.Next() {
 		values, err := rows.Values()
@@ -423,7 +433,7 @@ func (d *postgresDriver) kill(handle any) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	pool, err := d.requirePool(ctx)
+	pool, err := d.controlPool(ctx, "")
 	if err != nil {
 		return err
 	}

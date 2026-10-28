@@ -54,7 +54,7 @@ func (c *columnSourceCache) resolve(ctx context.Context, pool *pgxpool.Pool, dat
 	}
 	c.mu.Unlock()
 
-	if len(missing) > 0 {
+	if len(missing) > 0 && pool != nil {
 		c.lookup(ctx, pool, database, missing)
 	}
 

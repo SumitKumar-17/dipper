@@ -11,8 +11,9 @@ checked off as they land; each one is its own commit.
 - [x] Connection URL options are allow-listed, so `?password=` never reaches the connection list
 - [x] History trim no longer skips keys after a delete
 - [x] Pinned sessions: statements sent with a session id share one connection, so transactions span runs; idle sessions are rolled back and closed (Postgres and MySQL) (L)
-- [ ] Cancel through the wire protocol and give column-source lookups their own connection, so four
-      concurrent runs cannot exhaust the pool (S)
+- [x] Column-source lookups and cancels use a small reserved pool that runs never take from, so four
+      concurrent runs cannot exhaust the connections (cancel is `pg_cancel_backend` or `KILL QUERY` on
+      that pool, not the wire-protocol cancel request, which an SSH tunnel's dialer cannot send) (S)
 - [x] Reset session settings with a context that survives cancellation and discard the connection if
       the reset fails (`BEGIN READ ONLY` wrapping still open) (S)
 - [x] Stop draining the full result after the maxRows cut: read-only Postgres runs cancel and drop the connection (MySQL and SQLite already stopped); writable runs still drain on purpose, since dropping the connection would roll back a data-changing `RETURNING` (S)

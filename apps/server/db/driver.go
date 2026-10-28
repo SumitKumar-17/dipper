@@ -120,6 +120,10 @@ type runEntry struct {
 // base is the half of a driver that has nothing to do with a dialect: the run loop (one start,
 // one statement per statement, one done), the cancellation flag, and the bookkeeping around each
 // statement. A dialect fills in the hooks.
+// controlPoolMax is how many connections per database are held back for the driver's own errands:
+// cancelling a run, and looking up a result's column sources. Runs never use them.
+const controlPoolMax = 2
+
 type base struct {
 	config protocol.ConnectionConfig
 

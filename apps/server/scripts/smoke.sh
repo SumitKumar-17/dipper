@@ -152,6 +152,33 @@ expect "failed alter reports where it stopped" "$(echo "$FAILED_ALTER" | json 'j
 expect "failed alter rolls everything back" "$(cols)" "id,qty,memo,total"
 expect "alter refuses a type that ends the statement" "$(alter '{"operations":[{"op":"alter_type","column":"qty","type":"int; drop table smoke_alter"}]}' | json 'j.error.code')" "bad_request"
 curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"drop table smoke_alter\"}" "$B/query/sync" >/dev/null
+# More concurrent runs than the pool has connections, each needing a column-source lookup it has not
+# cached: all of them used to wait on a connection none would give back.
+for t in a b c d; do
+  curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"drop table if exists smoke_conc_$t; create table smoke_conc_$t (id int primary key); insert into smoke_conc_$t values (1)\"}" "$B/query/sync" >/dev/null
+done
+# Wait on these jobs only: a bare `wait` would also wait for the server this script started.
+JOBS=""
+for t in a b c d; do
+  curl -s -m 20 -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select id, pg_sleep(1) from smoke_conc_$t\"}" "$B/query/sync" -o "$DIPPER_HOME/conc_$t.json" &
+  JOBS="$JOBS $!"
+done
+wait $JOBS
+CONC_OK=0
+for t in a b c d; do [ "$(json 'j.status + ":" + (j.results[0].columns[0].source ? "src" : "nosrc")' < "$DIPPER_HOME/conc_$t.json" 2>/dev/null)" = "done:src" ] && CONC_OK=$((CONC_OK + 1)); done
+expect "four concurrent cold-cache runs all finish with their column sources" "$CONC_OK" "4"
+JOBS=""
+for n in 1 2 3 4; do
+  curl -s -m 30 -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"runId\":\"smoke-hold-$n\",\"sql\":\"select pg_sleep(20)\"}" "$B/query/sync" -o "$DIPPER_HOME/hold_$n.json" &
+  JOBS="$JOBS $!"
+done
+sleep 1.5
+expect "cancel reaches a run while every pooled connection is busy" "$(curl -s -m 10 -X POST "$B/runs/smoke-hold-1/cancel" | json 'j.cancelled')" "true"
+for n in 2 3 4; do curl -s -m 10 -X POST "$B/runs/smoke-hold-$n/cancel" >/dev/null; done
+wait $JOBS
+for t in a b c d; do
+  curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"drop table smoke_conc_$t\"}" "$B/query/sync" >/dev/null
+done
 expect_has "status sees the server" "running" "$($CLI status)"
 
 echo "== sqlite"

@@ -28,8 +28,27 @@ type mysqlDriver struct {
 	connected bool
 	sessions  *sessionRegistry[*sql.Conn]
 
+	// Held back from runs, for cancelling one: KILL QUERY on a pool whose connections are all
+	// running statements would wait behind the statement it means to stop.
+	control *sql.DB
+
 	sshOnce sync.Once
 	sshNet  string
+}
+
+// controlDB opens the reserved handle the first time a cancel needs it.
+func (d *mysqlDriver) controlDB() (*sql.DB, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	if d.control != nil {
+		return d.control, nil
+	}
+	handle, err := d.open("", controlPoolMax)
+	if err != nil {
+		return nil, err
+	}
+	d.control = handle
+	return handle, nil
 }
 
 // sshNetwork names this driver's tunnelled dialer, registering it the first time it is asked for.
@@ -146,8 +165,10 @@ func (d *mysqlDriver) Disconnect() error {
 	d.mu.Lock()
 	handle := d.db
 	extras := d.extra
+	control := d.control
 	d.db = nil
 	d.extra = map[string]*sql.DB{}
+	d.control = nil
 	d.connected = false
 	d.mu.Unlock()
 
@@ -158,6 +179,9 @@ func (d *mysqlDriver) Disconnect() error {
 	}
 	if handle != nil {
 		handle.Close()
+	}
+	if control != nil {
+		control.Close()
 	}
 	d.closeTunnel()
 	return nil
@@ -379,7 +403,10 @@ func (d *mysqlDriver) kill(handle any) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	db, err := d.require(ctx)
+	if _, err := d.require(ctx); err != nil {
+		return err
+	}
+	db, err := d.controlDB()
 	if err != nil {
 		return err
 	}
