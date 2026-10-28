@@ -104,6 +104,8 @@ FROM → JOIN → WHERE → GROUP BY → HAVING
 
 At each stage, Dipper shows the rows returned by your database and explains what happened.
 
+Every window function gets a WINDOW stage of its own, which gathers the rows into the panes `PARTITION BY` cuts and then slides the function's frame down each pane as a band, so you can see exactly which rows each value was computed from.
+
 This makes complex SQL easier to understand, debug, and explain - especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
 
 <p align="center">

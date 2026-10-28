@@ -41,6 +41,8 @@ export type Station = {
   /** Which join this station is, when it is one. */
   readonly join: JoinClause | null;
   readonly joinIndex: number;
+  /** Which window function this station is, when it is one: there is a station per function. */
+  readonly windowIndex: number;
   /**
    * A sentence that overrides the narrator's own, for a station the clause vocabulary cannot
    * describe.
@@ -77,9 +79,9 @@ export type Station = {
 export const ABSENT: Station["batches"] = [];
 
 /**
- * A station, with the five fields most of them have nothing to say about already filled in.
+ * A station, with the fields most of them have nothing to say about already filled in.
  *
- * Thirteen station literals spelled those five out by hand, four of them on single lines over two
+ * Thirteen station literals spelled those out by hand, four of them on single lines over two
  * hundred characters wide, and what a reader had to do to tell two stations apart was find the two
  * fields that differed. They are defaults rather than omissions: `joinIndex: -1` means "not a join"
  * and `inLists: []` means "measured nothing", and either is still answerable by a caller that has
@@ -90,7 +92,15 @@ export function station(
   fields: Pick<Station, "key" | "id" | "label" | "present" | "clause" | "batches"> &
     Partial<Station>,
 ): Station {
-  return { join: null, joinIndex: -1, sentence: null, root: null, inLists: [], ...fields };
+  return {
+    join: null,
+    joinIndex: -1,
+    windowIndex: -1,
+    sentence: null,
+    root: null,
+    inLists: [],
+    ...fields,
+  };
 }
 
 /** A station for a clause the query does not have: on the rail, skipped by playback. */

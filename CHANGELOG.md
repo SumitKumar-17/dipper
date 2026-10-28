@@ -133,6 +133,12 @@ The section matching a release's version becomes that release's notes on GitHub 
   row found on average, and what that does to a later count. A NULL test result is shown as unknown (not failed) with an explanation. Constructs the
   walk does not understand are named instead of silently dropped. Fixed `GROUP BY ROLLUP`, `CUBE` and
   `GROUPING SETS`, `DISTINCT ON` row choice, aggregate row counts and MySQL `LIMIT offset, count`.
+- **Query Walk window frames** - Every window function in a query gets its own WINDOW stage, including
+  ones nested inside another call or written twice in one column. Each stage draws the function's
+  frame as a band that slides down every pane, so you can see which rows `sum(x) over (... rows
+  between 2 preceding and current row)` added up for each row. The default frame, `GROUPS`,
+  exclusions and ties are drawn; a `RANGE` frame measured in values (`interval '1 day' preceding`)
+  is named rather than drawn, and ranking functions such as `rank()` say the frame does not apply.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.

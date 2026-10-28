@@ -4,7 +4,8 @@
 // what each one was tuned against. Nothing below is read by anything but the player.
 
 import type { BoundRow } from "../bound";
-import { windowFunctions } from "../steps";
+import { okResult } from "../scenes/results";
+import { bandSteps, windowReading } from "../scenes/window-band";
 import type { StationState, WalkData } from "../use-walk";
 
 export type Phase = { readonly ms: number; readonly label: string };
@@ -131,11 +132,18 @@ export function phasesFor(index: number, walk: WalkData, state: StationState): P
       ];
     }
     case "window": {
-      const fn = walk.parsed ? windowFunctions(walk.parsed)[0] : undefined;
-      const keys = fn?.partition.join(", ") ?? "";
+      const reading = walk.parsed ? windowReading(walk.parsed, station) : null;
+      const keys = reading?.fn.partition.join(", ") ?? "";
+      const steps = bandSteps(okResult(result, "sample"), reading);
+      // One beat per position of the band, long enough to read which rows it lit.
+      const band = Array.from({ length: steps }, (_, step) => ({
+        ms: 1300,
+        label: `frame ${step + 1} of ${steps}`,
+      }));
       return [
         { ms: 1300, label: keys ? `panes by ${keys}` : "one pane, every row" },
         { ms: 1600, label: "a value for every row" },
+        ...band,
       ];
     }
     case "select": {

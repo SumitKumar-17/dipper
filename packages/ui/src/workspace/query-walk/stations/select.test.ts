@@ -33,3 +33,27 @@ describe("GROUP BY ROLLUP", () => {
     expect(sql).not.toMatch(/\(rollup/i);
   });
 });
+
+describe("WINDOW", () => {
+  const query =
+    "select id, sum(x) over (partition by g order by id rows 1 preceding), rank() over (order by x) from t";
+  const windows = (sql: string) => stationsOf(sql).filter((s) => s.id === "window");
+
+  test("every window function gets a station of its own, in the order written", () => {
+    expect(windows(query).map((s) => [s.label, s.windowIndex])).toEqual([
+      ["WINDOW 1", 0],
+      ["WINDOW 2", 1],
+    ]);
+  });
+
+  test("each probe numbers rows and peers in the function's own pane and order", () => {
+    const [first, second] = windows(query).map((s) => s.batches[0]![0]!.sql);
+    expect(first).toContain("row_number() over (partition by g order by id)");
+    expect(first).toContain("dense_rank() over (partition by g order by id)");
+    expect(second).toContain("row_number() over (order by x)");
+  });
+
+  test("a query with no window function keeps one absent WINDOW station", () => {
+    expect(windows("select id from t").map((s) => s.present)).toEqual([false]);
+  });
+});

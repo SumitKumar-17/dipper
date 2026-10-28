@@ -24,6 +24,8 @@ import {
 import {
   branchColumn,
   conjunctColumn,
+  FRAME_PEER_COLUMN,
+  FRAME_ROW_COLUMN,
   keyColumn,
   measurableInLists,
   memberColumn,
@@ -98,19 +100,18 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
       const pairs = `select *\n${text.slice(parsed.fromKeyword.from, join.keyword.from)}${spelled}${text.slice(join.keyword.to, join.range.to)}`;
       queries.push({ id: "pairs", label: "Every pairing (as a left join)", sql: limited(pairs) });
     }
-    stations.push({
-      key: `join${index}`,
-      id: "join",
-      label: parsed.joins.length > 1 ? `JOIN ${index + 1}` : "JOIN",
-      present: true,
-      clause: join.range,
-      batches: [queries],
-      join,
-      joinIndex: index,
-      sentence: null,
-      root: null,
-      inLists: [],
-    });
+    stations.push(
+      station({
+        key: `join${index}`,
+        id: "join",
+        label: parsed.joins.length > 1 ? `JOIN ${index + 1}` : "JOIN",
+        present: true,
+        clause: join.range,
+        batches: [queries],
+        join,
+        joinIndex: index,
+      }),
+    );
   });
 
   /* WHERE */
@@ -245,7 +246,8 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
     );
   }
 
-  /* WINDOW: the rows HAVING left, each one given the window function's value.
+  /* WINDOW: the rows HAVING left, each one given a window function's value. One station per
+   * function, because each has panes, an order and a frame of its own.
    *
    * It sits here because a window function sees the rows grouping already settled - which is the
    * whole reason ORDER BY may sort by one and WHERE cannot mention one at all. The partition
@@ -255,35 +257,46 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
    * every row it holds.
    */
   const windows = windowFunctions(parsed);
-  {
-    const fn = windows[0];
-    const keys = fn ? fn.partition.map((key, index) => `(${key}) as ${keyColumn(index)}`) : [];
-    // Panes first, then the order the function walks them in, so the sample arrives looking like
-    // what it is. Both are the user's own expressions; the key columns are ordered by their alias
-    // because a partition on an expression has no column name to name.
-    const paneOrder = fn ? [...fn.partition.map((_, index) => keyColumn(index)), ...fn.order] : [];
-    const probe = fn
-      ? lines(
-          `select ${[list, ...keys, `(${fn.expr}) as ${WINDOW_COLUMN}`].join(", ")}`,
-          fullFrom,
-          where,
-          groupBy,
-          having,
-          window,
-          paneOrder.length > 0 ? `order by ${paneOrder.join(", ")}` : null,
-        )
-      : "";
+  if (windows.length === 0) stations.push(absentStation("window", "window", "WINDOW"));
+  windows.forEach((fn, index) => {
+    const keys = fn.partition.map((key, k) => `(${key}) as ${keyColumn(k)}`);
+    // A row's place and peer group in its pane, numbered in the same spec as the function, so the
+    // database sorts them together and the frame band lines up with the value it explains.
+    const pane = [
+      fn.partition.length > 0 ? `partition by ${fn.partition.join(", ")}` : null,
+      fn.order.length > 0 ? `order by ${fn.order.join(", ")}` : null,
+    ]
+      .filter(Boolean)
+      .join(" ");
+    const place = [
+      `row_number() over (${pane}) as ${FRAME_ROW_COLUMN}`,
+      `dense_rank() over (${pane}) as ${FRAME_PEER_COLUMN}`,
+    ];
+    // Panes first, then each pane in the order the function walks it, so the sample arrives looking
+    // like what it is. The key columns are ordered by their alias because a partition on an
+    // expression has no column name to name.
+    const paneOrder = [...fn.partition.map((_, k) => keyColumn(k)), FRAME_ROW_COLUMN];
+    const probe = lines(
+      `select ${[list, ...keys, `(${fn.expr}) as ${WINDOW_COLUMN}`, ...place].join(", ")}`,
+      fullFrom,
+      where,
+      groupBy,
+      having,
+      window,
+      `order by ${paneOrder.join(", ")}`,
+    );
     stations.push(
       station({
-      key: "window",
-      id: "window",
-      label: "WINDOW",
-      present: fn !== undefined,
-      clause: fn ? windowRange(parsed, fn) : null,
-      batches: fn ? [[sample(probe), count(withHaving)]] : ABSENT,
+        key: `window${index}`,
+        id: "window",
+        label: windows.length > 1 ? `WINDOW ${index + 1}` : "WINDOW",
+        present: true,
+        clause: windowRange(parsed, fn),
+        batches: [[sample(probe), count(withHaving)]],
+        windowIndex: index,
       }),
     );
-  }
+  });
 
   /* SELECT: the output columns. Same row count as the station before it, so no count. */
   {

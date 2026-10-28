@@ -97,6 +97,12 @@ export const driveColumn = (index: number): string => `${WALK_PREFIX}g${index}`;
  *  query with no alias, a `*`, or two functions in a row makes that guess wrong. */
 export const WINDOW_COLUMN = `${WALK_PREFIX}win`;
 
+/** A row's place in its pane and its peer group there: what a frame is measured in. See
+ *  `window-frame.ts`. */
+export const FRAME_ROW_COLUMN = `${WALK_PREFIX}fr`;
+
+export const FRAME_PEER_COLUMN = `${WALK_PREFIX}fp`;
+
 /** One boolean per WHEN of a CASE: true on the rows that branch would claim, before the branches
  *  ahead of it get their turn. */
 export const branchColumn = (index: number): string => `${WALK_PREFIX}b${index}`;

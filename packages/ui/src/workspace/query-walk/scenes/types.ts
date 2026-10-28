@@ -38,6 +38,8 @@ export type Row = {
   readonly hl?: readonly string[];
   /** The row playback is standing on, in a card the reader scrubs through rather than watches once. */
   readonly current?: boolean;
+  /** Whether the row is inside the current row's window frame, while a WINDOW draws one. */
+  readonly band?: "in" | "out";
 };
 
 /** One cell of a grid: what the absorbed inner predicate answered for this pair of rows. */
