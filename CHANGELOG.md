@@ -26,6 +26,10 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Palette modes** - The command palette reads a leading character: `>` for commands only, `@`
+  for tables and views, `#` for this session's runs. Choosing a table now opens it in the Table
+  Editor instead of only finding it in the sidebar, and choosing a run shows its results. Without a
+  prefix the palette works as before, and every word you type must match somewhere in a row.
 - **SSH tunnels** - Reach a database that only a bastion host can see. The Advanced section of the
   connection form takes the SSH host, port, user, a key file (or uses ssh-agent) and the host's
   fingerprint. The server's key is always verified: against the pinned fingerprint, or against

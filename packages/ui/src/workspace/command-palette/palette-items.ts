@@ -8,9 +8,10 @@
 
 import type { ConnectionSummary, DatabaseSchema, Table } from "@dipper/protocol";
 import type { LucideIcon } from "lucide-react";
-import { DatabaseIcon, EyeIcon, FileIcon, Table2Icon } from "lucide-react";
+import { DatabaseIcon, EyeIcon, FileIcon, HistoryIcon, Table2Icon } from "lucide-react";
 import { plural } from "../../lib/format";
-import type { Buffer } from "../types";
+import { formatAge } from "../activity/session-metrics";
+import type { Buffer, Run } from "../types";
 
 /** An entry the app wants in the palette. Same shape the built-in actions use. */
 export type PaletteAction = {
@@ -33,7 +34,7 @@ export function tableItems(
     group.tables.map((table) => ({
       value: `table:${group.name}.${table.name}`,
       label: table.name,
-      hint: `${group.name} · ${plural(table.columns.length, "column")}`,
+      hint: `${group.name} · ${plural(table.columns.length, "column")} · open`,
       icon: table.kind === "view" ? EyeIcon : Table2Icon,
       onSelect: () => onPick(table),
     })),
@@ -78,5 +79,19 @@ export function databaseItems(
       hint: "switch database",
       icon: DatabaseIcon,
       onSelect: () => onPick(name),
+    }));
+}
+
+/** This session's runs, newest first: the SQL's first line, and how it went. Reached with `#`. */
+export function historyItems(runs: readonly Run[], onPick: (id: string) => void, limit = 50): PaletteItem[] {
+  return [...runs]
+    .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+    .slice(0, limit)
+    .map((run) => ({
+      value: `run:${run.id}`,
+      label: run.sql.trim().split("\n")[0]?.slice(0, 100) || "(empty)",
+      hint: run.durationMs === undefined ? run.status : `${run.status} · ${formatAge(run.durationMs)}`,
+      icon: HistoryIcon,
+      onSelect: () => onPick(run.id),
     }));
 }

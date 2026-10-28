@@ -91,7 +91,7 @@ change reviewed as plain SQL before it runs.
 - [x] Cell inspector with JSON pretty-printing and copy (copy-as formats next) (S)
 - [x] Elapsed timer while a query runs (partial rows from the streaming endpoint are still open) (M)
 - [ ] Keyboard shortcut editor (M)
-- [ ] Typed command registry for the palette, with prefixes for tables and history (M)
+- [x] Command palette modes: `>` commands, `@` tables (opens the Table Editor), `#` past runs, filtered by one tested matcher (a user-extensible command registry is still open) (M)
 - [x] Snippets and tagged saved queries: a Snippets dialog to search, tag, insert and edit, tab stops, and trigger words in the editor's completion (M)
 - [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)
 - [x] Pinned results and cell-level diff between runs: pin a result, run again, and see rows added, removed and the exact cells that changed, matched on columns you pick (M)

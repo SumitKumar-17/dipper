@@ -31,15 +31,18 @@ import { useWorkspace } from "../context";
 import { PALETTE } from "../shortcuts";
 import { useHotkey } from "../use-hotkey";
 import { asyncData } from "../types";
+import { requestTableEditor } from "../table-editor";
 import { useBuiltinActions } from "./palette-actions";
 import {
   connectionItems,
   databaseItems,
   fileItems,
+  historyItems,
   tableItems,
   type PaletteGroup,
   type PaletteItem,
 } from "./palette-items";
+import { PREFIX_HINTS, visibleGroups } from "./palette-search";
 
 export function CommandPalette(): React.ReactElement {
   const {
@@ -56,8 +59,10 @@ export function CommandPalette(): React.ReactElement {
     panels,
     refreshSchema,
     run,
+    runs,
     save,
     schema,
+    selectRun,
     selectDatabase,
     setPanel,
     togglePanel,
@@ -69,11 +74,15 @@ export function CommandPalette(): React.ReactElement {
 
   const close = React.useCallback(() => setPanel("paletteOpen", false), [setPanel]);
 
-  const revealTable = React.useCallback(() => {
-    setPanel("sidebarOpen", true);
-    setPanel("sidebarTab", "schema");
-    close();
-  }, [close, setPanel]);
+  // A table is a thing to open, so it opens in the Table Editor rather than only being found in the
+  // sidebar: browsing and editing it is what someone who names a table wants next.
+  const openTable = React.useCallback(
+    (table: { schema: string; name: string }) => {
+      requestTableEditor(table.schema, table.name);
+      close();
+    },
+    [close],
+  );
 
   const actions = useBuiltinActions(
     {
@@ -129,7 +138,14 @@ export function CommandPalette(): React.ReactElement {
           close();
         }),
       },
-      { value: "Tables", items: tableItems(loadedSchema, revealTable) },
+      { value: "Tables", items: tableItems(loadedSchema, openTable) },
+      {
+        value: "History",
+        items: historyItems(runs, (id) => {
+          selectRun(id);
+          close();
+        }),
+      },
     ].filter((group) => group.items.length > 0);
   }, [
     actions,
@@ -141,9 +157,15 @@ export function CommandPalette(): React.ReactElement {
     loadedConnections,
     loadedDatabases,
     loadedSchema,
-    revealTable,
+    openTable,
+    runs,
     selectDatabase,
+    selectRun,
   ]);
+
+  // Narrowed here rather than by the dialog's own filter, which would match the prefix character
+  // against every row. `filter={null}` below turns that one off.
+  const shown = React.useMemo(() => visibleGroups(groups, query), [groups, query]);
 
   return (
     <CommandDialog
@@ -155,8 +177,8 @@ export function CommandPalette(): React.ReactElement {
       open={panels.paletteOpen}
     >
       <CommandDialogPopup aria-label="Command palette">
-        <Command items={groups} onValueChange={setQuery} value={query}>
-          <CommandInput placeholder="Search tables, buffers, commands…" />
+        <Command filter={null} items={shown} onValueChange={setQuery} value={query}>
+          <CommandInput placeholder="Search commands, files and tables" />
           <CommandPanel>
             <CommandEmpty>No matches.</CommandEmpty>
             <CommandList>
@@ -184,7 +206,10 @@ export function CommandPalette(): React.ReactElement {
             </CommandList>
           </CommandPanel>
           <CommandFooter>
-            <span>↑↓ navigate · ↵ select · esc close</span>
+            <span>
+              {PREFIX_HINTS.map(({ prefix, label }) => `${prefix} ${label}`).join(" · ")}
+              {" · "}↑↓ navigate · ↵ select · esc close
+            </span>
           </CommandFooter>
         </Command>
       </CommandDialogPopup>
