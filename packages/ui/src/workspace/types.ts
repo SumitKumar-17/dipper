@@ -21,6 +21,8 @@ import type {
   ExportFormat,
   FileEntry,
   FileSearchResult,
+  Snippet,
+  SnippetInput,
   HistoryScope,
   HistoryStats,
   Plan,
@@ -279,6 +281,12 @@ export type WorkspaceApi = {
   refreshWorkspace(): Promise<void>;
   /** Finds text in the names and contents of the workspace's files. */
   searchFiles(query: string): Promise<FileSearchResult>;
+
+  /* snippets - saved SQL, found by name, tag or trigger word */
+  readonly snippets: readonly Snippet[];
+  /** Creates a snippet, or changes the one with `id`. Rejects with the reason it was refused. */
+  saveSnippet(input: SnippetInput, id?: string): Promise<Snippet>;
+  deleteSnippet(id: string): Promise<void>;
 
   /* editor */
   readonly cursor: CursorPosition;

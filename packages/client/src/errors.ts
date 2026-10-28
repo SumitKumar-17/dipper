@@ -8,7 +8,7 @@ import type { ConnectFailureCode } from "@dipper/protocol";
  * share the `code` field with the server's own codes, so a caller branches on one thing.
  *
  * `NETWORK` - nothing answered: wrong port, server not started, DNS, a refused connection.
- * `NOT_API` - something answered, but it is not an dipper server: a dev server's 404 page,
+ * `NOT_API` - something answered, but it is not a dipper server: a dev server's 404 page,
  * a proxy, a captive portal. The distinction matters because the fix is different for each.
  */
 export const NETWORK = "network";

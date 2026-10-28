@@ -26,6 +26,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Snippets** - Keep SQL you reuse. Command palette, Snippets opens a dialog to search by name,
+  tag, trigger or text, filter by tag, and insert a snippet at the cursor or into a new query.
+  Write `${1}` or `${2:name}` in a snippet for places Tab moves between. Give a snippet a trigger
+  word and typing it in the editor offers the snippet in the completion list. Save query as snippet
+  keeps what is in the editor. Snippets live in `snippets.json` in Dipper's home.
 - **File rename, delete and search** - Right-click a file in the Files panel to rename or delete it.
   An open tab follows a rename and keeps its unsaved text; deleting asks first, says when unsaved
   changes go with the file, and closes the tab. The search button in the Workspace header finds

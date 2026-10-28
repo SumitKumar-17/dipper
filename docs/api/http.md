@@ -110,6 +110,17 @@ query parameter of the same name is kept too:
 The files are read by the server, so the paths are on its machine. A relative path, a missing file
 or a malformed `search_path` is refused with `connect_failed` before any connection is tried.
 
+## Snippets
+
+Saved SQL kept in `snippets.json` in dipper home. A snippet is `{ id, name, body, tags, trigger?, createdAt, updatedAt }`.
+
+| Method | Path                | Body           | Response            | Purpose                                                                                                                                                                                                            |
+| ------ | ------------------- | -------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | `/api/snippets`     | -              | `Snippet[]`         | Every snippet, sorted by name.                                                                                                                                                                                     |
+| POST   | `/api/snippets`     | `SnippetInput` | `Snippet` (201)     | Create. `body` may use the editor's tab stops, `${1}` and `${2:name}`. Tags are trimmed, lowercased and deduplicated (at most 10, 30 characters each). A `trigger` is 2 to 20 letters, digits or underscores, and unique. 400 with the reason otherwise. |
+| PUT    | `/api/snippets/:id` | `SnippetInput` | `Snippet`           | Change one; the id and creation time are kept. 404 for an unknown id.                                                                                                                                              |
+| DELETE | `/api/snippets/:id` | -              | `{ ok: true }`      | Remove one. 404 for an unknown id.                                                                                                                                                                                 |
+
 ## Discovery
 
 | Method | Path            | Body | Response          | Purpose                                                                                                                                                                                                                                                 |

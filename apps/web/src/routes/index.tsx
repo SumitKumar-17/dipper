@@ -37,6 +37,7 @@ import {
   TOGGLE_RESULTS,
   TOGGLE_SIDEBAR,
   ObjectsDialog,
+  SnippetsDialog,
   SchemaDiagramDialog,
   SchemaDiffDialog,
   SlowQueriesDialog,
@@ -109,6 +110,7 @@ function Workspace(): React.ReactElement {
       <SchemaDiffDialog />
       <SlowQueriesDialog />
       <ObjectsDialog />
+      <SnippetsDialog />
       {/* And the editor's context menu and the palette open this one. */}
       <QueryWalkDialog />
       <AppTopbar

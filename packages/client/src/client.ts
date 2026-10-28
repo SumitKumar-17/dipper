@@ -9,6 +9,7 @@ import { runsApi, type RunsApi } from "./runs";
 import { historyApi, type HistoryApi } from "./history";
 import { sessionsApi, type SessionsApi } from "./sessions";
 import { settingsApi, type SettingsApi } from "./settings";
+import { snippetsApi, type SnippetsApi } from "./snippets";
 import { filesApi, type FilesApi } from "./files";
 import { eventsApi, type EventsApi } from "./events";
 
@@ -26,6 +27,7 @@ export type DipperClient = {
   history: HistoryApi;
   sessions: SessionsApi;
   settings: SettingsApi;
+  snippets: SnippetsApi;
   files: FilesApi;
   events: EventsApi;
   /** The underlying transport, for a route this package has not wrapped yet. */
@@ -40,7 +42,7 @@ export type DipperClient = {
 async function health(http: Transport, opts?: CallOptions): Promise<ServerInfo> {
   const info = await http.json<ServerInfo>("/api/health", { signal: opts?.signal });
   if (info?.name !== "dipper") {
-    throw new DipperError("answered, but it is not an dipper server", {
+    throw new DipperError("answered, but it is not a dipper server", {
       status: 200,
       route: "GET /api/health",
       code: NOT_API,
@@ -63,6 +65,7 @@ export function createClient(options: ClientOptions): DipperClient {
     history: historyApi(http),
     sessions: sessionsApi(http),
     settings: settingsApi(http),
+    snippets: snippetsApi(http),
     files: filesApi(http),
     events: eventsApi(http),
     http,

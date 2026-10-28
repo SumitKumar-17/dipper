@@ -1,5 +1,5 @@
 // Package storage owns everything dipper keeps on disk. One directory holds all of it (default
-// ~/.dipper, override with DIPPER_HOME): connections.json (0600), settings.json, history.db,
+// ~/.dipper, override with DIPPER_HOME): connections.json (0600), settings.json, history.db, snippets.json,
 // server.json, update.json, plus queries/, the workspace created on first run.
 package storage
 
@@ -16,6 +16,7 @@ const (
 	legacyHistoryFile = "history.jsonl"
 	ServerInfoFile    = "server.json"
 	UpdateCheckFile   = "update.json"
+	SnippetsFile      = "snippets.json"
 	QueriesDirName    = "queries"
 )
 

@@ -5,7 +5,7 @@ import { messageOf } from "../../lib/errors";
 import { Input } from "../../ui/input";
 import { Spinner } from "../../ui/spinner";
 import { useWorkspace } from "../context";
-import { requestGotoLine } from "../sql-editor/goto-line";
+import { requestGotoLine } from "../sql-editor/editor-requests";
 import { groupHits } from "./search-hits";
 
 /** How long typing pauses before a search goes out, so a word is one request and not five. */

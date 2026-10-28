@@ -29,6 +29,7 @@ import { useSchema } from "./use-schema";
 import { useServerEvents } from "./use-server-events";
 import { useServerGate } from "./use-server-gate";
 import { useSettings } from "./use-settings";
+import { useSnippets } from "./use-snippets";
 import { useWorkspaceFiles } from "./use-workspace-files";
 
 export type LiveWorkspaceOptions = {
@@ -46,6 +47,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
 
   const { settings, refresh: refreshSettings, updateSettings } = useSettings(getClient, enabled);
   const settingsData = asyncData(settings);
+  const { snippets, saveSnippet, deleteSnippet } = useSnippets(getClient, enabled);
 
   const {
     workspace,
@@ -223,6 +225,9 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     server,
     browse,
     searchFiles,
+    snippets,
+    saveSnippet,
+    deleteSnippet,
 
     panels,
     setPanel,

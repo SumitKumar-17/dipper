@@ -116,6 +116,14 @@ The visualization is based on your actual SQL and database. Query Walk uses read
 
 ---
 
+### Snippets
+
+Command palette, **Snippets**: save SQL you reuse, tag it, and give it a trigger word. Type the
+trigger in the editor and accept the completion to insert it; `${1:name}` marks the places Tab
+moves between. **Save query as snippet** keeps what is in the editor.
+
+---
+
 ### Files and search
 
 The Files panel lists the `.sql` files of your workspace folders. Right-click a file to **rename**

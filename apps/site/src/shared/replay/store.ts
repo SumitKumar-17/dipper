@@ -365,6 +365,9 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
       set({ buffers: state.buffers.map((b) => (b.id === id ? { ...b, view } : b)) });
     },
     save,
+    snippets: [],
+    saveSnippet: () => Promise.reject(new Error(NOT_RECORDED)),
+    deleteSnippet: () => Promise.reject(new Error(NOT_RECORDED)),
     searchFiles: () => Promise.reject(new Error(NOT_RECORDED)),
     renameFile: () => Promise.reject(new Error(NOT_RECORDED)),
     deleteFile: () => Promise.reject(new Error(NOT_RECORDED)),

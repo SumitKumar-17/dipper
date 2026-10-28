@@ -92,7 +92,7 @@ change reviewed as plain SQL before it runs.
 - [x] Elapsed timer while a query runs (partial rows from the streaming endpoint are still open) (M)
 - [ ] Keyboard shortcut editor (M)
 - [ ] Typed command registry for the palette, with prefixes for tables and history (M)
-- [ ] Snippets and tagged saved queries (M)
+- [x] Snippets and tagged saved queries: a Snippets dialog to search, tag, insert and edit, tab stops, and trigger words in the editor's completion (M)
 - [x] EXPLAIN plan viewer: cost-weighted tree, timings, warnings, Analyze toggle, from the editor menu (L)
 - [ ] Pinned results and cell-level diff between runs (M)
 - [x] Charts from result columns: bars and lines, any number column for the height, in the results explorer (M)

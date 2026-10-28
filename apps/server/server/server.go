@@ -107,6 +107,7 @@ func (s *Server) routes() {
 	s.registerRuns()
 	s.registerHistory()
 	s.registerSettings()
+	s.registerSnippets()
 	s.registerFiles()
 	s.registerFileSearch()
 	// Last: the UI mount ends in a catch-all.

@@ -10,7 +10,7 @@
 import { autocompletion } from "@codemirror/autocomplete";
 import { sql } from "@codemirror/lang-sql";
 import { setDiagnostics, type Diagnostic } from "@codemirror/lint";
-import type { Extension } from "@codemirror/state";
+import { EditorState, type Extension } from "@codemirror/state";
 import { highlightActiveLineGutter, lineNumbers, type EditorView } from "@codemirror/view";
 import type { CompletionMode, Dialect, Settings } from "@dipper/protocol";
 import { splitStatements } from "@dipper/sql";
@@ -36,8 +36,9 @@ import {
   FORMAT_DOCUMENT_EVENT,
   type FormatDocumentEventDetail,
 } from "./format-document";
-import { GOTO_LINE_EVENT, revealLine, takePendingLine, type GotoLineEventDetail } from "./goto-line";
+import { applyRequests, EDITOR_REQUEST_EVENT, takePending, type EditorRequestEventDetail } from "./editor-requests";
 import { smartCompletionSource } from "./smart-completion";
+import { snippetSource } from "./snippet-completion";
 import { queryErrorDiagnostic } from "./statements";
 
 // `Hotkey` descriptors rather than strings, so `hotkeyLabel` renders the platform's own glyphs.
@@ -68,7 +69,7 @@ export function SqlEditor({
   /** No gutter: for cells and previews, where line numbers are noise. */
   minimal?: boolean;
 }): React.ReactElement {
-  const { activeRun, connection, editBuffer, buffers, run, schema, setCursor, settings } =
+  const { activeRun, connection, editBuffer, buffers, run, schema, setCursor, settings, snippets } =
     useWorkspace();
 
   const controlled = controlledValue !== undefined;
@@ -126,7 +127,12 @@ export function SqlEditor({
 
   const completion = React.useMemo<Extension>(() => {
     if (completionMode === "off") return [];
-    if (completionMode === "basic") return autocompletion({ icons: true });
+    const fromSnippets = snippetSource(snippets);
+    // Without `override` the popup gathers every `autocomplete` language-data source, so a snippet
+    // joins by that route; with it, the source has to be listed.
+    if (completionMode === "basic") {
+      return [autocompletion({ icons: true }), EditorState.languageData.of(() => [{ autocomplete: fromSnippets }])];
+    }
     // `override` is the only way to drop lang-sql's own dictionary source: a language-data facet
     // value cannot be removed once the language provides it.
     return autocompletion({
@@ -138,9 +144,10 @@ export function SqlEditor({
           keywordCase,
           schema: schemaData,
         }),
+        fromSnippets,
       ],
     });
-  }, [completionMode, dialect, keywordCase, schemaData]);
+  }, [completionMode, dialect, keywordCase, schemaData, snippets]);
 
   const gutter = React.useMemo<Extension>(
     () => (minimal ? [] : [lineNumbers(), highlightActiveLineGutter()]),
@@ -187,9 +194,6 @@ export function SqlEditor({
     const view = createEditorView({ bridge, initial: initial.current, parent, reported });
     viewRef.current = view;
     if (initial.current.autoFocus) view.focus();
-    // Opened from a search result: the request was made before this editor existed.
-    const waiting = fileId ? takePendingLine(fileId) : undefined;
-    if (waiting !== undefined) revealLine(view, waiting);
 
     return () => {
       viewRef.current = null;
@@ -207,18 +211,17 @@ export function SqlEditor({
       if (!view || detail?.bufferId !== fileId) return;
       void formatDocument(view, bridge.current.dialect, bridge.current.keywordCase);
     };
-    const onGoto = (event: Event): void => {
-      const detail = (event as CustomEvent<GotoLineEventDetail>).detail;
+    const onRequest = (event: Event): void => {
+      const detail = (event as CustomEvent<EditorRequestEventDetail>).detail;
       const view = viewRef.current;
       if (!view || detail?.bufferId !== fileId) return;
-      const line = takePendingLine(fileId);
-      if (line !== undefined) revealLine(view, line);
+      applyRequests(view, takePending(fileId));
     };
     window.addEventListener(FORMAT_DOCUMENT_EVENT, onFormat);
-    window.addEventListener(GOTO_LINE_EVENT, onGoto);
+    window.addEventListener(EDITOR_REQUEST_EVENT, onRequest);
     return () => {
       window.removeEventListener(FORMAT_DOCUMENT_EVENT, onFormat);
-      window.removeEventListener(GOTO_LINE_EVENT, onGoto);
+      window.removeEventListener(EDITOR_REQUEST_EVENT, onRequest);
     };
   }, [fileId]);
 
@@ -242,6 +245,14 @@ export function SqlEditor({
     if (!view || value === view.state.doc.toString()) return;
     view.dispatch({ changes: { from: 0, insert: value, to: view.state.doc.length } });
   }, [value]);
+
+  /* Asked for before this editor existed: a search result opened here, a snippet inserted here. After
+     the sync above on purpose: that effect makes the document match the buffer, and would undo an
+     insertion made first, since the buffer has not heard about it yet. */
+  React.useEffect(() => {
+    const view = viewRef.current;
+    if (view && fileId) applyRequests(view, takePending(fileId));
+  }, [fileId]);
 
   React.useEffect(() => {
     const view = viewRef.current;

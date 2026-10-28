@@ -7,6 +7,8 @@
 import {
   ActivityIcon,
   BoxesIcon,
+  BookmarkPlusIcon,
+  BracesIcon,
   DiffIcon,
   TimerIcon,
   GaugeIcon,
@@ -29,6 +31,7 @@ import { requestObjects } from "../objects";
 import { requestQueryWalk } from "../query-walk";
 import { requestSchemaCompare } from "../schema-diff-view";
 import { requestSlowQueries } from "../slow-queries";
+import { requestSnippets } from "../snippets";
 import { requestSchemaDiagram } from "../schema-diagram";
 import {
   FORMAT_DOCUMENT_EVENT,
@@ -169,6 +172,24 @@ export function useBuiltinActions(
         icon: BoxesIcon,
         onSelect: () => {
           requestObjects();
+          close();
+        },
+      },
+      {
+        label: "Snippets",
+        hint: "Saved SQL you can search, tag and insert",
+        icon: BracesIcon,
+        onSelect: () => {
+          requestSnippets();
+          close();
+        },
+      },
+      {
+        label: "Save query as snippet",
+        hint: "Keep what is in the editor to reuse",
+        icon: BookmarkPlusIcon,
+        onSelect: () => {
+          if (activeBuffer) requestSnippets(activeBuffer.content);
           close();
         },
       },

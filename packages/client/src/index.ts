@@ -40,6 +40,7 @@ export type { QueryApi, RunInput } from "./query";
 export type { ExportOptions, RunsApi } from "./runs";
 export type { HistoryApi, HistoryOptions } from "./history";
 export type { SettingsApi } from "./settings";
+export type { SnippetsApi } from "./snippets";
 export type { FileContent, FilesApi, FileWritten, WriteInput } from "./files";
 export type { EventsApi } from "./events";
 
