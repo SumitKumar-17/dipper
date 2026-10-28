@@ -2,6 +2,8 @@ import { cn } from "../../shared/cn";
 import { REPO_URL, useRelease } from "../../shared/release";
 import { container } from "../layout/container";
 import { Brand, GitHubIcon } from "./brand";
+import { MobileMenu } from "./mobile-menu";
+import { isCurrentPage, NAV_LINKS } from "./nav-links";
 import { useScrolled } from "./use-scrolled";
 
 const link =
@@ -19,22 +21,26 @@ export function Nav() {
       <div className={cn(container, "flex h-14 items-center justify-between gap-4 lg:h-16")}>
         <Brand />
         <nav aria-label="Site" className="flex items-center gap-0.5">
-          <a href="/#features" className={cn(link, "max-sm:hidden")}>
-            Features
-          </a>
-          <a href="/docs/" className={cn(link, "max-sm:hidden")}>
-            Docs
-          </a>
-          <a href="/changelog/" className={cn(link, "max-sm:hidden")}>
-            Changelog
-          </a>
+          {/* Under sm these live in the menu, so the row fits a 320px screen with the version in it. */}
+          {NAV_LINKS.map((item) => {
+            const current = isCurrentPage(item.href, location.pathname);
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                aria-current={current ? "page" : undefined}
+                className={cn(link, current && "text-foreground", "max-sm:hidden")}
+              >
+                {item.label}
+              </a>
+            );
+          })}
           <a href="/#download" className={link}>
             Download
           </a>
-          {/* On a phone the mark alone, so the row fits a 320px screen with the version in it. */}
-          <a href={REPO_URL} className={link}>
+          <a href={REPO_URL} className={cn(link, "max-sm:hidden")}>
             <GitHubIcon />
-            <span className="max-sm:sr-only">GitHub</span>
+            GitHub
           </a>
           {/* Holds its width before the release answers, so the links never shift. */}
           <a
@@ -48,6 +54,7 @@ export function Nav() {
           >
             {version ?? "v0.0.0"}
           </a>
+          <MobileMenu />
         </nav>
       </div>
     </header>

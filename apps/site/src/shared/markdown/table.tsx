@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import { cn } from "../cn";
 import { focusRing, Inlines } from "./inline";
 import type { Align, Block } from "./parse";
+import { useOverflows } from "./use-overflows";
 
 type TableBlock = Extract<Block, { kind: "table" }>;
 
@@ -17,13 +19,16 @@ const ALIGN: Record<Exclude<Align, null>, string> = {
 
 function Grid({ block }: { block: TableBlock }) {
   const align = (index: number) => ALIGN[block.align[index] ?? "left"];
+  const ref = useRef<HTMLDivElement>(null);
+  const overflows = useOverflows(ref);
   return (
     <div
+      ref={ref}
       role="region"
       aria-label="Table"
-      // A table wider than a phone scrolls, and a keyboard has to be able to scroll it.
+      // A table wider than a phone scrolls, and then a keyboard has to be able to scroll it.
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-      tabIndex={0}
+      tabIndex={overflows ? 0 : undefined}
       className={cn("mt-4 overflow-x-auto rounded-lg border", focusRing)}
     >
       <table className="w-full text-sm">

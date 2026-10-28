@@ -1,6 +1,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 
-// Tailwind's md and lg breakpoints.
+// Tailwind's sm, md and lg breakpoints.
+export const SM = "(min-width: 40rem)";
 export const MD = "(min-width: 48rem)";
 export const LG = "(min-width: 64rem)";
 export const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";

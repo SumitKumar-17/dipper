@@ -154,6 +154,10 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Docs and changelog pages on the site** - `/docs/` shows the README's user-facing sections and
   the HTTP API reference, and `/changelog/` this file, both read from the repository when the site
   is built, so they cannot drift from it. Linked from the site's nav and footer.
+- **Site menu on a phone** - Under 640px the site's links sit behind a Menu button. Opening it
+  moves focus to the first link, Escape closes it and returns focus to the button, and choosing a
+  link, pressing outside or tabbing away closes it. The nav marks the page you are on, and code
+  blocks and tables in the docs take keyboard focus only when they scroll.
 
 ### Security
 

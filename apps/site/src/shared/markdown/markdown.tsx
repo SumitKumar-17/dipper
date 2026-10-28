@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useRef } from "react";
 import { cn } from "../cn";
 import { focusRing, Inlines } from "./inline";
 import type { Block, HeadingLevel } from "./parse";
 import { Table } from "./table";
+import { useOverflows } from "./use-overflows";
 
 const HEADING: Record<HeadingLevel, string> = {
   2: "mt-16 border-t pt-10 text-2xl/8 font-semibold tracking-tight text-foreground first:mt-0 first:border-t-0 first:pt-0 sm:text-3xl/9",
@@ -21,6 +22,24 @@ function Heading({ level, id, children }: { level: HeadingLevel; id: string; chi
   );
 }
 
+function CodeBlock({ lang, text }: { lang: string; text: string }) {
+  const ref = useRef<HTMLPreElement>(null);
+  const overflows = useOverflows(ref);
+  return (
+    <pre
+      ref={ref}
+      role="region"
+      aria-label={lang ? `${lang} example` : "Example"}
+      // Only a block that scrolls takes focus (see useOverflows).
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={overflows ? 0 : undefined}
+      className={cn("mt-4 overflow-x-auto rounded-lg border bg-card p-4 font-mono text-sm/6 text-foreground", focusRing)}
+    >
+      <code>{text}</code>
+    </pre>
+  );
+}
+
 function BlockNode({ block }: { block: Block }): ReactNode {
   switch (block.kind) {
     case "heading":
@@ -36,21 +55,7 @@ function BlockNode({ block }: { block: Block }): ReactNode {
         </p>
       );
     case "code":
-      return (
-        <pre
-          role="region"
-          aria-label={block.lang ? `${block.lang} example` : "Example"}
-          // A scrolling region has to take focus, or a keyboard cannot read a line wider than the column.
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-          tabIndex={0}
-          className={cn(
-            "mt-4 overflow-x-auto rounded-lg border bg-card p-4 font-mono text-sm/6 text-foreground",
-            focusRing,
-          )}
-        >
-          <code>{block.text}</code>
-        </pre>
-      );
+      return <CodeBlock lang={block.lang} text={block.text} />;
     case "list": {
       const items = block.items.map((item, index) => (
         <li key={index} className="pl-1">

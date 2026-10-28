@@ -107,7 +107,8 @@ change reviewed as plain SQL before it runs.
 ## 4. Landing site
 
 - [x] SEO basics: social image and cards, structured data, robots, no-JS fallback (canonical link and sitemap wait for a domain) (S)
-- [x] Skip link (mobile menu and a full focus audit still open) (S)
+- [x] Skip link, mobile menu and a focus audit; the one stop without a visible focus state is the
+      legacy Query Walk element, which goes with the real Query Walk scene below (S)
 - [ ] Bundle work: lazy formatter, manual chunks, narrower Tailwind `@source` (M)
 - [x] Feature grid driven by one data file (M)
 - [x] Comparison table and FAQ, both driven by data files, FAQ with structured data (S/M)
