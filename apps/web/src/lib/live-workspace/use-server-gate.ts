@@ -7,7 +7,7 @@ import type { DipperClient } from "@dipper/client";
 import type { ServerState, ServerStatus } from "@dipper/ui";
 import * as React from "react";
 import { serverBaseUrl } from "../server-client";
-import { aborted, RECONNECT_MAX_MS, RECONNECT_MIN_MS, sleep } from "./helpers";
+import { aborted, RECONNECT_MAX_MS, RECONNECT_MIN_MS, serverInstance, sleep, WATCH_INTERVAL_MS } from "./helpers";
 
 export function useServerGate(
   getClient: () => DipperClient,
@@ -16,6 +16,8 @@ export function useServerGate(
   const [status, setStatus] = React.useState<ServerStatus>("connecting");
   /** From the health reply: dipper's own queries folder, for "save this untitled query". */
   const [queriesDir, setQueriesDir] = React.useState<string | null>(null);
+  /** Which server process answered last, so a restart under the same URL is noticed. */
+  const instance = React.useRef<string | null>(null);
   /** Bumped by `retry()` to restart the probe loop from its shortest delay. */
   const [probeNonce, setProbeNonce] = React.useState(0);
 
@@ -34,6 +36,7 @@ export function useServerGate(
         .then((info) => {
           if (signal.aborted) return;
           setQueriesDir(info.queriesDir ?? null);
+          instance.current = serverInstance(info);
           setStatus("ready");
         })
         .catch((error: unknown) => {
@@ -47,6 +50,30 @@ export function useServerGate(
     probe(RECONNECT_MIN_MS);
     return () => controller.abort();
   }, [probing, probeNonce, getClient]);
+
+  // While ready, keep asking. A server that stops answering sends the app back behind the gate,
+  // which probes until it returns; one that came back as a different process has lost every pinned
+  // session and the state the app loaded, so it goes through `connecting` too and reloads it all.
+  React.useEffect(() => {
+    if (status !== "ready") return;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const timer = window.setInterval(() => {
+      getClient()
+        .health({ signal })
+        .then((info) => {
+          if (signal.aborted) return;
+          if (instance.current !== null && serverInstance(info) !== instance.current) setStatus("connecting");
+        })
+        .catch((error: unknown) => {
+          if (!signal.aborted && !aborted(error)) setStatus("unreachable");
+        });
+    }, WATCH_INTERVAL_MS);
+    return () => {
+      window.clearInterval(timer);
+      controller.abort();
+    };
+  }, [status, getClient]);
 
   const retry = React.useCallback((): void => {
     setStatus((previous) => (previous === "ready" ? previous : "connecting"));

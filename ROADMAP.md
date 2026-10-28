@@ -18,7 +18,7 @@ checked off as they land; each one is its own commit.
 - [x] Stop draining the full result after the maxRows cut: read-only Postgres runs cancel and drop the connection (MySQL and SQLite already stopped); writable runs still drain on purpose, since dropping the connection would roll back a data-changing `RETURNING` (S)
 - [x] Resolve Postgres type names through pgx's type table (bytea, inet, arrays and more); only user-defined types stay `oid:NNN` (S)
 - [x] Prompt before closing a tab with unsaved changes (save-as overwrite check and serialised saves still open; the prompt is not yet verified in a browser) (S)
-- [ ] Detect a dead or restarted server in the UI and resync (S)
+- [x] Detect a dead or restarted server in the UI and resync: the app re-checks `/api/health` every 5 seconds, shows the unreachable screen when it stops answering, and reloads everything when the server comes back as a different process (S)
 - [x] Refresh `docs/api/http.md` where it was stale (history store, MySQL `source`, UI fallback) (S)
 
 ## 1. Query Walk, as deep as it can go

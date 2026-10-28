@@ -3,6 +3,13 @@ import { ConnectFailed, baseName, messageOf as textOf } from "@dipper/ui";
 
 export const RECONNECT_MIN_MS = 1_000;
 export const RECONNECT_MAX_MS = 10_000;
+/** How often a ready app re-checks that its server is still the one it loaded from. */
+export const WATCH_INTERVAL_MS = 5_000;
+
+/** Identifies one run of the server: the same URL with a new pid or start time is a restart. */
+export function serverInstance(info: { pid: number; startedAt: string }): string {
+  return `${info.pid}@${info.startedAt}`;
+}
 
 export { dirName } from "@dipper/ui";
 

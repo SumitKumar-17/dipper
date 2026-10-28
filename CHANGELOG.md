@@ -26,6 +26,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Dead server detection** - The app now notices when its server stops answering, shows the
+  unreachable screen, and carries on by itself when the server returns. A server that came back as
+  a new process, having lost every open transaction, makes the app reload what it showed.
 - **Structure editor** - Table Editor, Structure, Edit structure. Rename, retype and drop columns,
   change nullability and defaults, add columns, add and drop indexes. Nothing runs until you review
   the exact DDL, which Postgres checks with a dry run that executes it and rolls back, so a type
