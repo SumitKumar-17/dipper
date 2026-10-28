@@ -8,7 +8,7 @@
 
 import { FolderIcon, SaveIcon } from "lucide-react";
 import * as React from "react";
-import { messageOf } from "../lib/errors";
+import { FileExists, messageOf } from "../lib/errors";
 import { joinPath, tilde } from "../lib/paths";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -43,6 +43,8 @@ export function SaveQueryDialog(): React.ReactElement {
   const [folder, setFolder] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  // Set once the server has said the name is taken: the next press of the button replaces the file.
+  const [replacing, setReplacing] = React.useState(false);
 
   // Only when it is not already a root: offering it twice would imply the two differ.
   const ownFolder = server.queriesDir;
@@ -62,6 +64,7 @@ export function SaveQueryDialog(): React.ReactElement {
     setName(suggest(buffer.name));
     setFolder(folders[0] ?? null);
     setError(null);
+    setReplacing(false);
     setOpen(true);
   }, [activeBuffer, folders, save]);
 
@@ -81,10 +84,15 @@ export function SaveQueryDialog(): React.ReactElement {
     try {
       // The server may not write outside a workspace, so open the folder as one first.
       if (!roots.includes(target)) await updateSettings({ workspaces: [...roots, target] });
-      await saveAs(buffer.id, joinPath(target, file));
+      await saveAs(buffer.id, joinPath(target, file), { overwrite: replacing });
       setOpen(false);
     } catch (cause) {
-      setError(messageOf(cause));
+      if (cause instanceof FileExists) {
+        setError(`${file} already exists in that folder. Press Replace to overwrite it, or choose another name.`);
+        setReplacing(true);
+      } else {
+        setError(messageOf(cause));
+      }
     } finally {
       setBusy(false);
     }
@@ -124,7 +132,11 @@ export function SaveQueryDialog(): React.ReactElement {
                 event.preventDefault();
                 void submit();
               }}
-              onValueChange={setName}
+              onValueChange={(value) => {
+                setName(value);
+                setReplacing(false);
+                setError(null);
+              }}
               placeholder="query"
               spellCheck={false}
               value={name}
@@ -156,7 +168,14 @@ export function SaveQueryDialog(): React.ReactElement {
               )}
             </div>
           ) : (
-            <Select onValueChange={(value) => setFolder(String(value))} value={folder ?? ""}>
+            <Select
+              onValueChange={(value) => {
+                setFolder(String(value));
+                setReplacing(false);
+                setError(null);
+              }}
+              value={folder ?? ""}
+            >
               <SelectTrigger className="w-full" size="sm">
                 <SelectValue>
                   {(value: unknown) => (
@@ -187,7 +206,7 @@ export function SaveQueryDialog(): React.ReactElement {
               onClick={() => void submit()}
               size="sm"
             >
-              Save
+              {replacing ? "Replace" : "Save"}
             </Button>
           </div>
         </div>

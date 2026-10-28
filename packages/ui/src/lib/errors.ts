@@ -34,6 +34,20 @@ export class ConnectFailed extends Error {
   }
 }
 
+/**
+ * Saving a query under a name that is taken. Thrown by `saveAs` so the dialog can ask before
+ * replacing the file, rather than the provider deciding that overwriting is what was meant.
+ */
+export class FileExists extends Error {
+  override readonly name = "FileExists";
+  readonly path: string;
+
+  constructor(path: string, options?: ErrorOptions) {
+    super("That file already exists.", options);
+    this.path = path;
+  }
+}
+
 /** The code off a rejection, when it carries one. */
 export function failureCodeOf(error: unknown): ConnectFailureCode | undefined {
   return error instanceof ConnectFailed ? error.code : undefined;

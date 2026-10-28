@@ -3,7 +3,7 @@
 // action here is "call the server, then say what came back".
 
 import { isDipperError, staleWrite, type DipperClient } from "@dipper/client";
-import type { Buffer, CursorPosition, SaveState } from "@dipper/ui";
+import { FileExists, type Buffer, type CursorPosition, type SaveState } from "@dipper/ui";
 import * as React from "react";
 import { buffersReducer, initialBuffersState, saveStateOf } from "./buffers-reducer";
 import { dirName, fileName, messageOf } from "./helpers";
@@ -47,7 +47,7 @@ export type BuffersApi = {
   editBuffer: (id: string, content: string) => void;
   setBufferView: (id: string, view: Buffer["view"]) => void;
   save: () => Promise<void>;
-  saveAs: (id: string, path: string) => Promise<void>;
+  saveAs: (id: string, path: string, options?: { overwrite?: boolean }) => Promise<void>;
   /** Renames a file on disk. An open tab follows it; rejects with the server's reason if it cannot. */
   renameFile: (path: string, name: string) => Promise<void>;
   /** Deletes a file on disk and closes its tab, if one is open. */
@@ -79,7 +79,7 @@ export function useBuffers(
    * Writes every dirty file buffer, not just the active one: the save indicator and autosave are
    * both global, so leaving a background tab unwritten while the chrome says "saved" would be a lie.
    */
-  const commitSave = React.useCallback(async (): Promise<void> => {
+  const writeDirty = React.useCallback(async (buffers: readonly Buffer[]): Promise<void> => {
     const dirty = buffers.filter((b) => b.path !== null && b.dirty);
     if (dirty.length === 0) {
       dispatch({ type: "saveSkipped" });
@@ -117,7 +117,34 @@ export function useBuffers(
     );
 
     dispatch({ type: "saveFinished", failed });
-  }, [buffers, getClient]);
+  }, [getClient]);
+
+  /**
+   * Saves one at a time. Two writes of the same buffer in flight at once both carry the
+   * `ifModifiedAt` they were started with, so the second is refused against the first's own write
+   * and reads as someone else's change. A save asked for while another runs waits its turn, and
+   * then looks at the buffers as they are by then, not as they were when it was asked for.
+   */
+  const buffersNow = React.useRef(buffers);
+  React.useEffect(() => {
+    buffersNow.current = buffers;
+  });
+  const saveQueue = React.useRef<Promise<void>>(Promise.resolve());
+  const waiting = React.useRef(0);
+  const commitSave = React.useCallback((): Promise<void> => {
+    const turn = async (): Promise<void> => {
+      // Behind another save, give React the chance to render what that save changed.
+      if (waiting.current > 1) await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      try {
+        await writeDirty(buffersNow.current);
+      } finally {
+        waiting.current -= 1;
+      }
+    };
+    waiting.current += 1;
+    saveQueue.current = saveQueue.current.then(turn, turn);
+    return saveQueue.current;
+  }, [writeDirty]);
 
   /**
    * Autosave, and the reason it debounces.
@@ -196,7 +223,7 @@ export function useBuffers(
   }, []);
 
   const saveAs = React.useCallback(
-    async (id: string, path: string): Promise<void> => {
+    async (id: string, path: string, options?: { overwrite?: boolean }): Promise<void> => {
       const buffer = buffers.find((b) => b.id === id);
       if (!buffer) return;
       dispatch({ type: "saveStarted" });
@@ -206,8 +233,12 @@ export function useBuffers(
         try {
           target = (await files.create(dirName(path), fileName(path))).path;
         } catch (error) {
-          // Saving onto an existing file is a legitimate "save as"; anything else is not.
           if (!isDipperError(error) || error.status !== 409) throw error;
+          // The name is taken. Replacing someone's file is the caller's decision, not a default.
+          if (!options?.overwrite) {
+            dispatch({ type: "saveSkipped" });
+            throw new FileExists(path, { cause: error });
+          }
         }
         const written = await files.write({ path: target, content: buffer.content });
         const nextId = bufferIdFor(target);
@@ -215,7 +246,9 @@ export function useBuffers(
         readAt.current.set(nextId, written.modifiedAt);
         dispatch({ type: "savedAs", id, nextId, path: target, name: fileName(target) });
         refreshWorkspace();
-      } catch {
+      } catch (error) {
+        // A taken name is a question for the dialog, already handed back; the rest is a failed save.
+        if (error instanceof FileExists) throw error;
         dispatch({ type: "saveFailed" });
       }
     },

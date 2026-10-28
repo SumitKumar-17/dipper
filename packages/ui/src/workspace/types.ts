@@ -264,8 +264,11 @@ export type WorkspaceApi = {
   setBufferView(id: string, view: Buffer["view"]): void;
   /** Flushes the active buffer to disk. A no-op for a scratch, which has nowhere to go. */
   save(): Promise<void>;
-  /** Gives a buffer a path - the one way a scratch becomes a file. */
-  saveAs(id: string, path: string): Promise<void>;
+  /**
+   * Gives a buffer a path - the one way a scratch becomes a file. Rejects with `FileExists` when the
+   * path is taken, unless `overwrite` says replacing it is what was asked for.
+   */
+  saveAs(id: string, path: string, options?: { overwrite?: boolean }): Promise<void>;
   /** Renames a file in its folder. An open tab follows it. Rejects with the reason, such as a name already taken. */
   renameFile(path: string, name: string): Promise<void>;
   /** Deletes a file from disk and closes its tab. Callers confirm first: there is no trash. */
