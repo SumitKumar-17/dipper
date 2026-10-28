@@ -142,6 +142,10 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Query Walk CTE graph** - A query with CTEs shows which CTE feeds which under the chapter strip:
   each CTE, the chapters that read it (with a count when one reads it more than once) and how many
   use it. A CTE nothing reads says so. Click any name to open that chapter.
+- **Query Walk LATERAL joins** - A `LATERAL` subquery is no longer sampled on its own, where it
+  failed or answered for no row. Its FROM card shows the rows it really produced, run once per row
+  of the tables before it, and its JOIN stage explains that each row is paired only with what its
+  own run returned. It is listed as having no chapter of its own, with the reason.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.

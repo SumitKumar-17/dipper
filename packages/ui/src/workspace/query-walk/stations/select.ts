@@ -34,6 +34,7 @@ import {
   WINDOW_COLUMN,
 } from "../walk-columns";
 import { plainGroupKeys } from "../group-keys";
+import { lateralRead } from "../lateral";
 import { windowFunctions, windowRange } from "../window-fn";
 
 export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[] {
@@ -67,18 +68,21 @@ export function buildStations(parsed: ParsedSelect, dialect: Dialect): Station[]
     label: "FROM",
     present: true,
     clause: { from: parsed.fromKeyword.from, to: parsed.first.range.to },
-    batches: sources.map((source, index) => [
-      {
-        id: `src${index}.sample`,
-        label: `Sample of ${sourceTitle(source)}`,
-        sql: limited(`select *\nfrom ${slice(source.range)}`),
-      },
-      {
-        id: `src${index}.count`,
-        label: `Count of ${sourceTitle(source)}`,
-        sql: `${withPrefix}select count(*)\nfrom ${slice(source.range)}`,
-      },
-    ]),
+    batches: sources.map((source, index) => {
+      const read = lateralRead(parsed, index);
+      return [
+        {
+          id: `src${index}.sample`,
+          label: `Sample of ${sourceTitle(source)}`,
+          sql: limited(`select ${read?.columns ?? "*"}\nfrom ${read?.from ?? slice(source.range)}`),
+        },
+        {
+          id: `src${index}.count`,
+          label: `Count of ${sourceTitle(source)}`,
+          sql: `${withPrefix}select count(*)\nfrom ${read?.from ?? slice(source.range)}`,
+        },
+      ];
+    }),
     }),
   );
 

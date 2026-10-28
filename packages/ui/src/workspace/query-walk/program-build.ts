@@ -440,11 +440,22 @@ class ProgramBuilder {
         return;
       }
       if (source.kind !== "derived" || source.body === null) return;
+      // A LATERAL subquery exists to read the rows beside it, so run alone it either fails on the
+      // columns it borrows or answers a question nobody asked. It keeps no chapter: its rows are
+      // shown where they are made, by the FROM and JOIN stations of the query it sits in.
+      if (source.lateral) {
+        this.skipped.push({
+          why: "inline",
+          label: source.alias ?? source.name,
+          reason:
+            "A LATERAL subquery runs again for every row of the tables before it, so it has no single result to walk on its own. Its rows are shown at the FROM and JOIN stages of the query around it.",
+          sql: sql.slice(source.range.from, source.range.to),
+        });
+        return;
+      }
       // A plain derived table CANNOT see the outer query - SQL forbids it - so its independence is
-      // proved by the grammar. LATERAL is exactly the opposite: it exists to see the rows beside it,
-      // and whether it actually does cannot be read off the text, so it stays uncertain.
-      const lateral = /\blateral\s*$/i.test(sql.slice(0, source.range.from));
-      const own: Binding = { kind: "standalone", certain: !lateral };
+      // proved by the grammar.
+      const own: Binding = { kind: "standalone", certain: true };
       const composed = compose(sql.slice(source.body.from, source.body.to), inner, this.dialect);
       const id = this.addQuery({
         sql: composed,

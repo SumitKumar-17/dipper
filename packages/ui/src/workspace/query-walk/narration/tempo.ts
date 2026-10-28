@@ -97,14 +97,18 @@ export function phasesFor(index: number, walk: WalkData, state: StationState): P
       return [{ ms: 700, label: "raw tables" }];
     case "join": {
       const kind = station.join?.kind ?? "inner";
+      const lateral = station.join?.source.lateral ?? false;
+      // A LATERAL cross join keeps only the pairs each run returned, never every pair.
       const settled =
-        kind === "inner"
-          ? "unmatched rows dropped"
-          : kind === "cross"
-            ? "every pair kept"
-            : "unmatched rows kept";
+        kind === "left" || kind === "right" || kind === "full"
+          ? "unmatched rows kept"
+          : lateral
+            ? "rows with an empty run dropped"
+            : kind === "cross"
+              ? "every pair kept"
+              : "unmatched rows dropped";
       return [
-        { ms: 1200, label: "matching keys" },
+        { ms: 1200, label: lateral ? "one run per row" : "matching keys" },
         { ms: 1000, label: "rows paired" },
         { ms: 800, label: settled },
       ];

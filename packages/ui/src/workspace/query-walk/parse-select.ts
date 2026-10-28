@@ -285,7 +285,8 @@ export function parseTokens(
     cur.done || cur.atClauseStart() || cur.atJoinStart() || cur.atComma();
 
   const readSource = (): SourceRef | null => {
-    if (cur.kw() === "lateral") cur.take();
+    const lateral = cur.kw() === "lateral";
+    if (lateral) cur.take();
     if (cur.kw() === "only") cur.take();
     const head = cur.peek();
     if (!head) return null;
@@ -325,7 +326,7 @@ export function parseTokens(
         cur.take();
       }
     }
-    return { kind, range: { from: head.from, to: end }, name, alias, body };
+    return { kind, range: { from: head.from, to: end }, name, alias, body, lateral };
   };
 
   const first = readSource();

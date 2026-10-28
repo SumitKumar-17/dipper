@@ -4,6 +4,7 @@ import type { JoinClause, KeyPair } from "../clauses";
 import { countAt, inputCount, joinKeys, previousIndex, sampleId } from "../scenes";
 import { windowReading } from "../scenes/window-band";
 import { fanOutSentence } from "./fan-out";
+import { LATERAL_FROM, lateralJoinSentence } from "./lateral-sentence";
 import { windowSentence } from "./window-sentence";
 import {
   caseExpressions,
@@ -119,15 +120,27 @@ export function sentenceFor(
   switch (station.id) {
     case "from": {
       const named = sources.some((source) => source.kind !== "table");
+      const lateral = sources.some((source) => source.lateral) ? LATERAL_FROM : "";
       return named
-        ? "Start with the raw tables. A subquery or CTE is a table too: it is computed first, then read like any other."
-        : "Start with the raw tables. Nothing has been filtered yet.";
+        ? `Start with the raw tables. A subquery or CTE is a table too: it is computed first, then read like any other.${lateral}`
+        : `Start with the raw tables. Nothing has been filtered yet.${lateral}`;
     }
     case "join": {
       const join = station.join;
       if (!join) return "Not in this query. A join would pair these rows with another table's.";
       const left = station.joinIndex === 0 ? code(sourceTitle(parsed.first)) : "the rows so far";
       const right = code(sourceTitle(join.source));
+      if (join.source.lateral) {
+        const condition = text(join.source.range.to, join.range.to)
+          .trim()
+          .replace(/^on\s+/i, "");
+        return lateralJoinSentence(
+          join.kind,
+          left,
+          right,
+          condition === "" || /^true$/i.test(condition) ? null : condition,
+        );
+      }
       if (join.kind === "cross") {
         return `Pair every row of ${left} with every row of ${right}. There is no condition, so the result is one row per combination.`;
       }

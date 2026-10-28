@@ -24,6 +24,11 @@ export type SourceRef = {
   readonly alias: string | null;
   /** Inside the parentheses of a derived table; the CTE's body for a CTE reference. */
   readonly body: Range | null;
+  /**
+   * Written `LATERAL`, so it may read the columns of the sources before it and runs again for each
+   * of their rows. It has no result of its own, which is why nothing samples it alone.
+   */
+  readonly lateral: boolean;
 };
 
 export type KeyPair = {

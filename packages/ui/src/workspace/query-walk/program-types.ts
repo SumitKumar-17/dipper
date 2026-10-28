@@ -65,8 +65,8 @@ export type Binding =
       readonly kind: "standalone";
       /**
        * False when correlation could not be RULED OUT by parsing alone, so it must be confirmed by
-       * probing: the subquery filters on a column nobody qualified, or it is a LATERAL derived
-       * table. True only when the SQL itself settles it.
+       * probing: the subquery filters on a column nobody qualified. True only when the SQL itself
+       * settles it. (A LATERAL derived table never gets a section: see `addChildren`.)
        */
       readonly certain: boolean;
     }

@@ -39,7 +39,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [ ] Recursive CTE stepped one iteration at a time, with a pass cap (M/L)
 - [x] Window frames drawn as a band, every window function per query, not the first (a `RANGE` frame with a value offset is named, not drawn) (M)
 - [x] Join fan-out explained when a join multiplies rows (a pair-by-pair match view is still open) (M)
-- [ ] LATERAL joins (M)
+- [x] LATERAL joins: sampled through the join, never alone, and narrated as one run per row (a per-row view of each run is still open) (M)
 - [x] Logical order versus written order strip, under "Your query" in the walk (S)
 - [ ] EXPLAIN plan beside the walk, nodes mapped to stations (M)
 - [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)

@@ -108,6 +108,8 @@ Every window function gets a WINDOW stage of its own, which gathers the rows int
 
 A query with CTEs is walked one chapter per CTE, and a small graph above the stages shows which CTE feeds which and how many chapters use each one.
 
+A `LATERAL` join is walked as what it is: the subquery runs once for every row before it, and each row is paired only with the rows its own run returned.
+
 This makes complex SQL easier to understand, debug, and explain - especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
 
 <p align="center">
