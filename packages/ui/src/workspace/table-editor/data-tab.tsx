@@ -11,6 +11,7 @@ import { DataToolbar } from "./data-toolbar";
 import { NO_EDITS, addInsert, buildChanges, countChanges } from "./edit-model";
 import { ImportPanel } from "./import-panel";
 import { ReviewPanel } from "./review-panel";
+import { type Undo, buildUndo } from "./undo-model";
 import type { TableFocus } from "./table-editor-event";
 import { useTableRows } from "./use-table-rows";
 
@@ -36,7 +37,9 @@ export function DataTab({ detail, focus }: { detail: TableDetail; focus?: TableF
     [schema, detail.schema, detail.name],
   );
   const [edits, setEdits] = React.useState(NO_EDITS);
-  const [reviewing, setReviewing] = React.useState(false);
+  const [reviewing, setReviewing] = React.useState<"edits" | "undo" | null>(null);
+  // How to put the table back after the last applied change set; gone once it is used or replaced.
+  const [undo, setUndo] = React.useState<Undo | null>(null);
   const [importing, setImporting] = React.useState(false);
   const reason = lockReason(detail);
   const pending = countChanges(edits);
@@ -68,13 +71,26 @@ export function DataTab({ detail, focus }: { detail: TableDetail; focus?: TableF
   if (reviewing) {
     return (
       <ReviewPanel
-        changes={changes}
+        changes={reviewing === "undo" ? (undo?.changes ?? []) : changes}
         onApplied={() => {
+          if (reviewing === "undo") {
+            setUndo(null);
+          } else if (page.status === "ready") {
+            setUndo(
+              buildUndo(
+                edits,
+                page.columns,
+                page.rows,
+                detail.columns.filter((c) => c.pk).map((c) => c.name),
+                detail.columns.filter((c) => !c.generated).map((c) => c.name),
+              ),
+            );
+          }
           setEdits(NO_EDITS);
-          setReviewing(false);
+          setReviewing(null);
           rows.reload();
         }}
-        onBack={() => setReviewing(false)}
+        onBack={() => setReviewing(null)}
         schema={detail.schema}
         table={detail.name}
       />
@@ -128,13 +144,24 @@ export function DataTab({ detail, focus }: { detail: TableDetail; focus?: TableF
           />
         )}
       </div>
+      {pending === 0 && undo && undo.changes.length > 0 && (
+        <div className="flex items-center gap-2 border-t bg-card px-3 py-2">
+          <span className="text-sm text-muted-foreground">
+            Changes applied.
+            {undo.irreversible > 0 && ` ${plural(undo.irreversible, "new row")} cannot be undone, the database chose its key.`}
+          </span>
+          <Button className="ms-auto" onClick={() => setReviewing("undo")} variant="outline">
+            Undo last change
+          </Button>
+        </div>
+      )}
       {pending > 0 && (
         <div className="flex items-center gap-2 border-t bg-card px-3 py-2">
           <span className="text-sm">{plural(pending, "pending change")}</span>
           <Button className="ms-auto" onClick={() => setEdits(NO_EDITS)} variant="outline">
             Discard
           </Button>
-          <Button onClick={() => setReviewing(true)}>Review and apply</Button>
+          <Button onClick={() => setReviewing("edits")}>Review and apply</Button>
         </div>
       )}
     </div>

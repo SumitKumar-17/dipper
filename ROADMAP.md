@@ -85,7 +85,7 @@ change reviewed as plain SQL before it runs.
       drop indexes; each change is reviewed as DDL after a dry run (constraints and table rename in the UI still open) (L)
 - [x] Foreign key aware cells: click through to the referenced row (a lookup picker for editing is still open) (M)
 - [x] Read-only connections stay read-only (enforced in the server for queries and row edits); asking twice on red-tagged connections is still open (S)
-- [ ] Undo of the last applied change set where it is reversible (M)
+- [x] Undo of the last applied change set: edits revert, deleted rows come back, rows inserted with a chosen key are removed; rows whose key the database chose are reported as not undoable (M)
 
 - [x] Result find and click-to-sort over the loaded rows (column filters next) (S/M)
 - [x] Cell inspector with JSON pretty-printing and copy (copy-as formats next) (S)

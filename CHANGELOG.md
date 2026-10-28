@@ -26,6 +26,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Undo in the Table Editor** - After a change set is applied, Undo last change offers its
+  inverse, reviewed and dry-run like any other change. Edited cells go back to their old values
+  (refused if the row changed again since), deleted rows are inserted again, and rows you inserted
+  with an explicit key are removed. A row whose key the database chose cannot be named afterwards,
+  and the bar says so.
 - **Transactions end with the page** - Closing the tab or navigating away rolls back an open
   transaction at once, instead of leaving its locks held until the server's idle timeout.
 - **Dead server detection** - The app now notices when its server stops answering, shows the
