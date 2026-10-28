@@ -112,6 +112,8 @@ A `LATERAL` join is walked as what it is: the subquery runs once for every row b
 
 A recursive CTE is stepped one pass at a time, up to six passes: each stage shows exactly the rows that pass added, until a pass adds nothing and the recursion stops.
 
+The **Plan** tab beside the walk shows the database's estimated plan for the query and lights the plan steps that do the work of the stage you are on, wherever the planner put them (Postgres).
+
 This makes complex SQL easier to understand, debug, and explain - especially joins, filtering, aggregation, window functions, subqueries, `CASE`, and set operations.
 
 <p align="center">

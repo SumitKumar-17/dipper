@@ -151,6 +151,11 @@ The section matching a release's version becomes that release's notes on GitHub 
   without the rows an earlier pass already produced), then SETTLE with the whole result. The passes
   are computed as a chain of ordinary CTEs, so no probe ever runs the recursion itself, and an empty
   pass says the recursion has stopped. A recursion that runs past six passes is cut there and says so.
+- **Query Walk plan tab** - A Plan tab beside the walk shows the database's estimated plan for the
+  statement (nothing is executed), with the steps doing the open station's work lit: the scans for
+  FROM, the join node that met each JOIN's table, the scan a WHERE test was pushed to, the
+  aggregate for GROUP BY and HAVING, WindowAgg, the top Sort and Limit. Matching is for the final
+  query on Postgres; other chapters and dialects show the plan with nothing lit, and say why.
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.

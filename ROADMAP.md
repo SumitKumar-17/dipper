@@ -41,7 +41,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Join fan-out explained when a join multiplies rows (a pair-by-pair match view is still open) (M)
 - [x] LATERAL joins: sampled through the join, never alone, and narrated as one run per row (a per-row view of each run is still open) (M)
 - [x] Logical order versus written order strip, under "Your query" in the walk (S)
-- [ ] EXPLAIN plan beside the walk, nodes mapped to stations (M)
+- [x] EXPLAIN plan beside the walk, nodes mapped to stations (final query on Postgres; CTE chapters and MySQL/SQLite plans are shown unmatched) (M)
 - [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)
 - [ ] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (L)
 - [ ] Shareable step-through export as a standalone HTML file (M)

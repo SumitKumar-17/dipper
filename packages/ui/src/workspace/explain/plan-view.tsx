@@ -11,8 +11,17 @@ const BAR = [
   "w-7/12", "w-8/12", "w-9/12", "w-10/12", "w-11/12", "w-full",
 ] as const;
 
-/** A query plan as a tree: what each step is, how much of the cost it carries, and what looks wrong. */
-export function PlanView({ plan }: { plan: Plan }): React.ReactElement {
+/**
+ * A query plan as a tree: what each step is, how much of the cost it carries, and what looks wrong.
+ * `lit` marks the steps a caller is pointing at, such as the ones doing a Query Walk station's work.
+ */
+export function PlanView({
+  plan,
+  lit,
+}: {
+  plan: Plan;
+  lit?: ReadonlySet<PlanNode>;
+}): React.ReactElement {
   const timed = plan.analyze && timeCeiling(plan.root) > 0;
   const ceiling = timed ? timeCeiling(plan.root) : costCeiling(plan.root);
   const flagged = warnedNodes(plan.root);
@@ -34,7 +43,7 @@ export function PlanView({ plan }: { plan: Plan }): React.ReactElement {
         </Alert>
       )}
       <div className="rounded-md border bg-card p-3">
-        <Node ceiling={ceiling} node={plan.root} timed={timed} />
+        <Node ceiling={ceiling} lit={lit} node={plan.root} timed={timed} />
       </div>
       {plan.text && (
         <pre className="overflow-auto rounded-md border bg-muted/30 p-3 font-mono text-xs">{plan.text}</pre>
@@ -53,12 +62,25 @@ function Summary({ flagged, plan }: { flagged: number; plan: Plan }): React.Reac
   return <p className="text-sm text-muted-foreground">{parts.join(" · ")}</p>;
 }
 
-function Node({ ceiling, node, timed }: { ceiling: number; node: PlanNode; timed: boolean }): React.ReactElement {
+function Node({
+  ceiling,
+  lit,
+  node,
+  timed,
+}: {
+  ceiling: number;
+  lit: ReadonlySet<PlanNode> | undefined;
+  node: PlanNode;
+  timed: boolean;
+}): React.ReactElement {
   const share = timed ? twelfths(node.actualTotalMs ?? 0, ceiling) : twelfths(node.totalCost, ceiling);
   const hot = share >= 9;
   return (
     <div>
-      <div className="py-1.5">
+      <div
+        aria-current={lit?.has(node) ? "true" : undefined}
+        className={cn("py-1.5", lit?.has(node) && "-mx-1.5 rounded-md bg-info/10 px-1.5 ring-1 ring-info/50")}
+      >
         <div className="flex flex-wrap items-baseline gap-x-2">
           <span className="font-medium">{node.nodeType}</span>
           {node.relation && <span className="text-sm text-muted-foreground">on {node.relation}</span>}
@@ -85,7 +107,7 @@ function Node({ ceiling, node, timed }: { ceiling: number; node: PlanNode; timed
       {node.children.length > 0 && (
         <div className="ms-3 border-s ps-3">
           {node.children.map((child, i) => (
-            <Node ceiling={ceiling} key={`${child.nodeType}-${i}`} node={child} timed={timed} />
+            <Node ceiling={ceiling} key={`${child.nodeType}-${i}`} lit={lit} node={child} timed={timed} />
           ))}
         </div>
       )}
