@@ -41,6 +41,21 @@ export function useTransaction(getClient: () => DipperClient, { connectionId, da
     [connectionId, database, getClient],
   );
 
+  // Closing the tab or navigating away would otherwise leave the transaction, and the locks it
+  // holds, until the server's idle reaper gets to it. `keepalive` lets the request outlive the page.
+  React.useEffect(() => {
+    const release = (): void => {
+      const open = current.current;
+      if (!open) return;
+      void fetch(`${getClient().baseUrl}/api/sessions/${encodeURIComponent(open.id)}`, {
+        method: "DELETE",
+        keepalive: true,
+      }).catch(() => undefined);
+    };
+    window.addEventListener("pagehide", release);
+    return () => window.removeEventListener("pagehide", release);
+  }, [getClient]);
+
   const send = React.useCallback(
     async (sessionId: string, sql: string): Promise<void> => {
       if (!connectionId) throw new Error("No connection selected.");
