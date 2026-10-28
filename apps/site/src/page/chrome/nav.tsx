@@ -19,10 +19,16 @@ export function Nav() {
       <div className={cn(container, "flex h-14 items-center justify-between gap-4 lg:h-16")}>
         <Brand />
         <nav aria-label="Site" className="flex items-center gap-0.5">
-          <a href="#features" className={cn(link, "max-sm:hidden")}>
+          <a href="/#features" className={cn(link, "max-sm:hidden")}>
             Features
           </a>
-          <a href="#download" className={link}>
+          <a href="/docs/" className={cn(link, "max-sm:hidden")}>
+            Docs
+          </a>
+          <a href="/changelog/" className={cn(link, "max-sm:hidden")}>
+            Changelog
+          </a>
+          <a href="/#download" className={link}>
             Download
           </a>
           {/* On a phone the mark alone, so the row fits a 320px screen with the version in it. */}

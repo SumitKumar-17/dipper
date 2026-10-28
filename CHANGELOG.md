@@ -151,6 +151,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 - `GET /api/connections/:id/tables/:schema/:table`, `POST .../explain` and
   `POST .../tables/:schema/:table/rows/page` and `.../rows/apply`. See `docs/api/http.md`.
 - Go and TypeScript unit tests, run in CI. `ROADMAP.md` lists what is planned next.
+- **Docs and changelog pages on the site** - `/docs/` shows the README's user-facing sections and
+  the HTTP API reference, and `/changelog/` this file, both read from the repository when the site
+  is built, so they cannot drift from it. Linked from the site's nav and footer.
 
 ### Security
 

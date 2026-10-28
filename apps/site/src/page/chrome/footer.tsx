@@ -10,8 +10,9 @@ import { REPO_URL } from "../../shared/release";
 import { LG, useMediaQuery } from "../../shared/viewport/media";
 
 const LINKS = [
+  { href: "/docs/", label: "Docs" },
+  { href: "/changelog/", label: "Changelog" },
   { href: REPO_URL, label: "GitHub" },
-  { href: `${REPO_URL}/blob/main/CHANGELOG.md`, label: "Changelog" },
   { href: `${REPO_URL}/releases`, label: "Releases" },
   { href: `${REPO_URL}/issues`, label: "Issues" },
 ];

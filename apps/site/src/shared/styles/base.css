@@ -16,7 +16,7 @@
    component is dropped. */
 @source "../../../../../packages/ui/src";
 @source "../..";
-@source "../../../{index.html,lab}";
+@source "../../../{index.html,docs,changelog,lab}";
 
 /* The two names packages/ui/src/styles.css maps `font-sans` and `font-mono` onto. */
 :root {

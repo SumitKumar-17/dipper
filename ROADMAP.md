@@ -112,7 +112,7 @@ change reviewed as plain SQL before it runs.
 - [x] Feature grid driven by one data file (M)
 - [x] Comparison table and FAQ, both driven by data files, FAQ with structured data (S/M)
 - [ ] Real Query Walk scene, then delete `public/legacy` and its capture scripts (M)
-- [ ] Docs and changelog pages rendered from the repo (M)
+- [x] Docs and changelog pages rendered from the repo (M)
 
 - [x] Shortcut labels follow the platform (Ctrl+S on Windows, ⌘S on a Mac) from one shortcuts module, and a Windows PowerShell installer (not yet run on Windows), and a clean script that works in any shell (S)
 

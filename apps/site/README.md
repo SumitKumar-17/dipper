@@ -12,8 +12,8 @@ bun run --filter @dipper/site dev               # http://localhost:5180
 bun run --filter @dipper/site dev --port 5183   # any other port
 ```
 
-The page is `/`. `/lab/` is a dev-only test page with every scene, the bird and the release links
-on it; it is not part of the build.
+The landing page is `/`; `/docs/` and `/changelog/` are the reading pages. `/lab/` is a dev-only
+test page with every scene, the bird and the release links on it; it is not part of the build.
 
 ## Build
 
@@ -33,9 +33,14 @@ bun run lint                           # from the root; covers apps/site/src
   scene its own chunk - `keys/` (hunt & peck, from 1024px) and `grid/` (the grid bird, below).
   "Your turn" (`sections/try.tsx`) is the real window the landing hands over to. `bird/` holds
   who flies the one bird (`driver.tsx`: the landing, or the page's roaming route) and that route.
+- `docs/index.html`, `changelog/index.html` and `src/reading/`: the reading pages, each its own
+  entry in `vite.config.ts`. They import `README.md`, `docs/api/http.md` and `CHANGELOG.md` from
+  the repo root with `?raw`, so a build always shows that commit's text. `content.test.ts` parses
+  the real files, so a renamed README section fails `bun run test`.
 - `src/shared/`: what every page uses: `styles/base.css` (Tailwind, the app's tokens, Geist),
   `scenes` (the product, always dark), `bird` (the 3D bird and its React API), `release` (latest
-  release, install command, download links) and `motion`.
+  release, install command, download links), `motion`, and `markdown` (marked's lexer turned into
+  React elements: raw HTML in the source is dropped, never injected).
 - `public/legacy/`: the scene custom elements and their markup, data, fonts and clips, served
   as-is. They load their own files relative to their URL, so keep that folder's structure.
 
