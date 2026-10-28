@@ -1,6 +1,6 @@
 {
   "about": "Recorded 2026-10-11 on macOS (darwin-arm64) from the published v0.2.0 release: the installer piped to sh with its install directory already on PATH, then the installed binary started with a fresh DIPPER_HOME. Only paths and the port are rewritten, so it reads as a normal install: the install directory as ~/.local/bin and the server's port as the default 4600. 'at' is when the line was printed, in seconds after the command started. 'wait' is how long the scene waits before printing it: the recorded download took 79 s on a throttled network, which the scene plays in 2.3 s, and the first launch of a freshly installed binary took 4.7 s here (macOS checks a new executable once) against 0.009 s for every launch after it.",
-  "title": "~ — zsh",
+  "title": "~ - zsh",
   "prompt": "~ %",
   "host": "127.0.0.1:4600",
   "session": [
@@ -18,7 +18,7 @@
     },
     {
       "command": "dipper",
-      "title": "~ — dipper",
+      "title": "~ - dipper",
       "output": [{ "text": "dipper v0.2.0 → http://127.0.0.1:4600", "at": 4.698, "wait": 900 }],
       "returns": false
     }

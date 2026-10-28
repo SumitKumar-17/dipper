@@ -73,7 +73,9 @@ export function ResizableSidebar({
   return (
     <>
       <aside
-        aria-hidden={!open}
+        // Collapsed means out of reach, not just out of sight: `inert` takes the content out of the
+        // tab order and the accessibility tree together, where `aria-hidden` left it focusable.
+        inert={!open}
         className={cn(
           "flex h-full shrink-0 flex-col overflow-hidden bg-sidebar",
           // Collapsing animates; dragging must not, or the pane lags behind the pointer.

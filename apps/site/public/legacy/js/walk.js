@@ -1,5 +1,5 @@
 /**
- * <dipper-walk> — Query Walk, recorded from the real app (site/capture/walk.ts), in the same window
+ * <dipper-walk> - Query Walk, recorded from the real app (site/capture/walk.ts), in the same window
  * chrome as <dipper-workspace>, over a clause rail that follows the recording. Animation only: it
  * loops on its own and takes no pointer or key.
  *

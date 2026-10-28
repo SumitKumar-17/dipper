@@ -1,5 +1,5 @@
 /**
- * <dipper-terminal> — installing Dipper and starting it for the first time, replayed from a recording
+ * <dipper-terminal> - installing Dipper and starting it for the first time, replayed from a recording
  * of the real installer and binary (assets/data/terminal.json), ending on the browser `dipper` opens.
  *
  *   <script type="module" src="assets/js/terminal.js"></script>
