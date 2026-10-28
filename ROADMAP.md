@@ -15,7 +15,7 @@ checked off as they land; each one is its own commit.
       concurrent runs cannot exhaust the pool (S)
 - [x] Reset session settings with a context that survives cancellation and discard the connection if
       the reset fails (`BEGIN READ ONLY` wrapping still open) (S)
-- [ ] Stop draining the full result after the maxRows cut (S)
+- [x] Stop draining the full result after the maxRows cut: read-only Postgres runs cancel and drop the connection (MySQL and SQLite already stopped); writable runs still drain on purpose, since dropping the connection would roll back a data-changing `RETURNING` (S)
 - [x] Resolve Postgres type names through pgx's type table (bytea, inet, arrays and more); only user-defined types stay `oid:NNN` (S)
 - [x] Prompt before closing a tab with unsaved changes (save-as overwrite check and serialised saves still open; the prompt is not yet verified in a browser) (S)
 - [ ] Detect a dead or restarted server in the UI and resync (S)

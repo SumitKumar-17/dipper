@@ -261,12 +261,13 @@ func (d *postgresDriver) exec(ctx context.Context, sql string, sc *StatementCont
 		return err
 	}
 	defer conn.Release()
-	return d.execOn(ctx, pool, conn, sql, sc)
+	return d.execOn(ctx, pool, conn, sql, sc, true)
 }
 
 // execOn runs one statement on a connection it was handed: a pooled one that is released
-// afterwards, or a session's, which stays pinned.
-func (d *postgresDriver) execOn(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, sql string, sc *StatementContext) error {
+// afterwards, or a session's, which stays pinned. Only a pooled connection may be thrown away
+// when a result is cut short, so `pooled` says which this is.
+func (d *postgresDriver) execOn(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, sql string, sc *StatementContext, pooled bool) error {
 	pgConn := conn.Conn().PgConn()
 	d.noticeSinks.Store(pgConn, sc.Sink)
 	defer d.noticeSinks.Delete(pgConn)
@@ -296,14 +297,17 @@ func (d *postgresDriver) execOn(ctx context.Context, pool *pgxpool.Pool, conn *p
 	if database == "" {
 		database = d.config.Database
 	}
-	return d.readRows(ctx, pool, conn, database, sql, sc.Options.Params, sc.Sink)
+	// Abandoning is only safe when the statement cannot have changed anything that a dropped
+	// connection would roll back, which a read-only run guarantees.
+	abandon := pooled && sc.Options.ReadOnly
+	return d.readRows(ctx, pool, conn, database, sql, sc.Options.Params, sc.Sink, abandon)
 }
 
 // readRows streams a statement's rows into the sink. pgx reads the result set message by message
 // rather than buffering it, so a large table never lands in memory whole, and closing early is
 // what the maxRows cut does. Statements that are not row-returning go through the simple
 // protocol, the only one that can run e.g. VACUUM.
-func (d *postgresDriver) readRows(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, database, sql string, params []any, sink *Sink) error {
+func (d *postgresDriver) readRows(ctx context.Context, pool *pgxpool.Pool, conn *pgxpool.Conn, database, sql string, params []any, sink *Sink, abandon bool) error {
 	args := append([]any{}, params...)
 	// The simple protocol cannot bind parameters, so a statement that has them takes the extended one.
 	if len(params) == 0 && !looksRowReturning(sql) {
@@ -328,6 +332,14 @@ func (d *postgresDriver) readRows(ctx context.Context, pool *pgxpool.Pool, conn 
 		if sink.Truncated() {
 			break
 		}
+	}
+	if sink.Truncated() && abandon {
+		// Closing the rows would read the rest of the result off the wire, which for a big table is
+		// the work the cut was meant to avoid. Cancel it server side and drop the connection; the
+		// pool opens another when it is next needed.
+		abandonConn(ctx, conn)
+		sink.Command("SELECT")
+		return nil
 	}
 	if !sink.Truncated() {
 		if err := rows.Err(); err != nil {

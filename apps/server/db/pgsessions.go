@@ -72,7 +72,7 @@ func (d *postgresDriver) execInSession(ctx context.Context, id, sql string, sc *
 	p.lastUsed = time.Now()
 	// Whatever the statement did, the connection reports where the transaction stands afterwards.
 	defer func() { p.setState(pgTransactionState(p.conn.conn.Conn().PgConn().TxStatus())) }()
-	return d.execOn(ctx, p.conn.pool, p.conn.conn, sql, sc)
+	return d.execOn(ctx, p.conn.pool, p.conn.conn, sql, sc, false)
 }
 
 // TxStatus bytes: I idle, T in a transaction, E in a failed transaction.
