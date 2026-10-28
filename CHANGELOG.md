@@ -56,6 +56,8 @@ The section matching a release's version becomes that release's notes on GitHub 
   changes go with the file, and closes the tab. The search button in the Workspace header finds
   text in file names and inside files, and clicking a result opens the file with the cursor on that
   line.
+- **Editor tabs are a tab list** - The editor's tab strip now has tab list semantics for screen
+  readers, and Left, Right, Home and End move focus between the tabs (Enter or Space chooses).
 - **Collapsed sidebar is out of reach** - A collapsed sidebar is now `inert`, so a keyboard can no
   longer tab into content that is not on screen and a screen reader no longer finds it.
 - **Hook and accessibility lint** - The React hooks rules and the jsx-a11y rules now fail the lint

@@ -53,12 +53,17 @@ export function PaneTabs({
   });
 
   return (
+    // The tabs inside take focus, as in the tab pattern; the list only hears their arrow keys.
+    // eslint-disable-next-line jsx-a11y/interactive-supports-focus
     <div
+      aria-label="Open files"
       className={cn(
         "flex h-9 shrink-0 items-stretch border-border border-b",
         focused ? "bg-sidebar" : "bg-sidebar/60",
       )}
+      onKeyDown={moveAmongTabs}
       ref={setNodeRef}
+      role="tablist"
     >
       <div className="flex min-w-0 flex-1 items-stretch overflow-x-auto">
         {panes.map((pane, index) => (
@@ -83,6 +88,23 @@ export function PaneTabs({
       </div>
     </div>
   );
+}
+
+/**
+ * Arrow keys, Home and End move focus between the tabs of a strip, as a tab list does. Focus only:
+ * switching a tab remounts an editor, so Enter or Space chooses, rather than every arrow press.
+ */
+function moveAmongTabs(event: React.KeyboardEvent<HTMLDivElement>): void {
+  const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+  if (!keys.includes(event.key)) return;
+  const tabs = [...event.currentTarget.querySelectorAll<HTMLElement>('[role="tab"]')];
+  const at = tabs.findIndex((tab) => tab === document.activeElement);
+  if (at === -1) return;
+  const last = tabs.length - 1;
+  const next =
+    event.key === "Home" ? 0 : event.key === "End" ? last : event.key === "ArrowRight" ? (at + 1) % tabs.length : (at - 1 + tabs.length) % tabs.length;
+  event.preventDefault();
+  tabs[next]?.focus();
 }
 
 /** Where the drop will put the tab. Sized like a text caret because that is what it is. */
@@ -117,6 +139,8 @@ function PaneTab({
 
   return (
     <div
+      // The tab itself is the button inside; this wrapper only holds it beside its close button.
+      role="presentation"
       className={cn(
         "group/tab relative flex shrink-0 items-stretch border-border border-r transition-colors",
         active ? "bg-background" : "hover:bg-sidebar-accent",
@@ -128,7 +152,7 @@ function PaneTab({
       ref={setDropRef}
     >
       <button
-        aria-current={active ? "true" : undefined}
+        aria-selected={active}
         className={cn(
           "flex cursor-pointer items-center gap-2 pr-1 pl-3 text-sm outline-none focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring",
           active ? "text-foreground" : "text-muted-foreground",
@@ -138,6 +162,8 @@ function PaneTab({
         type="button"
         {...listeners}
         {...attributes}
+        // After the spread, which says role="button" for dragging: in this strip it is a tab.
+        role="tab"
       >
         <PaneLabel label={label} />
       </button>
