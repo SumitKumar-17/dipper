@@ -137,6 +137,16 @@ func PageLimit(requested int) int {
 
 // RowPageSQL builds the SELECT for one page of a table.
 func RowPageSQL(dialect protocol.Dialect, schema, table string, req protocol.RowPageRequest) (string, error) {
+	sql, err := TableSelectSQL(dialect, schema, table, req)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s limit %d offset %d", sql, PageLimit(req.Limit), max(req.Offset, 0)), nil
+}
+
+// TableSelectSQL is the SELECT behind a page of a table, filtered and sorted but not limited: the
+// caller bounds it, as an export does by the number of rows it is willing to hold.
+func TableSelectSQL(dialect protocol.Dialect, schema, table string, req protocol.RowPageRequest) (string, error) {
 	f := flavorFor(dialect)
 	var b strings.Builder
 	b.WriteString("select * from " + qualifiedName(f, schema, table))
@@ -162,7 +172,6 @@ func RowPageSQL(dialect protocol.Dialect, schema, table string, req protocol.Row
 		}
 		b.WriteString(" order by " + strings.Join(parts, ", "))
 	}
-	fmt.Fprintf(&b, " limit %d offset %d", PageLimit(req.Limit), max(req.Offset, 0))
 	return b.String(), nil
 }
 

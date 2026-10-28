@@ -66,6 +66,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] SQLite support, pure Go so cross-compiling keeps working (activity, advice, statement stats and sessions are not implemented for it) (M)
 - [x] SSH tunnels: a bastion host in the connection form, key file or ssh-agent, host key pinned by fingerprint or checked against known_hosts (L)
 - [x] More export formats: TSV, NDJSON, SQL INSERT, Markdown, with a formula-safe option (S)
+- [x] Export a whole table in the Table Editor, filtered and sorted as shown, in six formats (S)
 - [x] CSV import in the Table Editor: column mapping, preview, dry run, one transaction, up to 5,000 rows per load (M)
 
 ## 3. Workspace UI

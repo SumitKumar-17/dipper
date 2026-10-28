@@ -97,6 +97,7 @@ func (s *Server) routes() {
 	s.registerAlterTable()
 	s.registerExplain()
 	s.registerRows()
+	s.registerTableExport()
 	s.registerActivity()
 	s.registerAdvice()
 	s.registerObjects()

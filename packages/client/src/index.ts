@@ -33,6 +33,7 @@ export type {
   NewConnection,
   SchemaOptions,
   TableDetailOptions,
+  TableExportOptions,
 } from "./connections";
 export { browseApi, type BrowseApi, type BrowseOptions } from "./browse";
 export type { DiscoverApi, DiscoverOptions } from "./discover";

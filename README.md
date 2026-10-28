@@ -148,6 +148,7 @@ database. Double-click a cell to edit it, add a row, or mark one for deletion. N
 yet: **Review and apply** lists every change as the SQL it will run, checks it against the
 database with a dry run, and then applies all of it in one transaction, or none of it.
 
+- **Export** downloads the table, filtered and sorted as you see it, as CSV, TSV, JSON, JSON lines, SQL INSERTs or Markdown (up to 100,000 rows)
 - Each edit carries the values you last saw, so a row changed by someone else is refused instead of overwritten
 - NULL and DEFAULT are real choices, not typed words
 - **Undo last change** appears after applying; it is reviewed like any change, and refused if a row changed again meanwhile

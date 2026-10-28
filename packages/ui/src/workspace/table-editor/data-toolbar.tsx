@@ -1,8 +1,9 @@
-import type { RowFilterOp } from "@dipper/protocol";
-import { ChevronLeftIcon, ChevronRightIcon, FilterIcon, PlusIcon, RefreshCwIcon, UploadIcon, XIcon } from "lucide-react";
+import type { ExportFormat, RowFilterOp } from "@dipper/protocol";
+import { ChevronLeftIcon, ChevronRightIcon, DownloadIcon, FilterIcon, PlusIcon, RefreshCwIcon, UploadIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import { plural } from "../../lib/format";
 import { Button } from "../../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Input } from "../../ui/input";
 import type { Filter } from "./use-table-rows";
 
@@ -19,12 +20,23 @@ const OPS: readonly { op: RowFilterOp; label: string }[] = [
   { op: "not_null", label: "is not NULL" },
 ];
 
+/** The formats a table can be exported as, in the order people reach for them. */
+const EXPORT_FORMATS: readonly { format: ExportFormat; label: string }[] = [
+  { format: "csv", label: "CSV" },
+  { format: "tsv", label: "TSV" },
+  { format: "json", label: "JSON" },
+  { format: "ndjson", label: "JSON lines" },
+  { format: "sql", label: "SQL INSERTs" },
+  { format: "markdown", label: "Markdown" },
+];
+
 const SELECT =
   "h-7 rounded-md border border-input bg-background px-1.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function DataToolbar({
   canAdd,
   columns,
+  exportUrl,
   filters,
   hasMore,
   locked,
@@ -39,6 +51,8 @@ export function DataToolbar({
 }: {
   canAdd: boolean;
   columns: readonly string[];
+  /** Where the table, as filtered and sorted now, downloads in a format. Null when it cannot. */
+  exportUrl: (format: ExportFormat) => string | null;
   filters: readonly Filter[];
   hasMore: boolean;
   /** Pending edits refer to rows by position, so the page cannot change under them. */
@@ -77,6 +91,24 @@ export function DataToolbar({
             <UploadIcon /> Import CSV
           </Button>
         )}
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button size="xs" variant="outline" />}>
+            <DownloadIcon /> Export
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {EXPORT_FORMATS.map(({ format, label }) => {
+              const href = exportUrl(format);
+              return (
+                <DropdownMenuItem disabled={href === null} key={format} render={<a download href={href ?? undefined} />}>
+                  {label}
+                </DropdownMenuItem>
+              );
+            })}
+            {/* The server's default cap (exportDefaultRows). A file that quietly stops short is
+                worse than one that says where it stops. */}
+            <p className="px-2 py-1.5 text-muted-foreground text-xs">The rows you are filtering, up to 100,000.</p>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button aria-label="Reload rows" disabled={locked} onClick={onReload} size="icon-xs" variant="ghost">
           <RefreshCwIcon />
         </Button>

@@ -21,6 +21,8 @@ import type {
   ExportFormat,
   FileEntry,
   FileSearchResult,
+  RowFilter,
+  RowSort,
   Snippet,
   SnippetInput,
   HistoryScope,
@@ -333,6 +335,15 @@ export type WorkspaceApi = {
   tableDetail(schema: string, table: string): Promise<TableDetail>;
   /** One server-sorted, server-filtered page of a table, read-only and unrecorded. */
   rowPage(schema: string, table: string, request: RowPageRequest): Promise<RunRecord>;
+  /**
+   * A URL that downloads the whole table (up to the server's cap) as `format`, narrowed by the same
+   * filters and sort the grid shows. Null when there is nothing to download from.
+   */
+  tableExportUrl(
+    schema: string,
+    table: string,
+    options: { format: ExportFormat; filters?: readonly RowFilter[]; sort?: readonly RowSort[] },
+  ): string | null;
   /**
    * Commits a reviewed change set in one transaction, or reports why none of it was applied. With
    * `dryRun` it runs everything and rolls back, so the review can show real constraint errors.

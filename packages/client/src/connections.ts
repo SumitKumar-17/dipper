@@ -11,8 +11,11 @@ import type {
   DatabaseObjects,
   DatabaseSchema,
   ExplainRequest,
+  ExportFormat,
   Plan,
+  RowFilter,
   RowPageRequest,
+  RowSort,
   RunRecord,
   SessionInfo,
   SchemaDiffRequest,
@@ -22,6 +25,18 @@ import type {
   TableDetail,
 } from "@dipper/protocol";
 import type { CallOptions, Transport } from "./http";
+
+/** What a whole-table export is narrowed by, and how it is written. */
+export type TableExportOptions = {
+  format?: ExportFormat;
+  /** Most rows to write; the server caps it, and says in a header when it cut the table short. */
+  limit?: number;
+  database?: string;
+  filters?: readonly RowFilter[];
+  sort?: readonly RowSort[];
+  /** Prefix text a spreadsheet would run as a formula. */
+  safe?: boolean;
+};
 
 /**
  * A create/update body. Every field is optional because the server merges: `url` fills in the
@@ -76,6 +91,8 @@ export type ConnectionsApi = {
     request: RowPageRequest,
     opts?: CallOptions,
   ): Promise<RunRecord>;
+  /** A URL that downloads a table, filtered and sorted as given, for the browser to follow. */
+  tableExportUrl(id: string, schema: string, table: string, options?: TableExportOptions): string;
   /** Pins a database connection, so a transaction can span statements. Close it when done. */
   openSession(id: string, database?: string, opts?: CallOptions): Promise<SessionInfo>;
   /** Functions, sequences, enums, extensions and triggers of one database. */
@@ -163,6 +180,16 @@ export function connectionsApi(http: Transport): ConnectionsApi {
 
     explain: (id, request, opts) =>
       http.json<Plan>(at(id, "/explain"), { method: "POST", body: request, signal: opts?.signal }),
+
+    tableExportUrl: (id, schema, table, options) =>
+      http.url(at(id, `${tablePath(schema, table)}/export`), {
+        format: options?.format,
+        limit: options?.limit,
+        database: options?.database,
+        filters: options?.filters?.length ? JSON.stringify(options.filters) : undefined,
+        sort: options?.sort?.length ? JSON.stringify(options.sort) : undefined,
+        safe: options?.safe ? 1 : undefined,
+      }),
 
     rowPage: (id, schema, table, request, opts) =>
       http.json<RunRecord>(at(id, `${tablePath(schema, table)}/rows/page`), {

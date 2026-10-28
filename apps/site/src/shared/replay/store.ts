@@ -368,6 +368,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     snippets: [],
     saveSnippet: () => Promise.reject(new Error(NOT_RECORDED)),
     deleteSnippet: () => Promise.reject(new Error(NOT_RECORDED)),
+    tableExportUrl: () => null,
     searchFiles: () => Promise.reject(new Error(NOT_RECORDED)),
     renameFile: () => Promise.reject(new Error(NOT_RECORDED)),
     deleteFile: () => Promise.reject(new Error(NOT_RECORDED)),

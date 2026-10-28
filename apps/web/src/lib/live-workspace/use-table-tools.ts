@@ -7,8 +7,11 @@ import type {
   ApplyResult,
   DatabaseObjects,
   ExplainRequest,
+  ExportFormat,
   Plan,
+  RowFilter,
   RowPageRequest,
+  RowSort,
   SchemaDiffResult,
   StatementOrder,
   StatementStats,
@@ -23,6 +26,11 @@ type Scope = { connectionId: string | null; database: string | null };
 export type TableTools = {
   tableDetail: (schema: string, table: string) => Promise<TableDetail>;
   rowPage: (schema: string, table: string, request: RowPageRequest) => Promise<RunRecord>;
+  tableExportUrl: (
+    schema: string,
+    table: string,
+    options: { format: ExportFormat; filters?: readonly RowFilter[]; sort?: readonly RowSort[] },
+  ) => string | null;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   alterTable: (schema: string, table: string, request: AlterRequest) => Promise<AlterResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
@@ -57,6 +65,13 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       rowPage: async (schema, table, request) => {
         const { id, scoped } = aimed();
         return getClient().connections.rowPage(id, schema, table, { ...request, ...scoped });
+      },
+      tableExportUrl: (schema, table, options) => {
+        if (!connectionId) return null;
+        return getClient().connections.tableExportUrl(connectionId, schema, table, {
+          ...options,
+          ...(database ? { database } : {}),
+        });
       },
       applyRows: async (schema, table, request) => {
         const { id, scoped } = aimed();
@@ -98,6 +113,6 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
         await getClient().connections.signalSession(id, pid, action);
       },
     }),
-    [aimed, database, getClient],
+    [aimed, connectionId, database, getClient],
   );
 }

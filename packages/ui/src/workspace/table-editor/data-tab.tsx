@@ -28,7 +28,7 @@ function lockReason(detail: TableDetail): string | null {
 export function DataTab({ detail, focus }: { detail: TableDetail; focus?: TableFocus }): React.ReactElement {
   const rows = useTableRows(detail.schema, detail.name, focus);
   // Foreign keys come from the schema tree, which already has them for every table.
-  const { schema } = useWorkspace();
+  const { schema, tableExportUrl } = useWorkspace();
   const foreignKeys = React.useMemo(
     () =>
       asyncData(schema)?.schemas
@@ -107,6 +107,16 @@ export function DataTab({ detail, focus }: { detail: TableDetail; focus?: TableF
       <DataToolbar
         canAdd={!reason}
         columns={detail.columns.map((c) => c.name)}
+        exportUrl={(format) =>
+          tableExportUrl(detail.schema, detail.name, {
+            format,
+            // What the grid shows, so the file is the whole of that view and not just its first page.
+            filters: rows.filters
+              .filter((f) => f.column && (f.op === "is_null" || f.op === "not_null" || f.value !== ""))
+              .map(({ column, op, value }) => ({ column, op, value })),
+            ...(rows.sort ? { sort: [{ column: rows.sort.column, desc: rows.sort.desc }] } : {}),
+          })
+        }
         filters={rows.filters}
         hasMore={page.status === "ready" && page.hasMore}
         locked={pending > 0}
