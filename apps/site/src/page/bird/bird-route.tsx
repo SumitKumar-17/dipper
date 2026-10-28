@@ -16,6 +16,7 @@ export function BirdRoute({ steps }: { steps: RouteStep[] }) {
     const zones = steps.flatMap(({ ref, ...options }) => (ref.current ? [zoneFor({ el: ref.current, ...options })] : []));
     return roam(bird, { zones, ceiling: document.querySelector("[data-site-nav]") });
     // The steps are refs and constants: the route is set up each time it takes the bird.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bird]);
   return null;
 }

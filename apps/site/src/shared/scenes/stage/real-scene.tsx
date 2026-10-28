@@ -275,6 +275,7 @@ export function RealScene({
       clock.current?.stop();
     };
     // Built once: a scene that changed its motion preference mid-visit keeps the mode it began in.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Scene time runs only while the window is mostly in view, and not held back by the page.

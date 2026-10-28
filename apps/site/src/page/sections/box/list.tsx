@@ -80,6 +80,8 @@ export function BoxList({ active, onPoint, onRelease, pinned, className, ref }: 
           </p>
         );
         return (
+          // Touch and mouse shortcut to what keyboard users already reach through the pinned list.
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
           <li
             key={item.key}
             className={cn("relative pl-4 lg:pl-5", pinned ? "cursor-pointer py-2" : "py-4")}

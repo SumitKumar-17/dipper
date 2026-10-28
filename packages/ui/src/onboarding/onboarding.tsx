@@ -116,6 +116,8 @@ export function Onboarding({ onDone }: OnboardingProps): React.ReactElement {
   }
 
   return (
+    // Escape closes the dialog from wherever focus is inside it.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       aria-label="Connect to a database"
       aria-modal

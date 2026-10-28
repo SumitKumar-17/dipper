@@ -93,6 +93,8 @@ export function ResizableSidebar({
       </aside>
 
       {open && (
+        // A focusable separator is the ARIA window-splitter widget: it takes keys and pointer.
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         <div
           aria-label={`Resize ${label.toLowerCase()}`}
           aria-orientation="vertical"
@@ -112,6 +114,7 @@ export function ResizableSidebar({
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           role="separator"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           tabIndex={0}
         />
       )}

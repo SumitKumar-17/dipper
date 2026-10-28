@@ -84,6 +84,8 @@ export function PasswordPrompt({
   };
 
   return (
+    // Escape is caught as it bubbles up from the fields inside; the wrapper itself is not a control.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={cn("flex flex-col gap-1.5 border-border border-t px-2 py-2", className)}
       onKeyDown={escape}

@@ -93,6 +93,7 @@ export function BirdProvider({
       setBird(null);
     };
     // Created once; look, palette and size reach the live bird through the effects below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zIndex]);
 
   useEffect(() => {

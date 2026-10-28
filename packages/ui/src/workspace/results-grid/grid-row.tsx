@@ -62,6 +62,8 @@ export function GridRow({
         const isCopied = copied?.row === index && copied.col === col;
 
         return (
+          // The grid's container owns the keyboard (arrows, copy), so a cell needs only the pointer.
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events
           <div
             aria-colindex={col + 1}
             aria-selected={isSelected}

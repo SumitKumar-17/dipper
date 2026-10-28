@@ -35,6 +35,8 @@ export function InstallCommand({ className, onCopy, action }: InstallCommandProp
       <div
         role="region"
         aria-label="Install command"
+        // A scrolling region has to take focus, or a keyboard cannot read what overflows it.
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >

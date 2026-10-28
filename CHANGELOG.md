@@ -26,6 +26,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **Hook and accessibility lint** - The React hooks rules and the jsx-a11y rules now fail the lint
+  for every React source. Turning them on found a dismissible error banner in the file panel that
+  only a mouse could close; it now has a button.
 - **Advanced connection options** - The connection form has an Advanced section: a CA certificate
   for servers behind a private CA, a client certificate and key, a Postgres `search_path`, and a
   MySQL unix socket (a Postgres host that is a directory is a socket too). Paths are checked up

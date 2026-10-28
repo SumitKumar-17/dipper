@@ -9,6 +9,8 @@
 
 import { plugin as shadcn } from "@shadcn/lint";
 import js from "@eslint/js";
+import jsxA11y from "eslint-plugin-jsx-a11y";
+import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
 const base = tseslint.config(js.configs.recommended, ...tseslint.configs.recommended, {
@@ -105,6 +107,37 @@ const nodeScripts = {
   },
 };
 
+/**
+ * What a React component can get wrong that the compiler accepts: a hook called conditionally,
+ * an effect that closes over a stale value, a clickable div no keyboard can reach. Vendored
+ * primitives are left alone for the same reason as above.
+ */
+const reactChecks = {
+  files: ["apps/web/src/**/*.tsx", "apps/web/src/**/*.ts", "apps/site/src/**/*.tsx", "packages/ui/src/**/*.{ts,tsx}"],
+  ignores: ["packages/ui/src/ui/**"],
+  plugins: { "react-hooks": reactHooks, "jsx-a11y": jsxA11y },
+  rules: {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    ...Object.fromEntries(Object.keys(jsxA11y.configs.recommended.rules).map((rule) => [rule, "error"])),
+    // Deprecated in favour of label-has-associated-control, and wrong for the primitives' labels.
+    "jsx-a11y/label-has-for": "off",
+    // A label wrapping one of our controls labels it; the rule only knows the native elements.
+    "jsx-a11y/label-has-associated-control": ["error", { controlComponents: ["Switch", "Input", "PasswordInput", "Radio"], assert: "either", depth: 4 }],
+    // Both of these look at the element in the JSX, not at what the primitive renders: a `Button`
+    // given `render={<a href />}` is a link with its text inside, and the rule sees an empty anchor.
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    // Loading an image is not an interaction, which is all the default handler list would object to.
+    "jsx-a11y/no-noninteractive-element-interactions": [
+      "error",
+      { handlers: ["onClick", "onMouseDown", "onMouseUp", "onKeyPress", "onKeyDown", "onKeyUp"] },
+    ],
+    // Dialogs and inline editors take focus on purpose: opening one and landing nowhere is the bug.
+    "jsx-a11y/no-autofocus": "off",
+  },
+};
+
 export default [
   {
     ignores: [
@@ -122,4 +155,5 @@ export default [
   ...base,
   nodeScripts,
   ...designSystem,
+  reactChecks,
 ];

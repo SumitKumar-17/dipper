@@ -21,6 +21,7 @@ import {
   PlusIcon,
   RefreshCwIcon,
   TriangleAlertIcon,
+  XIcon,
 } from "lucide-react";
 import * as React from "react";
 import { cn } from "../../lib/utils";
@@ -236,13 +237,17 @@ function ErrorBanner({
   onDismiss?: () => void;
 }): React.ReactElement {
   return (
-    <p
+    <div
       className="flex shrink-0 items-start gap-1.5 border-destructive/24 border-y bg-destructive/8 px-2 py-1.5 text-destructive-foreground text-xs"
-      onClick={onDismiss}
       role="alert"
     >
       <TriangleAlertIcon className="size-3.5 shrink-0" />
-      <span className="min-w-0">{children}</span>
-    </p>
+      <span className="min-w-0 flex-1">{children}</span>
+      {onDismiss && (
+        <button aria-label="Dismiss" className="cursor-pointer" onClick={onDismiss} type="button">
+          <XIcon className="size-3.5" />
+        </button>
+      )}
+    </div>
   );
 }
