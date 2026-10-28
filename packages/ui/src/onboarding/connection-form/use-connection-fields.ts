@@ -8,7 +8,18 @@ import { DIALECT_DEFAULTS } from "../dialect-mark";
 export type Mode = "fields" | "url";
 
 /** The driver options this form edits. Any other option on a connection is carried over untouched. */
-export const ADVANCED_OPTIONS = ["sslrootcert", "sslcert", "sslkey", "search_path", "socket"] as const;
+export const ADVANCED_OPTIONS = [
+  "sslrootcert",
+  "sslcert",
+  "sslkey",
+  "search_path",
+  "socket",
+  "ssh_host",
+  "ssh_port",
+  "ssh_user",
+  "ssh_key",
+  "ssh_fingerprint",
+] as const;
 export type AdvancedOption = (typeof ADVANCED_OPTIONS)[number];
 
 export type ConnectionFields = {

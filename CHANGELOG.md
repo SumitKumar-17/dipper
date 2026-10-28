@@ -26,6 +26,13 @@ The section matching a release's version becomes that release's notes on GitHub 
   Changes are checked with a dry run first, then applied in one transaction: all of them are kept,
   or none. Edits carry the values you last saw, so a row someone else changed is refused rather
   than overwritten. Tables without a primary key, and views, open read-only.
+- **SSH tunnels** - Reach a database that only a bastion host can see. The Advanced section of the
+  connection form takes the SSH host, port, user, a key file (or uses ssh-agent) and the host's
+  fingerprint. The server's key is always verified: against the pinned fingerprint, or against
+  `~/.ssh/known_hosts`, and an unknown host is refused with its fingerprint in the message so it
+  can be pinned. Works for PostgreSQL and MySQL. The tunnel is a dialer inside the process, so it
+  opens no local port, shares one SSH connection across the pool, reconnects if it drops, and closes
+  when the connection does. Passwords are not accepted for SSH, only keys.
 - **Pin a result and compare** - Pin on the results toolbar holds a result aside. After another run,
   Compare with pinned shows what changed: rows added, rows removed, and for rows in both the exact
   cells that differ, before and now. Rows are matched on columns you toggle (the id column is

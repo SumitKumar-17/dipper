@@ -107,6 +107,10 @@ query parameter of the same name is kept too:
 | `search_path`                         | pg       | Comma separated schema names, set as a startup parameter.                                     |
 | `socket`                              | pg, mysql | Absolute path of a unix socket (a Postgres `host` starting with `/` is a socket directory). A socket connection defaults `ssl` to off. |
 
+| `ssh_host`, `ssh_port`, `ssh_user`  | pg, mysql | Reach the database through this SSH server. `host` and `port` are then the database as the SSH server sees it. `ssh_port` defaults to 22 and `ssh_user` to the database user. |
+| `ssh_key`                           | pg, mysql | Absolute path of an unencrypted private key. With none, keys in `ssh-agent` are used; a passphrase-protected key is refused with a hint to use the agent. |
+| `ssh_fingerprint`                   | pg, mysql | The SSH server's host key as `SHA256:...` (`ssh-keygen -lf`). Without it the host must be in `~/.ssh/known_hosts`; an unknown host is refused and its fingerprint is named in the error, so it can be pinned. |
+
 The files are read by the server, so the paths are on its machine. A relative path, a missing file
 or a malformed `search_path` is refused with `connect_failed` before any connection is tried.
 

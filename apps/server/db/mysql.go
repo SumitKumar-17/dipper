@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"net"
 	"regexp"
 	"sort"
 	"strconv"
@@ -26,6 +27,21 @@ type mysqlDriver struct {
 	extra     map[string]*sql.DB
 	connected bool
 	sessions  *sessionRegistry[*sql.Conn]
+
+	sshOnce sync.Once
+	sshNet  string
+}
+
+// sshNetwork names this driver's tunnelled dialer, registering it the first time it is asked for.
+// The name is per driver, so closing one connection's tunnel cannot take another's dialer away.
+func (d *mysqlDriver) sshNetwork() string {
+	d.sshOnce.Do(func() {
+		d.sshNet = fmt.Sprintf("dipper-ssh-%d", sshDialerSeq.Add(1))
+		mysqldriver.RegisterDialContext(d.sshNet, func(ctx context.Context, addr string) (net.Conn, error) {
+			return d.tunnel.DialContext(ctx, "tcp", addr)
+		})
+	})
+	return d.sshNet
 }
 
 func newMysqlDriver(config protocol.ConnectionConfig) *mysqlDriver {
@@ -80,6 +96,12 @@ func (d *mysqlDriver) dsn(database string) (string, error) {
 		}
 	}
 	cfg.Timeout = connectTimeout
+	if d.tunnelErr != nil {
+		return "", d.tunnelErr
+	}
+	if d.tunnel != nil {
+		cfg.Net = d.sshNetwork()
+	}
 	return cfg.FormatDSN(), nil
 }
 
@@ -137,6 +159,7 @@ func (d *mysqlDriver) Disconnect() error {
 	if handle != nil {
 		handle.Close()
 	}
+	d.closeTunnel()
 	return nil
 }
 

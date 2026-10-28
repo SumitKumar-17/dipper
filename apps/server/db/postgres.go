@@ -109,6 +109,13 @@ func (d *postgresDriver) poolConfig(database string, max int32) (*pgxpool.Config
 		}
 	}
 	cfg.ConnConfig.Password = d.config.Password
+	if d.tunnelErr != nil {
+		return nil, d.tunnelErr
+	}
+	if d.tunnel != nil {
+		// The address pgx hands over is the database as the SSH server sees it.
+		cfg.ConnConfig.DialFunc = d.tunnel.DialContext
+	}
 	cfg.MaxConns = max
 	cfg.ConnConfig.OnNotice = func(conn *pgconn.PgConn, notice *pgconn.Notice) {
 		if sink, ok := d.noticeSinks.Load(conn); ok {
@@ -162,6 +169,7 @@ func (d *postgresDriver) Disconnect() error {
 	if pool != nil {
 		pool.Close()
 	}
+	d.closeTunnel()
 	return nil
 }
 

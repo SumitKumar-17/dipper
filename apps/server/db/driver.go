@@ -123,6 +123,11 @@ type runEntry struct {
 type base struct {
 	config protocol.ConnectionConfig
 
+	// Set when the connection goes through an SSH server. A bad setting is kept as an error and
+	// reported at connect, not at construction, so it reaches the person as a failed connection.
+	tunnel    *sshTunnel
+	tunnelErr error
+
 	mu   sync.Mutex
 	runs map[string]*runEntry
 
@@ -133,7 +138,24 @@ type base struct {
 }
 
 func newBase(config protocol.ConnectionConfig) base {
-	return base{config: config, runs: map[string]*runEntry{}}
+	tunnel, err := tunnelFor(config)
+	return base{config: config, runs: map[string]*runEntry{}, tunnel: tunnel, tunnelErr: err}
+}
+
+// tunnelFor builds the SSH tunnel a connection asks for, or nil when it asks for none.
+func tunnelFor(config protocol.ConnectionConfig) (*sshTunnel, error) {
+	settings, err := sshSettingsFor(config)
+	if err != nil || settings == nil {
+		return nil, err
+	}
+	return newSSHTunnel(*settings), nil
+}
+
+// closeTunnel drops the SSH connection, if there is one. It opens again on the next dial.
+func (b *base) closeTunnel() {
+	if b.tunnel != nil {
+		_ = b.tunnel.Close()
+	}
 }
 
 func (b *base) run(ctx context.Context, sql string, opts protocol.QueryOptions, emit func(protocol.RunEvent)) protocol.RunStatus {
