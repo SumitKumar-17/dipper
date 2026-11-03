@@ -31,6 +31,8 @@ export type RunsOptions = {
    * the wrong database while the tab says otherwise.
    */
   blockedReason?: string | null;
+  /** Asked before a statement runs; false means the person declined, and nothing is run. */
+  confirmRun?: (sql: string) => Promise<boolean>;
   /** The pinned connection to run on while a transaction is open, so runs share it. */
   sessionId?: string | undefined;
   /** Called after a run ends, so a transaction that the statement failed is noticed. */
@@ -69,6 +71,7 @@ export function useRuns(
     onSchemaChanged,
     openOutput,
     blockedReason,
+    confirmRun,
     sessionId,
     onRunFinished,
   } = options;
@@ -156,6 +159,8 @@ export function useRuns(
         return refused.id;
       }
 
+      if (confirmRun && !(await confirmRun(text))) return undefined;
+
       // The client owns the id: cancel needs an address before the run is over.
       const runId = crypto.randomUUID();
       const pending: RunRecord = {
@@ -201,7 +206,7 @@ export function useRuns(
       onRunFinished?.();
       return runId;
     },
-    [activeSql, blockedReason, connectionId, database, getClient, onRunFinished, onSchemaChanged, openOutput, sessionId, settings, workspace],
+    [activeSql, blockedReason, confirmRun, connectionId, database, getClient, onRunFinished, onSchemaChanged, openOutput, sessionId, settings, workspace],
   );
 
   /**

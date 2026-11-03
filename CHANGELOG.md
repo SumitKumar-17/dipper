@@ -14,6 +14,11 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- **A question before a write on a red connection** - Running SQL that changes data or structure
+  (INSERT, UPDATE, DELETE, DDL, GRANT, CALL and the like) on a connection tagged red now asks first,
+  naming the connection, the database and what the statement will do, with Cancel as the default.
+  Reads never ask. The check looks at the words of the statement outside strings and comments, so
+  `select 'drop table t'` is not a write, and `SELECT ... FOR UPDATE` is, on purpose.
 - **A connection per tab** - Each editor tab remembers the connection and database it runs on, so
   a test, a staging and a production query can sit side by side. Focusing a tab switches the whole
   workspace (schema, runs, transactions) to its connection, dialling it if needed; choosing a

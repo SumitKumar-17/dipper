@@ -157,6 +157,9 @@ and a production query open side by side and move between them by clicking a tab
 results and the transaction controls all follow the tab you are on. A tab shows its connection's
 colour tag, and its name once more than one connection is open.
 
+Mark a connection red in Settings and running SQL that changes data or structure on it asks first,
+showing the statement and the connection's name. Reads never ask.
+
 Choose a connection in the picker and the tab you are on is pointed at it; a new tab starts on the
 connection that is active. Tabs for files remember their connection across reloads. If the
 connection a tab is set to cannot be reached, Run refuses with a message instead of running the

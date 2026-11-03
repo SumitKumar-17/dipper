@@ -114,8 +114,10 @@ change reviewed as plain SQL before it runs.
       across reloads for file tabs), the workspace follows the active tab, a tab shows its
       connection's colour tag and, once several are in use, its name, and a tab whose connection is
       not connected refuses to run and says so (L)
-- [ ] Ask before a write on a red connection: running an INSERT, UPDATE, DELETE or DDL on a
-      connection tagged red shows the statement and the connection's name and needs a confirmation (S)
+- [x] Ask before a write on a red connection: running an INSERT, UPDATE, DELETE or DDL from the
+      editor on a connection tagged red shows the statement and the connection's name and needs a
+      confirmation, with Cancel as the default (the Table Editor's and structure editor's own review
+      step already shows the exact SQL before anything is applied) (S)
 - [ ] A connections strip: the connections in use as chips with their state, a click to switch,
       and closing the last tab of one offers to disconnect it (S/M)
 - [ ] Run one query on several connections and compare: pick two or more connections (for example

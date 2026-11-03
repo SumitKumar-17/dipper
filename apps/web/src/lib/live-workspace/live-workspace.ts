@@ -14,7 +14,7 @@
 
 import type { DipperClient } from "@dipper/client";
 import type { BrowseResult, FileSearchResult, ServerEvent } from "@dipper/protocol";
-import { asyncData, type PanelState, type WorkspaceApi } from "@dipper/ui";
+import { asyncData, guardWrite, type PanelState, type WorkspaceApi } from "@dipper/ui";
 import * as React from "react";
 import { serverClient } from "../server-client";
 import { usePanels } from "../use-panels";
@@ -119,6 +119,12 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     database: connections.database,
   });
 
+  // A write on a red connection asks first; everything else goes straight through.
+  const confirmRun = React.useCallback(
+    (sql: string): Promise<boolean> => guardWrite(connections.connection, connections.database, sql),
+    [connections.connection, connections.database],
+  );
+
   const runs = useRuns(getClient, enabled, {
     sessionId: transaction.sessionId,
     onRunFinished: transaction.refresh,
@@ -129,6 +135,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     settings: settingsData,
     onSchemaChanged: reintrospect,
     openOutput,
+    confirmRun,
     blockedReason: blockedReasonFor(
       buffers.activeBuffer,
       connections.connectionId,
