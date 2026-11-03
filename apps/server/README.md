@@ -31,7 +31,7 @@ Starts the server and opens the UI in your browser. It is the default command, s
 `dipper serve`. On start it prints where it landed:
 
 ```
-dipper v0.2.0 → http://127.0.0.1:4600
+dipper v0.3.0 → http://127.0.0.1:4600
 ```
 
 If a server is already running - `~/.dipper/server.json` names one and it answers `/api/health` -
@@ -68,8 +68,8 @@ up reports `not running` rather than a pid that no longer exists.
 ### `dipper update`
 
 ```
-dipper v0.1.0 → v0.2.0
-  downloading dipper-0.2.0-darwin-arm64.tar.gz
+dipper v0.2.0 → v0.3.0
+  downloading dipper-0.3.0-darwin-arm64.tar.gz
   checksum ok
   replaced ~/.local/bin/dipper
 ```

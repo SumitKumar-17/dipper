@@ -28,7 +28,7 @@ startup, so it never argues with a real `dipper serve` you have running, or with
 Open the `dev UI` line:
 
 ```
-dipper:dev: dipper v0.2.0 → http://127.0.0.1:54716
+dipper:dev: dipper v0.3.0 → http://127.0.0.1:54716
 dipper:dev: dev UI      → http://localhost:5173/
 dipper:dev: dev UI      → http://127.0.0.1:5173/
 @dipper/web:dev:   VITE v8.3.0  ready in 430 ms
