@@ -8,6 +8,7 @@
 import type { Table } from "@dipper/protocol";
 import { LayersIcon, RefreshCwIcon, TriangleAlertIcon, WaypointsIcon } from "lucide-react";
 import * as React from "react";
+import { onTreeKeyDown } from "../../lib/on-tree-key-down";
 import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -116,7 +117,9 @@ export function SchemaTree({
         </p>
       )}
 
-      <div className="min-h-0 flex-1 overflow-y-auto py-1">
+      {/* The rows inside take focus, as in the tree pattern; the container only hears their arrow keys. */}
+      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
+      <div aria-label="Schema" className="min-h-0 flex-1 overflow-y-auto py-1" onKeyDown={onTreeKeyDown} role="tree">
         {data === undefined ? (
           <SchemaSkeleton />
         ) : matchCount === 0 ? (

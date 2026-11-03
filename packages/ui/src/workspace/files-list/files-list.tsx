@@ -25,6 +25,7 @@ import {
   XIcon,
 } from "lucide-react";
 import * as React from "react";
+import { onTreeKeyDown } from "../../lib/on-tree-key-down";
 import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import {
@@ -208,7 +209,9 @@ export function FilesList({ className }: { className?: string }): React.ReactEle
 
       {searching && <WorkspaceSearch onClose={() => setSearching(false)} />}
 
-      <div className={cn("min-h-0 flex-1 overflow-y-auto pb-1", searching && "hidden")}>
+      {/* The rows inside take focus, as in the tree pattern; the container only hears their arrow keys. */}
+      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
+      <div aria-label="Workspace files" className={cn("min-h-0 flex-1 overflow-y-auto pb-1", searching && "hidden")} onKeyDown={onTreeKeyDown} role="tree">
         {entries === undefined ? (
           workspace.status === "error" ? null : (
             <WorkspaceSkeleton />

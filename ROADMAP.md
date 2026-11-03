@@ -131,7 +131,7 @@ change reviewed as plain SQL before it runs.
       open full size. The Query Walk's own panels are the separate item above (M)
 - [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)
 - [x] File rename, delete and workspace search: right-click a file to rename or delete it (open tabs follow or close), and search file names and contents from the Files panel, opening a result at its line (S/M)
-- [x] `inert` for the collapsed sidebar, and tab list semantics with arrow-key navigation for the editor tabs; roles and keyboard for the schema and file trees still open (S/M)
+- [x] Accessible tree and tab semantics: `inert` for the collapsed sidebar, tab list semantics with arrow keys for the editor tabs, and tree semantics with the arrow, Home and End keys for the schema and file trees (S/M)
 - [x] History search and filter: the API filters by text, status and duration, the History tab by text and status (S/M)
 
 ## 4. Landing site

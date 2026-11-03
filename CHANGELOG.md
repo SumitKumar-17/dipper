@@ -84,6 +84,10 @@ The section matching a release's version becomes that release's notes on GitHub 
 - **Export a table** - Table Editor, Export. Downloads the whole table (up to 100,000 rows) as CSV,
   TSV, JSON, JSON lines, SQL INSERTs or Markdown, narrowed by the filters and sort the grid is
   showing, so the file is all of that view and not only its first page. The read is read-only.
+- **Trees you can walk with the keyboard** - The schema tree and the file tree are real trees for
+  screen readers, and the arrow keys move through them: Down and Up between rows, Right to open a
+  folder or table and then step into it, Left to close it or step out, Home and End to the ends.
+  Columns can be reached by the arrows too, while Tab still skips them.
 - **Editor tabs are a tab list** - The editor's tab strip now has tab list semantics for screen
   readers, and Left, Right, Home and End move focus between the tabs (Enter or Space chooses).
 - **Collapsed sidebar is out of reach** - A collapsed sidebar is now `inert`, so a keyboard can no

@@ -78,13 +78,18 @@ export function TableRows({
 }
 
 /**
- * A column. Not a focus stop: the actionable row is the table above it, and a tab stop that does
- * nothing is noise in a tree hundreds of rows long. Nullability rides on the type as `text?`.
+ * A column. Not a Tab stop: the actionable row is the table above it, and a tab stop that does
+ * nothing is noise in a tree hundreds of rows long. The arrow keys still reach it (`tabIndex` -1), so
+ * a keyboard can read every column. Nullability rides on the type as `text?`.
  */
 function ColumnRow({ column, depth }: { column: Column; depth: number }): React.ReactElement {
   return (
     <div
-      className="flex h-7 w-full items-center gap-1.5 pe-2 ps-(--tree-indent) text-sm"
+      aria-level={depth + 1}
+      aria-selected={false}
+      className="flex h-7 w-full items-center gap-1.5 pe-2 ps-(--tree-indent) text-sm -outline-offset-2 outline-none focus-visible:outline-2 focus-visible:outline-ring"
+      role="treeitem"
+      tabIndex={-1}
       style={{ "--tree-indent": indent(depth) } as React.CSSProperties}
       title={`${column.name} ${column.type}${column.nullable ? " NULL" : " NOT NULL"}`}
     >
@@ -158,6 +163,8 @@ export function TreeRow({
   return (
     <button
       aria-expanded={expanded}
+      aria-level={depth + 1}
+      aria-selected={selected}
       className={cn(
         "group/row flex h-7 w-full items-center gap-1.5 rounded-sm pe-2 ps-(--tree-indent) text-left text-sm",
         // The focus ring is drawn inside the row: rows run the full width of a scrolling pane, so
@@ -168,6 +175,7 @@ export function TreeRow({
       )}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
+      role="treeitem"
       style={{ "--tree-indent": indent(depth) } as React.CSSProperties}
       type="button"
     >

@@ -73,6 +73,7 @@ export function FileNodes({
                 icon={<FileTextIcon className="size-3.5" />}
                 label={node.name}
                 onClick={() => onOpenFile(node.path)}
+                selected={alreadyOpen}
                 title={node.path}
                 trailing={
                   alreadyOpen && (
@@ -119,10 +120,13 @@ export function RootRow({
     <div className="flex h-7 items-center gap-1 rounded-sm pe-1 hover:bg-sidebar-accent/60">
       <button
         aria-expanded={expanded}
+        aria-level={1}
+        aria-selected={false}
         className={cn(
           "flex h-7 min-w-0 flex-1 items-center gap-1.5 ps-2 text-left text-sm",
           "-outline-offset-2 cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-ring",
         )}
+        role="treeitem"
         onClick={onToggle}
         title={root}
         type="button"
@@ -152,6 +156,7 @@ function TreeRow({
   icon,
   label,
   onClick,
+  selected = false,
   title,
   trailing,
 }: {
@@ -161,6 +166,8 @@ function TreeRow({
   icon: React.ReactNode;
   label: React.ReactNode;
   onClick: () => void;
+  /** A file that is open in a tab. Folders are never selected. */
+  selected?: boolean;
   title?: string;
   trailing?: React.ReactNode;
 }): React.ReactElement {
@@ -169,6 +176,8 @@ function TreeRow({
   return (
     <button
       aria-expanded={expanded}
+      aria-level={depth + 1}
+      aria-selected={selected}
       className={cn(
         "flex h-7 w-full items-center gap-1.5 rounded-sm pe-2 ps-(--tree-indent) text-left text-sm",
         // The focus ring is drawn inside the row: rows run the full width of a scrolling pane, so
@@ -177,6 +186,7 @@ function TreeRow({
         "hover:bg-sidebar-accent/60",
       )}
       onClick={onClick}
+      role="treeitem"
       style={{ "--tree-indent": indent(depth) } as React.CSSProperties}
       title={title}
       type="button"
