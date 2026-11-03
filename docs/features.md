@@ -97,6 +97,9 @@ Write walks run on Postgres. Anything the walk cannot run safely is refused by n
 
 **To open it:** put the cursor in a `SELECT` (or select the part you want), right-click and choose **Visualise query**, or open the command palette (<kbd>⌘</kbd><kbd>K</kbd>, or <kbd>Ctrl</kbd>+<kbd>K</kbd>) and run **Visualise query**. It plays automatically: pause it with the controls at the top right, then use the left and right arrow keys to step through the stages.
 
+The stage and the explanation panels each have an expand button in their corner that opens them on
+their own, large; the walk keeps playing behind it, and Escape closes it.
+
 ## Pin a result and compare
 
 **Pin** on the results toolbar holds a result aside. Change the data or the query, run again, and

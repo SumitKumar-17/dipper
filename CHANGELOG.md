@@ -24,6 +24,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   that changed, matched on the columns you choose. A connection that cannot be reached or rejects
   the statement is reported on its own line and does not hold up the rest. Only reads can be
   compared, and at most 5,000 rows are read from each.
+- **Bigger panels in the Query Walk** - The walk's stage and its explanation each have an expand
+  button that opens them alone, large. The walk keeps stepping behind the pop-over, and Escape puts
+  the panel back.
 - **Connection form autofill** - Paste a connection anywhere in the connection form and it fills
   in: a `postgres://` or `mysql://` URL, a `psql` or `mysql` command, a `DATABASE_URL=` line or
   `.env` block, a JDBC string, a libpq `host=... dbname=...` string or a SQLite path. Typing

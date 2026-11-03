@@ -10,6 +10,7 @@ import * as React from "react";
 import { Button } from "../../ui/button";
 import { Kbd } from "../../ui/kbd";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../../ui/tooltip";
+import { ExpandButton, ExpandDialog } from "../expand";
 import { EvidenceContext, useEvidenceStore } from "./bound-evidence";
 import { BoundSection } from "./bound-section";
 import { Chapters } from "./chapters";
@@ -212,6 +213,9 @@ export function WalkPlayer({
   );
   // The nearest-miss card, and only on the MAIN chapter: an empty CTE is an intermediate result and
   // the query around it may well want it empty, where an empty final result is the answer itself.
+  // Which panel is open on its own, large. The walk keeps playing behind it.
+  const [expanded, setExpanded] = React.useState<"stage" | "narrator" | null>(null);
+
   const terminus = React.useMemo(
     () =>
       walk && run?.section.id === program.mainId
@@ -273,6 +277,34 @@ export function WalkPlayer({
   const ctes = React.useMemo(() => cteGraph(program), [program]);
   const strip = sections.length > 1 || program.skipped.length > 0;
 
+  // Built once and shown twice when a panel is expanded, so the large copy cannot drift from the small.
+  const stagePanel =
+    walk && station && scene ? (
+      <RowsMoveContext.Provider value={MOVING_STATIONS.has(station.id)}>
+        <Stage scene={scene} sceneKey={run?.section.id ?? ""} sourceLink={sourceLink} state={state} />
+      </RowsMoveContext.Provider>
+    ) : null;
+  const narratorPanel =
+    walk && station && scene ? (
+      <Narrator
+        comments={comments}
+        count={count}
+        error={error}
+        input={input}
+        onPhase={gotoPhase}
+        phase={phase}
+        phases={stationPhases}
+        result={walk.results[stationIndex]}
+        root={program.text}
+        section={run?.section ?? null}
+        sentence={terminus === null ? sentence : `${sentence} ${terminus.sentence}`}
+        sql={walk.text}
+        state={state}
+        station={station}
+        stations={walk.stations}
+      />
+    ) : null;
+
   return (
     <SpeedContext.Provider value={speed}>
       <EvidenceContext.Provider value={store}>
@@ -327,33 +359,17 @@ export function WalkPlayer({
 
           {walk && station && scene ? (
             <div className="grid min-h-0 flex-1 gap-4 md:grid-cols-3">
-              <div className="flex min-h-0 min-w-0 flex-col md:col-span-2">
-                <RowsMoveContext.Provider value={MOVING_STATIONS.has(station.id)}>
-                  <Stage
-                    scene={scene}
-                    sceneKey={run?.section.id ?? ""}
-                    sourceLink={sourceLink}
-                    state={state}
-                  />
-                </RowsMoveContext.Provider>
+              <div className="relative flex min-h-0 min-w-0 flex-col md:col-span-2">
+                {stagePanel}
+                <PanelExpand label="the stage" onClick={() => setExpanded("stage")} />
               </div>
-              <Narrator
-                comments={comments}
-                count={count}
-                error={error}
-                input={input}
-                onPhase={gotoPhase}
-                phase={phase}
-                phases={stationPhases}
-                result={walk.results[stationIndex]}
-                root={program.text}
-                section={run?.section ?? null}
-                sentence={terminus === null ? sentence : `${sentence} ${terminus.sentence}`}
-                sql={walk.text}
-                state={state}
-                station={station}
-                stations={walk.stations}
-              />
+              <div className="relative flex min-h-0 min-w-0 flex-col">
+                {narratorPanel}
+                <PanelExpand label="the explanation" onClick={() => setExpanded("narrator")} />
+              </div>
+              <ExpandDialog onOpenChange={(open) => !open && setExpanded(null)} open={expanded !== null} title={expanded === "narrator" ? "Explanation" : "Stage"}>
+                <div className="flex min-h-0 flex-1 flex-col p-4">{expanded === "narrator" ? narratorPanel : stagePanel}</div>
+              </ExpandDialog>
             </div>
           ) : run && boundView ? (
             <BoundSection
@@ -406,5 +422,14 @@ function Control({
         {label} <Kbd>{hint}</Kbd>
       </TooltipPopup>
     </Tooltip>
+  );
+}
+
+/** The expand button in a panel's corner, over whatever the panel draws there. */
+function PanelExpand({ label, onClick }: { label: string; onClick: () => void }): React.ReactElement {
+  return (
+    <div className="absolute end-2 top-2 z-10">
+      <ExpandButton label={label} onClick={onClick} />
+    </div>
   );
 }

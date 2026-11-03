@@ -46,12 +46,9 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)
 - [x] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (Postgres; joined writes, upserts and MySQL/SQLite are refused by name) (L)
 - [x] Shareable step-through export as a standalone HTML file: offline, built from the live walk's scenes and sentences (per-row chapters are named, not replayed) (M)
-- [ ] Bigger panels in the walk: its stage, narration, plan, query and notes panels are small, so each
-      gets a small expand button (a square icon) that opens it alone in a large pop-over, Escape or
-      the same button to put it back, with the walk still stepping behind it (M)
-
-## 2. Database depth (server)
-
+- [x] Bigger panels in the walk: the stage and the explanation (which holds the query, SQL that
+      ran, notes and plan tabs) each have an expand button that opens them alone in a large pop-over
+      while the walk keeps stepping behind it (M)
 - [x] EXPLAIN and EXPLAIN ANALYZE endpoint with a parsed plan tree and warnings (L)
 - [x] Indexes and constraints per table, Postgres and MySQL (M)
 - [x] Lazy table detail: sizes, vacuum state, comments, partitions (M)
