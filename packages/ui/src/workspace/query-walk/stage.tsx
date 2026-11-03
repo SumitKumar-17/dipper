@@ -23,7 +23,7 @@ import { TickNumber } from "./tick-number";
 import { WalkCard, WalkCardHeader } from "./walk-card";
 import type { StationState } from "./use-walk";
 import { VerdictMark } from "./verdict-mark";
-import { collapseAfter, staggerDelay, useRowsMove, useSpeed, useT } from "./walk-motion";
+import { staggerDelay, useRowsMove, useSpeed, useT } from "./walk-motion";
 
 /**
  * Where a FROM source came from, when it became a section of its own: the section's name, and a way
@@ -339,13 +339,17 @@ function TableRows({
   view: TableView;
 }): React.ReactElement {
   return (
-    <motion.div className="max-h-116 overflow-y-auto" layoutScroll>
+    // `relative`: a row leaving under `popLayout` is positioned against this box while it fades.
+    <motion.div className="relative max-h-116 overflow-y-auto" layoutScroll>
       {items.length === 0 && (
         <p className="px-3 py-6 text-center text-muted-foreground text-xs">
           {view.empty ?? "No rows."}
         </p>
       )}
-      <AnimatePresence initial={false}>
+      {/* `popLayout`: a leaving row fades where it is, and only when it is gone do the others close
+          the gap, on a transform. Folding its height instead moved every row below it through
+          layout, which the browser scores as layout shift on a page that has this scene in it. */}
+      <AnimatePresence initial={false} mode="popLayout">
         {items.map((item) =>
           item.kind === "cut" ? (
             <CutLine key="cut" label={item.label} />
@@ -424,7 +428,10 @@ function Row({
   index,
   count,
   settled,
+  ref,
 }: {
+  /** `popLayout` measures a leaving row through its ref. */
+  ref?: React.Ref<HTMLDivElement>;
   row: RowView;
   cols: readonly Col[];
   index: number;
@@ -478,13 +485,13 @@ function Row({
         row.current && "z-10 ring-1 ring-info ring-inset",
       )}
       exit={{
-        height: 0,
         opacity: 0,
-        transition: collapseAfter(t, staggerDelay(index, count, 0.045) / speed),
+        transition: { opacity: { ...t.fade, delay: t.reduced ? 0 : staggerDelay(index, count, 0.045) / speed } },
       }}
       initial={{ opacity: 0 }}
-      layout={moves ? "position" : undefined}
+      layout="position"
       layoutId={moves ? row.key : undefined}
+      ref={ref}
       style={{ "--d": `${delayMs}ms` } as React.CSSProperties}
       transition={{ layout: t.spring, default: { ...t.fade, delay: arrive } }}
     >

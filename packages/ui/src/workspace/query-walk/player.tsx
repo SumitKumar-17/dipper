@@ -7,6 +7,7 @@
 import { PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from "lucide-react";
 import type { SqlComment } from "@dipper/sql";
 import * as React from "react";
+import { cn } from "../../lib/utils";
 import { Button } from "../../ui/button";
 import { Kbd } from "../../ui/kbd";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../../ui/tooltip";
@@ -363,9 +364,10 @@ export function WalkPlayer({
                 {stagePanel}
                 <PanelExpand label="the stage" onClick={() => setExpanded("stage")} />
               </div>
-              <div className="relative flex min-h-0 min-w-0 flex-col">
+              {/* `self-start`: as tall as the card, so the button sits in the card's corner. */}
+              <div className="relative flex min-h-0 min-w-0 flex-col self-start">
                 {narratorPanel}
-                <PanelExpand label="the explanation" onClick={() => setExpanded("narrator")} />
+                <PanelExpand corner="bottom" label="the explanation" onClick={() => setExpanded("narrator")} />
               </div>
               <ExpandDialog onOpenChange={(open) => !open && setExpanded(null)} open={expanded !== null} title={expanded === "narrator" ? "Explanation" : "Stage"}>
                 <div className="flex min-h-0 flex-1 flex-col p-4">{expanded === "narrator" ? narratorPanel : stagePanel}</div>
@@ -426,9 +428,18 @@ function Control({
 }
 
 /** The expand button in a panel's corner, over whatever the panel draws there. */
-function PanelExpand({ label, onClick }: { label: string; onClick: () => void }): React.ReactElement {
+function PanelExpand({
+  corner = "top",
+  label,
+  onClick,
+}: {
+  /** The explanation has its phase counter in the top corner, so its button goes at the bottom. */
+  corner?: "top" | "bottom";
+  label: string;
+  onClick: () => void;
+}): React.ReactElement {
   return (
-    <div className="absolute end-2 top-2 z-10">
+    <div className={cn("absolute end-2 z-10", corner === "top" ? "top-2" : "bottom-2")}>
       <ExpandButton label={label} onClick={onClick} />
     </div>
   );

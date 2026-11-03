@@ -7,7 +7,7 @@ import { cn } from "../../lib/utils";
 import { formatCell } from "../results-grid";
 import type { BucketView, Col, Scene } from "./scenes";
 import { TickNumber } from "./tick-number";
-import { collapseAfter, staggerDelay, useT } from "./walk-motion";
+import { staggerDelay, useT } from "./walk-motion";
 
 export function BucketsScene({
   scene,
@@ -65,8 +65,10 @@ function Bucket({
           <TickNumber value={bucket.count} /> {bucket.count === 1 ? "row" : "rows"}
         </span>
       </div>
-      <div className="flex flex-col bg-muted/40 p-1.5">
-        <AnimatePresence initial={false}>
+      <div className="relative flex flex-col bg-muted/40 p-1.5">
+        {/* `popLayout`, as in the stage's rows: a leaving member fades in place and the rest close the
+            gap on a transform, so nothing below it is moved through layout. */}
+        <AnimatePresence initial={false} mode="popLayout">
           {!squash &&
             bucket.members.map((member, i) => (
               <motion.div
@@ -80,10 +82,8 @@ function Bucket({
                   member.current && "ring-2 ring-info",
                 )}
                 exit={{
-                  height: 0,
                   opacity: 0,
-                  marginBottom: 0,
-                  transition: collapseAfter(t, staggerDelay(i, bucket.members.length, 0.06)),
+                  transition: { opacity: { ...t.fade, delay: t.reduced ? 0 : staggerDelay(i, bucket.members.length, 0.06) } },
                 }}
                 initial={{ opacity: 0 }}
                 key={member.key}

@@ -32,26 +32,14 @@ const WALK_FADE_S = 0.38;
  */
 const WALK_SPRING: Transition = { type: "spring", stiffness: 190, damping: 27 };
 
-/** The fold, lengthened to match. Opacity still finishes well ahead of the height, so what is
- *  leaving is gone before the space closes over it. */
-const WALK_COLLAPSE = {
-  height: { duration: 0.46, ease: COLLAPSE.height.ease },
-  opacity: { duration: 0.22, ease: COLLAPSE.opacity.ease },
-} as const;
+/** The height track of a block that follows swapped content, lengthened to match the spring. */
+const WALK_FOLD: Transition = { duration: 0.46, ease: COLLAPSE.height.ease };
 
 const FADE: Transition = { duration: WALK_FADE_S, ease: FADE_EASE };
-/** Width folds the same way height does: a tween, opacity ahead of the fold. */
-const FOLD: Transition = {
-  height: WALK_COLLAPSE.height,
-  width: WALK_COLLAPSE.height,
-  marginBottom: WALK_COLLAPSE.height,
-  opacity: WALK_COLLAPSE.opacity,
-};
 
 type WalkTransitions = {
   readonly spring: Transition;
   readonly fade: Transition;
-  readonly collapse: Transition;
   /** The fold's height track on its own, for a block whose height follows swapped content. */
   readonly fold: Transition;
   readonly reduced: boolean;
@@ -60,26 +48,13 @@ type WalkTransitions = {
 export function useT(): WalkTransitions {
   const reduced = useReducedMotion() ?? false;
   return reduced
-    ? { spring: INSTANT, fade: INSTANT, collapse: INSTANT, fold: INSTANT, reduced: true }
+    ? { spring: INSTANT, fade: INSTANT, fold: INSTANT, reduced: true }
     : {
         spring: WALK_SPRING,
         fade: FADE,
-        collapse: FOLD,
-        fold: WALK_COLLAPSE.height,
+        fold: WALK_FOLD,
         reduced: false,
       };
-}
-
-/** A fold whose every track starts after `delay` seconds, for staggered exits. */
-export function collapseAfter(t: WalkTransitions, delay: number): Transition {
-  if (t.reduced) return INSTANT;
-  const size = { ...WALK_COLLAPSE.height, delay };
-  return {
-    height: size,
-    width: size,
-    marginBottom: size,
-    opacity: { ...WALK_COLLAPSE.opacity, delay },
-  };
 }
 
 /**
