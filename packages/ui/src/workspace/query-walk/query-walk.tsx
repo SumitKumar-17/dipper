@@ -11,15 +11,20 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import { stripComments, type SqlComment } from "@dipper/sql";
 import * as React from "react";
+import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";
+import { readDml } from "./dml-statement";
+import { DmlWalk } from "./dml-walk";
 import { WalkPlayer } from "./player";
 import { buildProgram, isUnsupportedProgram, type Program } from "./program";
+import { SnapshotBadge } from "./snapshot-badge";
 import { useProgram, type Probe } from "./use-walk";
+import { useWalkSession } from "./use-walk-session";
 import { WalkProvider } from "./walk-context";
 
 export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
-  const { connection, probe } = useWorkspace();
+  const { connection } = useWorkspace();
   const dialect = connection?.dialect ?? "postgres";
   // Comments come out BEFORE anything else looks at the statement, and the whole walk is built from
   // what is left. An exercise question written as a `--` header is part of the text, so left in it
@@ -27,7 +32,23 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
   // taken out here, each range, probe, highlight and "SQL that ran" is comment-free without any of
   // them knowing comments exist. They are carried down to the narrator, which has a tab for them.
   const stripped = React.useMemo(() => stripComments(sql), [sql]);
+  // A write is read first: it is walked by running it inside a rollback, not by the clause walk,
+  // which would only hold it as a chapter it must never run.
+  const write = React.useMemo(() => readDml(stripped.sql, dialect), [stripped.sql, dialect]);
   const program = React.useMemo(() => buildProgram(stripped.sql, dialect), [stripped.sql, dialect]);
+  const walkable = connection !== undefined && write.kind === "not-dml" && !isUnsupportedProgram(program);
+  // Opened before the first probe and closed with the dialog, so every stage reads the same data.
+  const session = useWalkSession(dialect, walkable);
+
+  const body = (): React.ReactNode => {
+    if (write.kind === "refused") return <Message>{write.reason}</Message>;
+    const offline = <Message>Connect to a database to walk this query.</Message>;
+    if (write.kind === "dml") return connection ? <DmlWalk statement={write.statement} /> : offline;
+    if (isUnsupportedProgram(program)) return <Message>{program.reason}</Message>;
+    if (!connection) return offline;
+    if (session === null) return <Message>Opening a snapshot of the database…</Message>;
+    return <Walk comments={stripped.comments} probe={session.probe} program={program} snapshot={session.note} />;
+  };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-lg/5">
@@ -39,6 +60,12 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
         <DialogPrimitive.Title className="shrink-0 font-medium text-sm leading-none">
           Query walk
         </DialogPrimitive.Title>
+        {session && <SnapshotBadge mode={session.mode} note={session.note} />}
+        {write.kind === "dml" && (
+          <Badge size="sm" variant="secondary">
+            Always rolled back
+          </Badge>
+        )}
         <DialogPrimitive.Close
           aria-label="Close"
           className="ms-auto"
@@ -48,18 +75,16 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
         </DialogPrimitive.Close>
       </header>
 
-      {isUnsupportedProgram(program) ? (
-        <p className="flex flex-1 items-center justify-center p-6 text-center text-muted-foreground text-sm">
-          {program.reason}
-        </p>
-      ) : !connection ? (
-        <p className="flex flex-1 items-center justify-center p-6 text-center text-muted-foreground text-sm">
-          Connect to a database to walk this query.
-        </p>
-      ) : (
-        <Walk comments={stripped.comments} probe={probe} program={program} />
-      )}
+      {body()}
     </div>
+  );
+}
+
+function Message({ children }: { children: React.ReactNode }): React.ReactElement {
+  return (
+    <p className="flex flex-1 items-center justify-center p-6 text-center text-muted-foreground text-sm">
+      {children}
+    </p>
   );
 }
 
@@ -68,15 +93,17 @@ function Walk({
   program,
   probe,
   comments,
+  snapshot,
 }: {
   program: Program;
   probe: Probe;
   comments: readonly SqlComment[];
+  snapshot: string;
 }): React.ReactElement {
   const data = useProgram(program, probe);
   return (
     <WalkProvider probe={probe} program={program}>
-      <WalkPlayer comments={comments} data={data} />
+      <WalkPlayer comments={comments} data={data} snapshot={snapshot} />
     </WalkProvider>
   );
 }

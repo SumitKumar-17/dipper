@@ -1,6 +1,6 @@
 import type { DipperClient } from "@dipper/client";
 import type { ExportFormat, HistoryScope, HistoryStats, RunRecord, Settings } from "@dipper/protocol";
-import type { Run } from "@dipper/ui";
+import type { ProbeOptions, Run } from "@dipper/ui";
 import * as React from "react";
 import { messageOf } from "./helpers";
 import { inScope } from "./run-scope";
@@ -50,7 +50,7 @@ export type RunsState = {
   ) => string | null;
   cancelRun: (runId: string) => Promise<void>;
   selectRun: (runId: string) => void;
-  probe: (sql: string, options?: { maxRows?: number }) => Promise<RunRecord>;
+  probe: (sql: string, options?: ProbeOptions) => Promise<RunRecord>;
   probeOn: (connectionId: string, sql: string, options?: { maxRows?: number }) => Promise<RunRecord>;
   historyStats: () => Promise<HistoryStats>;
   clearHistory: () => Promise<void>;
@@ -233,7 +233,7 @@ export function useRuns(
   );
 
   const probe = React.useCallback(
-    (sql: string, probeOptions?: { maxRows?: number }): Promise<RunRecord> => {
+    (sql: string, probeOptions?: ProbeOptions): Promise<RunRecord> => {
       const text = sql.trim();
       if (!text) return Promise.reject(new Error("Nothing to run."));
       if (!connectionId) return Promise.reject(new Error("No connection selected."));
@@ -245,6 +245,7 @@ export function useRuns(
         record: false,
         readOnly: true,
         ...(database ? { database } : {}),
+        ...(probeOptions?.sessionId ? { sessionId: probeOptions.sessionId } : {}),
         ...(probeOptions?.maxRows !== undefined
           ? { maxRows: probeOptions.maxRows }
           : settings

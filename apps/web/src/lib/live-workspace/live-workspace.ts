@@ -22,6 +22,7 @@ import { useBuffers } from "./use-buffers";
 import { blockedReasonFor, useBufferConnections } from "./use-buffer-connections";
 import { useFileSession } from "./use-file-session";
 import { useConnections } from "./use-connections";
+import { openPinnedSession } from "./pinned-session";
 import { workspaceOf } from "./run-scope";
 import { useRuns } from "./use-runs";
 import { useTableTools } from "./use-table-tools";
@@ -144,6 +145,12 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     ),
   });
 
+  const { connectionId, database } = connections;
+  const openSession = React.useCallback(() => {
+    if (!connectionId) return Promise.reject(new Error("No connection selected."));
+    return openPinnedSession(getClient(), { connectionId, database });
+  }, [connectionId, database, getClient]);
+
   const onServerEvent = React.useCallback(
     (event: ServerEvent): void => {
       // A `run` event is this client's own run coming back; the record is already held.
@@ -228,6 +235,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     selectRun: runs.selectRun,
     probe: runs.probe,
     probeOn: runs.probeOn,
+    openSession,
     ...tableTools,
     transaction: transaction.view,
     beginTransaction: transaction.begin,

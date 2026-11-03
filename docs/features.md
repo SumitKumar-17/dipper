@@ -72,7 +72,28 @@ This makes complex SQL easier to understand, debug, and explain - especially joi
   <img src="assets/query-walk.gif" alt="Dipper Query Walk visualizing SQL execution" width="748">
 </p>
 
-The visualization is based on your actual SQL and database. Query Walk uses read-only executions and does not modify your data.
+The visualization is based on your actual SQL and database. Query Walk uses read-only executions for a `SELECT`, and runs a write inside a transaction it always rolls back, so it does not modify your data.
+
+Every stage of one walk reads the same data. The walk pins one connection and opens a read-only `REPEATABLE READ` transaction on it (a consistent snapshot on MySQL), so rows someone changes while the walk runs cannot make one stage disagree with another. A badge next to the title says which kind of walk you are looking at:
+
+- **One snapshot** - every stage read the same snapshot, which is closed when the walk closes.
+- **Your transaction** - you have a transaction open, so the walk reads inside it, sees your uncommitted changes, and leaves it exactly as it was.
+- **Not snapshotted** - on SQLite (each stage reads the file on its own), while your own transaction has failed, or when the snapshot could not be opened; hover the badge for the reason.
+
+**Export** (next to the playback controls) saves the walk as one standalone `.html` file that replays it anywhere: every stage, its narration and its rows, with play, pause and the arrow keys to step. It needs no network and loads nothing from outside itself, so it opens straight from disk, offline. It is a snapshot of the rows at export time, and says so; chapters that run once per row of another are named in it but not replayed.
+
+### Walking an INSERT, UPDATE or DELETE
+
+Visualise an `INSERT`, `UPDATE` or `DELETE` and the walk runs it for real, inside a transaction it **always rolls back**: also when the statement fails, and also when you close the walk while it is still running. Its stops show:
+
+- **WHERE** - the rows the `WHERE` matched, as they were before anything changed (an `UPDATE` or `DELETE` with no `WHERE` says it touches every row).
+- **Before and after** - every changed row with each changed cell before and after, paired on the table's primary key; rows inserted or deleted are listed as added or removed. A table without a primary key is paired on whole rows, so a changed row shows as one removed and one added.
+- **RETURNING** - what your `RETURNING` handed back, when you wrote one.
+- **Rolled back** - the rollback, confirmed by the server.
+
+A rollback undoes everything the statement did inside the database, but not what it set in motion outside it: a sequence it drew from (a serial or identity column) stays advanced, and a trigger or function that wrote a file or called out over the network did that for real. (A `NOTIFY` is only sent on commit, so it is dropped.)
+
+Write walks run on Postgres. Anything the walk cannot run safely is refused by name instead: several statements at once, DDL (`CREATE`, `ALTER`, `DROP`, `TRUNCATE`, ...), `MERGE`, `COPY`, `CALL`, `DO`, transaction control, `UPDATE ... FROM`, `DELETE ... USING`, `INSERT ... ON CONFLICT DO UPDATE`, `WHERE CURRENT OF`, a `WITH` in front of the write, and writes on MySQL (no `RETURNING` to read the change back) or SQLite (no session to hold the transaction).
 
 **To open it:** put the cursor in a `SELECT` (or select the part you want), right-click and choose **Visualise query**, or open the command palette (<kbd>⌘</kbd><kbd>K</kbd>, or <kbd>Ctrl</kbd>+<kbd>K</kbd>) and run **Visualise query**. It plays automatically: pause it with the controls at the top right, then use the left and right arrow keys to step through the stages.
 

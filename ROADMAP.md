@@ -35,7 +35,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Three-valued logic: a NULL test shows as unknown (orange ?), not as a failed row, with a note (S/M)
 - [x] Collision-proof row identity: cells hash with a control-character separator, now explicit (S)
 - [ ] Row lineage: follow one input row through join, group and output (L)
-- [ ] One consistent snapshot for all probes of a walk (M)
+- [x] One consistent snapshot for all probes of a walk: one read-only REPEATABLE READ transaction on a pinned connection, or the user's own when one is open (SQLite is not snapshotted, and says so) (M)
 - [x] CTE graph with "used by" counts (M)
 - [x] Recursive CTE stepped one iteration at a time, with a pass cap of six (M/L)
 - [x] Window frames drawn as a band, every window function per query, not the first (a `RANGE` frame with a value offset is named, not drawn) (M)
@@ -44,8 +44,8 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Logical order versus written order strip, under "Your query" in the walk (S)
 - [x] EXPLAIN plan beside the walk, nodes mapped to stations (final query on Postgres; CTE chapters and MySQL/SQLite plans are shown unmatched) (M)
 - [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)
-- [ ] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (L)
-- [ ] Shareable step-through export as a standalone HTML file (M)
+- [x] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (Postgres; joined writes, upserts and MySQL/SQLite are refused by name) (L)
+- [x] Shareable step-through export as a standalone HTML file: offline, built from the live walk's scenes and sentences (per-row chapters are named, not replayed) (M)
 - [ ] Bigger panels in the walk: its stage, narration, plan, query and notes panels are small, so each
       gets a small expand button (a square icon) that opens it alone in a large pop-over, Escape or
       the same button to put it back, with the walk still stepping behind it (M)

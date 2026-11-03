@@ -15,6 +15,7 @@ import { BoundSection } from "./bound-section";
 import { Chapters } from "./chapters";
 import type { SourceRef } from "./clauses";
 import { cteGraph } from "./cte-graph";
+import { ExportWalkButton } from "./export-walk-button";
 import { CteMap } from "./cte-map";
 import { BEAT, HOLD_MS, phasesFor, sentenceFor } from "./narration";
 import { Narrator } from "./narrator";
@@ -53,8 +54,11 @@ const MOVING_STATIONS: ReadonlySet<StationId> = new Set<StationId>([
 export function WalkPlayer({
   data,
   comments,
+  snapshot,
 }: {
   data: ProgramData;
+  /** What the walk's probes read, said in an exported walk next to the rows it captured. */
+  snapshot: string;
   /** Stripped out of the statement before the program was built, and carried through to the
    *  narrator's Notes tab - the one place in the walk that still shows them. */
   comments: readonly SqlComment[];
@@ -317,6 +321,7 @@ export function WalkPlayer({
               >
                 <span className="font-mono tabular-nums">{speed === 1 ? "1×" : "0.5×"}</span>
               </Button>
+              <ExportWalkButton data={data} snapshot={snapshot} />
             </div>
           </div>
 

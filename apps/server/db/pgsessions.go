@@ -75,6 +75,12 @@ func (d *postgresDriver) execInSession(ctx context.Context, id, sql string, sc *
 	return d.execOn(ctx, p.conn.pool, p.conn.conn, sql, sc, false)
 }
 
+// failedSession reports a pinned connection whose transaction has failed. A pooled connection never
+// is one: it is not in a transaction between statements.
+func failedSession(pooled bool, status byte) bool {
+	return !pooled && status == 'E'
+}
+
 // TxStatus bytes: I idle, T in a transaction, E in a failed transaction.
 func pgTransactionState(status byte) protocol.TransactionState {
 	switch status {

@@ -36,6 +36,22 @@ The section matching a release's version becomes that release's notes on GitHub 
   naming the connection, the database and what the statement will do, with Cancel as the default.
   Reads never ask. The check looks at the words of the statement outside strings and comments, so
   `select 'drop table t'` is not a write, and `SELECT ... FOR UPDATE` is, on purpose.
+- **Query Walk export** - An Export button saves the walk as one self-contained HTML file that
+  replays its stages, narration and rows with play, pause and arrow-key stepping. It loads
+  nothing from the network, opens from disk offline, and is marked as a snapshot of the data at
+  export time.
+- **Query Walk for writes** - Visualise an `INSERT`, `UPDATE` or `DELETE` (Postgres) and it runs
+  for real inside a transaction that is always rolled back, also on failure and when the walk is
+  closed mid-run. It shows the rows the `WHERE` matched, each changed row before and after cell by
+  cell, what `RETURNING` produced, and the confirmed rollback, and says plainly what a rollback
+  cannot undo (sequences stay advanced). Multi-statement text, DDL, joined writes, upserts and
+  writes on MySQL or SQLite are refused by name.
+- **One snapshot per Query Walk** - Every probe of a walk now runs on one pinned connection inside
+  one read-only `REPEATABLE READ` transaction (a consistent snapshot on MySQL), so rows changed by
+  someone else while the walk runs can no longer make its stages disagree. With your own
+  transaction open the walk reads inside it and leaves it as it was; on SQLite it says it is not
+  snapshotted. A badge by the title says which. A statement that fails inside a pinned session no
+  longer drops the connection (and the transaction) while its settings are put back.
 - **A connection per tab** - Each editor tab remembers the connection and database it runs on, so
   a test, a staging and a production query can sit side by side. Focusing a tab switches the whole
   workspace (schema, runs, transactions) to its connection, dialling it if needed; choosing a

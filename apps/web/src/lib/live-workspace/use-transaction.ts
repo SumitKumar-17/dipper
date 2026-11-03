@@ -16,7 +16,7 @@ export type TransactionTools = {
   refresh: () => void;
 };
 
-const NONE: TransactionView = { state: "none", busy: false, error: null };
+const NONE: TransactionView = { state: "none", busy: false, error: null, sessionId: null };
 
 /**
  * One optional transaction for the workspace. Beginning one pins a database connection (a
@@ -125,7 +125,9 @@ export function useTransaction(getClient: () => DipperClient, { connectionId, da
     [getClient, guarded, send],
   );
 
-  const view: TransactionView = session ? { state: session.transaction, busy, error } : { ...NONE, busy, error };
+  const view: TransactionView = session
+    ? { state: session.transaction, busy, error, sessionId: session.id }
+    : { ...NONE, busy, error };
   return {
     view,
     sessionId: session?.id,
