@@ -87,6 +87,9 @@ export function asyncData<T>(value: Async<T> | undefined): T | undefined {
  * path. Otherwise it is backed by a real path under a workspace root, and only the server touches
  * disk. `content`/`dirty` hold keystrokes the server cannot see until a save flushes them.
  */
+/** Where a tab runs: a saved connection, and the database on it (null follows the connection's own). */
+export type BufferBinding = { readonly connectionId: string; readonly database: string | null };
+
 export type Buffer = {
   /** Stable for the life of the tab, including across a `saveAs` that gives it a path. */
   readonly id: string;
@@ -100,6 +103,11 @@ export type Buffer = {
   readonly dirty: boolean;
   /** How the buffer is presented. `notebook` splits it into cells; see cells.ts. */
   readonly view: "script" | "notebook";
+  /**
+   * The connection and database this tab runs against, or absent until the tab has been focused: a
+   * tab takes the connection that is active when it first is. Switching tabs switches connection.
+   */
+  readonly binding?: BufferBinding;
   /** The disk copy at the moment an outside change hit a dirty buffer, for "reload" or "keep mine". */
   readonly conflict?: { readonly modifiedAt: string; readonly content: string };
 };

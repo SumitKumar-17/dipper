@@ -3,7 +3,7 @@
 // action here is "call the server, then say what came back".
 
 import { isDipperError, staleWrite, type DipperClient } from "@dipper/client";
-import { FileExists, type Buffer, type CursorPosition, type SaveState } from "@dipper/ui";
+import { FileExists, type Buffer, type BufferBinding, type CursorPosition, type SaveState } from "@dipper/ui";
 import * as React from "react";
 import { buffersReducer, initialBuffersState, saveStateOf } from "./buffers-reducer";
 import { dirName, fileName, messageOf } from "./helpers";
@@ -46,6 +46,8 @@ export type BuffersApi = {
   focusBuffer: (id: string | null) => void;
   editBuffer: (id: string, content: string) => void;
   setBufferView: (id: string, view: Buffer["view"]) => void;
+  /** Points a tab at a connection and database; the workspace then follows the tab. */
+  bindBuffer: (id: string, binding: BufferBinding) => void;
   save: () => Promise<void>;
   saveAs: (id: string, path: string, options?: { overwrite?: boolean }) => Promise<void>;
   /** Renames a file on disk. An open tab follows it; rejects with the server's reason if it cannot. */
@@ -222,6 +224,10 @@ export function useBuffers(
     dispatch({ type: "setView", id, view });
   }, []);
 
+  const bindBuffer = React.useCallback((id: string, binding: BufferBinding): void => {
+    dispatch({ type: "bound", id, binding });
+  }, []);
+
   const saveAs = React.useCallback(
     async (id: string, path: string, options?: { overwrite?: boolean }): Promise<void> => {
       const buffer = buffers.find((b) => b.id === id);
@@ -355,6 +361,7 @@ export function useBuffers(
     focusBuffer,
     editBuffer,
     setBufferView,
+    bindBuffer,
     save: commitSave,
     saveAs,
     renameFile,

@@ -150,6 +150,18 @@ The file remains valid SQL and can still be used outside Dipper.
   <img src="assets/notebook.png" alt="Dipper SQL notebook" width="730">
 </p>
 
+## One tab, one connection
+
+Every query tab remembers the connection and database it runs on, so you can keep a test, a staging
+and a production query open side by side and move between them by clicking a tab. The schema, the
+results and the transaction controls all follow the tab you are on. A tab shows its connection's
+colour tag, and its name once more than one connection is open.
+
+Choose a connection in the picker and the tab you are on is pointed at it; a new tab starts on the
+connection that is active. Tabs for files remember their connection across reloads. If the
+connection a tab is set to cannot be reached, Run refuses with a message instead of running the
+statement on a different database.
+
 ## Workspace folders
 
 Open a directory and work directly with the `.sql` files inside it.

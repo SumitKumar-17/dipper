@@ -19,6 +19,7 @@ import * as React from "react";
 import { serverClient } from "../server-client";
 import { usePanels } from "../use-panels";
 import { useBuffers } from "./use-buffers";
+import { blockedReasonFor, useBufferConnections } from "./use-buffer-connections";
 import { useFileSession } from "./use-file-session";
 import { useConnections } from "./use-connections";
 import { workspaceOf } from "./run-scope";
@@ -71,6 +72,9 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     reportFileError,
     refreshWorkspace: refreshFiles,
   });
+
+  // Each tab runs against its own connection; the workspace's active connection follows the tab.
+  useBufferConnections(buffers, connections);
 
   // The fourth seam: which files were open last time, reopened through the same `openFile` the
   // Files tab uses. See `use-file-session.ts` for why it is remembered apart from the layout.
@@ -125,6 +129,12 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     settings: settingsData,
     onSchemaChanged: reintrospect,
     openOutput,
+    blockedReason: blockedReasonFor(
+      buffers.activeBuffer,
+      connections.connectionId,
+      connections.database,
+      asyncData(connections.connections),
+    ),
   });
 
   const onServerEvent = React.useCallback(

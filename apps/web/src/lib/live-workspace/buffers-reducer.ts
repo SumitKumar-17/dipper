@@ -11,7 +11,7 @@
 // `dirty: content !== written`, so the buffers already carry that answer and the counter had
 // nothing left to decide.
 
-import type { Buffer, SaveState } from "@dipper/ui";
+import type { Buffer, BufferBinding, SaveState } from "@dipper/ui";
 
 export type BuffersState = {
   readonly buffers: readonly Buffer[];
@@ -55,6 +55,8 @@ export type BuffersAction =
   | { type: "saveFailed" }
   /** A scratch became a file, or a file was written somewhere else. */
   | { type: "savedAs"; id: string; nextId: string; path: string; name: string }
+  /** A tab was pointed at a connection, or restored to the one it had. */
+  | { type: "bound"; id: string; binding: BufferBinding }
   /** A file was renamed on disk; the tab follows it and keeps whatever was unsaved in it. */
   | { type: "renamed"; id: string; nextId: string; path: string; name: string }
   | { type: "conflictResolved"; id: string; choice: "reload" | "keep" }
@@ -175,6 +177,16 @@ function reduce(state: BuffersState, action: BuffersAction): BuffersState {
           state.activeBufferId === action.id ? action.nextId : state.activeBufferId,
         phase: "idle",
       };
+
+    case "bound": {
+      const current = state.buffers.find((b) => b.id === action.id)?.binding;
+      // The same answer is not a change: returning the state itself spares a render, and keeps a
+      // tab that only re-confirmed its connection from restarting autosave's debounce.
+      if (current?.connectionId === action.binding.connectionId && current.database === action.binding.database) {
+        return state;
+      }
+      return { ...state, buffers: patch(state, action.id, (b) => ({ ...b, binding: action.binding })) };
+    }
 
     case "renamed":
       return {

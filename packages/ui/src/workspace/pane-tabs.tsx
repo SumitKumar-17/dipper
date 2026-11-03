@@ -17,9 +17,11 @@ import * as React from "react";
 import { useSpring } from "../lib/motion";
 import { cn } from "../lib/utils";
 import { Button } from "../ui/button";
+import { ConnectionTag } from "./connection-tag";
 import { useWorkspace } from "./context";
 import { RESULTS_PANE, type PaneId, paneBufferId } from "./pane-layout";
-import { isScratch } from "./types";
+import { type TabConnection, tabConnection } from "./tab-connection";
+import { asyncData, isScratch } from "./types";
 
 /** Droppable ids are namespaced because a tab is both a drag source and a drop target. */
 export const stripDroppableId = (groupId: string): string => `strip::${groupId}`;
@@ -193,6 +195,8 @@ function PaneTab({
 }
 
 type PaneLabelText = {
+  /** Where the tab runs, for a query tab; absent for the results pane and an unbound tab. */
+  readonly connection?: TabConnection;
   readonly name: string;
   readonly scratch: boolean;
   readonly dirty: boolean;
@@ -200,14 +204,19 @@ type PaneLabelText = {
 
 /** What a tab says. The results pane has no buffer behind it, so it is spelled out here. */
 export function usePaneLabel(pane: PaneId): PaneLabelText {
-  const { buffers } = useWorkspace();
+  const { buffers, connections } = useWorkspace();
   const bufferId = paneBufferId(pane);
   if (bufferId === null) {
     return { name: pane === RESULTS_PANE ? "Results" : pane, scratch: false, dirty: false };
   }
   const buffer = buffers.find((candidate) => candidate.id === bufferId);
   if (!buffer) return { name: "Untitled", scratch: false, dirty: false };
-  return { name: buffer.name, scratch: isScratch(buffer), dirty: buffer.dirty };
+  return {
+    name: buffer.name,
+    scratch: isScratch(buffer),
+    dirty: buffer.dirty,
+    connection: tabConnection(buffer, buffers, asyncData(connections) ?? []),
+  };
 }
 
 /** Shared by the strip and the drag overlay, so the ghost cannot drift from the real tab. */
@@ -215,6 +224,13 @@ export function PaneLabel({ label }: { label: PaneLabelText }): React.ReactEleme
   return (
     <>
       <span className={cn("max-w-44 truncate", label.scratch && "italic")}>{label.name}</span>
+      {label.connection && (
+        <span className="flex shrink-0 items-center gap-1 text-muted-foreground text-xs">
+          <ConnectionTag connection={label.connection.connection} />
+          {label.connection.showName && <span className="max-w-24 truncate">{label.connection.connection.name}</span>}
+          {label.connection.database && <span className="max-w-24 truncate">{label.connection.database}</span>}
+        </span>
+      )}
       {/* A scratch has no disk copy, so it is never "unsaved" - it is just not a file. Saying so
           is more honest than a dot that implies work is at risk. */}
       {label.scratch && <span className="shrink-0 text-muted-foreground text-xs">scratch</span>}

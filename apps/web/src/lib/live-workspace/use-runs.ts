@@ -25,6 +25,12 @@ export type RunsOptions = {
   /** DDL moves the ground under the schema tree, so it is re-introspected after a run. */
   onSchemaChanged: () => void;
   openOutput: () => void;
+  /**
+   * Why the active tab must not run right now, or null. A tab is set to a connection the workspace
+   * is not on (its dial failed, or is still going), and running anyway would put the statement on
+   * the wrong database while the tab says otherwise.
+   */
+  blockedReason?: string | null;
   /** The pinned connection to run on while a transaction is open, so runs share it. */
   sessionId?: string | undefined;
   /** Called after a run ends, so a transaction that the statement failed is noticed. */
@@ -62,6 +68,7 @@ export function useRuns(
     workspace,
     onSchemaChanged,
     openOutput,
+    blockedReason,
     sessionId,
     onRunFinished,
   } = options;
@@ -127,6 +134,28 @@ export function useRuns(
       const text = (sql ?? activeSql ?? "").trim();
       if (!text || !connectionId) return undefined;
 
+      if (blockedReason) {
+        // Shown where any failed run is shown, so the reason is read the way every other one is.
+        const now = new Date().toISOString();
+        const refused: RunRecord = {
+          id: crypto.randomUUID(),
+          connectionId,
+          database: database ?? "",
+          sql: text,
+          status: "error",
+          startedAt: now,
+          finishedAt: now,
+          durationMs: 0,
+          results: [],
+          error: { message: blockedReason },
+          source: "ui",
+        };
+        setRuns((prev) => [refused, ...prev].slice(0, RUN_CAP));
+        setSelected({ id: refused.id, fromHistory: false });
+        openOutput();
+        return refused.id;
+      }
+
       // The client owns the id: cancel needs an address before the run is over.
       const runId = crypto.randomUUID();
       const pending: RunRecord = {
@@ -172,7 +201,7 @@ export function useRuns(
       onRunFinished?.();
       return runId;
     },
-    [activeSql, connectionId, database, getClient, onRunFinished, onSchemaChanged, openOutput, sessionId, settings, workspace],
+    [activeSql, blockedReason, connectionId, database, getClient, onRunFinished, onSchemaChanged, openOutput, sessionId, settings, workspace],
   );
 
   /**

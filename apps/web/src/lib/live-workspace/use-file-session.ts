@@ -18,7 +18,7 @@
 // last-write-wins, so N missing files cost one line rather than N; this hook writes the line that
 // lands last, naming all of them at once instead of whichever happened to fail late.
 
-import { readJson, writeRaw } from "@dipper/ui";
+import { readJson, writeRaw, type BufferBinding } from "@dipper/ui";
 import * as React from "react";
 import { fileName } from "./helpers";
 import type { BuffersApi } from "./use-buffers";
@@ -30,9 +30,11 @@ type FileSession = {
   readonly files: readonly string[];
   /** Which of them had focus, or null when the focused tab was a scratch or there was none. */
   readonly active: string | null;
+  /** The connection each open file was last run against, by path. Scratches are not remembered. */
+  readonly bindings: Readonly<Record<string, BufferBinding>>;
 };
 
-const EMPTY: FileSession = { files: [], active: null };
+const EMPTY: FileSession = { files: [], active: null, bindings: {} };
 
 /** The static export prerenders this component, where there is no storage: `EMPTY` is the answer. */
 function readSession(): FileSession {
@@ -50,11 +52,29 @@ function validate(parsed: unknown): FileSession | undefined {
     ? stored.files.filter((path): path is string => typeof path === "string")
     : [];
   const active = typeof stored.active === "string" ? stored.active : null;
-  return { files, active: active !== null && files.includes(active) ? active : null };
+  return {
+    files,
+    active: active !== null && files.includes(active) ? active : null,
+    bindings: validBindings(stored.bindings, files),
+  };
+}
+
+/** Only well-formed bindings for files that are being restored; anything else costs the binding, not the app. */
+function validBindings(raw: unknown, files: readonly string[]): Record<string, BufferBinding> {
+  if (typeof raw !== "object" || raw === null) return {};
+  const out: Record<string, BufferBinding> = {};
+  for (const path of files) {
+    const entry = (raw as Record<string, unknown>)[path];
+    if (typeof entry !== "object" || entry === null) continue;
+    const { connectionId, database } = entry as Partial<BufferBinding>;
+    if (typeof connectionId !== "string" || connectionId === "") continue;
+    out[path] = { connectionId, database: typeof database === "string" ? database : null };
+  }
+  return out;
 }
 
 /** What the restore needs of the buffers: the list to watch, and the two actions that reopen it. */
-type SessionBuffers = Pick<BuffersApi, "buffers" | "activeBufferId" | "openFile" | "focusBuffer">;
+type SessionBuffers = Pick<BuffersApi, "buffers" | "activeBufferId" | "openFile" | "focusBuffer" | "bindBuffer">;
 
 export function useFileSession(
   enabled: boolean,
@@ -116,6 +136,9 @@ export function useFileSession(
           continue;
         }
         opened.add(id);
+        // Before focus is restored, so the tab that gets focus takes the workspace to its connection.
+        const binding = remembered.bindings[path];
+        if (binding) latest.current.bindBuffer(id, binding);
         if (path === remembered.active) target = id;
       }
       return { opened, missing, target };
@@ -153,6 +176,9 @@ export function useFileSession(
       JSON.stringify({
         files: buffers.flatMap((b) => (b.path === null ? [] : [b.path])),
         active: buffers.find((b) => b.id === activeBufferId)?.path ?? null,
+        bindings: Object.fromEntries(
+          buffers.flatMap((b) => (b.path !== null && b.binding ? [[b.path, b.binding] as const] : [])),
+        ),
       } satisfies FileSession),
     [buffers, activeBufferId],
   );

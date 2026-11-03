@@ -14,6 +14,13 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- **A connection per tab** - Each editor tab remembers the connection and database it runs on, so
+  a test, a staging and a production query can sit side by side. Focusing a tab switches the whole
+  workspace (schema, runs, transactions) to its connection, dialling it if needed; choosing a
+  connection in the picker re-points the tab you are on. A tab shows its connection's colour tag,
+  and its name once more than one connection is in use. File tabs remember their connection across
+  reloads. If a tab's connection cannot be reached, Run refuses and says so instead of running the
+  statement on whichever database happens to be connected.
 - **Expand results** - The results toolbar and each notebook cell result have an expand button
   that opens the rows on their own, large, with find, sort, chart and the pinned comparison. Escape
   or the button in its header puts it back.
