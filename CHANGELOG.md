@@ -218,6 +218,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Changed
 
+- **A release pre-flight** - `bun run release:check vX.Y.Z` checks, before a tag is pushed, what the
+  release workflow would otherwise find out afterwards: that the tag matches the declared version,
+  that the changelog has notes for it, and that git is on a clean main with no such tag yet.
 - **A shorter README** - The README is now a page you can read in a minute: what Dipper is, install,
   a few highlights and links. The full feature guide moved, text unchanged, to `docs/features.md`,
   and the install details to `docs/install.md`. The site's docs page is built from those files.

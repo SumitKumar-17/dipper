@@ -36,9 +36,10 @@
     "check": "bun run typecheck && bun run lint && bun run test && bun run --filter @dipper/protocol check",
     "lint": "eslint apps/web/src apps/web/vite.config.ts apps/web/scripts apps/site/src packages/ui/src packages/client/src packages/sql/src packages/protocol/src packages/protocol/scripts scripts && bun run --filter dipper lint",
     "smoke": "bun run --filter dipper smoke",
-    "test": "bun test packages apps/web apps/site && bun run --filter dipper test",
+    "test": "bun test packages apps/web apps/site scripts && bun run --filter dipper test",
     "dipper": "dipper",
-    "clean": "node scripts/clean.mjs"
+    "clean": "node scripts/clean.mjs",
+    "release:check": "node scripts/release-check.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

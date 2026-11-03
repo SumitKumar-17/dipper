@@ -170,7 +170,8 @@ fails if the tag disagrees with it, because the tag is what names the assets and
 CHANGELOG section.
 
 ```sh
-# bump apps/server/package.json, commit, then:
+# bump apps/server/package.json, rename [Unreleased] in CHANGELOG.md to [X.Y.Z] with a date, commit, then:
+bun run release:check vX.Y.Z    # the same checks the workflow makes, before anything is pushed
 git tag vX.Y.Z && git push origin vX.Y.Z
 # wait for that commit's `server` workflow to pass, then:
 #   Actions -> release -> Run workflow -> tag: vX.Y.Z
