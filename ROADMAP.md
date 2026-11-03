@@ -169,7 +169,7 @@ change reviewed as plain SQL before it runs.
 
 - [x] Migrations: save a schema diff as numbered migration files in the workspace, apply them one
       transaction each with a tracking table, and show which are pending on each connection (L)
-- [ ] Dependency graph: what depends on a table or column (views, functions, foreign keys,
+- [x] Dependency graph: what depends on a table or column (views, functions, foreign keys,
       triggers), shown before a drop or a structure change is applied (M)
 - [ ] Plan comparison: two `EXPLAIN` plans side by side, such as before and after an index, with the
       cost and time differences (M)

@@ -3,6 +3,7 @@ import type {
   Advice,
   AlterRequest,
   AlterResult,
+  Dependents,
   ApplyMigrationsRequest,
   ApplyMigrationsResult,
   MigrationState,
@@ -36,6 +37,7 @@ export type TableTools = {
   ) => string | null;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   alterTable: (schema: string, table: string, request: AlterRequest) => Promise<AlterResult>;
+  dependents: (schema: string, table: string, column?: string) => Promise<Dependents>;
   migrationState: () => Promise<MigrationState>;
   applyMigrations: (request: ApplyMigrationsRequest) => Promise<ApplyMigrationsResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
@@ -85,6 +87,13 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       alterTable: async (schema, table, request) => {
         const { id, scoped } = aimed();
         return getClient().connections.alterTable(id, schema, table, { ...request, ...scoped });
+      },
+      dependents: async (schema, table, column) => {
+        const { id } = aimed();
+        return getClient().connections.dependents(id, schema, table, {
+          ...(database ? { database } : {}),
+          ...(column ? { column } : {}),
+        });
       },
       migrationState: async () => {
         const { id } = aimed();

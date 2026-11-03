@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "../../ui/alert";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { useWorkspace } from "../context";
+import { DependentsNotice, targetsOf } from "../dependents";
 
 type Check = { status: "checking" } | { status: "ready"; result: AlterResult } | { status: "failed"; message: string };
 
@@ -60,6 +61,7 @@ export function StructureReview({
   const problem = check.status === "failed" ? check.message : check.status === "ready" ? check.result.error : undefined;
   const statements = check.status === "ready" ? check.result.statements : [];
   // MySQL commits DDL as it goes, so its dry run can only show the statements, not test them.
+  const targets = React.useMemo(() => targetsOf(operations), [operations]);
   const unverified = check.status === "ready" && !check.result.validated && !problem;
 
   return (
@@ -70,6 +72,7 @@ export function StructureReview({
           ? " MySQL cannot roll back DDL, so a failure part way leaves the earlier statements applied."
           : " They run in one transaction: all are kept, or none."}
       </p>
+      <DependentsNotice schema={schema} table={table} targets={targets} />
       {check.status === "checking" && (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Spinner /> Checking against the database

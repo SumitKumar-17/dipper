@@ -5,9 +5,13 @@ import { plural } from "../../lib/format";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";
+import { DependentsNotice } from "../dependents";
 import { ColumnProfile } from "./column-profile";
 import { formatBytes, formatWhen } from "./format";
 import { StructureEditor } from "./structure-editor";
+
+/** One target with no column: everything that depends on the table as a whole. */
+const WHOLE_TABLE = [{}];
 
 /** Everything the schema tree leaves out: sizes, columns, indexes, constraints and triggers. */
 export function StructureView({ detail, onChanged }: { detail: TableDetail; onChanged: () => void }): React.ReactElement {
@@ -129,6 +133,7 @@ export function StructureView({ detail, onChanged }: { detail: TableDetail; onCh
           ))}
         </Grid>
       </Section>
+      {detail.kind === "table" && <DependentsNotice schema={detail.schema} table={detail.name} targets={WHOLE_TABLE} />}
     </div>
   );
 }

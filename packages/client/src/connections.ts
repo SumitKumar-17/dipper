@@ -3,6 +3,7 @@ import type {
   Advice,
   AlterRequest,
   AlterResult,
+  Dependents,
   ApplyMigrationsRequest,
   ApplyMigrationsResult,
   MigrationState,
@@ -126,6 +127,13 @@ export type ConnectionsApi = {
     request: AlterRequest,
     opts?: CallOptions,
   ): Promise<AlterResult>;
+  /** What relies on a table, or on one column of it: views, foreign keys, routines and triggers. */
+  dependents(
+    id: string,
+    schema: string,
+    table: string,
+    options?: { database?: string; column?: string } & CallOptions,
+  ): Promise<Dependents>;
   /** Which migrations the database has recorded as applied. Never creates the tracking table. */
   migrationState(id: string, options?: { database?: string } & CallOptions): Promise<MigrationState>;
   /** Runs reviewed migration files in order, each recorded as it succeeds. */
@@ -244,6 +252,12 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         method: "POST",
         body: request,
         signal: opts?.signal,
+      }),
+
+    dependents: (id, schema, table, options) =>
+      http.json<Dependents>(at(id, `${tablePath(schema, table)}/dependents`), {
+        query: { database: options?.database, column: options?.column },
+        signal: options?.signal,
       }),
 
     migrationState: (id, options) =>

@@ -13,6 +13,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- Dependencies: the Structure tab and the structure review list the views, foreign keys, functions
+  and triggers that depend on a table or on the column being dropped, retyped or renamed.
 - Migrations: numbered `.sql` files in the workspace's `migrations` folder, applied one transaction
   each (Postgres and SQLite) and recorded in `dipper_schema_migrations`, with pending, applied,
   edited and missing states, a dry run, and a Save as migration button on the schema compare.

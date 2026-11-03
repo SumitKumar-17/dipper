@@ -9,6 +9,7 @@ import type {
   Advice,
   AlterRequest,
   AlterResult,
+  Dependents,
   ApplyMigrationsRequest,
   ApplyMigrationsResult,
   MigrationState,
@@ -420,6 +421,8 @@ export type WorkspaceApi = {
    * it shows the statements, and on Postgres runs and rolls them back.
    */
   alterTable(schema: string, table: string, request: AlterRequest): Promise<AlterResult>;
+  /** What relies on a table, or on one column of it, so a drop or change can be judged before it runs. */
+  dependents(schema: string, table: string, column?: string): Promise<Dependents>;
   /** The migrations the active database has recorded as applied; never creates the tracking table. */
   migrationState(): Promise<MigrationState>;
   /** Runs reviewed migration files in order. With `dryRun` it rolls back where the database can. */

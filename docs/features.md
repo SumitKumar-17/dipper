@@ -224,6 +224,20 @@ Drag tabs to any edge to create splits, move tabs between panes, and restore the
   <img src="assets/hero.png" alt="Dipper split-pane SQL workspace" width="780">
 </p>
 
+## Dependencies
+
+Before you drop or change something, see what is built on it. The table's **Structure** tab lists
+everything that depends on the table, and the review step of **Edit structure** checks each
+dropped, retyped or renamed column (or a renamed table) and lists what it would break.
+
+- Views, including views built on those views, with the columns each one uses. Materialized views
+  on Postgres.
+- Foreign keys on other tables that point at it.
+- Functions and procedures that mention it, and on SQLite triggers on other tables.
+- Postgres reads views and foreign keys from the catalog. Function bodies are only text to every
+  database, and MySQL and SQLite record nothing about what a view reads, so those are found by name
+  and marked **found by name**: treat them as hints that can be wrong either way.
+
 ## Migrations
 
 Schema changes as numbered files you keep with your project. Open **Migrations** from the command
