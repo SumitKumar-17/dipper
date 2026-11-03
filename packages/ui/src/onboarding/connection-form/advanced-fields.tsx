@@ -67,10 +67,11 @@ export function AdvancedFields({ fields }: { fields: ConnectionFields }): React.
               </Field>
             </React.Fragment>
           ))}
+          {/* Not a FieldDescription: that part throws outside a Field, and this note belongs to none. */}
           {fields.dialect === "postgres" && (
-            <FieldDescription>
+            <p className="text-muted-foreground text-xs">
               For a unix socket, use the socket directory as the host, for example /var/run/postgresql.
-            </FieldDescription>
+            </p>
           )}
         </div>
       </CollapsiblePanel>
