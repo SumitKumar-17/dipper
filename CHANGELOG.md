@@ -247,6 +247,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Changed
 
+- **The walk folds rows without moving layout** - Rows that a WHERE or HAVING drops, and members
+  leaving a group, now fade where they are and the rest glide up, instead of the space collapsing.
+  It looks much the same and no longer counts as layout shift on a page that contains the walk.
 - **A release pre-flight** - `bun run release:check vX.Y.Z` checks, before a tag is pushed, what the
   release workflow would otherwise find out afterwards: that the tag matches the declared version,
   that the changelog has notes for it, and that git is on a clean main with no such tag yet.
