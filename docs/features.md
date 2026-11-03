@@ -254,6 +254,31 @@ Everything below is in the command palette (<kbd>⌘</kbd><kbd>K</kbd>) and runs
   <em>Mark a connection read-only in Settings and the server refuses every write through it, whatever the client asks. Give it a colour so production never looks like a test database.</em>
 </p>
 
+## Connecting
+
+Paste a connection into any field of the connection form and the form fills itself in: the host,
+port, user, database, password, TLS and the advanced options it has fields for. It reads
+
+- a URL: `postgres://`, `postgresql://`, `mysql://`, `mariadb://`, including SQLAlchemy's
+  `postgresql+psycopg2://` spelling, and `sqlite:///path/to/app.db` or a path to a `.db` file;
+- a `psql` or `mysql` command line, with `-h`, `-p`/`-P`, `-U`/`-u`, `-d`, the long flags, a URL
+  as the database argument, and a `PGPASSWORD=` or `MYSQL_PWD=` prefix;
+- a `DATABASE_URL=...` or `export DATABASE_URL=...` line, or a whole `.env` block of `PGHOST`,
+  `PGUSER` and friends;
+- a JDBC string such as `jdbc:postgresql://host:5432/db?user=app&password=...`;
+- a libpq keyword string such as `host=db port=5432 dbname=app user=app sslmode=require`.
+
+Typing a host works too: `db.example.com:5433` splits into host and port when you leave the field,
+and an empty user, database and name are filled from the dialect's defaults and the host. Neon,
+Supabase (direct and pooler), Amazon RDS and Aurora, PlanetScale and Azure hosts turn TLS on and
+show a short note about that provider.
+
+Every filled field is marked, one Undo takes the whole fill back, and nothing you typed (or a saved
+connection's own values) is ever replaced: those are listed as kept instead. A pasted password goes
+only into the password field. Text that is not a connection, or a connection that looks malformed,
+pastes as ordinary text. Parameters the form has no field for are named, so nothing is dropped
+silently. In URL mode, a URL pasted into the URL field stays a URL, as before.
+
 ## SQLite
 
 Choose SQLite when connecting and give it the path of a database file (or `sqlite:///path/to/app.db`).

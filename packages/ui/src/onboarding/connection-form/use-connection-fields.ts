@@ -3,24 +3,21 @@ import * as React from "react";
 import type { ConnectionInput } from "../../workspace/types";
 import { fileName } from "../connection-address";
 import { DIALECT_DEFAULTS } from "../dialect-mark";
+import { type Applied, applyFill, forgetField, revertFill } from "./autofill/apply";
+import { detectConnection } from "./autofill/detect";
+import { type Fill, planDraft, planTypedHost } from "./autofill/plan";
+import {
+  ADVANCED_OPTIONS,
+  type AdvancedOption,
+  type FillKey,
+  type FormValues,
+  initialOwned,
+  initialValues,
+  type Mode,
+  withPatch,
+} from "./form-values";
 
-/** Whether the address is given as a URL or as the individual fields. The server parses either. */
-export type Mode = "fields" | "url";
-
-/** The driver options this form edits. Any other option on a connection is carried over untouched. */
-export const ADVANCED_OPTIONS = [
-  "sslrootcert",
-  "sslcert",
-  "sslkey",
-  "search_path",
-  "socket",
-  "ssh_host",
-  "ssh_port",
-  "ssh_user",
-  "ssh_key",
-  "ssh_fingerprint",
-] as const;
-export type AdvancedOption = (typeof ADVANCED_OPTIONS)[number];
+export type { AdvancedOption, FillKey, Mode } from "./form-values";
 
 export type ConnectionFields = {
   readonly dialect: Dialect;
@@ -47,6 +44,18 @@ export type ConnectionFields = {
   setSSL: (value: boolean) => void;
   /** Picks a dialect and follows its defaults, then reports the choice upward. */
   chooseDialect: (next: Dialect) => void;
+  /**
+   * Fills the form from text pasted into the `target` field. False when the text is not a
+   * connection, so it pastes as ordinary text.
+   */
+  pasteConnection: (text: string, target?: FillKey) => boolean;
+  /** Fills in what a host typed by hand implies. Called when the host field loses focus. */
+  completeHost: () => void;
+  /** The last fill, for the notice that names it; null once it is undone or edited away. */
+  readonly fill: Fill | null;
+  /** Whether a field holds a value autofill put there. */
+  isFilled: (key: FillKey) => boolean;
+  undoFill: () => void;
   /** Enough to submit: a name, and an address in whichever shape is showing. */
   readonly valid: boolean;
   buildInput: () => ConnectionInput;
@@ -92,35 +101,16 @@ export function useConnectionFields(
   onDialectChange: ((dialect: Dialect) => void) | undefined,
   defaultMode?: Mode,
 ): ConnectionFields {
-  const [dialect, setDialect] = React.useState<Dialect>(initial?.dialect ?? defaultDialect);
-  const [name, setName] = React.useState(initial?.name ?? "");
-  const [mode, setMode] = React.useState<Mode>(
-    defaultMode ?? (initial?.url !== undefined && initial.host === undefined ? "url" : "fields"),
+  const [values, setValues] = React.useState<FormValues>(() =>
+    initialValues(initial, defaultDialect, defaultMode),
   );
-  const [url, setUrl] = React.useState(initial?.url ?? "");
-  const [host, setHost] = React.useState(initial?.host ?? "localhost");
-  const [port, setPort] = React.useState(String(initial?.port ?? DIALECT_DEFAULTS[dialect].port));
-  const [user, setUser] = React.useState(initial?.user ?? "");
-  const [password, setPassword] = React.useState("");
-  const [database, setDatabase] = React.useState(
-    initial?.database ?? DIALECT_DEFAULTS[dialect].database,
-  );
-  // Whether the user has taken the switch over. Until they do it follows the host, because the
-  // answer is not a preference: a hosted database requires TLS and a local one does not offer it.
-  const [sslChoice, setSSLChoice] = React.useState<boolean | null>(initial?.ssl ?? null);
-
-  // The advanced options, as the text the person typed. Options the form does not manage stay
-  // with `initial` and are sent back unchanged, because saving replaces the whole set.
-  const [advanced, setAdvancedState] = React.useState<Record<AdvancedOption, string>>(() =>
-    Object.fromEntries(ADVANCED_OPTIONS.map((key) => [key, String(initial?.options?.[key] ?? "")])) as Record<
-      AdvancedOption,
-      string
-    >,
-  );
-  const setAdvanced = React.useCallback(
-    (key: AdvancedOption, value: string) => setAdvancedState((current) => ({ ...current, [key]: value })),
-    [],
-  );
+  // Fields that hold someone's own value: typed here, or brought in by `initial`. Autofill reads
+  // this and never writes over them.
+  const [owned, setOwned] = React.useState<ReadonlySet<FillKey>>(() => initialOwned(initial));
+  const [applied, setApplied] = React.useState<Applied | null>(null);
+  // Whether the host was typed into since the field last lost focus, so tabbing through the form
+  // does not fill anything.
+  const hostEdited = React.useRef(false);
 
   // Through a ref, so a parent rebuilding the callback each render cannot make the mount report
   // fire again. Written after the commit, so a render React throws away cannot leave the latest
@@ -132,31 +122,100 @@ export function useConnectionFields(
 
   // Once, for the first paint: the screen behind the form draws whichever dialect is pressed, and
   // at mount that is whatever `initial` or `defaultDialect` chose. Every later change reports from
-  // `chooseDialect`, so clicking a card no longer costs a second render of this form.
-  const mountDialect = React.useRef(dialect);
+  // `chooseDialect` or a fill, so clicking a card no longer costs a second render of this form.
+  const mountDialect = React.useRef(values.dialect);
   React.useEffect(() => {
     report.current?.(mountDialect.current);
   }, []);
 
+  const edit = React.useCallback((key: FillKey, patch: Partial<FormValues>, own = true) => {
+    setValues((current) => ({ ...current, ...patch }));
+    if (own) setOwned((current) => new Set(current).add(key));
+    setApplied((current) => forgetField(current, key));
+  }, []);
+
+  const setAdvanced = React.useCallback(
+    (key: AdvancedOption, value: string) => {
+      setValues((current) => withPatch(current, { [key]: value }));
+      setOwned((current) => new Set(current).add(key));
+      setApplied((current) => forgetField(current, key));
+    },
+    [],
+  );
+
   const chooseDialect = React.useCallback(
     (next: Dialect) => {
-      setDialect(next);
+      const { dialect } = values;
       // Only follow the dialect's defaults until the user overrides them: retyping 5432 over
-      // someone's 5433 is the kind of helpfulness that loses work.
-      setPort((current) =>
-        current === String(DIALECT_DEFAULTS[dialect].port)
-          ? String(DIALECT_DEFAULTS[next].port)
-          : current,
-      );
-      setDatabase((current) =>
-        current === DIALECT_DEFAULTS[dialect].database ? DIALECT_DEFAULTS[next].database : current,
+      // someone's 5433 is the kind of helpfulness that loses work. Picking a card is not typing,
+      // so it leaves the dialect free for a paste to change.
+      edit(
+        "dialect",
+        {
+          dialect: next,
+          port:
+            values.port === String(DIALECT_DEFAULTS[dialect].port)
+              ? String(DIALECT_DEFAULTS[next].port)
+              : values.port,
+          database:
+            values.database === DIALECT_DEFAULTS[dialect].database
+              ? DIALECT_DEFAULTS[next].database
+              : values.database,
+        },
+        false,
       );
       report.current?.(next);
     },
-    [dialect],
+    [edit, values],
   );
 
-  const ssl = sslChoice ?? (mode === "url" ? urlWantsTLS(url) : isRemote(host));
+  const commit = React.useCallback(
+    (next: { values: FormValues; applied: Applied }) => {
+      if (next.values.dialect !== values.dialect) report.current?.(next.values.dialect);
+      setValues(next.values);
+      setApplied(next.applied);
+    },
+    [values.dialect],
+  );
+
+  const pasteConnection = React.useCallback(
+    (text: string, target?: FillKey): boolean => {
+      const draft = detectConnection(text);
+      if (draft === null) return false;
+      // A second paste replaces the first rather than stacking on it, so what the first filled
+      // and the second does not mention goes back to how it was.
+      const base = applied === null ? values : revertFill(values, applied);
+      // Pasting into a field is asking for its text to be replaced, so that one field is fair game.
+      const theirs = new Set([...owned].filter((key) => key !== target));
+      const fill = planDraft(base, theirs, draft);
+      // A paste that fills nothing must not take the previous fill away with it either.
+      if (fill.conflict !== undefined) setApplied({ fill, previous: {} });
+      else commit(applyFill(base, fill));
+      return true;
+    },
+    [applied, commit, owned, values],
+  );
+
+  const completeHost = React.useCallback(() => {
+    if (!hostEdited.current) return;
+    hostEdited.current = false;
+    const fill = planTypedHost(values, owned);
+    if (fill !== null) commit(applyFill(values, fill, applied));
+  }, [applied, commit, owned, values]);
+
+  const undoFill = React.useCallback(() => {
+    if (applied === null) return;
+    const restored = revertFill(values, applied);
+    if (restored.dialect !== values.dialect) report.current?.(restored.dialect);
+    setValues(restored);
+    setApplied(null);
+  }, [applied, values]);
+
+  const filled = React.useMemo(() => new Set(applied?.fill.filled ?? []), [applied]);
+  const isFilled = React.useCallback((key: FillKey) => filled.has(key), [filled]);
+
+  const { dialect, name, mode, url, host, port, user, password, database, advanced } = values;
+  const ssl = values.ssl ?? (mode === "url" ? urlWantsTLS(url) : isRemote(host));
 
   // A pasted URL names the server itself, so the name is not a second thing to think of before
   // the button turns on: an empty one is filled in from the host.
@@ -212,16 +271,24 @@ export function useConnectionFields(
     ssl,
     advanced,
     setAdvanced,
-    setName,
-    setMode,
-    setUrl,
-    setHost,
-    setPort,
-    setUser,
-    setPassword,
-    setDatabase,
-    setSSL: setSSLChoice,
+    setName: (value) => edit("name", { name: value }),
+    setMode: (value) => edit("mode", { mode: value }, false),
+    setUrl: (value) => edit("url", { url: value }),
+    setHost: (value) => {
+      hostEdited.current = true;
+      edit("host", { host: value });
+    },
+    setPort: (value) => edit("port", { port: value }),
+    setUser: (value) => edit("user", { user: value }),
+    setPassword: (value) => edit("password", { password: value }),
+    setDatabase: (value) => edit("database", { database: value }),
+    setSSL: (value) => edit("ssl", { ssl: value }),
     chooseDialect,
+    pasteConnection,
+    completeHost,
+    fill: applied?.fill ?? null,
+    isFilled,
+    undoFill,
     valid,
     buildInput,
   };
