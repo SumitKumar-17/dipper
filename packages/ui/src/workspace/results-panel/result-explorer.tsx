@@ -6,6 +6,7 @@ import { Button } from "../../ui/button";
 import { type CellRef, type GridSort, nextSort, ResultsGrid, viewRows } from "../results-grid";
 import { CellInspector } from "./cell-inspector";
 import { numericColumns } from "./chart-model";
+import { ExpandButton, ExpandDialog } from "../expand";
 import { pinResult, unpinResult, usePinned } from "./pinned-result";
 import { ResultChart } from "./result-chart";
 import { ResultDiffView } from "./result-diff-view";
@@ -17,10 +18,14 @@ import { ResultDiffView } from "./result-diff-view";
 export function ResultExplorer({
   animateRows,
   result,
+  expanded = false,
 }: {
   animateRows: boolean;
   result: StatementResult;
+  /** True inside the pop-over, which is already as big as it gets and has no expand button. */
+  expanded?: boolean;
 }): React.ReactElement {
+  const [popOver, setPopOver] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [sort, setSort] = React.useState<GridSort | null>(null);
   const [cell, setCell] = React.useState<CellRef | null>(null);
@@ -66,6 +71,7 @@ export function ResultExplorer({
               Compare with pinned
             </Button>
           )}
+          {!expanded && <ExpandButton label="results" onClick={() => setPopOver(true)} />}
           <Button
             aria-label={pinned ? "Replace the pinned result with this one" : "Pin this result to compare later runs"}
             onClick={() => pinResult(result)}
@@ -127,6 +133,11 @@ export function ResultExplorer({
           value={selectedRow[cell.col] ?? null}
         />
       )}
+      {/* Its own copy of the explorer: find, sort and chart start fresh, which is what opening a
+          panel on its own should do. The rows are the same rows. */}
+      <ExpandDialog onOpenChange={setPopOver} open={popOver} title="Results">
+        <ResultExplorer animateRows={false} expanded result={result} />
+      </ExpandDialog>
     </div>
   );
 }

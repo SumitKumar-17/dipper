@@ -118,10 +118,10 @@ change reviewed as plain SQL before it runs.
 - [ ] Run one query on several connections and compare: pick two or more connections (for example
       staging and production), run the same SQL on each, and see the results side by side with the
       pinned-result diff, so "do these two databases agree" is one action (M)
-- [ ] Expand any panel into a pop-over: one shared expand button and pop-over for every panel that
-      can be too small to read (results grid, charts, plan view, pinned diff, table structure and DDL,
-      activity, slow queries, advice, schema diagram), keyboard reachable and focus returning to the
-      button, so the same small square icon works the same way everywhere (M)
+- [x] Expand any panel into a pop-over: one shared `ExpandButton` and `ExpandDialog`, used by the
+      results pane (grid, chart and pinned diff come with it) and by notebook cell results. The
+      activity, slow queries, advice, objects, plan, schema diagram and Table Editor views already
+      open full size. The Query Walk's own panels are the separate item above (M)
 - [x] Per-connection colour tag and a server-enforced read-only flag, so production looks like production and cannot be written to (S/M)
 - [x] File rename, delete and workspace search: right-click a file to rename or delete it (open tabs follow or close), and search file names and contents from the Files panel, opening a result at its line (S/M)
 - [x] `inert` for the collapsed sidebar, and tab list semantics with arrow-key navigation for the editor tabs; roles and keyboard for the schema and file trees still open (S/M)

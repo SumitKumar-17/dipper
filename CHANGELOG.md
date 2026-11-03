@@ -14,6 +14,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- **Expand results** - The results toolbar and each notebook cell result have an expand button
+  that opens the rows on their own, large, with find, sort, chart and the pinned comparison. Escape
+  or the button in its header puts it back.
 - **SQLite** - A third database: connect to a SQLite file by path (or `sqlite:///path/to/app.db`).
   It uses a pure-Go driver, so the single binary still cross-compiles to every platform with no
   SQLite install. Schema tree with foreign keys, table structure (indexes, constraints, triggers,

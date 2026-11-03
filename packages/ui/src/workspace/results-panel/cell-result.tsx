@@ -7,9 +7,11 @@ import { cn } from "../../lib/utils";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";
+import { ExpandButton, ExpandDialog } from "../expand";
 import { ROW_HEIGHT } from "../results-grid";
 import { type ResultsView, type Run, runStatements } from "../types";
 import { commandLabel, isRowResult, plural } from "./format";
+import { ResultExplorer } from "./result-explorer";
 import { RunningBars } from "./skeletons";
 import { ResultBody, StatementStrip } from "./statement-view";
 
@@ -55,6 +57,7 @@ export function CellResult({
   // Local, not `panels.resultsView`: that is one global value, so ten cells sharing it would all
   // flip to Messages the moment any one of them did.
   const [view, setView] = React.useState<ResultsView>("results");
+  const [popOver, setPopOver] = React.useState(false);
 
   // An error is a message, not a grid. Once per failing run; the footer link is the way back.
   const announced = React.useRef<string | null>(null);
@@ -116,18 +119,28 @@ export function CellResult({
           )}
         </button>
 
-        {exportHref ? (
-          <Button render={<a download href={exportHref} />} size="xs" variant="ghost">
-            <DownloadIcon />
-            Export
-          </Button>
-        ) : (
-          <Button disabled size="xs" variant="ghost">
-            <DownloadIcon />
-            Export
-          </Button>
-        )}
+        <span className="flex items-center gap-1">
+          {statement && isRowResult(statement) && statement.rows.length > 0 && (
+            <ExpandButton label="the result" onClick={() => setPopOver(true)} />
+          )}
+          {exportHref ? (
+            <Button render={<a download href={exportHref} />} size="xs" variant="ghost">
+              <DownloadIcon />
+              Export
+            </Button>
+          ) : (
+            <Button disabled size="xs" variant="ghost">
+              <DownloadIcon />
+              Export
+            </Button>
+          )}
+        </span>
       </div>
+      {statement && isRowResult(statement) && (
+        <ExpandDialog onOpenChange={setPopOver} open={popOver} title="Result">
+          <ResultExplorer animateRows={false} expanded result={statement} />
+        </ExpandDialog>
+      )}
     </div>
   );
 }

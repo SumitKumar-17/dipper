@@ -179,6 +179,8 @@ Drag tabs to any edge to create splits, move tabs between panes, and restore the
 
 ## Result grid
 
+The expand button (the small corners icon) on the results toolbar and on each notebook cell opens the rows on their own, full size.
+
 Inspect query results in a fast, virtualized grid.
 
 - Typed column headers
