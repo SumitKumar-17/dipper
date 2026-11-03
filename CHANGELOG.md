@@ -29,6 +29,12 @@ The section matching a release's version becomes that release's notes on GitHub 
   naming the connection, the database and what the statement will do, with Cancel as the default.
   Reads never ask. The check looks at the words of the statement outside strings and comments, so
   `select 'drop table t'` is not a write, and `SELECT ... FOR UPDATE` is, on purpose.
+- **One snapshot per Query Walk** - Every probe of a walk now runs on one pinned connection inside
+  one read-only `REPEATABLE READ` transaction (a consistent snapshot on MySQL), so rows changed by
+  someone else while the walk runs can no longer make its stages disagree. With your own
+  transaction open the walk reads inside it and leaves it as it was; on SQLite it says it is not
+  snapshotted. A badge by the title says which. A statement that fails inside a pinned session no
+  longer drops the connection (and the transaction) while its settings are put back.
 - **A connection per tab** - Each editor tab remembers the connection and database it runs on, so
   a test, a staging and a production query can sit side by side. Focusing a tab switches the whole
   workspace (schema, runs, transactions) to its connection, dialling it if needed; choosing a

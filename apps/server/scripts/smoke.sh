@@ -99,6 +99,21 @@ expect "an uncommitted session row is invisible to other connections" "0" "$(cur
 curl -s -X DELETE "$B/sessions/$SID" >/dev/null
 expect "closing a session rolls its transaction back" "0" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select count(*) from orders where status = 'session-test'\",\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
 expect "a closed session is a 404" "404" "$(curl -s -o /dev/null -w '%{http_code}' "$B/sessions/$SID")"
+# The query walk's snapshot, statement for statement as walk-session.ts sends it: a change committed
+# by another connection between two probes must not reach the second one.
+WSID="$(curl -s -X POST "$B/connections/$CID/sessions" | json 'j.id')"
+walk() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sessionId\":\"$WSID\",\"sql\":\"$1\",\"record\":false,\"readOnly\":$2}" "$B/query/sync"; }
+walk_count() { walk "savepoint dipper_walk_probe;\nset local transaction_read_only = on;\nselect count(*) from orders" true | json 'j.results[2].rows[0][0]'; walk "rollback to savepoint dipper_walk_probe;\nrelease savepoint dipper_walk_probe" true >/dev/null; }
+walk "begin transaction isolation level repeatable read, read only" false >/dev/null
+WALK_BEFORE="$(walk_count)"
+expect "a guarded walk probe returns its own rows" "true" "$([[ "$WALK_BEFORE" =~ ^[0-9]+$ ]] && echo true)"
+curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"insert into orders (status) values ('walk-snapshot')\",\"record\":false}" "$B/query/sync" >/dev/null
+expect "a walk's probes read one snapshot while another connection writes" "$WALK_BEFORE" "$(walk_count)"
+expect "a refused walk probe does not fail the snapshot" "true" "$(walk "savepoint dipper_walk_probe;\nselect no_such_column from orders" true >/dev/null; walk "rollback to savepoint dipper_walk_probe;\nrelease savepoint dipper_walk_probe" true >/dev/null; [ "$(walk_count)" = "$WALK_BEFORE" ] && echo true)"
+expect "a walk probe cannot write inside the snapshot" "error" "$(walk "insert into orders (status) values ('walk-write')" true | json 'j.status')"
+curl -s -X DELETE "$B/sessions/$WSID" >/dev/null
+expect "after the walk the change is visible again" "1" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select count(*) from orders where status = 'walk-snapshot'\",\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
+expect "the walk's connection goes back to the pool writable" "done" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"delete from orders where status = 'walk-snapshot'\",\"record\":false}" "$B/query/sync" | json 'j.status')"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"
 expect "cross-site Origin is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://evil.example' "$B/health")"
 SYNC=$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select status, count(*) as n from orders group by 1\"}" "$B/query/sync")

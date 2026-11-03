@@ -15,11 +15,13 @@ import { Button } from "../../ui/button";
 import { useWorkspace } from "../context";
 import { WalkPlayer } from "./player";
 import { buildProgram, isUnsupportedProgram, type Program } from "./program";
+import { SnapshotBadge } from "./snapshot-badge";
 import { useProgram, type Probe } from "./use-walk";
+import { useWalkSession } from "./use-walk-session";
 import { WalkProvider } from "./walk-context";
 
 export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
-  const { connection, probe } = useWorkspace();
+  const { connection } = useWorkspace();
   const dialect = connection?.dialect ?? "postgres";
   // Comments come out BEFORE anything else looks at the statement, and the whole walk is built from
   // what is left. An exercise question written as a `--` header is part of the text, so left in it
@@ -28,6 +30,9 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
   // them knowing comments exist. They are carried down to the narrator, which has a tab for them.
   const stripped = React.useMemo(() => stripComments(sql), [sql]);
   const program = React.useMemo(() => buildProgram(stripped.sql, dialect), [stripped.sql, dialect]);
+  const walkable = connection !== undefined && !isUnsupportedProgram(program);
+  // Opened before the first probe and closed with the dialog, so every stage reads the same data.
+  const session = useWalkSession(dialect, walkable);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-lg/5">
@@ -39,6 +44,7 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
         <DialogPrimitive.Title className="shrink-0 font-medium text-sm leading-none">
           Query walk
         </DialogPrimitive.Title>
+        {session && <SnapshotBadge mode={session.mode} note={session.note} />}
         <DialogPrimitive.Close
           aria-label="Close"
           className="ms-auto"
@@ -56,8 +62,12 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
         <p className="flex flex-1 items-center justify-center p-6 text-center text-muted-foreground text-sm">
           Connect to a database to walk this query.
         </p>
+      ) : session === null ? (
+        <p className="flex flex-1 items-center justify-center p-6 text-center text-muted-foreground text-sm">
+          Opening a snapshot of the database…
+        </p>
       ) : (
-        <Walk comments={stripped.comments} probe={probe} program={program} />
+        <Walk comments={stripped.comments} probe={session.probe} program={program} />
       )}
     </div>
   );

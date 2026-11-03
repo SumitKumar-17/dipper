@@ -74,6 +74,12 @@ This makes complex SQL easier to understand, debug, and explain - especially joi
 
 The visualization is based on your actual SQL and database. Query Walk uses read-only executions and does not modify your data.
 
+Every stage of one walk reads the same data. The walk pins one connection and opens a read-only `REPEATABLE READ` transaction on it (a consistent snapshot on MySQL), so rows someone changes while the walk runs cannot make one stage disagree with another. A badge next to the title says which kind of walk you are looking at:
+
+- **One snapshot** - every stage read the same snapshot, which is closed when the walk closes.
+- **Your transaction** - you have a transaction open, so the walk reads inside it, sees your uncommitted changes, and leaves it exactly as it was.
+- **Not snapshotted** - on SQLite (each stage reads the file on its own), while your own transaction has failed, or when the snapshot could not be opened; hover the badge for the reason.
+
 **To open it:** put the cursor in a `SELECT` (or select the part you want), right-click and choose **Visualise query**, or open the command palette (<kbd>⌘</kbd><kbd>K</kbd>, or <kbd>Ctrl</kbd>+<kbd>K</kbd>) and run **Visualise query**. It plays automatically: pause it with the controls at the top right, then use the left and right arrow keys to step through the stages.
 
 ## Pin a result and compare

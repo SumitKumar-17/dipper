@@ -36,6 +36,7 @@ import type {
   StatementStats,
   StatementResult,
   TableDetail,
+  TransactionState,
 } from "@dipper/protocol";
 
 
@@ -154,6 +155,39 @@ export type TransactionView = {
   readonly busy: boolean;
   /** Why the last begin, commit or rollback failed, or null. */
   readonly error: string | null;
+  /**
+   * The pinned connection the transaction lives on, or null when there is none. The query walk
+   * probes inside it, so it reads what the user's own uncommitted work sees.
+   */
+  readonly sessionId: string | null;
+};
+
+/**
+ * One pinned database connection, held for a caller that needs several statements to share it:
+ * the query walk's snapshot, and the rolled-back transaction a DML walk runs in.
+ */
+export type PinnedSession = {
+  readonly id: string;
+  /**
+   * Runs `sql` on the pinned connection exactly as written: not read-only, without a statement
+   * timeout, and unrecorded. Read-only and timeouts are applied with `set` around each statement,
+   * and a `set` sent just before a BEGIN outlives the rollback that ends it, so the statements that
+   * open and close a transaction go through here. Everything else should use `probe`.
+   */
+  run(sql: string, options?: { maxRows?: number }): Promise<RunRecord>;
+  /** Where the session's transaction stands, as the server sees it now. */
+  transaction(): Promise<TransactionState>;
+  /**
+   * Cancels whatever is still running on it, then ends it; the server rolls back anything left
+   * open. Never rejects: a session that is already gone is the outcome being asked for.
+   */
+  close(): Promise<void>;
+};
+
+export type ProbeOptions = {
+  readonly maxRows?: number;
+  /** Runs on this pinned connection instead of a pooled one: see `PinnedSession`. */
+  readonly sessionId?: string;
 };
 
 export type SidebarTab = "schema" | "files" | "history";
@@ -343,7 +377,12 @@ export type WorkspaceApi = {
    * through this. Rejects only for a bad request; SQL failures come back in the record's `error`
    * and statement results.
    */
-  probe(sql: string, options?: { maxRows?: number }): Promise<RunRecord>;
+  probe(sql: string, options?: ProbeOptions): Promise<RunRecord>;
+  /**
+   * Pins a connection to the current database for a caller that needs statements to share one.
+   * Rejects when the connection cannot hold one (SQLite has no sessions).
+   */
+  openSession(): Promise<PinnedSession>;
   /**
    * The same read-only, unrecorded run as `probe`, on a named connection (and its own default
    * database) instead of the active one, which is what comparing across connections needs.
