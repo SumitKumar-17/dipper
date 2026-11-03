@@ -24,6 +24,9 @@ The section matching a release's version becomes that release's notes on GitHub 
   that changed, matched on the columns you choose. A connection that cannot be reached or rejects
   the statement is reported on its own line and does not hold up the rest. Only reads can be
   compared, and at most 5,000 rows are read from each.
+- **The site's walk is the real one** - The landing page's Query Walk is now the actual walk from
+  the app, replaying a recorded query, instead of a screen recording. On a phone it is laid out
+  narrow and readable. About 11 MB of video was removed from the site.
 - **Bigger panels in the Query Walk** - The walk's stage and its explanation each have an expand
   button that opens them alone, large. The walk keeps stepping behind the pop-over, and Escape puts
   the panel back.

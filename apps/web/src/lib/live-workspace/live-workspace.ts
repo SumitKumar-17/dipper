@@ -236,6 +236,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     probe: runs.probe,
     probeOn: runs.probeOn,
     openSession,
+    canSnapshot: true,
     ...tableTools,
     transaction: transaction.view,
     beginTransaction: transaction.begin,

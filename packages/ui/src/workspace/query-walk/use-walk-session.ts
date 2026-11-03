@@ -12,11 +12,11 @@ import { openWalkSession, type WalkSession } from "./walk-session";
  * closed on arrival, which is the case a dialog closed mid-open would otherwise leak.
  */
 export function useWalkSession(dialect: Dialect, enabled: boolean): WalkSession | null {
-  const { transaction, probe, openSession } = useWorkspace();
+  const { transaction, probe, openSession, canSnapshot } = useWorkspace();
   const { state, sessionId } = transaction;
   const inputs = React.useMemo(
-    () => ({ dialect, transaction: { state, sessionId }, probe, openSession }),
-    [dialect, openSession, probe, sessionId, state],
+    () => ({ dialect, transaction: { state, sessionId }, probe, openSession, canSnapshot }),
+    [canSnapshot, dialect, openSession, probe, sessionId, state],
   );
   const [opened, setOpened] = React.useState<{ inputs: typeof inputs; session: WalkSession } | null>(
     null,

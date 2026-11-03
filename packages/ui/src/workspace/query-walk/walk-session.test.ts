@@ -53,6 +53,7 @@ function fake(overrides: Partial<WalkSessionDeps> & { begin?: string; state?: "i
   };
   const deps: WalkSessionDeps = {
     dialect: "postgres",
+    canSnapshot: true,
     transaction: { state: "none", sessionId: null },
     probe: async (sql: string, options?: ProbeOptions) => {
       probes.push({ sql, sessionId: options?.sessionId });
@@ -182,5 +183,17 @@ describe("serialise", () => {
     await expect(b).rejects.toThrow("b failed");
     expect(await c).toBe("c");
     expect(log).toEqual(["start a", "end a", "start b", "start c", "end c"]);
+  });
+});
+
+describe("a host that cannot snapshot", () => {
+  test("opens nothing, probes plainly, and says nothing about snapshots", async () => {
+    const f = fake({ canSnapshot: false });
+    const session = await openWalkSession(f.deps);
+    expect(session.mode).toBe("off");
+    expect(session.note).toBe("");
+    await session.probe("select 1");
+    expect(f.opened()).toBe(0);
+    expect(f.probes[0]?.sessionId).toBeUndefined();
   });
 });

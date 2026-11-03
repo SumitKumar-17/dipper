@@ -18,7 +18,8 @@ import type { PinnedSession, ProbeOptions, TransactionView } from "../types";
 import { messageOf } from "./probe-outcome";
 import type { Probe } from "./use-walk";
 
-export type SnapshotMode = "snapshot" | "yours" | "none";
+/** `off` is a host that has no snapshots to speak of, such as a recording: the walk shows no badge. */
+export type SnapshotMode = "snapshot" | "yours" | "none" | "off";
 
 export type WalkSession = {
   readonly mode: SnapshotMode;
@@ -34,6 +35,7 @@ export type WalkSessionDeps = {
   readonly transaction: Pick<TransactionView, "state" | "sessionId">;
   readonly probe: (sql: string, options?: ProbeOptions) => Promise<RunRecord>;
   readonly openSession: () => Promise<PinnedSession>;
+  readonly canSnapshot: boolean;
 };
 
 /** Named so it cannot collide with a savepoint the user set in their own transaction. */
@@ -69,6 +71,7 @@ export async function openWalkSession(deps: WalkSessionDeps): Promise<WalkSessio
     close: async () => undefined,
   });
 
+  if (!deps.canSnapshot) return { ...plain(""), mode: "off" };
   if (dialect === "sqlite") return plain(NOTES.sqlite);
   if (transaction.state === "failed") return plain(NOTES.failed);
   if (transaction.state === "open" && transaction.sessionId) {

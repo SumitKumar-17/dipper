@@ -461,6 +461,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     explain: () => Promise.reject(new Error(NOT_RECORDED)),
     transaction: { state: "none", busy: false, error: null, sessionId: null },
     // A replay has no database to hold a session on, so the walk reads each stage on its own.
+    canSnapshot: false,
     openSession: () => Promise.reject(new Error("This preview replays recordings, so it has no connection to pin.")),
     beginTransaction: () => Promise.reject(new Error(NOT_RECORDED)),
     commitTransaction: () => Promise.reject(new Error(NOT_RECORDED)),

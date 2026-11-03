@@ -1,7 +1,6 @@
-/* <dipper-walk> and <dipper-terminal> read the static site's page variables from their host, each with
-   a fallback. @dipper/ui spends two of those names on something else - --accent is its hover grey,
-   --ease-out Tailwind's own curve - so the elements get back the values they were drawn with. */
-dipper-walk,
+/* <dipper-terminal> reads the static site's page variables from its host, each with a fallback.
+   @dipper/ui spends two of those names on something else - --accent is its hover grey, --ease-out
+   Tailwind's own curve - so the element gets back the values it was drawn with. */
 dipper-terminal {
   --accent: var(--bui-accent);
   --accent-ink: var(--bui-accent-ink);
@@ -25,10 +24,4 @@ dipper-terminal {
     --rows: 3.5;
     --browser: 56cqw;
   }
-}
-
-/* <dipper-walk variant="phone"> below md, framed by walk-phone.ts: the 40px titlebar and 650px of the
-   470px-wide recording, as fractions of its width, then the rail. */
-[data-dipper-walk-reserve] {
-  height: calc(100cqw * 690 / 470 + 55px);
 }

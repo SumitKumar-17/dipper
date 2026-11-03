@@ -5,6 +5,7 @@
 import * as React from "react";
 import { SceneBoundary } from "../scene-boundary";
 import type { SceneProps } from "../types";
+import { MD, useMediaQuery } from "../../viewport/media";
 import { useNear, useVisible } from "../../viewport/visibility";
 import { SceneWindow, type SceneWindowParts } from "./kit/scene-window";
 import { guardWalkKeys } from "./walk/guard-keys";
@@ -14,12 +15,19 @@ import "./walk/walk.css";
 // Before any walk mounts: the guard has to be the first keydown listener on `window`.
 const registerWalkWindow = guardWalkKeys();
 
+/** The app area on a phone: the width the stacked walk was designed for, tall enough to show it all. */
+const PHONE_WIDTH = 470;
+const PHONE_HEIGHT = 930;
+
 const WalkStage = React.lazy(() => import("./walk/scene"));
 
 export const WalkScene: React.FC<SceneProps> = ({ className, autoplay = true, onReady, onDone }) => {
   const windowRef = React.useRef<HTMLDivElement | null>(null);
   const railRef = React.useRef<HTMLDivElement | null>(null);
   const [app, setApp] = React.useState<HTMLElement | null>(null);
+  // A phone gets the app laid out narrow and tall, which the walk stacks to fit, and scaled by about
+  // 0.76: laid out at 1280 and shrunk to the screen's width its text would be unreadable.
+  const narrow = !useMediaQuery(MD);
   const near = useNear(windowRef);
   const visible = useVisible(windowRef, 0.4);
 
@@ -39,11 +47,11 @@ export const WalkScene: React.FC<SceneProps> = ({ className, autoplay = true, on
     <SceneWindow
       below={<WalkRail app={app} railRef={railRef} />}
       className={className}
-      height={760}
+      height={narrow ? PHONE_HEIGHT : 760}
       held={!visible}
       label="Query Walk"
       onParts={onParts}
-      width={1280}
+      width={narrow ? PHONE_WIDTH : 1280}
     >
       {(parts) =>
         near ? (

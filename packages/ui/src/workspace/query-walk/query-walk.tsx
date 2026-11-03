@@ -60,7 +60,7 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
         <DialogPrimitive.Title className="shrink-0 font-medium text-sm leading-none">
           Query walk
         </DialogPrimitive.Title>
-        {session && <SnapshotBadge mode={session.mode} note={session.note} />}
+        {session && session.mode !== "off" && <SnapshotBadge mode={session.mode} note={session.note} />}
         {write.kind === "dml" && (
           <Badge size="sm" variant="secondary">
             Always rolled back

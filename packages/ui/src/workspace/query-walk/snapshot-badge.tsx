@@ -3,7 +3,10 @@ import { Badge } from "../../ui/badge";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../../ui/tooltip";
 import type { SnapshotMode } from "./walk-session";
 
-const LABELS: Record<SnapshotMode, string> = {
+/** `off` has no badge: a host without snapshots has nothing to say about them. */
+type Shown = Exclude<SnapshotMode, "off">;
+
+const LABELS: Record<Shown, string> = {
   snapshot: "One snapshot",
   yours: "Your transaction",
   none: "Not snapshotted",
@@ -14,7 +17,7 @@ const LABELS: Record<SnapshotMode, string> = {
  * the database can disagree with itself, and the reader has to be able to tell which kind this is.
  * The badge is focusable so the full sentence is reachable from the keyboard too.
  */
-export function SnapshotBadge({ mode, note }: { mode: SnapshotMode; note: string }): React.ReactElement {
+export function SnapshotBadge({ mode, note }: { mode: Shown; note: string }): React.ReactElement {
   return (
     <Tooltip>
       <TooltipTrigger

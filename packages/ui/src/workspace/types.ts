@@ -384,6 +384,11 @@ export type WorkspaceApi = {
    */
   openSession(): Promise<PinnedSession>;
   /**
+   * Whether a walk can read one snapshot here. The live app can; a recording replayed on the website
+   * has no connection to pin, so its walk says nothing about snapshots rather than that it has none.
+   */
+  readonly canSnapshot: boolean;
+  /**
    * The same read-only, unrecorded run as `probe`, on a named connection (and its own default
    * database) instead of the active one, which is what comparing across connections needs.
    */

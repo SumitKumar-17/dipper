@@ -142,7 +142,11 @@ change reviewed as plain SQL before it runs.
       sections read are all needed there; the chunks buy caching across pages and deploys (M)
 - [x] Feature grid driven by one data file (M)
 - [x] Comparison table and FAQ, both driven by data files, FAQ with structured data (S/M)
-- [ ] Real Query Walk scene, then delete `public/legacy` and its capture scripts (M)
+- [x] Real Query Walk scene on the landing page, replacing the recorded video; its clips, player and
+      clip recorder are deleted (`public/legacy` went from 11 MB to 204 KB). The walk's rows now fold
+      on a transform, so the scene adds no layout shift of its own (CLS stays at the page's 0.077) (M)
+- [ ] A real terminal scene in React for the install recording, then delete the rest of
+      `public/legacy` (`terminal.js`, its data and two screenshots) (M)
 - [x] Docs and changelog pages rendered from the repo (M)
 
 - [x] Shortcut labels follow the platform (Ctrl+S on Windows, ⌘S on a Mac) from one shortcuts module, and a Windows PowerShell installer (not yet run on Windows), and a clean script that works in any shell (S)

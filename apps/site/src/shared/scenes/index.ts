@@ -7,7 +7,8 @@
 // and then hands the real app to the visitor. Only the real workspace scenes (hero, completion,
 // notebook) can be usable; the others ignore the prop.
 import type { FC } from "react";
-import { LegacyTerminalScene, LegacyWalkScene } from "./legacy/scenes";
+import { LegacyTerminalScene } from "./legacy/scenes";
+import { WalkScene as RealWalkScene } from "./real/walk";
 import { RealCompletionScene, RealHeroScene, RealNotebookScene } from "./real/workspace";
 import { RelationsScene as RealRelationsScene } from "./real/relations";
 import type { SceneProps } from "./types";
@@ -21,7 +22,7 @@ export const CompletionScene: FC<SceneProps> = RealCompletionScene;
 /** Query Walk, with its clause rail. */
 // The real walk (./real/walk) works, but @dipper/ui folds the rows WHERE drops by animating their
 // height, which scores about 0.11 layout shift at desktop width. Legacy until that fold is a transform.
-export const WalkScene: FC<SceneProps> = LegacyWalkScene;
+export const WalkScene: FC<SceneProps> = RealWalkScene;
 /** The Relationship View, touring the tables a sighting touches. */
 export const RelationsScene: FC<SceneProps> = RealRelationsScene;
 /** A .sql notebook of `-- %%` cells, run one after another. */

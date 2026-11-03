@@ -1,6 +1,5 @@
-import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useLayoutEffect, useRef } from "react";
 import { cn } from "../../cn";
-import { MD, useMediaQuery } from "../../viewport/media";
 import type { SceneAnchors, SceneProps } from "../types";
 import "./legacy.css";
 
@@ -11,15 +10,10 @@ type LegacyElement = HTMLElement & {
 
 export type LegacySceneDef = {
   /** The module under public/legacy/js/ that defines the element. */
-  module: "walk" | "terminal";
-  tag: "dipper-walk" | "dipper-terminal";
+  module: "terminal";
+  tag: "dipper-terminal";
   /** Holds the element's final height from first paint, so nothing moves when it mounts. */
   reserve: ReactNode;
-  /**
-   * Below md: the attribute that switches the element to its phone cut, and what frames that cut
-   * once it is ready (returning the undo). The reserve holds both cuts' boxes, each at its widths.
-   */
-  phone?: { attribute: string; value: string; frame: (anchors: SceneAnchors) => () => void };
 };
 
 const modules = new Map<string, Promise<void>>();
@@ -65,13 +59,11 @@ function anchorsOf(el: LegacyElement): SceneAnchors | null {
 export function LegacyScene({ def, className, autoplay = true, paused = false, onReady, onDone }: SceneProps & { def: LegacySceneDef }) {
   const host = useRef<HTMLDivElement>(null);
   const element = useRef<LegacyElement | null>(null);
-  const [anchors, setAnchors] = useState<SceneAnchors | null>(null);
-  const narrow = !useMediaQuery(MD) && !!def.phone;
   const callbacks = useRef({ onReady, onDone, autoplay });
   useLayoutEffect(() => {
     callbacks.current = { onReady, onDone, autoplay };
   });
-  const { module, tag, phone } = def;
+  const { module, tag } = def;
 
   useEffect(() => {
     const parent = host.current;
@@ -80,7 +72,6 @@ export function LegacyScene({ def, className, autoplay = true, paused = false, o
     // Made here rather than rendered, so its attributes are in place before the element is attached.
     const el = document.createElement(tag) as LegacyElement;
     if (!callbacks.current.autoplay) el.setAttribute("autoplay", "false");
-    if (narrow && phone) el.setAttribute(phone.attribute, phone.value);
     el.classList.add("block", "w-full");
     element.current = el;
     const done = () => callbacks.current.onDone?.();
@@ -92,7 +83,6 @@ export function LegacyScene({ def, className, autoplay = true, paused = false, o
       .then(() => {
         if (!live) return;
         const found = anchorsOf(el);
-        setAnchors(found);
         if (found) callbacks.current.onReady?.(found);
       })
       .catch((error: unknown) => console.warn(`<${tag}> did not load:`, error));
@@ -101,15 +91,8 @@ export function LegacyScene({ def, className, autoplay = true, paused = false, o
       el.removeEventListener("scene:done", done);
       el.remove();
       element.current = null;
-      setAnchors(null);
     };
-  }, [module, tag, narrow, phone]);
-
-  // Before the first paint with the anchors, so the unframed window is never seen.
-  useLayoutEffect(() => {
-    if (!narrow || !phone || !anchors) return;
-    return phone.frame(anchors);
-  }, [narrow, phone, anchors]);
+  }, [module, tag]);
 
   useEffect(() => {
     const el = element.current;
@@ -128,16 +111,7 @@ export function LegacyScene({ def, className, autoplay = true, paused = false, o
       <div aria-hidden className="pointer-events-none invisible col-start-1 row-start-1">
         {def.reserve}
       </div>
-      {/* The phone cut is taller than its framed window until the frame applies: held to the
-          reserve, it can never push the page. */}
-      <div
-        ref={host}
-        className={cn(
-          "col-start-1 row-start-1 min-w-0",
-          phone && "max-md:absolute max-md:inset-0 max-md:overflow-hidden",
-          narrow && !anchors && "invisible",
-        )}
-      />
+      <div ref={host} className="col-start-1 row-start-1 min-w-0" />
     </div>
   );
 }
