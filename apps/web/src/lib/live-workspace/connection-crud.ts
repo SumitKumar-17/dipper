@@ -27,6 +27,7 @@ export function upsertSummary(
 
 export type ConnectionCrud = {
   connect: (id: string, database?: string) => Promise<void>;
+  disconnect: (id: string) => Promise<void>;
   addConnection: (input: ConnectionInput) => Promise<ConnectionSummary>;
   updateConnection: (id: string, patch: Partial<ConnectionInput>) => Promise<ConnectionSummary>;
   removeConnection: (id: string) => Promise<void>;
@@ -66,6 +67,14 @@ export function useConnectionCrud(
       select(nextId, nextDatabase ?? null);
     },
     [getClient, select, setConnections],
+  );
+
+  const disconnect = React.useCallback(
+    async (id: string): Promise<void> => {
+      const summary = await getClient().connections.disconnect(id);
+      setConnections((prev) => asyncReady(upsertSummary(asyncData(prev) ?? [], summary)));
+    },
+    [getClient, setConnections],
   );
 
   const addConnection = React.useCallback(
@@ -134,6 +143,7 @@ export function useConnectionCrud(
 
   return {
     connect,
+    disconnect,
     addConnection,
     updateConnection,
     removeConnection,

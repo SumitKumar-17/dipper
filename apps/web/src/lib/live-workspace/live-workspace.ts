@@ -185,6 +185,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     database: connections.database,
     databases: connections.databases,
     connect: connections.connect,
+    disconnect: connections.disconnect,
     selectDatabase: connections.selectDatabase,
     addConnection: connections.addConnection,
     updateConnection: connections.updateConnection,

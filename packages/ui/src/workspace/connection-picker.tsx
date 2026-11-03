@@ -1,5 +1,6 @@
-import { CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, PlusIcon, UnplugIcon } from "lucide-react";
 import type * as React from "react";
+import { plural } from "../lib/format";
 import { cn } from "../lib/utils";
 import { Button } from "../ui/button";
 import {
@@ -32,7 +33,9 @@ import { StatusDot, dotStatusOf } from "./status-dot";
  * the connection you are on.
  */
 export function ConnectionPicker({ className }: { className?: string }): React.ReactElement {
-  const { connections, connection, database, databases, connect, selectDatabase } = useWorkspace();
+  const { buffers, connections, connection, database, databases, connect, disconnect, selectDatabase } = useWorkspace();
+  // How many tabs run on each connection, so the menu says what closing or disconnecting one affects.
+  const tabsOn = (id: string): number => buffers.filter((b) => b.binding?.connectionId === id).length;
   // Both picks invalidate every pane behind this menu, so both go behind the handover screen.
   const { cover } = useConnecting();
 
@@ -104,8 +107,12 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
                   }}
                 >
                   <StatusDot status={dotStatusOf(item.status)} />
+                  <ConnectionTag connection={item} />
                   <span className="truncate">{item.name}</span>
-                  <span className="ml-auto truncate text-muted-foreground">{connectionHostLabel(item)}</span>
+                  <span className="ml-auto truncate text-muted-foreground">
+                    {tabsOn(item.id) > 0 ? `${plural(tabsOn(item.id), "tab")} · ` : ""}
+                    {connectionHostLabel(item)}
+                  </span>
                 </DropdownMenuItem>
               ))
             ))}
@@ -118,6 +125,17 @@ export function ConnectionPicker({ className }: { className?: string }): React.R
               <span>Connect a database…</span>
             </DropdownMenuItem>
           )}
+          {/* Only the connections you are not on: the one you are on is re-dialled by the very next
+              read, so disconnecting it would change nothing you could see. */}
+          {connections.status === "ready" &&
+            connections.data
+              .filter((item) => item.status === "connected" && item.id !== connection?.id)
+              .map((item) => (
+                <DropdownMenuItem key={`disconnect-${item.id}`} onClick={() => void disconnect(item.id).catch(() => undefined)}>
+                  <UnplugIcon />
+                  <span>Disconnect {item.name}</span>
+                </DropdownMenuItem>
+              ))}
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

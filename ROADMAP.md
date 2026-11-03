@@ -118,8 +118,10 @@ change reviewed as plain SQL before it runs.
       editor on a connection tagged red shows the statement and the connection's name and needs a
       confirmation, with Cancel as the default (the Table Editor's and structure editor's own review
       step already shows the exact SQL before anything is applied) (S)
-- [ ] A connections strip: the connections in use as chips with their state, a click to switch,
-      and closing the last tab of one offers to disconnect it (S/M)
+- [x] The connection menu shows each connection's colour tag, state and how many tabs use it, and
+      can disconnect the connections you are not on (the tab chips and the status bar already show
+      the rest, so no separate strip was added; offering to disconnect when a connection's last tab
+      closes is dropped, since reconnecting is automatic) (S/M)
 - [x] Run one query on several connections and compare: tick two or more connections (for example
       staging and production), run the same read on each, and see rows, time and how each differs
       from the first, with the cell-level diff of the pinned-result view (M)

@@ -238,6 +238,11 @@ export type WorkspaceApi = {
    * to know the dial did not land.
    */
   connect(connectionId: string, database?: string): Promise<void>;
+  /**
+   * Closes a connection's pools and sessions on the server. The connection stays saved, and the next
+   * statement dials it again; a transaction open on it is rolled back.
+   */
+  disconnect(connectionId: string): Promise<void>;
   selectDatabase(database: string): Promise<void>;
   /** Saves a new connection and returns it. Does not connect; call `testConnection` or `connect`. */
   addConnection(input: ConnectionInput): Promise<ConnectionSummary>;

@@ -255,6 +255,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
       }
       set({ connectionId, picked: database ?? null });
     },
+    disconnect: async (): Promise<void> => undefined,
     selectDatabase: async (database: string): Promise<void> => set({ picked: database }),
     addConnection: async (input: Parameters<WorkspaceApi["addConnection"]>[0]) => {
       const list = state.connections.status === "ready" ? state.connections.data : [];
