@@ -45,7 +45,7 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] EXPLAIN plan beside the walk, nodes mapped to stations (final query on Postgres; CTE chapters and MySQL/SQLite plans are shown unmatched) (M)
 - [x] Anti-pattern lint: `= NULL`, `NOT IN` subqueries, writes without WHERE, cross joins, leading wildcards, functions on columns, shown in the plan view (data-aware checks in the walk still open) (M)
 - [x] DML walks (INSERT, UPDATE, DELETE) inside a guaranteed rollback, with a before and after diff (Postgres; joined writes, upserts and MySQL/SQLite are refused by name) (L)
-- [ ] Shareable step-through export as a standalone HTML file (M)
+- [x] Shareable step-through export as a standalone HTML file: offline, built from the live walk's scenes and sentences (per-row chapters are named, not replayed) (M)
 - [ ] Bigger panels in the walk: its stage, narration, plan, query and notes panels are small, so each
       gets a small expand button (a square icon) that opens it alone in a large pop-over, Escape or
       the same button to put it back, with the walk still stepping behind it (M)

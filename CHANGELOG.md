@@ -29,6 +29,10 @@ The section matching a release's version becomes that release's notes on GitHub 
   naming the connection, the database and what the statement will do, with Cancel as the default.
   Reads never ask. The check looks at the words of the statement outside strings and comments, so
   `select 'drop table t'` is not a write, and `SELECT ... FOR UPDATE` is, on purpose.
+- **Query Walk export** - An Export button saves the walk as one self-contained HTML file that
+  replays its stages, narration and rows with play, pause and arrow-key stepping. It loads
+  nothing from the network, opens from disk offline, and is marked as a snapshot of the data at
+  export time.
 - **Query Walk for writes** - Visualise an `INSERT`, `UPDATE` or `DELETE` (Postgres) and it runs
   for real inside a transaction that is always rolled back, also on failure and when the walk is
   closed mid-run. It shows the rows the `WHERE` matched, each changed row before and after cell by

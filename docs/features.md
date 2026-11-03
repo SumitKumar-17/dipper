@@ -80,6 +80,8 @@ Every stage of one walk reads the same data. The walk pins one connection and op
 - **Your transaction** - you have a transaction open, so the walk reads inside it, sees your uncommitted changes, and leaves it exactly as it was.
 - **Not snapshotted** - on SQLite (each stage reads the file on its own), while your own transaction has failed, or when the snapshot could not be opened; hover the badge for the reason.
 
+**Export** (next to the playback controls) saves the walk as one standalone `.html` file that replays it anywhere: every stage, its narration and its rows, with play, pause and the arrow keys to step. It needs no network and loads nothing from outside itself, so it opens straight from disk, offline. It is a snapshot of the rows at export time, and says so; chapters that run once per row of another are named in it but not replayed.
+
 ### Walking an INSERT, UPDATE or DELETE
 
 Visualise an `INSERT`, `UPDATE` or `DELETE` and the walk runs it for real, inside a transaction it **always rolls back**: also when the statement fails, and also when you close the walk while it is still running. Its stops show:

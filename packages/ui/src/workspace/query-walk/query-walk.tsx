@@ -47,7 +47,7 @@ export function QueryWalk({ sql }: { sql: string }): React.ReactElement {
     if (isUnsupportedProgram(program)) return <Message>{program.reason}</Message>;
     if (!connection) return offline;
     if (session === null) return <Message>Opening a snapshot of the database…</Message>;
-    return <Walk comments={stripped.comments} probe={session.probe} program={program} />;
+    return <Walk comments={stripped.comments} probe={session.probe} program={program} snapshot={session.note} />;
   };
 
   return (
@@ -93,15 +93,17 @@ function Walk({
   program,
   probe,
   comments,
+  snapshot,
 }: {
   program: Program;
   probe: Probe;
   comments: readonly SqlComment[];
+  snapshot: string;
 }): React.ReactElement {
   const data = useProgram(program, probe);
   return (
     <WalkProvider probe={probe} program={program}>
-      <WalkPlayer comments={comments} data={data} />
+      <WalkPlayer comments={comments} data={data} snapshot={snapshot} />
     </WalkProvider>
   );
 }
