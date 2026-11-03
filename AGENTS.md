@@ -24,9 +24,10 @@ here. If you learn something every contributor should know, add it to this file.
 Read [docs/architecture/monorepo.md](docs/architecture/monorepo.md) before moving anything
 between workspaces. [CONTRIBUTING.md](CONTRIBUTING.md) has the repo map and the script table.
 
-**[README.md](README.md) is project-facing** - what `dipper` is, install, usage, security. Setup,
-scripts, layering and CI belong in `CONTRIBUTING.md`. Do not move dev instructions back into the
-README.
+**[README.md](README.md) is project-facing and short** - what `dipper` is, install, a few highlights.
+A feature is written up in [docs/features.md](docs/features.md) (and install details in
+[docs/install.md](docs/install.md)), never in the README, which only links to them. Setup, scripts,
+layering and CI belong in `CONTRIBUTING.md`. Do not move dev instructions back into the README.
 
 ## Commands
 

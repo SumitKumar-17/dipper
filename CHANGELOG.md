@@ -189,6 +189,9 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Changed
 
+- **A shorter README** - The README is now a page you can read in a minute: what Dipper is, install,
+  a few highlights and links. The full feature guide moved, text unchanged, to `docs/features.md`,
+  and the install details to `docs/install.md`. The site's docs page is built from those files.
 - **Site bundle** - React, motion and the editor (CodeMirror and Lezer) are now chunks of their
   own, so a site-only deploy leaves them cached and the docs and changelog pages reuse the landing's
   React. Tailwind scans only the site's and `@dipper/ui`'s TypeScript, not tests, notes, recordings

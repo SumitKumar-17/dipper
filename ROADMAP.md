@@ -1,6 +1,6 @@
 # Roadmap
 
-What Dipper does today is in the [README](README.md). This file is the plan for what comes next,
+What Dipper does today is in the [README](README.md) and, in full, [docs/features.md](docs/features.md). This file is the plan for what comes next,
 ordered by value. Effort: S is days, M is one to two weeks, L is a month or more. Items are
 checked off as they land; each one is its own commit.
 

@@ -9,16 +9,22 @@ import { docsDocument } from "./docs/content";
 
 const root = join(import.meta.dir, "../../../..");
 const read = (path: string) => readFileSync(join(root, path), "utf8");
+const sources = {
+  readme: read("README.md"),
+  install: read("docs/install.md"),
+  features: read("docs/features.md"),
+  api: read("docs/api/http.md"),
+};
 
 describe("docs page", () => {
   test("has every README section it names, then the API", () => {
-    const { headings } = docsDocument(read("README.md"), read("docs/api/http.md"));
+    const { headings } = docsDocument(sources);
     const top = headings.filter((heading) => heading.level === 2).map((heading) => heading.id);
-    expect(top).toEqual(["what-is-dipper", "install", "getting-started", "features", "keyboard-shortcuts", "local-first", "http-api"]);
+    expect(top).toEqual(["what-is-dipper", "getting-started", "install", "features", "local-first", "http-api"]);
   });
 
   test("gives every heading a distinct id", () => {
-    const { headings } = docsDocument(read("README.md"), read("docs/api/http.md"));
+    const { headings } = docsDocument(sources);
     const ids = headings.map((heading) => heading.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
