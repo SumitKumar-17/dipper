@@ -314,19 +314,24 @@ func (d *postgresDriver) execOn(ctx context.Context, pool *pgxpool.Pool, conn *p
 		return err
 	}
 
+	// A session whose transaction has failed accepts nothing but a rollback, and would refuse these
+	// settings first, so the rollback that clears it could never be sent. It needs neither: a
+	// rollback cannot write, and it is quick.
+	settle := !failedSession(pooled, pgConn.TxStatus())
+
 	// Per statement, not per run: the next statement gets another pooled connection.
-	if sc.Options.Timeout > 0 {
+	if settle && sc.Options.Timeout > 0 {
 		ms := strconv.FormatInt(sc.Options.Timeout.Milliseconds(), 10)
 		if _, err := conn.Exec(ctx, "set statement_timeout = "+ms); err != nil {
 			return err
 		}
-		defer resetPostgres(ctx, conn, "set statement_timeout = default")
+		defer resetStatementSetting(ctx, conn, "set statement_timeout = default", pooled)
 	}
-	if sc.Options.ReadOnly {
+	if settle && sc.Options.ReadOnly {
 		if _, err := conn.Exec(ctx, "set default_transaction_read_only = on"); err != nil {
 			return err
 		}
-		defer resetPostgres(ctx, conn, "set default_transaction_read_only = default")
+		defer resetStatementSetting(ctx, conn, "set default_transaction_read_only = default", pooled)
 	}
 
 	database := sc.Options.Database
@@ -337,6 +342,18 @@ func (d *postgresDriver) execOn(ctx context.Context, pool *pgxpool.Pool, conn *p
 	// connection would roll back, which a read-only run guarantees.
 	abandon := pooled && sc.Options.ReadOnly
 	return d.readRows(ctx, pool, conn, database, sql, sc.Options.Params, sc.Sink, abandon)
+}
+
+// resetStatementSetting is resetPostgres, except on a session whose transaction the statement just
+// failed. There the reset cannot run (Postgres refuses everything but a rollback), and it does not
+// need to: the setting was made inside that same failed transaction, so the rollback that has to
+// come next undoes it. Resetting anyway would close the connection, and with it the session's
+// transaction (the user's own, or a query walk's snapshot).
+func resetStatementSetting(ctx context.Context, conn *pgxpool.Conn, statement string, pooled bool) {
+	if failedSession(pooled, conn.Conn().PgConn().TxStatus()) {
+		return
+	}
+	resetPostgres(ctx, conn, statement)
 }
 
 // readRows streams a statement's rows into the sink. pgx reads the result set message by message

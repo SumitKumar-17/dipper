@@ -73,3 +73,22 @@ func TestSessionIDsAreUnique(t *testing.T) {
 		seen[id] = true
 	}
 }
+
+func TestOnlyAFailedSessionSkipsItsStatementSettings(t *testing.T) {
+	cases := []struct {
+		pooled bool
+		status byte
+		want   bool
+	}{
+		{false, 'E', true},
+		{false, 'T', false},
+		{false, 'I', false},
+		// A pooled connection is reset or thrown away, never left to a rollback that will not come.
+		{true, 'E', false},
+	}
+	for _, c := range cases {
+		if got := failedSession(c.pooled, c.status); got != c.want {
+			t.Errorf("failedSession(%v, %q) = %v, want %v", c.pooled, c.status, got, c.want)
+		}
+	}
+}
