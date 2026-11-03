@@ -34,7 +34,11 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Aggregates without GROUP BY report the right row counts (set-returning functions still open) (S)
 - [x] Three-valued logic: a NULL test shows as unknown (orange ?), not as a failed row, with a note (S/M)
 - [x] Collision-proof row identity: cells hash with a control-character separator, now explicit (S)
-- [ ] Row lineage: follow one input row through join, group and output (L)
+- [ ] Row lineage: follow one input row through join, group and output. Needs a real row identity
+      (a primary key, or Postgres `ctid`) carried through every probe, because stages are sampled by
+      independent queries and a row's identity today is a hash of its values, which a join, a group
+      or the SELECT list changes: matching on values would be a guess, and a walk that guesses is
+      worse than none (L)
 - [x] One consistent snapshot for all probes of a walk: one read-only REPEATABLE READ transaction on a pinned connection, or the user's own when one is open (SQLite is not snapshotted, and says so) (M)
 - [x] CTE graph with "used by" counts (M)
 - [x] Recursive CTE stepped one iteration at a time, with a pass cap of six (M/L)
