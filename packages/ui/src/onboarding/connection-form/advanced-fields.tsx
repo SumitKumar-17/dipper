@@ -3,11 +3,13 @@ import * as React from "react";
 import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "../../ui/collapsible";
 import { Field, FieldDescription, FieldLabel } from "../../ui/field";
 import { Input } from "../../ui/input";
+import { FilledMark } from "./autofill-notice";
 import type { AdvancedOption, ConnectionFields } from "./use-connection-fields";
 
 type Row = { key: AdvancedOption; label: string; placeholder: string; hint: string; group?: string };
 
 const TLS_ROWS: Row[] = [
+  { key: "sslmode", label: "TLS mode", placeholder: "verify-full", hint: "require encrypts without checking the certificate; verify-ca and verify-full check it. Empty picks by host." },
   { key: "sslrootcert", label: "CA certificate", placeholder: "/path/to/ca.pem", hint: "Trust a private CA, so the server's certificate can be verified." },
   { key: "sslcert", label: "Client certificate", placeholder: "/path/to/client.pem", hint: "For servers that ask the client to present one. Needs the key below." },
   { key: "sslkey", label: "Client key", placeholder: "/path/to/client.key", hint: "The private key for the client certificate." },
@@ -42,8 +44,12 @@ function rowsFor(dialect: ConnectionFields["dialect"]): Row[] {
 export function AdvancedFields({ fields }: { fields: ConnectionFields }): React.ReactElement {
   const rows = rowsFor(fields.dialect);
   const set = rows.filter((row) => fields.advanced[row.key].trim() !== "").length;
+  // Opens by itself when a paste fills something in here, so nothing is filled out of sight; after
+  // the person has opened or closed it, it stays where they put it.
+  const [chosen, setChosen] = React.useState<boolean | null>(null);
+  const open = chosen ?? rows.some((row) => fields.isFilled(row.key));
   return (
-    <Collapsible>
+    <Collapsible onOpenChange={setChosen} open={open}>
       <CollapsibleTrigger className="group cursor-pointer">
         <span className="flex items-center gap-1 text-sm font-medium">
           <ChevronRightIcon className="size-4 transition-transform group-data-panel-open:rotate-90" />
@@ -56,9 +62,13 @@ export function AdvancedFields({ fields }: { fields: ConnectionFields }): React.
             <React.Fragment key={row.key}>
               {row.group && <h4 className="pt-2 font-medium text-sm">{row.group}</h4>}
               <Field>
-                <FieldLabel>{row.label}</FieldLabel>
+                <FieldLabel>
+                  {row.label}
+                  <FilledMark field={row.key} fields={fields} />
+                </FieldLabel>
                 <Input
                   autoComplete="off"
+                  name={row.key}
                   onValueChange={(value) => fields.setAdvanced(row.key, value)}
                   placeholder={row.placeholder}
                   value={fields.advanced[row.key]}

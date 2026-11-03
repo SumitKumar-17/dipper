@@ -23,10 +23,12 @@ import type { ConnectionInput, ConnectionTest } from "../../workspace/types";
 import { isFileDatabase } from "../connection-address";
 import { AddressFields } from "./address-fields";
 import { AdvancedFields } from "./advanced-fields";
+import { looksLikeDatabaseUrl } from "./autofill/url";
+import { AutofillNotice, FilledMark } from "./autofill-notice";
 import { DialectPicker } from "./dialect-picker";
 import { FileField } from "./file-field";
 import { TestError, TestOk, type Phase } from "./form-status";
-import { useConnectionFields, type Mode } from "./use-connection-fields";
+import { type FillKey, useConnectionFields, type Mode } from "./use-connection-fields";
 
 /** Shown when a rejection carries no readable message: this form only ever fails at the wire. */
 const UNREACHABLE = "The connection could not be reached.";
@@ -107,9 +109,23 @@ export function ConnectionForm({
     }
   }
 
+  // A connection pasted anywhere in the form fills all of it. Two places keep the plain paste: the
+  // password, whose text is never read as anything but a password, and the URL field when a URL
+  // goes into it, which is what that field is for and what the server then parses.
+  function paste(event: React.ClipboardEvent<HTMLFormElement>): void {
+    const target = event.target instanceof HTMLInputElement ? event.target.name : "";
+    if (target === "password") return;
+    const text = event.clipboardData.getData("text/plain");
+    if (target === "url" && looksLikeDatabaseUrl(text)) return;
+    if (fields.pasteConnection(text, target === "" ? undefined : (target as FillKey))) {
+      event.preventDefault();
+    }
+  }
+
   return (
     <form
       className={cn("flex flex-col gap-4", className)}
+      onPaste={paste}
       onSubmit={(event) => {
         event.preventDefault();
         void submit();
@@ -117,10 +133,16 @@ export function ConnectionForm({
     >
       <DialectPicker onChange={fields.chooseDialect} value={fields.dialect} />
 
+      <AutofillNotice fields={fields} />
+
       <Field>
-        <FieldLabel>Name</FieldLabel>
+        <FieldLabel>
+          Name
+          <FilledMark field="name" fields={fields} />
+        </FieldLabel>
         <Input
           autoComplete="off"
+          name="name"
           onValueChange={fields.setName}
           placeholder={`${fields.dialect}-local`}
           value={fields.name}
@@ -142,6 +164,7 @@ export function ConnectionForm({
               <span className="font-normal text-muted-foreground">
                 - required by hosted databases
               </span>
+              <FilledMark field="ssl" fields={fields} />
             </FieldLabel>
             <Switch checked={fields.ssl} id="connection-ssl" onCheckedChange={fields.setSSL} />
           </div>
@@ -152,9 +175,13 @@ export function ConnectionForm({
 
       {!file && (
         <Field>
-          <FieldLabel>Password</FieldLabel>
+          <FieldLabel>
+            Password
+            <FilledMark field="password" fields={fields} />
+          </FieldLabel>
           <PasswordInput
             autoComplete="off"
+            name="password"
             onValueChange={fields.setPassword}
             placeholder={connectionId === undefined ? "" : "Unchanged"}
             value={fields.password}

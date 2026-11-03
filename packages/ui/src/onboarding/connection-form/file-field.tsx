@@ -1,6 +1,7 @@
 import type * as React from "react";
 import { Field, FieldDescription, FieldLabel } from "../../ui/field";
 import { Input } from "../../ui/input";
+import { FilledMark } from "./autofill-notice";
 import type { ConnectionFields } from "./use-connection-fields";
 
 /**
@@ -10,9 +11,13 @@ import type { ConnectionFields } from "./use-connection-fields";
 export function FileField({ fields }: { fields: ConnectionFields }): React.ReactElement {
   return (
     <Field>
-      <FieldLabel>Database file</FieldLabel>
+      <FieldLabel>
+        Database file
+        <FilledMark field="database" fields={fields} />
+      </FieldLabel>
       <Input
         autoComplete="off"
+        name="database"
         onValueChange={fields.setDatabase}
         placeholder="/path/to/app.db"
         spellCheck={false}
