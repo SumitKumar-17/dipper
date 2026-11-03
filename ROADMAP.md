@@ -164,3 +164,22 @@ change reviewed as plain SQL before it runs.
       jsx-a11y rules are errors for every React source (S)
 - [x] Pin `bun-version` to the `packageManager` field, add concurrency groups and read-only permissions in CI (S)
 - [x] `check` script (typecheck, lint, tests in one command); no auto-formatter yet, to avoid rewriting every file (S)
+
+## 6. Next, in the order they will be built
+
+- [ ] Migrations: save a schema diff as numbered migration files in the workspace, apply them one
+      transaction each with a tracking table, and show which are pending on each connection (L)
+- [ ] Dependency graph: what depends on a table or column (views, functions, foreign keys,
+      triggers), shown before a drop or a structure change is applied (M)
+- [ ] Plan comparison: two `EXPLAIN` plans side by side, such as before and after an index, with the
+      cost and time differences (M)
+- [ ] What-if indexes: test a hypothetical index against a slow query's plan without creating it
+      (Postgres `hypopg` when installed), from the slow queries list (M)
+- [ ] Test data generator: fill a table with realistic rows that respect types, constraints and
+      foreign keys, in one reviewed transaction (M/L)
+- [ ] Watched queries: re-run a read every few seconds and show what changed since the last run,
+      with the pinned-result diff (M)
+- [ ] Write audit log: every write run on a red connection recorded locally with when, where and
+      what, and a view to search it (S/M)
+- [ ] Import connections from `~/.pgpass`, `~/.my.cnf`, `.env` files and DBeaver or TablePlus
+      exports (S/M)
