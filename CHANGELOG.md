@@ -29,6 +29,12 @@ The section matching a release's version becomes that release's notes on GitHub 
   naming the connection, the database and what the statement will do, with Cancel as the default.
   Reads never ask. The check looks at the words of the statement outside strings and comments, so
   `select 'drop table t'` is not a write, and `SELECT ... FOR UPDATE` is, on purpose.
+- **Query Walk for writes** - Visualise an `INSERT`, `UPDATE` or `DELETE` (Postgres) and it runs
+  for real inside a transaction that is always rolled back, also on failure and when the walk is
+  closed mid-run. It shows the rows the `WHERE` matched, each changed row before and after cell by
+  cell, what `RETURNING` produced, and the confirmed rollback, and says plainly what a rollback
+  cannot undo (sequences stay advanced). Multi-statement text, DDL, joined writes, upserts and
+  writes on MySQL or SQLite are refused by name.
 - **One snapshot per Query Walk** - Every probe of a walk now runs on one pinned connection inside
   one read-only `REPEATABLE READ` transaction (a consistent snapshot on MySQL), so rows changed by
   someone else while the walk runs can no longer make its stages disagree. With your own

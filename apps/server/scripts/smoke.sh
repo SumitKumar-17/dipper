@@ -112,6 +112,18 @@ expect "a walk's probes read one snapshot while another connection writes" "$WAL
 expect "a refused walk probe does not fail the snapshot" "true" "$(walk "savepoint dipper_walk_probe;\nselect no_such_column from orders" true >/dev/null; walk "rollback to savepoint dipper_walk_probe;\nrelease savepoint dipper_walk_probe" true >/dev/null; [ "$(walk_count)" = "$WALK_BEFORE" ] && echo true)"
 expect "a walk probe cannot write inside the snapshot" "error" "$(walk "insert into orders (status) values ('walk-write')" true | json 'j.status')"
 curl -s -X DELETE "$B/sessions/$WSID" >/dev/null
+# A DML walk, statement for statement as dml-run.ts sends it: the write really runs, and the table
+# is exactly as it was afterwards.
+orders_sum() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select md5(string_agg(t::text, '|' order by id)) from orders t\",\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]'; }
+SUM_BEFORE="$(orders_sum)"
+DSID="$(curl -s -X POST "$B/connections/$CID/sessions" | json 'j.id')"
+dml() { curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sessionId\":\"$DSID\",\"sql\":\"$1\",\"record\":false}" "$B/query/sync"; }
+dml "begin isolation level repeatable read" >/dev/null
+expect "a DML walk's statement runs and returns the rows it wrote" "true" "$(dml "update orders o set status = 'walked' where o.id <= 3\nreturning o.*, o.id" | json 'String(j.results[0].rows.length === 3 && j.results[0].rows.every(r => r[2] === "walked"))')"
+dml "rollback" >/dev/null
+expect "a DML walk leaves the session idle after its rollback" "idle" "$(curl -s "$B/sessions/$DSID" | json 'j.transaction')"
+curl -s -X DELETE "$B/sessions/$DSID" >/dev/null
+expect "after a DML walk the table is exactly as it was" "$SUM_BEFORE" "$(orders_sum)"
 expect "after the walk the change is visible again" "1" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"select count(*) from orders where status = 'walk-snapshot'\",\"record\":false}" "$B/query/sync" | json 'j.results[0].rows[0][0]')"
 expect "the walk's connection goes back to the pool writable" "done" "$(curl -s -X POST -H "$J" -d "{\"connectionId\":\"$CID\",\"sql\":\"delete from orders where status = 'walk-snapshot'\",\"record\":false}" "$B/query/sync" | json 'j.status')"
 expect "foreign Host header is refused" "403" "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example' "$B/health")"

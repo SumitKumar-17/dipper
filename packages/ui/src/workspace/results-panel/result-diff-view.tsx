@@ -58,9 +58,9 @@ export function ResultDiffView({
         </p>
       )}
 
-      <Changed active={active} diff={diff} />
-      <Rows columns={diff.shared} label="Added" rows={diff.added} tone="added" />
-      <Rows columns={diff.shared} label="Removed" rows={diff.removed} tone="removed" />
+      <DiffChanged active={active} diff={diff} />
+      <DiffRows columns={diff.shared} label="Added" rows={diff.added} tone="added" />
+      <DiffRows columns={diff.shared} label="Removed" rows={diff.removed} tone="removed" />
       <p className="text-muted-foreground text-xs">
         {diff.unchanged.toLocaleString()} {diff.unchanged === 1 ? "row is" : "rows are"} the same.
       </p>
@@ -68,7 +68,8 @@ export function ResultDiffView({
   );
 }
 
-function Changed({ active, diff }: { active: readonly string[]; diff: ResultDiff }): React.ReactElement | null {
+/** The rows whose cells changed, one line per cell, before against now. */
+export function DiffChanged({ active, diff }: { active: readonly string[]; diff: ResultDiff }): React.ReactElement | null {
   if (diff.changed.length === 0) return null;
   return (
     <section>
@@ -101,7 +102,8 @@ function Changed({ active, diff }: { active: readonly string[]; diff: ResultDiff
   );
 }
 
-function Rows({
+/** Rows only one side has, tinted by which side. */
+export function DiffRows({
   columns,
   label,
   rows,
