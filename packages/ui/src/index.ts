@@ -70,6 +70,7 @@ export * from "./workspace/objects";
 export * from "./workspace/snippets";
 export * from "./workspace/write-guard";
 export * from "./workspace/compare-connections";
+export * from "./workspace/migrations";
 export * from "./workspace/schema-tree";
 export * from "./workspace/sidebar-tabs";
 export * from "./workspace/sql-editor";

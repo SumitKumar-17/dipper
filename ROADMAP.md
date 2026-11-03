@@ -167,7 +167,7 @@ change reviewed as plain SQL before it runs.
 
 ## 6. Next, in the order they will be built
 
-- [ ] Migrations: save a schema diff as numbered migration files in the workspace, apply them one
+- [x] Migrations: save a schema diff as numbered migration files in the workspace, apply them one
       transaction each with a tracking table, and show which are pending on each connection (L)
 - [ ] Dependency graph: what depends on a table or column (views, functions, foreign keys,
       triggers), shown before a drop or a structure change is applied (M)

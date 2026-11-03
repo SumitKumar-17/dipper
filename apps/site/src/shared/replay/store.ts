@@ -458,6 +458,10 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     rowPage: () => Promise.reject(new Error(NOT_RECORDED)),
     applyRows: () => Promise.reject(new Error(NOT_RECORDED)),
     alterTable: () => Promise.reject(new Error(NOT_RECORDED)),
+    migrationState: () => Promise.reject(new Error(NOT_RECORDED)),
+    applyMigrations: () => Promise.reject(new Error(NOT_RECORDED)),
+    migrationFiles: () => Promise.resolve([]),
+    createMigrationFile: () => Promise.reject(new Error(NOT_RECORDED)),
     explain: () => Promise.reject(new Error(NOT_RECORDED)),
     transaction: { state: "none", busy: false, error: null, sessionId: null },
     // A replay has no database to hold a session on, so the walk reads each stage on its own.

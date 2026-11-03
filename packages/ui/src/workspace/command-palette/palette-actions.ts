@@ -8,6 +8,7 @@ import {
   ActivityIcon,
   BoxesIcon,
   BookmarkPlusIcon,
+  DatabaseZapIcon,
   GitCompareIcon,
   BracesIcon,
   DiffIcon,
@@ -34,6 +35,7 @@ import { requestSchemaCompare } from "../schema-diff-view";
 import { requestSlowQueries } from "../slow-queries";
 import { requestSnippets } from "../snippets";
 import { requestCompareConnections } from "../compare-connections";
+import { requestMigrations } from "../migrations";
 import { requestSchemaDiagram } from "../schema-diagram";
 import {
   FORMAT_DOCUMENT_EVENT,
@@ -187,6 +189,15 @@ export function useBuiltinActions(
             const at = offsetOfPosition(activeBuffer.content, cursor.line, cursor.col);
             requestCompareConnections(statementAtCursor(activeBuffer.content, at)?.sql ?? activeBuffer.content);
           }
+          close();
+        },
+      },
+      {
+        label: "Migrations",
+        hint: "Apply numbered .sql files in order and see what has run",
+        icon: DatabaseZapIcon,
+        onSelect: () => {
+          requestMigrations();
           close();
         },
       },

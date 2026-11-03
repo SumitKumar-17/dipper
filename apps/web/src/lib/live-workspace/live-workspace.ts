@@ -25,6 +25,7 @@ import { useConnections } from "./use-connections";
 import { openPinnedSession } from "./pinned-session";
 import { workspaceOf } from "./run-scope";
 import { useRuns } from "./use-runs";
+import { useMigrationFiles } from "./use-migration-files";
 import { useTableTools } from "./use-table-tools";
 import { useTransaction } from "./use-transaction";
 import { useSchema } from "./use-schema";
@@ -110,6 +111,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     [buffers.activeBuffer?.path, roots, server.queriesDir],
   );
 
+  const migrationFiles = useMigrationFiles(getClient, roots);
   const tableTools = useTableTools(getClient, {
     connectionId: connections.connectionId,
     database: connections.database,
@@ -238,6 +240,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     openSession,
     canSnapshot: true,
     ...tableTools,
+    ...migrationFiles,
     transaction: transaction.view,
     beginTransaction: transaction.begin,
     commitTransaction: transaction.commit,

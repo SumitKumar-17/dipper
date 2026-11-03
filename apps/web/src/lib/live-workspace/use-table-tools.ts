@@ -3,6 +3,9 @@ import type {
   Advice,
   AlterRequest,
   AlterResult,
+  ApplyMigrationsRequest,
+  ApplyMigrationsResult,
+  MigrationState,
   ApplyRequest,
   ApplyResult,
   DatabaseObjects,
@@ -33,6 +36,8 @@ export type TableTools = {
   ) => string | null;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   alterTable: (schema: string, table: string, request: AlterRequest) => Promise<AlterResult>;
+  migrationState: () => Promise<MigrationState>;
+  applyMigrations: (request: ApplyMigrationsRequest) => Promise<ApplyMigrationsResult>;
   explain: (request: ExplainRequest) => Promise<Plan>;
   objects: () => Promise<DatabaseObjects>;
   statementStats: (sort: StatementOrder) => Promise<StatementStats>;
@@ -80,6 +85,14 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       alterTable: async (schema, table, request) => {
         const { id, scoped } = aimed();
         return getClient().connections.alterTable(id, schema, table, { ...request, ...scoped });
+      },
+      migrationState: async () => {
+        const { id } = aimed();
+        return getClient().connections.migrationState(id, database ? { database } : {});
+      },
+      applyMigrations: async (request) => {
+        const { id, scoped } = aimed();
+        return getClient().connections.applyMigrations(id, { ...request, ...scoped });
       },
       explain: async (request) => {
         const { id, scoped } = aimed();

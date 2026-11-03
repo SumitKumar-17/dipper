@@ -2,12 +2,16 @@
 // @dipper/client - so components stay independent of the transport. Protocol types are reused
 // verbatim; the types here are the ones with no wire equivalent.
 
+import type { MigrationFile } from "./migrations/migration-model";
 import type { EditorLayout } from "./pane-layout";
 import type {
   ActivitySnapshot,
   Advice,
   AlterRequest,
   AlterResult,
+  ApplyMigrationsRequest,
+  ApplyMigrationsResult,
+  MigrationState,
   ApplyRequest,
   ApplyResult,
   BrowseResult,
@@ -416,6 +420,14 @@ export type WorkspaceApi = {
    * it shows the statements, and on Postgres runs and rolls them back.
    */
   alterTable(schema: string, table: string, request: AlterRequest): Promise<AlterResult>;
+  /** The migrations the active database has recorded as applied; never creates the tracking table. */
+  migrationState(): Promise<MigrationState>;
+  /** Runs reviewed migration files in order. With `dryRun` it rolls back where the database can. */
+  applyMigrations(request: ApplyMigrationsRequest): Promise<ApplyMigrationsResult>;
+  /** The `NNNN_name.sql` files in the workspace's `migrations` folder, in version order. */
+  migrationFiles(): Promise<MigrationFile[]>;
+  /** Saves SQL as the next numbered migration file and returns it. */
+  createMigrationFile(name: string, sql: string): Promise<MigrationFile>;
   readonly transaction: TransactionView;
   /** Pins a connection and begins a transaction on it; runs then share that transaction. */
   beginTransaction(): Promise<void>;

@@ -11,6 +11,12 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ## [Unreleased]
 
+### Added
+
+- Migrations: numbered `.sql` files in the workspace's `migrations` folder, applied one transaction
+  each (Postgres and SQLite) and recorded in `dipper_schema_migrations`, with pending, applied,
+  edited and missing states, a dry run, and a Save as migration button on the schema compare.
+
 ## [0.3.0] - 2026-11-03
 
 The first release under the name Dipper: a SQL workspace for PostgreSQL, MySQL and SQLite with a

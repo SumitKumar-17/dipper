@@ -105,6 +105,11 @@ func readTextFile(full string) (string, string, error) {
 // writeSQLFile writes via temp file + rename and returns the new mtime, the client's next
 // ifModifiedAt.
 func writeSQLFile(full, content string) (string, error) {
+	// The caller has already confined `full` to a workspace root, so creating its folder is safe. A
+	// first migration is the common case: its `migrations` folder does not exist yet.
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		return "", err
+	}
 	if err := fsx.WriteAtomic(full, []byte(content), 0o644); err != nil {
 		return "", err
 	}

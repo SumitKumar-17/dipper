@@ -224,6 +224,26 @@ Drag tabs to any edge to create splits, move tabs between panes, and restore the
   <img src="assets/hero.png" alt="Dipper split-pane SQL workspace" width="780">
 </p>
 
+## Migrations
+
+Schema changes as numbered files you keep with your project. Open **Migrations** from the command
+palette on any connection.
+
+- Files live in the first workspace folder's `migrations` directory as `0001_add_users.sql`, run in
+  version order, and each one is recorded in a `dipper_schema_migrations` table in the database
+  (version, name, checksum, when, how long).
+- The dialog lines the files up against that history: **Pending**, **Applied**, **Edited after
+  applying** (the file's checksum no longer matches what ran) and **File missing**. A pending file
+  numbered below one that already ran is flagged, since it was probably added on a branch.
+- **Dry run** executes every pending file and rolls back, so a failing statement shows up with its
+  position before anything is kept. On MySQL, which cannot undo DDL, it runs nothing.
+- **Apply** runs each pending file in its own transaction on Postgres and SQLite, so a file that
+  fails leaves nothing behind and the run stops there. MySQL cannot roll back structure changes, and
+  the dialog says so when a file fails part way.
+- **Create** saves the next numbered file and opens it in the editor. The schema compare's **Save as
+  migration** button does the same with its generated script.
+- Forward only: there are no down migrations. Read-only connections refuse to apply.
+
 ## Result grid
 
 The expand button (the small corners icon) on the results toolbar and on each notebook cell opens the rows on their own, full size.

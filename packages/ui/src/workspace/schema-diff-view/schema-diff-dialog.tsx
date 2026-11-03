@@ -1,6 +1,6 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import type { SchemaDiffResult } from "@dipper/protocol";
-import { AlertTriangleIcon, CheckIcon, CopyIcon } from "lucide-react";
+import { AlertTriangleIcon, CheckIcon, CopyIcon, FilePlusIcon } from "lucide-react";
 import * as React from "react";
 import { messageOf } from "../../lib/errors";
 import { plural } from "../../lib/format";
@@ -108,7 +108,10 @@ function ComparePanel(): React.ReactElement {
 }
 
 function DiffBody({ result }: { result: SchemaDiffResult }): React.ReactElement {
+  const { createMigrationFile } = useWorkspace();
   const [copied, setCopied] = React.useState(false);
+  const [saved, setSaved] = React.useState<string | null>(null);
+  const [saveError, setSaveError] = React.useState<string | null>(null);
   const lost = destructiveCount(result.changes);
   if (result.changes.length === 0) {
     return (
@@ -122,6 +125,15 @@ function DiffBody({ result }: { result: SchemaDiffResult }): React.ReactElement 
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     });
+  };
+  // The script becomes the next numbered file in the workspace's migrations folder, to be reviewed
+  // and applied from the Migrations dialog rather than run blind from here.
+  const saveAsMigration = (): void => {
+    setSaveError(null);
+    createMigrationFile("sync schema", result.script).then(
+      (file) => setSaved(file.path.split(/[\\/]/).pop() ?? file.path),
+      (cause: unknown) => setSaveError(messageOf(cause)),
+    );
   };
   return (
     <div className="flex flex-col gap-5">
@@ -149,9 +161,15 @@ function DiffBody({ result }: { result: SchemaDiffResult }): React.ReactElement 
       <section>
         <div className="mb-1.5 flex items-center">
           <h3 className="text-sm font-medium">Migration script</h3>
-          <Button className="ms-auto" onClick={copy} size="xs" variant="outline">
-            {copied ? <CheckIcon /> : <CopyIcon />} {copied ? "Copied" : "Copy"}
-          </Button>
+          <div className="ms-auto flex items-center gap-2">
+            {saveError && <span className="text-destructive-foreground text-xs">{saveError}</span>}
+            <Button disabled={saved !== null} onClick={saveAsMigration} size="xs" variant="outline">
+              {saved ? <CheckIcon /> : <FilePlusIcon />} {saved ? `Saved ${saved}` : "Save as migration"}
+            </Button>
+            <Button onClick={copy} size="xs" variant="outline">
+              {copied ? <CheckIcon /> : <CopyIcon />} {copied ? "Copied" : "Copy"}
+            </Button>
+          </div>
         </div>
         <pre className="overflow-auto rounded-md border bg-muted/30 p-3 font-mono text-xs">{result.script}</pre>
       </section>

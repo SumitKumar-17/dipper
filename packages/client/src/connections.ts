@@ -3,6 +3,9 @@ import type {
   Advice,
   AlterRequest,
   AlterResult,
+  ApplyMigrationsRequest,
+  ApplyMigrationsResult,
+  MigrationState,
   ApplyRequest,
   ApplyResult,
   ConnectionColor,
@@ -123,6 +126,10 @@ export type ConnectionsApi = {
     request: AlterRequest,
     opts?: CallOptions,
   ): Promise<AlterResult>;
+  /** Which migrations the database has recorded as applied. Never creates the tracking table. */
+  migrationState(id: string, options?: { database?: string } & CallOptions): Promise<MigrationState>;
+  /** Runs reviewed migration files in order, each recorded as it succeeds. */
+  applyMigrations(id: string, request: ApplyMigrationsRequest, opts?: CallOptions): Promise<ApplyMigrationsResult>;
 };
 
 const tablePath = (schema: string, table: string): string =>
@@ -234,6 +241,19 @@ export function connectionsApi(http: Transport): ConnectionsApi {
 
     alterTable: (id, schema, table, request, opts) =>
       http.json<AlterResult>(at(id, `${tablePath(schema, table)}/alter`), {
+        method: "POST",
+        body: request,
+        signal: opts?.signal,
+      }),
+
+    migrationState: (id, options) =>
+      http.json<MigrationState>(at(id, "/migrations"), {
+        query: { database: options?.database },
+        signal: options?.signal,
+      }),
+
+    applyMigrations: (id, request, opts) =>
+      http.json<ApplyMigrationsResult>(at(id, "/migrations/apply"), {
         method: "POST",
         body: request,
         signal: opts?.signal,
