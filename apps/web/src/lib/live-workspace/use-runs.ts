@@ -51,6 +51,7 @@ export type RunsState = {
   cancelRun: (runId: string) => Promise<void>;
   selectRun: (runId: string) => void;
   probe: (sql: string, options?: { maxRows?: number }) => Promise<RunRecord>;
+  probeOn: (connectionId: string, sql: string, options?: { maxRows?: number }) => Promise<RunRecord>;
   historyStats: () => Promise<HistoryStats>;
   clearHistory: () => Promise<void>;
   historyScope: HistoryScope;
@@ -213,6 +214,24 @@ export function useRuns(
    * A run that leaves no trace: not in `runs`, not in History, and read-only on the server. The
    * query walk's step queries go through here. Rejects only when there is nothing to run against.
    */
+  const probeOn = React.useCallback(
+    (onConnection: string, sql: string, probeOptions?: { maxRows?: number }): Promise<RunRecord> => {
+      const text = sql.trim();
+      if (!text) return Promise.reject(new Error("Nothing to run."));
+      return getClient().query.runSync({
+        connectionId: onConnection,
+        sql: text,
+        runId: crypto.randomUUID(),
+        source: "ui",
+        record: false,
+        readOnly: true,
+        maxRows: probeOptions?.maxRows ?? settings?.maxRows ?? 1000,
+        ...(settings ? { timeoutMs: settings.statementTimeoutMs } : {}),
+      });
+    },
+    [getClient, settings],
+  );
+
   const probe = React.useCallback(
     (sql: string, probeOptions?: { maxRows?: number }): Promise<RunRecord> => {
       const text = sql.trim();
@@ -332,6 +351,7 @@ export function useRuns(
     cancelRun,
     selectRun,
     probe,
+    probeOn,
     historyStats,
     clearHistory,
     historyScope,

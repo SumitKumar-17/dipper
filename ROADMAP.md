@@ -120,9 +120,9 @@ change reviewed as plain SQL before it runs.
       step already shows the exact SQL before anything is applied) (S)
 - [ ] A connections strip: the connections in use as chips with their state, a click to switch,
       and closing the last tab of one offers to disconnect it (S/M)
-- [ ] Run one query on several connections and compare: pick two or more connections (for example
-      staging and production), run the same SQL on each, and see the results side by side with the
-      pinned-result diff, so "do these two databases agree" is one action (M)
+- [x] Run one query on several connections and compare: tick two or more connections (for example
+      staging and production), run the same read on each, and see rows, time and how each differs
+      from the first, with the cell-level diff of the pinned-result view (M)
 - [x] Expand any panel into a pop-over: one shared `ExpandButton` and `ExpandDialog`, used by the
       results pane (grid, chart and pinned diff come with it) and by notebook cell results. The
       activity, slow queries, advice, objects, plan, schema diagram and Table Editor views already

@@ -34,6 +34,7 @@ import {
   ExplainDialog,
   useShortcuts,
   ObjectsDialog,
+  CompareConnectionsDialog,
   SnippetsDialog,
   WriteConfirmDialog,
   SchemaDiagramDialog,
@@ -110,6 +111,7 @@ function Workspace(): React.ReactElement {
       <SlowQueriesDialog />
       <ObjectsDialog />
       <SnippetsDialog />
+      <CompareConnectionsDialog />
       <WriteConfirmDialog />
       {/* And the editor's context menu and the palette open this one. */}
       <QueryWalkDialog />

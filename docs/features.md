@@ -165,6 +165,14 @@ connection that is active. Tabs for files remember their connection across reloa
 connection a tab is set to cannot be reached, Run refuses with a message instead of running the
 statement on a different database.
 
+## Compare across connections
+
+Command palette, **Compare across connections**: tick two or more connections, and Dipper runs the
+statement under your cursor on each of them at the same time. You see each connection's rows and time,
+and how its answer differs from the first one's: rows added, rows removed, and the exact cells that
+changed, matched on the columns you pick. It answers "do staging and production agree" in one step.
+Only statements that read can be compared, and at most 5,000 rows are read from each connection.
+
 ## Workspace folders
 
 Open a directory and work directly with the `.sql` files inside it.

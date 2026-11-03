@@ -468,6 +468,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     advice: () => Promise.reject(new Error(NOT_RECORDED)),
     activity: () => Promise.reject(new Error(NOT_RECORDED)),
     signalSession: () => Promise.reject(new Error(NOT_RECORDED)),
+    probeOn: () => Promise.reject(new Error(NOT_RECORDED)),
     probe: async (sql: string, options?: { maxRows?: number }): Promise<RunRecord> => {
       const text = sql.trim();
       if (!text) throw new Error("Nothing to run.");

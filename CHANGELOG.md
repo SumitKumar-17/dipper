@@ -14,6 +14,12 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- **Compare across connections** - Command palette, Compare across connections. Tick two or more
+  connections, run the statement under the cursor on each at the same time, and see each one's rows
+  and time and how its answer differs from the first: rows added, rows removed and the exact cells
+  that changed, matched on the columns you choose. A connection that cannot be reached or rejects
+  the statement is reported on its own line and does not hold up the rest. Only reads can be
+  compared, and at most 5,000 rows are read from each.
 - **A question before a write on a red connection** - Running SQL that changes data or structure
   (INSERT, UPDATE, DELETE, DDL, GRANT, CALL and the like) on a connection tagged red now asks first,
   naming the connection, the database and what the statement will do, with Cancel as the default.

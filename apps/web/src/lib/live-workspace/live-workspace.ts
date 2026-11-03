@@ -226,6 +226,7 @@ export function useLiveWorkspace(options: LiveWorkspaceOptions = {}): WorkspaceA
     cancelRun: runs.cancelRun,
     selectRun: runs.selectRun,
     probe: runs.probe,
+    probeOn: runs.probeOn,
     ...tableTools,
     transaction: transaction.view,
     beginTransaction: transaction.begin,

@@ -8,6 +8,7 @@ import {
   ActivityIcon,
   BoxesIcon,
   BookmarkPlusIcon,
+  GitCompareIcon,
   BracesIcon,
   DiffIcon,
   TimerIcon,
@@ -32,6 +33,7 @@ import { requestQueryWalk } from "../query-walk";
 import { requestSchemaCompare } from "../schema-diff-view";
 import { requestSlowQueries } from "../slow-queries";
 import { requestSnippets } from "../snippets";
+import { requestCompareConnections } from "../compare-connections";
 import { requestSchemaDiagram } from "../schema-diagram";
 import {
   FORMAT_DOCUMENT_EVENT,
@@ -172,6 +174,19 @@ export function useBuiltinActions(
         icon: BoxesIcon,
         onSelect: () => {
           requestObjects();
+          close();
+        },
+      },
+      {
+        label: "Compare across connections",
+        hint: "Run the statement on several connections and see how the answers differ",
+        icon: GitCompareIcon,
+        onSelect: () => {
+          if (activeBuffer) {
+            // The statement at the cursor, as Explain does; with none, the whole file.
+            const at = offsetOfPosition(activeBuffer.content, cursor.line, cursor.col);
+            requestCompareConnections(statementAtCursor(activeBuffer.content, at)?.sql ?? activeBuffer.content);
+          }
           close();
         },
       },

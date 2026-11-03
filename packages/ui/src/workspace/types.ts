@@ -339,6 +339,11 @@ export type WorkspaceApi = {
    * and statement results.
    */
   probe(sql: string, options?: { maxRows?: number }): Promise<RunRecord>;
+  /**
+   * The same read-only, unrecorded run as `probe`, on a named connection (and its own default
+   * database) instead of the active one, which is what comparing across connections needs.
+   */
+  probeOn(connectionId: string, sql: string, options?: { maxRows?: number }): Promise<RunRecord>;
   /** Indexes, constraints, triggers, sizes and DDL for one table of the current database. */
   tableDetail(schema: string, table: string): Promise<TableDetail>;
   /** One server-sorted, server-filtered page of a table, read-only and unrecorded. */

@@ -8,7 +8,16 @@ import { diffResults, diffSummary, guessKey, type ResultDiff, type Table } from 
 const show = (cell: Cell): string => (cell === null ? "NULL" : String(cell));
 
 /** How a result differs from the pinned one: rows added and removed, and cells that changed. */
-export function ResultDiffView({ current, pinned }: { current: Table; pinned: Pinned }): React.ReactElement {
+export function ResultDiffView({
+  current,
+  pinned,
+  against = "the pinned result",
+}: {
+  current: Table;
+  pinned: Pinned;
+  /** What the rows are compared with, in words: "the pinned result", or a connection's name. */
+  against?: string;
+}): React.ReactElement {
   const shared = React.useMemo(
     () => pinned.columns.filter((name) => current.columns.includes(name)),
     [pinned.columns, current.columns],
@@ -26,7 +35,7 @@ export function ResultDiffView({ current, pinned }: { current: Table; pinned: Pi
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-medium">{diffSummary(diff)}</span>
         <span className="text-muted-foreground text-xs">
-          against the pinned result ({pinned.rowCount.toLocaleString()} rows): {pinned.label}
+          against {against} ({pinned.rowCount.toLocaleString()} rows){pinned.label ? `: ${pinned.label}` : ""}
         </span>
       </div>
 
@@ -52,7 +61,9 @@ export function ResultDiffView({ current, pinned }: { current: Table; pinned: Pi
       <Changed active={active} diff={diff} />
       <Rows columns={diff.shared} label="Added" rows={diff.added} tone="added" />
       <Rows columns={diff.shared} label="Removed" rows={diff.removed} tone="removed" />
-      <p className="text-muted-foreground text-xs">{diff.unchanged.toLocaleString()} rows are the same.</p>
+      <p className="text-muted-foreground text-xs">
+        {diff.unchanged.toLocaleString()} {diff.unchanged === 1 ? "row is" : "rows are"} the same.
+      </p>
     </div>
   );
 }
