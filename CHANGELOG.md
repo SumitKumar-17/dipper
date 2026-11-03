@@ -14,6 +14,13 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- **Connection form autofill** - Paste a connection anywhere in the connection form and it fills
+  in: a `postgres://` or `mysql://` URL, a `psql` or `mysql` command, a `DATABASE_URL=` line or
+  `.env` block, a JDBC string, a libpq `host=... dbname=...` string or a SQLite path. Typing
+  `host:port` splits it, and an empty user, database and name follow the host. Neon, Supabase, RDS,
+  Aurora, PlanetScale and Azure hosts turn TLS on with a note. Filled fields are marked, one Undo
+  takes the fill back, and nothing already typed is overwritten. The form also gains a TLS mode
+  field, so a pasted `sslmode` is kept.
 - **A question before a write on a red connection** - Running SQL that changes data or structure
   (INSERT, UPDATE, DELETE, DDL, GRANT, CALL and the like) on a connection tagged red now asks first,
   naming the connection, the database and what the statement will do, with Cancel as the default.

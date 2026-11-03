@@ -66,11 +66,11 @@ Correctness first, because a visualiser that is silently wrong is worse than non
 - [x] Data editing with a reviewed, transactional change set (M/L)
 - [x] Richer connection options: CA and client certificates, search_path and unix sockets, in an Advanced section of the connection form (S/M)
 - [x] Test an unsaved connection (S)
-- [ ] Connection form autofill: paste or type a little and the rest fills in. A pasted URL, a
+- [x] Connection form autofill: paste or type a little and the rest fills in. A pasted URL, a
       `psql` or `mysql` command, a `DATABASE_URL=` line or a JDBC string splits into host, port, user,
       database, TLS and options; a bare host fills the port, user and database that dialect uses and
-      names the connection from the host; hosted providers (Neon, Supabase, RDS, PlanetScale) get their
-      TLS and options set. Each filled field is marked as filled, can be undone in one click, and never
+      names the connection from the host; hosted providers (Neon, Supabase, RDS, PlanetScale, Azure) get
+      TLS on and a note. Each filled field is marked as filled, can be undone in one click, and never
       overwrites something already typed (M)
 - [x] SQLite support, pure Go so cross-compiling keeps working (activity, advice, statement stats and sessions are not implemented for it) (M)
 - [x] SSH tunnels: a bastion host in the connection form, key file or ssh-agent, host key pinned by fingerprint or checked against known_hosts (L)
