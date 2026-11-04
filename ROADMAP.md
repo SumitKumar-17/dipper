@@ -171,7 +171,7 @@ change reviewed as plain SQL before it runs.
       transaction each with a tracking table, and show which are pending on each connection (L)
 - [x] Dependency graph: what depends on a table or column (views, functions, foreign keys,
       triggers), shown before a drop or a structure change is applied (M)
-- [ ] Plan comparison: two `EXPLAIN` plans side by side, such as before and after an index, with the
+- [x] Plan comparison: two `EXPLAIN` plans side by side, such as before and after an index, with the
       cost and time differences (M)
 - [ ] What-if indexes: test a hypothetical index against a slow query's plan without creating it
       (Postgres `hypopg` when installed), from the slow queries list (M)

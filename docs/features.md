@@ -146,6 +146,11 @@ runs inside a transaction that is rolled back, so an `UPDATE` leaves nothing beh
 Dipper points out what is worth a look: stale statistics, large sequential scans, filters that
 throw away most of what they read, and sorts that spilled to disk.
 
+**Pin this plan** keeps it, and the next plan you open is shown against it: add an index, explain the
+same query again, and the view puts the two side by side with the change in cost (and in real
+execution time when both were analyzed), which tables are now read a different way (a Seq Scan that
+became an Index Scan), and both trees. The pin lasts until you unpin it or reload the page.
+
 ## SQL notebooks
 
 Turn any `.sql` file into a notebook.

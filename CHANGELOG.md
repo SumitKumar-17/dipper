@@ -13,6 +13,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- Plan comparison: pin a query plan, change something, explain again and see the cost and time
+  differences and how each table is now read, with both plans side by side.
 - Dependencies: the Structure tab and the structure review list the views, foreign keys, functions
   and triggers that depend on a table or on the column being dropped, retyped or renamed.
 - Migrations: numbered `.sql` files in the workspace's `migrations` folder, applied one transaction
