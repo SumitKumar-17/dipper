@@ -13,6 +13,8 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ### Added
 
+- What-if indexes: on Postgres, try a `create index` against a query's plan without building it
+  (needs `hypopg`), with the before and after plans and whether the planner would use each index.
 - Plan comparison: pin a query plan, change something, explain again and see the cost and time
   differences and how each table is now read, with both plans side by side.
 - Dependencies: the Structure tab and the structure review list the views, foreign keys, functions

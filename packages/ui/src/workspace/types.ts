@@ -10,6 +10,8 @@ import type {
   AlterRequest,
   AlterResult,
   Dependents,
+  WhatIfRequest,
+  WhatIfResult,
   ApplyMigrationsRequest,
   ApplyMigrationsResult,
   MigrationState,
@@ -421,6 +423,11 @@ export type WorkspaceApi = {
    * it shows the statements, and on Postgres runs and rolls them back.
    */
   alterTable(schema: string, table: string, request: AlterRequest): Promise<AlterResult>;
+  /**
+   * Plans a statement with and without indexes that do not exist, so one can be judged before it is
+   * built. Postgres with hypopg only; resolves with `available: false` and a reason otherwise.
+   */
+  whatIf(request: WhatIfRequest): Promise<WhatIfResult>;
   /** What relies on a table, or on one column of it, so a drop or change can be judged before it runs. */
   dependents(schema: string, table: string, column?: string): Promise<Dependents>;
   /** The migrations the active database has recorded as applied; never creates the tracking table. */

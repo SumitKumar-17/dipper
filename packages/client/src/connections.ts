@@ -4,6 +4,8 @@ import type {
   AlterRequest,
   AlterResult,
   Dependents,
+  WhatIfRequest,
+  WhatIfResult,
   ApplyMigrationsRequest,
   ApplyMigrationsResult,
   MigrationState,
@@ -127,6 +129,8 @@ export type ConnectionsApi = {
     request: AlterRequest,
     opts?: CallOptions,
   ): Promise<AlterResult>;
+  /** Plans a statement with and without indexes that do not exist (Postgres, needs hypopg). */
+  whatIf(id: string, request: WhatIfRequest, opts?: CallOptions): Promise<WhatIfResult>;
   /** What relies on a table, or on one column of it: views, foreign keys, routines and triggers. */
   dependents(
     id: string,
@@ -253,6 +257,9 @@ export function connectionsApi(http: Transport): ConnectionsApi {
         body: request,
         signal: opts?.signal,
       }),
+
+    whatIf: (id, request, opts) =>
+      http.json<WhatIfResult>(at(id, "/whatif"), { method: "POST", body: request, signal: opts?.signal }),
 
     dependents: (id, schema, table, options) =>
       http.json<Dependents>(at(id, `${tablePath(schema, table)}/dependents`), {

@@ -4,6 +4,8 @@ import type {
   AlterRequest,
   AlterResult,
   Dependents,
+  WhatIfRequest,
+  WhatIfResult,
   ApplyMigrationsRequest,
   ApplyMigrationsResult,
   MigrationState,
@@ -37,6 +39,7 @@ export type TableTools = {
   ) => string | null;
   applyRows: (schema: string, table: string, request: ApplyRequest) => Promise<ApplyResult>;
   alterTable: (schema: string, table: string, request: AlterRequest) => Promise<AlterResult>;
+  whatIf: (request: WhatIfRequest) => Promise<WhatIfResult>;
   dependents: (schema: string, table: string, column?: string) => Promise<Dependents>;
   migrationState: () => Promise<MigrationState>;
   applyMigrations: (request: ApplyMigrationsRequest) => Promise<ApplyMigrationsResult>;
@@ -87,6 +90,10 @@ export function useTableTools(getClient: () => DipperClient, { connectionId, dat
       alterTable: async (schema, table, request) => {
         const { id, scoped } = aimed();
         return getClient().connections.alterTable(id, schema, table, { ...request, ...scoped });
+      },
+      whatIf: async (request) => {
+        const { id, scoped } = aimed();
+        return getClient().connections.whatIf(id, { ...request, ...scoped });
       },
       dependents: async (schema, table, column) => {
         const { id } = aimed();

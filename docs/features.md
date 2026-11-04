@@ -151,6 +151,13 @@ same query again, and the view puts the two side by side with the change in cost
 execution time when both were analyzed), which tables are now read a different way (a Seq Scan that
 became an Index Scan), and both trees. The pin lasts until you unpin it or reload the page.
 
+On Postgres the plan view has a **Try an index** tab. Type a `create index` statement (add several
+to try them together) and it plans the query as if the indexes existed, then compares that with the
+real plan and tells you whether the planner would actually use each one. Nothing is built, so it is
+safe on any table size. It needs the [`hypopg`](https://github.com/HypoPG/hypopg) extension; when it
+is missing the tab says so and, if the server has it, shows the `create extension hypopg;` to run.
+Costs are estimates, so a promising result is a reason to build the index and measure, not proof.
+
 ## SQL notebooks
 
 Turn any `.sql` file into a notebook.

@@ -8,11 +8,13 @@ import { Button } from "../../ui/button";
 import { DialogBackdrop, DialogPortal } from "../../ui/dialog";
 import { Spinner } from "../../ui/spinner";
 import { Switch } from "../../ui/switch";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "../../ui/tabs";
 import { useWorkspace } from "../context";
 import { EXPLAIN_EVENT, type ExplainEventDetail } from "./explain-event";
 import { LintNotes } from "./lint-notes";
 import { PlanCompare } from "./plan-compare";
 import { PlanView } from "./plan-view";
+import { WhatIfPanel } from "./whatif-panel";
 
 /** A plan kept to compare later ones against, usually the one from before a change. */
 type Pinned = { sql: string; plan: Plan };
@@ -52,7 +54,7 @@ export function ExplainDialog(): React.ReactElement {
 }
 
 function ExplainPanel({ sql, pinned, onPin }: { sql: string; pinned: Pinned | null; onPin: (next: Pinned | null) => void }): React.ReactElement {
-  const { explain } = useWorkspace();
+  const { explain, connection } = useWorkspace();
   const [analyze, setAnalyze] = React.useState(false);
   const [comparing, setComparing] = React.useState(true);
   const [state, setState] = React.useState<State>({ status: "loading" });
@@ -71,6 +73,23 @@ function ExplainPanel({ sql, pinned, onPin }: { sql: string; pinned: Pinned | nu
   const plan = state.status === "ready" ? state.plan : null;
   const isPinned = plan !== null && pinned?.plan === plan;
   const showCompare = comparing && plan !== null && pinned !== null && !isPinned;
+
+  const planBody = (
+    <>
+        {state.status === "loading" && (
+        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Spinner /> Planning
+        </p>
+      )}
+      {state.status === "error" && (
+        <Alert variant="error">
+          <AlertDescription>{state.message}</AlertDescription>
+        </Alert>
+      )}
+      {state.status === "ready" && showCompare && pinned && <PlanCompare after={state.plan} before={pinned.plan} />}
+      {state.status === "ready" && !showCompare && <PlanView plan={state.plan} />}
+    </>
+  );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border bg-background shadow-lg">
@@ -104,18 +123,22 @@ function ExplainPanel({ sql, pinned, onPin }: { sql: string; pinned: Pinned | nu
       <pre className="max-h-24 overflow-auto border-b bg-muted/30 px-4 py-2 font-mono text-xs">{sql}</pre>
       <LintNotes sql={sql} />
       <div className="min-h-0 flex-1 overflow-auto p-4">
-        {state.status === "loading" && (
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Spinner /> Planning
-          </p>
+        {connection?.dialect === "postgres" ? (
+          <Tabs defaultValue="plan">
+            <TabsList>
+              <TabsTab value="plan">Plan</TabsTab>
+              <TabsTab value="whatif">Try an index</TabsTab>
+            </TabsList>
+            <TabsPanel value="plan">
+              {planBody}
+            </TabsPanel>
+            <TabsPanel value="whatif">
+              <WhatIfPanel sql={sql} />
+            </TabsPanel>
+          </Tabs>
+        ) : (
+          planBody
         )}
-        {state.status === "error" && (
-          <Alert variant="error">
-            <AlertDescription>{state.message}</AlertDescription>
-          </Alert>
-        )}
-        {state.status === "ready" && showCompare && pinned && <PlanCompare after={state.plan} before={pinned.plan} />}
-        {state.status === "ready" && !showCompare && <PlanView plan={state.plan} />}
       </div>
     </div>
   );

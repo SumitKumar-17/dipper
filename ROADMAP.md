@@ -173,7 +173,7 @@ change reviewed as plain SQL before it runs.
       triggers), shown before a drop or a structure change is applied (M)
 - [x] Plan comparison: two `EXPLAIN` plans side by side, such as before and after an index, with the
       cost and time differences (M)
-- [ ] What-if indexes: test a hypothetical index against a slow query's plan without creating it
+- [x] What-if indexes: test a hypothetical index against a slow query's plan without creating it
       (Postgres `hypopg` when installed), from the slow queries list (M)
 - [ ] Test data generator: fill a table with realistic rows that respect types, constraints and
       foreign keys, in one reviewed transaction (M/L)

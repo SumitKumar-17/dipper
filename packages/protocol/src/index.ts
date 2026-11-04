@@ -8,6 +8,7 @@ export type * from "./row-edit.js";
 export type * from "./alter.js";
 export type * from "./migration.js";
 export type * from "./dependents.js";
+export type * from "./whatif.js";
 export type * from "./snippet.js";
 export type * from "./activity.js";
 export type * from "./advice.js";

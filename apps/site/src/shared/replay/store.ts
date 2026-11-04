@@ -458,6 +458,7 @@ export function createReplayWorkspace(input: ReplayInput): ReplayWorkspace {
     rowPage: () => Promise.reject(new Error(NOT_RECORDED)),
     applyRows: () => Promise.reject(new Error(NOT_RECORDED)),
     alterTable: () => Promise.reject(new Error(NOT_RECORDED)),
+    whatIf: () => Promise.reject(new Error(NOT_RECORDED)),
     dependents: () => Promise.reject(new Error(NOT_RECORDED)),
     migrationState: () => Promise.reject(new Error(NOT_RECORDED)),
     applyMigrations: () => Promise.reject(new Error(NOT_RECORDED)),
