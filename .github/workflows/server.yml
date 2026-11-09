@@ -1,6 +1,8 @@
 name: server
 
 on:
+  # By hand too, so the checks can be run on a commit that was pushed while Actions was off.
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
