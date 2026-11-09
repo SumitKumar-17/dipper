@@ -51,11 +51,21 @@ detect_target() {
   printf '%s-%s\n' "$os" "$arch"
 }
 
+# Where github.com/<repo>/releases/latest redirects to, ending in /tag/<tag>. The API would answer
+# this too, but it is rate limited to 60 requests an hour per IP address for anonymous callers, and
+# a shared office or VPN address runs out of those. The redirect has no such limit.
+latest_url() {
+  url="https://github.com/$REPO/releases/latest"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL -o /dev/null -w '%{url_effective}' "$url"
+  else
+    wget --max-redirect=0 -S -O /dev/null "$url" 2>&1 | sed -n 's/^ *[Ll]ocation: *//p' | head -1 | tr -d '\r'
+  fi
+}
+
 latest_tag() {
-  # Parsed with sed rather than jq, which is not installed everywhere.
-  tag=$(fetch "https://api.github.com/repos/$REPO/releases/latest" \
-    | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1)
-  [ -n "$tag" ] || err "could not find a published release for $REPO - a draft release is not visible here; publish it, or set DIPPER_VERSION"
+  tag=$(latest_url | sed -n 's#.*/releases/tag/\([^/?]*\).*#\1#p')
+  [ -n "$tag" ] || err "could not find the latest release of $REPO (it may have none yet, or GitHub could not be reached); set DIPPER_VERSION=vX.Y.Z to choose one"
   printf '%s\n' "$tag"
 }
 

@@ -11,6 +11,12 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ## [Unreleased]
 
+### Fixed
+
+- The installers no longer fail with "could not find a published release" on a network whose shared
+  address has used up GitHub's anonymous API limit. They now read the latest tag from the release
+  page's redirect, which has no such limit.
+
 ### Added
 
 - What-if indexes: on Postgres, try a `create index` against a query's plan without building it

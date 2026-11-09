@@ -22,12 +22,16 @@ if ($arch -ne 'AMD64') {
   Fail "unsupported architecture: $arch. Download a build from https://github.com/$Repo/releases/latest"
 }
 
+# The release page redirects to /tag/<tag>. The API answers the same question but is limited to 60
+# anonymous requests an hour per IP address, which a shared office or VPN address can exhaust.
 function Get-LatestTag {
-  $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -Headers @{ 'User-Agent' = 'dipper-installer' }
-  if (-not $release.tag_name) {
-    Fail "could not find a published release for $Repo. A draft release is not visible here; publish it, or set DIPPER_VERSION"
+  $page = Invoke-WebRequest -Uri "https://github.com/$Repo/releases/latest" -Method Head -UseBasicParsing -Headers @{ 'User-Agent' = 'dipper-installer' }
+  # Windows PowerShell and PowerShell 7 expose the final address on different properties.
+  $final = if ($page.BaseResponse.ResponseUri) { $page.BaseResponse.ResponseUri.AbsoluteUri } else { $page.BaseResponse.RequestMessage.RequestUri.AbsoluteUri }
+  if ($final -notmatch '/releases/tag/([^/?]+)') {
+    Fail "could not find the latest release of $Repo (it may have none yet, or GitHub could not be reached). Set DIPPER_VERSION to choose one, such as vX.Y.Z"
   }
-  return $release.tag_name
+  return $Matches[1]
 }
 
 $tag = if ($env:DIPPER_VERSION) { $env:DIPPER_VERSION } else { Get-LatestTag }
