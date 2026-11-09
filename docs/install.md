@@ -29,6 +29,14 @@ dipper update   # install the latest release over this one
 | `DIPPER_INSTALL_DIR`     | install somewhere else, e.g. `~/bin`                     |
 | `DIPPER_NO_MODIFY_PATH`  | leave the shell profile alone and just print the line    |
 | `DIPPER_NO_UPDATE_CHECK` | don't look for a newer release on start                  |
+| `DIPPER_NO_APP`          | macOS: don't add `~/Applications/Dipper.app`             |
+
+## On macOS: the Applications entry
+
+Launchpad and Spotlight list apps, not command line tools, so on macOS the installer also adds
+`~/Applications/Dipper.app`. Open it like any app: it starts the server and opens your browser (or
+opens the one already running). It has no window of its own, so quit it with `dipper stop`. It is
+built on your machine and needs no sudo. To remove it, delete that folder.
 
 ## Updating
 

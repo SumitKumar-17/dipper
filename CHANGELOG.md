@@ -6,28 +6,37 @@ and versions follow [semantic versioning](https://semver.org/).
 The section matching a release's version becomes that release's notes on GitHub - see
 [CONTRIBUTING.md](CONTRIBUTING.md#cutting-a-release).
 
-[Unreleased]: https://github.com/SumitKumar-17/dipper/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/SumitKumar-17/dipper/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/SumitKumar-17/dipper/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/SumitKumar-17/dipper/releases/tag/v0.3.0
 
 ## [Unreleased]
 
-### Fixed
+## [0.4.0] - 2026-11-10
 
-- The installers no longer fail with "could not find a published release" on a network whose shared
-  address has used up GitHub's anonymous API limit. They now read the latest tag from the release
-  page's redirect, which has no such limit.
+Schema changes become something you can manage: migrations you keep with your project, a check of
+what depends on a table before you change it, and plan comparison with what-if indexes for tuning.
 
 ### Added
 
-- What-if indexes: on Postgres, try a `create index` against a query's plan without building it
-  (needs `hypopg`), with the before and after plans and whether the planner would use each index.
-- Plan comparison: pin a query plan, change something, explain again and see the cost and time
-  differences and how each table is now read, with both plans side by side.
-- Dependencies: the Structure tab and the structure review list the views, foreign keys, functions
-  and triggers that depend on a table or on the column being dropped, retyped or renamed.
 - Migrations: numbered `.sql` files in the workspace's `migrations` folder, applied one transaction
   each (Postgres and SQLite) and recorded in `dipper_schema_migrations`, with pending, applied,
   edited and missing states, a dry run, and a Save as migration button on the schema compare.
+- Dependencies: the Structure tab and the structure review list the views, foreign keys, functions
+  and triggers that depend on a table or on the column being dropped, retyped or renamed.
+- Plan comparison: pin a query plan, change something, explain again and see the cost and time
+  differences and how each table is now read, with both plans side by side.
+- What-if indexes: on Postgres, try a `create index` against a query's plan without building it
+  (needs `hypopg`), with the before and after plans and whether the planner would use each index.
+- macOS: the installer adds `~/Applications/Dipper.app`, so Dipper appears in Launchpad and
+  Spotlight. It starts the server and opens the browser; `dipper stop` quits it. Set
+  `DIPPER_NO_APP=1` to skip it.
+
+### Fixed
+
+- The installers and `dipper update` no longer fail with "could not find a published release" on a
+  network whose shared address has used up GitHub's anonymous API limit. They read the latest tag
+  from the release page's redirect, which has no such limit.
 
 ## [0.3.0] - 2026-11-03
 

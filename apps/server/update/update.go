@@ -6,9 +6,7 @@ package update
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"runtime"
@@ -21,7 +19,6 @@ import (
 
 const (
 	repo       = "SumitKumar-17/dipper"
-	latestAPI  = "https://api.github.com/repos/" + repo + "/releases/latest"
 	releaseURL = "https://github.com/" + repo + "/releases/download"
 	// ReleasesPage is where a platform without an asset has to go by hand.
 	ReleasesPage = "https://github.com/" + repo + "/releases/latest"
@@ -55,13 +52,15 @@ func Supported() bool { return targets[Target()] }
 
 // Latest is the tag of the newest published release, e.g. "v0.2.0". A draft release is not
 // visible here, which is the same blind spot install.sh has.
+//
+// It follows the release page's redirect to /releases/tag/<tag> rather than asking the API: the API
+// allows anonymous callers 60 requests an hour per IP address, which a shared office or VPN address
+// uses up, while the page has no such limit.
 func Latest(ctx context.Context) (string, error) {
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, latestAPI, nil)
+	request, err := http.NewRequestWithContext(ctx, http.MethodHead, ReleasesPage, nil)
 	if err != nil {
 		return "", err
 	}
-	request.Header.Set("Accept", "application/vnd.github+json")
-
 	response, err := client.Do(request)
 	if err != nil {
 		return "", err
@@ -70,17 +69,18 @@ func Latest(ctx context.Context) (string, error) {
 	if response.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("github answered %s for the latest release", response.Status)
 	}
+	return tagFromURL(response.Request.URL.Path)
+}
 
-	var body struct {
-		TagName string `json:"tag_name"`
-	}
-	if err := json.NewDecoder(io.LimitReader(response.Body, 1<<20)).Decode(&body); err != nil {
-		return "", err
-	}
-	if body.TagName == "" {
+// tagFromURL reads the tag out of the path the release page lands on. A repository with no
+// published release lands on /releases instead, which has no tag in it.
+func tagFromURL(path string) (string, error) {
+	_, tag, found := strings.Cut(path, "/releases/tag/")
+	tag = strings.Trim(tag, "/")
+	if !found || tag == "" || strings.Contains(tag, "/") {
 		return "", fmt.Errorf("no published release for %s", repo)
 	}
-	return body.TagName, nil
+	return tag, nil
 }
 
 // Check is Latest with a cache, for the background look `dipper serve` takes: within ttl of the
