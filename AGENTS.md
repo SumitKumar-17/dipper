@@ -155,6 +155,9 @@ check fails when a JSON field exists in the Go wire types (`apps/server/protocol
   breaks `curl … | sh` for everyone and `dipper update` for everyone already on an older binary,
   which no later release can fix. Change all three, and test both against a local directory with
   `DIPPER_DOWNLOAD_BASE=file:///path` - `update` speaks `file://` for exactly that.
+  The application entry (Linux menu, macOS `Dipper.app`, Windows Start Menu) is written by the
+  binary (`apps/server/desktop`, `dipper desktop`), not by the scripts, so the icon and the file
+  formats live in one place; the scripts only call it, and tolerate a release that predates it.
   Never add an `npm i -g` line to docs - there is no package to install, and the npm names
   `dipper`, `sqe` and `sql-engine` all belong to unrelated projects.
 - **The frontend is `apps/web`.** The four layout directions in `apps/mockups` did their job

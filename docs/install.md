@@ -29,14 +29,41 @@ dipper update   # install the latest release over this one
 | `DIPPER_INSTALL_DIR`     | install somewhere else, e.g. `~/bin`                     |
 | `DIPPER_NO_MODIFY_PATH`  | leave the shell profile alone and just print the line    |
 | `DIPPER_NO_UPDATE_CHECK` | don't look for a newer release on start                  |
-| `DIPPER_NO_APP`          | macOS: don't add `~/Applications/Dipper.app`             |
+| `DIPPER_NO_APP`          | don't add Dipper to the application menu / Start Menu    |
 
-## On macOS: the Applications entry
+## As an application
 
-Launchpad and Spotlight list apps, not command line tools, so on macOS the installer also adds
-`~/Applications/Dipper.app`. Open it like any app: it starts the server and opens your browser (or
-opens the one already running). It has no window of its own, so quit it with `dipper stop`. It is
-built on your machine and needs no sudo. To remove it, delete that folder.
+Launchers list applications, not command line tools, so the installers also add Dipper to yours:
+
+| System  | Where it appears                                                       |
+| ------- | ---------------------------------------------------------------------- |
+| Linux   | your application menu (a `dipper.desktop` entry and icon under `~/.local/share`), when a desktop session is running |
+| macOS   | Launchpad and Spotlight (`~/Applications/Dipper.app`)                  |
+| Windows | the Start Menu (a per-user `Dipper` shortcut)                          |
+
+Opening it starts the server and opens your browser, or opens the one already running. It has no
+window of its own, so quit it with `dipper stop`; the Linux entry also has a **Stop Dipper** action.
+Nothing needs an administrator, and the entry is built on your machine, so macOS's Gatekeeper has
+nothing to check.
+
+The binary does this itself, so you can run it any time:
+
+```sh
+dipper desktop           # add (or refresh) the entry
+dipper desktop remove    # take it out; your connections and queries are untouched
+```
+
+`dipper update` refreshes an entry that exists and never adds one you did not ask for. Set
+`DIPPER_NO_APP=1` to have the installer skip it.
+
+## Getting `dipper` on your PATH
+
+The installer puts the binary in a folder that is already on your `PATH` when it can (`/usr/local/bin`,
+`~/.local/bin` or `~/bin`), so `dipper` works in the same terminal with nothing to do. Otherwise it
+uses `~/.local/bin` and adds it to your shell profile (`.zshrc`, `.bashrc`, `.bash_profile` or fish's
+`config.fish`). A script cannot change the terminal that started it, so that one needs the line it
+prints, or a new terminal. On Windows it adds the folder to your user `PATH`. The application entry
+above does not depend on `PATH` at all: it points at the binary directly.
 
 ## Updating
 

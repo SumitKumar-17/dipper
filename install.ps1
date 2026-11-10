@@ -75,6 +75,12 @@ try {
   Remove-Item -Recurse -Force $temp -ErrorAction SilentlyContinue
 }
 
+# Add the Start Menu shortcut. The binary writes it, since it carries the icon. A release that
+# predates the command just fails here, which is fine: it is skipped and an update brings it.
+if (-not $env:DIPPER_NO_APP) {
+  try { & $target desktop install 2>$null | ForEach-Object { Say "  $_" } } catch { }
+}
+
 # Put the directory on the user's PATH (not the machine's, which would need an administrator).
 $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
 $onPath = ($userPath -split ';') -contains $dir

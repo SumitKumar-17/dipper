@@ -12,6 +12,15 @@ The section matching a release's version becomes that release's notes on GitHub 
 
 ## [Unreleased]
 
+### Added
+
+- Dipper is an application on every system: an entry in the Linux application menu, `Dipper.app` in
+  macOS Launchpad and Spotlight, and a Windows Start Menu shortcut, all with the Dipper icon.
+  `dipper desktop` adds or (with `remove`) takes it out, the installers do it for you, and
+  `dipper update` keeps an existing entry current. `DIPPER_NO_APP=1` skips it in the installers.
+- The installer picks a folder that is already on your `PATH` when one is writable, so `dipper` works
+  in the same terminal without sourcing anything.
+
 ## [0.4.0] - 2026-11-10
 
 Schema changes become something you can manage: migrations you keep with your project, a check of

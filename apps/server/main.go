@@ -36,6 +36,7 @@ commands:
   stop                  stop the running server
   status                show whether the server is running
   update                install the latest release over this binary
+  desktop               add dipper to (or remove it from) your applications menu
 
 Run "dipper <command> --help" for command-specific options. "dipper --version" prints the version.
 `
@@ -57,7 +58,7 @@ func main() {
 	rest := args
 	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
 		switch args[0] {
-		case "serve", "stop", "status", "update":
+		case "serve", "stop", "status", "update", "desktop":
 			command = args[0]
 			rest = args[1:]
 		default:
@@ -77,6 +78,8 @@ func main() {
 		err = cmdStatus(rest)
 	case "update":
 		err = cmdUpdate(rest)
+	case "desktop":
+		err = cmdDesktop(rest)
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
@@ -313,6 +316,7 @@ and replaces the running binary. A running server keeps the old version until it
 		return err
 	}
 	fmt.Printf("  replaced %s\n", tilde(path))
+	refreshDesktop(path)
 
 	if info, _ := storage.ReadServerInfo(); info != nil && healthy(info.URL) {
 		fmt.Printf("\nA server is still running the old version (pid %d). Restart it: dipper stop && dipper\n", info.PID)

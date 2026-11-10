@@ -69,13 +69,21 @@ latest_tag() {
   printf '%s\n' "$tag"
 }
 
-# The first writable candidate wins; ~/.local/bin is created if that is where we land.
+# A writable folder that is already on PATH wins, because then `dipper` works in this very terminal
+# with nothing to source: a script cannot change the PATH of the shell that started it. Failing that,
+# a writable one that exists, and last ~/.local/bin, which is created and added to the profile.
 choose_dir() {
   if [ -n "${DIPPER_INSTALL_DIR:-}" ]; then
     printf '%s\n' "$DIPPER_INSTALL_DIR"
     return
   fi
-  for dir in /usr/local/bin "$HOME/.local/bin"; do
+  for dir in /usr/local/bin "$HOME/.local/bin" "$HOME/bin"; do
+    if [ -d "$dir" ] && [ -w "$dir" ] && on_path "$dir"; then
+      printf '%s\n' "$dir"
+      return
+    fi
+  done
+  for dir in /usr/local/bin "$HOME/.local/bin" "$HOME/bin"; do
     if [ -d "$dir" ] && [ -w "$dir" ]; then
       printf '%s\n' "$dir"
       return
@@ -177,37 +185,16 @@ setup_path() {
   fi
 }
 
-# macOS lists applications, not command line tools, in Launchpad, Spotlight and Finder. A small app
-# bundle whose only job is to start the server gives dipper a place there. It is made on this machine,
-# so Gatekeeper (which checks downloaded files) has nothing to object to, and it needs no sudo.
-install_macos_app() {
+# Adds dipper to the application launcher (macOS Launchpad and Spotlight, the Linux application
+# menu) by asking the binary itself, which knows its own icon and path. An older release has no such
+# command, which is fine: it is skipped, and the next update brings it. A Linux machine with no
+# desktop session, such as a server reached over SSH, has no launcher to add to.
+install_app_entry() {
   [ "${DIPPER_NO_APP:-}" = 1 ] && return 0
-  app="$HOME/Applications/Dipper.app"
-  mkdir -p "$app/Contents/MacOS" || return 0
-  cat > "$app/Contents/Info.plist" <<PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>CFBundleName</key><string>Dipper</string>
-  <key>CFBundleDisplayName</key><string>Dipper</string>
-  <key>CFBundleIdentifier</key><string>io.github.sumitkumar-17.dipper</string>
-  <key>CFBundleExecutable</key><string>Dipper</string>
-  <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>$version</string>
-  <key>LSUIElement</key><true/>
-</dict>
-</plist>
-PLIST
-  # `dipper serve` opens the browser, and when a server is already running opens that one instead,
-  # so opening the app twice does not start two. It runs detached: the app itself has no window.
-  cat > "$app/Contents/MacOS/Dipper" <<LAUNCHER
-#!/bin/sh
-mkdir -p "\$HOME/.dipper"
-nohup "$1/$BIN" serve > "\$HOME/.dipper/serve.log" 2>&1 &
-LAUNCHER
-  chmod +x "$app/Contents/MacOS/Dipper"
-  say "  added ~/Applications/Dipper.app (open it from Launchpad or Spotlight; quit with: dipper stop)"
+  if [ "$OS" = linux ] && [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}${XDG_CURRENT_DESKTOP:-}" ]; then
+    return 0
+  fi
+  "$1/$BIN" desktop install 2>/dev/null | sed 's/^/  /' || true
 }
 
 main() {
@@ -244,7 +231,7 @@ main() {
   mv "$tmp/$BIN" "$dir/$BIN"
 
   say "  installed $(tilde "$dir")/$BIN"
-  [ "$OS" = darwin ] && install_macos_app "$dir"
+  install_app_entry "$dir"
   setup_path "$dir"
 }
 
