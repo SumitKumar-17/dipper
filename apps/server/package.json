@@ -1,6 +1,6 @@
 {
   "name": "dipper",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "The dipper server and CLI: connections, schema, queries, files, history. The UI is a pure client.",
   "private": true,
   "license": "MIT",
